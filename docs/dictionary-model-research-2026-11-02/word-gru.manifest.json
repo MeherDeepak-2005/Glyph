@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "status": "research only; not installed",
+  "architecture": {
+    "arch": "gru",
+    "embed": 64,
+    "hidden": 256,
+    "proj": 64,
+    "layers": 1,
+    "tied": true
+  },
+  "parameters": 2213940,
+  "sha256": "485703384bce68e32dbe2c1d6f308428a2d4e6b61a5f29c3d9fd17940c84b1d3",
+  "bytes": 2767184,
+  "source_checkpoint_sha256": "b5e053919d664eef014bc53538b6d7d302db8293702b407164eaca8f2708ee7b",
+  "vocabulary_sha256": "04d6fa02c2898c52270970119614eee0ad08d495ef4b6537989706b1af34b5b7",
+  "langdata_sha256": "7b97efd17ab2c50663b26075ca87dc64a9626adea72d92b834b767204d84488d",
+  "unk_lexicon_share": 0.3724290328063913,
+  "unknown_log_center": -4.2744453072517965,
+  "validation_word_positions": 3981,
+  "max_abs_quantization_error": {
+    "1": 0.00434064120054245,
+    "10": 0.004198998212814331,
+    "9": 0.0020760074257850647
+  }
+}

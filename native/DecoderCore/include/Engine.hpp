@@ -107,6 +107,9 @@ struct EngineOptions {
     // the channel's spelling rules, the correction gate and the candidate heuristics
     // switched off. See EngineSession::decodeRaw.
     bool raw = false;
+    // Enforce NSS + unigram only: no n-gram tier, recovery, scoring, or display boosts.
+    // Missing neural resources report unsupportedModel instead of choosing another scorer.
+    bool nssOnly = false;
     // NeuralFst::Options::exact: exact vocabulary scores and <unk> shared outside the
     // vocabulary. false reproduces the published graph (Codex's paper replica).
     bool nssExact = true;
@@ -191,6 +194,7 @@ class EngineSession final {
     std::string neuralTyped_;
     bool neuralIdentityReady_ = false;
     NeuralFst& neuralGraph();
+    DecodeOutput decodeBase(const DecodeInput&, const EngineView&, const CancellationToken*);
     DecodeOutput decodeNeural(const DecodeInput&, const EngineView&, const CancellationToken*);
     DecodeOutput decodeRaw(const DecodeInput&, const EngineView&, const CancellationToken*, bool neural);
     std::vector<RankedRow> score(std::vector<ChannelCandidate> rows, const std::optional<ChannelCandidate>& typed,

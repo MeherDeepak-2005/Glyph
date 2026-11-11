@@ -1,0 +1,17 @@
+{
+  "cases": 1278,
+  "counts_by_set": {
+    "ecps": 200,
+    "ecps_ok": 200,
+    "clean": 200,
+    "nw": 200,
+    "syn": 200,
+    "realword": 200,
+    "apos": 36,
+    "hard": 42
+  },
+  "split": "held, SHA1 target/key odd; deterministic case hash sample",
+  "case_sha256": "cf83ec32da3014ceabfaa1a4037c261f96d71c5d3c114982eb1029a5027e91b6",
+  "binary_sha256": "87db3e1b9b8201887740988d0c79e199170ee70d2fed21ef8bb6f7fe060c1140",
+  "latency_warning": "Training ran concurrently; these timings are not valid device-latency acceptance measurements."
+}

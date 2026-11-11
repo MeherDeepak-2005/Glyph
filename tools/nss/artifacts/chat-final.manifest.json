@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "format": "NSLM v1",
+  "file": "chat-final.nsslm",
+  "bytes": 3922400,
+  "sha256": "842645d41e188aa6fcfc42b006c0010b4bde87636c94e7eceb49fcd847b0ca3b",
+  "architecture": {
+    "arch": "lstm",
+    "embed": 96,
+    "hidden": 670,
+    "proj": 96,
+    "cifg": true,
+    "layers": 1,
+    "tied": true
+  },
+  "parameters": 3362638,
+  "vocabulary_sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+  "langdata_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "unk_policy": {
+    "formula": "P(w|ctx) = P(<unk>|ctx) * share * u(w) / oov_mass for lexicon words outside the vocabulary",
+    "unk_lexicon_share": 0.3773629352281171,
+    "mean_log_unk_validation": -3.7363099719811537
+  },
+  "quantization": {
+    "scheme": "int8 symmetric per row, fp32 scales; biases fp32",
+    "max_abs_error": {
+      "1": 0.007545590400695801,
+      "10": 0.010455116629600525,
+      "12": 0.009173035621643066
+    }
+  },
+  "training": {
+    "step": 21158,
+    "config": {
+      "description": "The NSS reference model on the v2 corpus (data-v2: build_corpus --sources tatoeba wikitext soda --stock-name-keep 0.25): SODA dialogues as the messaging register, Tatoeba without most Tom/Mary sentences, less WikiText.",
+      "model": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 670,
+        "proj": 96,
+        "cifg": true,
+        "layers": 1,
+        "tied": true,
+        "dropout": 0.0
+      },
+      "data": {
+        "weights": {
+          "soda": 0.45,
+          "tatoeba": 2.0,
+          "wikitext": 0.3
+        }
+      },
+      "train": {
+        "batch": 128,
+        "bptt": 48,
+        "tokens": 130000000,
+        "lr": 0.003,
+        "min_lr_ratio": 0.05,
+        "warmup": 1000,
+        "clip": 1.0,
+        "weight_decay": 0.01,
+        "eval_every": 2000,
+        "log_every": 50,
+        "seed": 1234,
+        "valid": [
+          "soda",
+          "tatoeba",
+          "wikitext"
+        ],
+        "chunk": 1024,
+        "eval_device": "cpu"
+      }
+    },
+    "valid": {
+      "soda": {
+        "ppl_all": 18.233989439752442,
+        "ppl_word": 22.783017789077523,
+        "top1": 0.3590974522957908,
+        "top3": 0.5237600751619443,
+        "unk_pred": 0.013260888384400453,
+        "unk_rate": 0.007750965974526894,
+        "tokens": 829095
+      },
+      "tatoeba": {
+        "ppl_all": 68.16540855088552,
+        "ppl_word": 100.98317597815539,
+        "top1": 0.2254338948443083,
+        "top3": 0.36113769780500254,
+        "unk_pred": 0.024603285653465302,
+        "unk_rate": 0.03127704289776239,
+        "tokens": 73486
+      },
+      "wikitext": {
+        "ppl_all": 215.3161531476697,
+        "ppl_word": 246.34626578636772,
+        "top1": 0.1957052247120783,
+        "top3": 0.3097923267985934,
+        "unk_pred": 0.05902313690328569,
+        "unk_rate": 0.06622513195290296,
+        "tokens": 413850
+      }
+    },
+    "data_weights": {
+      "soda": 0.45,
+      "tatoeba": 2.0,
+      "wikitext": 0.3
+    }
+  },
+  "source_checkpoint_sha256": "00d054aca26a32c986d54cc17a2d58f0692ea7e7a7d069d2d3abd6f419cabc08"
+}

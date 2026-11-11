@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "native/DecoderCore/include/BiKey.hpp": null,
+    "native/DecoderCore/src/BiKey.cpp": null,
+    "native/DecoderCore/include/Engine.hpp": "da844163cad00649dc6966e26a7d4cfd4f96720dd111da90d36e34c0ee932756",
+    "native/DecoderCore/include/NeuralFst.hpp": "36ac92ea669b09ec7e4e660b37b10117b7cb5f07bcd306a4ab193650e7378702",
+    "native/DecoderCore/src/NeuralFst.cpp": "901cd6a4b95f3c469bb3d821db5d81524389fa8eec3c3735281162310727ac81",
+    "native/DecoderCore/src/Engine.cpp": "9c5bf4cd5d9efb2eb6e620d47db827872e4ab252cd329e86fc0a1a31dc9d96ed",
+    "native/tests/BiKeyTests.cpp": null,
+    "native/CMakeLists.txt": "b96ac4a69e310da6982e72771ef3a3da780432f8fb198b6423d190e93153816a",
+    "tools/evaluation/autocorrect/IOSBench.cpp": "d534a514c061ddfd257a0ee641cae7ea1cb4a3367d8c4a9572719aabd7542d1e",
+    "native/tests/run.sh": "9401ed13a57e0a85314eea63a288abcf940d63202aa0c9a7a4f1f3ffcf0d6e29"
+  },
+  "candidate": {
+    "native/DecoderCore/include/BiKey.hpp": "8abe54efd237a2d047bf1fbc38afa3952b77a609c0349c4bda509f059ee89f76",
+    "native/DecoderCore/src/BiKey.cpp": "5279d1911406cd5a95d8de0d3ce2b94690969906134320c7bbd755dde46d7a96",
+    "native/DecoderCore/include/Engine.hpp": "96a93a0cf29769d755e2943bfbf40a6f263504730406d35f1d32edfd69fe2f24",
+    "native/DecoderCore/include/NeuralFst.hpp": "a26033acc83f9f907d9a08e85a5d8ab5ee05121e9a2fbd9b059939bacbda5e6a",
+    "native/DecoderCore/src/NeuralFst.cpp": "bebcb58d67ef4e35ff56e97853df2204ada45724625e66df974b2a22718343a9",
+    "native/DecoderCore/src/Engine.cpp": "c109c41b59a9059f864a2adcf8385886163546720fbc25cd4cdcb1c60ef7572c",
+    "native/tests/BiKeyTests.cpp": "1c6e38b40ead36471cc322dbbbce459b96fc8c91012a1444fd194ccd5f304711",
+    "native/CMakeLists.txt": "7d675fe2e553228680e366b299fe3a139387d0a81f9e2ae79d7666ccf7275aa3",
+    "tools/evaluation/autocorrect/IOSBench.cpp": "e618517cf14577c53f20d728b19a1aaab76e67db0140474b4208966fdc5f9ff4",
+    "native/tests/run.sh": "eb8a60470656e034f236eb5fcaca948a0b5c0a889f67607426350e0cdc6557c4"
+  }
+}

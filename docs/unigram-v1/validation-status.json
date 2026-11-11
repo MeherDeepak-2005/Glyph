@@ -1,0 +1,17 @@
+{
+  "native_suites": "12/12 passed",
+  "expanded_pack_neural_probability_checks": "Passed; 556470 exact NSS word scores checked",
+  "unigram_python_tests": "8/8 passed, including installer success and rejection tests",
+  "swift_syntax": "Passed for edited Swift engine files",
+  "objective_c_bridge": "Syntax/type check passed against iPhoneOS SDK with KB_NSS_RAW=1",
+  "xcode_project": "plutil passed; no duplicate-resource errors reported",
+  "typing_cases": 3238,
+  "typing_results": "evaluation/results.json",
+  "full_ios_build": "Blocked: Xcode PreviewsMacros.SwiftUIView plugin produced malformed responses",
+  "physical_device_latency_memory": "Not measured",
+  "signed_extension_budget": "Not verified; full build blocked",
+  "production_bundle_configuration": "New dictionary selected in Config/Extension.xcconfig and hash-checked installer; standalone packaging test passed",
+  "dictionary_bytes": 9254997,
+  "policy_bytes": 568,
+  "neural_model_unchanged": true
+}

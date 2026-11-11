@@ -1,0 +1,4068 @@
+{
+  "total_cases": 96143,
+  "held_cases": 46479,
+  "neural_vocabulary_size": 30004,
+  "sets": {
+    "ecps": {
+      "n": 9622,
+      "core_fixed": 8469,
+      "nss_touch_fixed": 8583,
+      "nss_no_taps_fixed": 8535,
+      "core_only": 566,
+      "nss_only": 680,
+      "core_top3": 9010,
+      "nss_top3": 9216,
+      "core_only_target_in_nss_top3": 411,
+      "core_only_nss_no_commit": 243,
+      "core_only_target_outside_neural_vocab": 43
+    },
+    "syn": {
+      "n": 5606,
+      "core_fixed": 4541,
+      "nss_touch_fixed": 5196,
+      "nss_no_taps_fixed": 5155,
+      "core_only": 167,
+      "nss_only": 822,
+      "core_top3": 5073,
+      "nss_top3": 5432,
+      "core_only_target_in_nss_top3": 121,
+      "core_only_nss_no_commit": 38,
+      "core_only_target_outside_neural_vocab": 12
+    },
+    "realword": {
+      "n": 708,
+      "core_fixed": 2,
+      "nss_touch_fixed": 345,
+      "nss_no_taps_fixed": 349,
+      "core_only": 2,
+      "nss_only": 345,
+      "core_top3": 228,
+      "nss_top3": 613,
+      "core_only_target_in_nss_top3": 2,
+      "core_only_nss_no_commit": 2,
+      "core_only_target_outside_neural_vocab": 0
+    },
+    "ext_birkbeck": {
+      "n": 15136,
+      "core_fixed": 5842,
+      "nss_touch_fixed": 4894,
+      "nss_no_taps_fixed": 4763,
+      "core_only": 1669,
+      "nss_only": 721,
+      "core_top3": 8490,
+      "nss_top3": 8583,
+      "core_only_target_in_nss_top3": 1392,
+      "core_only_nss_no_commit": 1396,
+      "core_only_target_outside_neural_vocab": 120
+    },
+    "ext_wikipedia": {
+      "n": 1100,
+      "core_fixed": 919,
+      "nss_touch_fixed": 878,
+      "nss_no_taps_fixed": 870,
+      "core_only": 97,
+      "nss_only": 56,
+      "core_top3": 1037,
+      "nss_top3": 1003,
+      "core_only_target_in_nss_top3": 85,
+      "core_only_nss_no_commit": 72,
+      "core_only_target_outside_neural_vocab": 35
+    },
+    "ext_aspell": {
+      "n": 237,
+      "core_fixed": 129,
+      "nss_touch_fixed": 126,
+      "nss_no_taps_fixed": 120,
+      "core_only": 29,
+      "nss_only": 26,
+      "core_top3": 179,
+      "nss_top3": 176,
+      "core_only_target_in_nss_top3": 21,
+      "core_only_nss_no_commit": 23,
+      "core_only_target_outside_neural_vocab": 4
+    },
+    "ext_holbrook": {
+      "n": 450,
+      "core_fixed": 173,
+      "nss_touch_fixed": 188,
+      "nss_no_taps_fixed": 177,
+      "core_only": 38,
+      "nss_only": 53,
+      "core_top3": 246,
+      "nss_top3": 256,
+      "core_only_target_in_nss_top3": 25,
+      "core_only_nss_no_commit": 11,
+      "core_only_target_outside_neural_vocab": 0
+    }
+  },
+  "severe_subgroups": {
+    "ext_birkbeck": {
+      "edits_1": {
+        "n": 4772,
+        "core_fixed": 3928,
+        "nss_touch_fixed": 3834,
+        "nss_no_taps_fixed": 3765,
+        "core_only": 434,
+        "nss_only": 340,
+        "core_top3": 4406,
+        "nss_top3": 4307,
+        "core_only_target_in_nss_top3": 330,
+        "core_only_nss_no_commit": 228,
+        "core_only_target_outside_neural_vocab": 41
+      },
+      "neural_known": {
+        "n": 14378,
+        "core_fixed": 5564,
+        "nss_touch_fixed": 4724,
+        "nss_no_taps_fixed": 4593,
+        "core_only": 1549,
+        "nss_only": 709,
+        "core_top3": 8113,
+        "nss_top3": 8240,
+        "core_only_target_in_nss_top3": 1299,
+        "core_only_nss_no_commit": 1286,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_same": {
+        "n": 13951,
+        "core_fixed": 5731,
+        "nss_touch_fixed": 4784,
+        "nss_no_taps_fixed": 4660,
+        "core_only": 1631,
+        "nss_only": 684,
+        "core_top3": 8299,
+        "nss_top3": 8337,
+        "core_only_target_in_nss_top3": 1363,
+        "core_only_nss_no_commit": 1364,
+        "core_only_target_outside_neural_vocab": 120
+      },
+      "edits_3plus": {
+        "n": 6614,
+        "core_fixed": 2,
+        "nss_touch_fixed": 71,
+        "nss_no_taps_fixed": 60,
+        "core_only": 2,
+        "nss_only": 71,
+        "core_top3": 1516,
+        "nss_top3": 1818,
+        "core_only_target_in_nss_top3": 2,
+        "core_only_nss_no_commit": 1,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "edits_2": {
+        "n": 3750,
+        "core_fixed": 1912,
+        "nss_touch_fixed": 989,
+        "nss_no_taps_fixed": 938,
+        "core_only": 1233,
+        "nss_only": 310,
+        "core_top3": 2568,
+        "nss_top3": 2458,
+        "core_only_target_in_nss_top3": 1060,
+        "core_only_nss_no_commit": 1167,
+        "core_only_target_outside_neural_vocab": 79
+      },
+      "first_different": {
+        "n": 1185,
+        "core_fixed": 111,
+        "nss_touch_fixed": 110,
+        "nss_no_taps_fixed": 103,
+        "core_only": 38,
+        "nss_only": 37,
+        "core_top3": 191,
+        "nss_top3": 246,
+        "core_only_target_in_nss_top3": 29,
+        "core_only_nss_no_commit": 32,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "neural_unknown": {
+        "n": 758,
+        "core_fixed": 278,
+        "nss_touch_fixed": 170,
+        "nss_no_taps_fixed": 170,
+        "core_only": 120,
+        "nss_only": 12,
+        "core_top3": 377,
+        "nss_top3": 343,
+        "core_only_target_in_nss_top3": 93,
+        "core_only_nss_no_commit": 110,
+        "core_only_target_outside_neural_vocab": 120
+      }
+    },
+    "ext_wikipedia": {
+      "edits_2": {
+        "n": 140,
+        "core_fixed": 84,
+        "nss_touch_fixed": 66,
+        "nss_no_taps_fixed": 66,
+        "core_only": 33,
+        "nss_only": 15,
+        "core_top3": 108,
+        "nss_top3": 111,
+        "core_only_target_in_nss_top3": 31,
+        "core_only_nss_no_commit": 31,
+        "core_only_target_outside_neural_vocab": 9
+      },
+      "neural_known": {
+        "n": 943,
+        "core_fixed": 794,
+        "nss_touch_fixed": 782,
+        "nss_no_taps_fixed": 775,
+        "core_only": 62,
+        "nss_only": 50,
+        "core_top3": 890,
+        "nss_top3": 869,
+        "core_only_target_in_nss_top3": 54,
+        "core_only_nss_no_commit": 41,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_same": {
+        "n": 1063,
+        "core_fixed": 903,
+        "nss_touch_fixed": 859,
+        "nss_no_taps_fixed": 851,
+        "core_only": 95,
+        "nss_only": 51,
+        "core_top3": 1012,
+        "nss_top3": 979,
+        "core_only_target_in_nss_top3": 84,
+        "core_only_nss_no_commit": 71,
+        "core_only_target_outside_neural_vocab": 34
+      },
+      "edits_1": {
+        "n": 941,
+        "core_fixed": 835,
+        "nss_touch_fixed": 812,
+        "nss_no_taps_fixed": 804,
+        "core_only": 64,
+        "nss_only": 41,
+        "core_top3": 925,
+        "nss_top3": 887,
+        "core_only_target_in_nss_top3": 54,
+        "core_only_nss_no_commit": 41,
+        "core_only_target_outside_neural_vocab": 26
+      },
+      "neural_unknown": {
+        "n": 157,
+        "core_fixed": 125,
+        "nss_touch_fixed": 96,
+        "nss_no_taps_fixed": 95,
+        "core_only": 35,
+        "nss_only": 6,
+        "core_top3": 147,
+        "nss_top3": 134,
+        "core_only_target_in_nss_top3": 31,
+        "core_only_nss_no_commit": 31,
+        "core_only_target_outside_neural_vocab": 35
+      },
+      "edits_3plus": {
+        "n": 19,
+        "core_fixed": 0,
+        "nss_touch_fixed": 0,
+        "nss_no_taps_fixed": 0,
+        "core_only": 0,
+        "nss_only": 0,
+        "core_top3": 4,
+        "nss_top3": 5,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_different": {
+        "n": 37,
+        "core_fixed": 16,
+        "nss_touch_fixed": 19,
+        "nss_no_taps_fixed": 19,
+        "core_only": 2,
+        "nss_only": 5,
+        "core_top3": 25,
+        "nss_top3": 24,
+        "core_only_target_in_nss_top3": 1,
+        "core_only_nss_no_commit": 1,
+        "core_only_target_outside_neural_vocab": 1
+      }
+    },
+    "ext_aspell": {
+      "edits_1": {
+        "n": 128,
+        "core_fixed": 99,
+        "nss_touch_fixed": 109,
+        "nss_no_taps_fixed": 103,
+        "core_only": 9,
+        "nss_only": 19,
+        "core_top3": 120,
+        "nss_top3": 118,
+        "core_only_target_in_nss_top3": 7,
+        "core_only_nss_no_commit": 5,
+        "core_only_target_outside_neural_vocab": 2
+      },
+      "neural_known": {
+        "n": 211,
+        "core_fixed": 117,
+        "nss_touch_fixed": 116,
+        "nss_no_taps_fixed": 110,
+        "core_only": 25,
+        "nss_only": 24,
+        "core_top3": 160,
+        "nss_top3": 160,
+        "core_only_target_in_nss_top3": 17,
+        "core_only_nss_no_commit": 20,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_same": {
+        "n": 230,
+        "core_fixed": 128,
+        "nss_touch_fixed": 123,
+        "nss_no_taps_fixed": 117,
+        "core_only": 29,
+        "nss_only": 24,
+        "core_top3": 175,
+        "nss_top3": 173,
+        "core_only_target_in_nss_top3": 21,
+        "core_only_nss_no_commit": 23,
+        "core_only_target_outside_neural_vocab": 4
+      },
+      "edits_2": {
+        "n": 62,
+        "core_fixed": 30,
+        "nss_touch_fixed": 17,
+        "nss_no_taps_fixed": 17,
+        "core_only": 20,
+        "nss_only": 7,
+        "core_top3": 41,
+        "nss_top3": 37,
+        "core_only_target_in_nss_top3": 14,
+        "core_only_nss_no_commit": 18,
+        "core_only_target_outside_neural_vocab": 2
+      },
+      "first_different": {
+        "n": 7,
+        "core_fixed": 1,
+        "nss_touch_fixed": 3,
+        "nss_no_taps_fixed": 3,
+        "core_only": 0,
+        "nss_only": 2,
+        "core_top3": 4,
+        "nss_top3": 3,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "edits_3plus": {
+        "n": 47,
+        "core_fixed": 0,
+        "nss_touch_fixed": 0,
+        "nss_no_taps_fixed": 0,
+        "core_only": 0,
+        "nss_only": 0,
+        "core_top3": 18,
+        "nss_top3": 21,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "neural_unknown": {
+        "n": 26,
+        "core_fixed": 12,
+        "nss_touch_fixed": 10,
+        "nss_no_taps_fixed": 10,
+        "core_only": 4,
+        "nss_only": 2,
+        "core_top3": 19,
+        "nss_top3": 16,
+        "core_only_target_in_nss_top3": 4,
+        "core_only_nss_no_commit": 3,
+        "core_only_target_outside_neural_vocab": 4
+      }
+    },
+    "ext_holbrook": {
+      "edits_3plus": {
+        "n": 82,
+        "core_fixed": 0,
+        "nss_touch_fixed": 3,
+        "nss_no_taps_fixed": 1,
+        "core_only": 0,
+        "nss_only": 3,
+        "core_top3": 3,
+        "nss_top3": 11,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "neural_known": {
+        "n": 444,
+        "core_fixed": 172,
+        "nss_touch_fixed": 184,
+        "nss_no_taps_fixed": 173,
+        "core_only": 38,
+        "nss_only": 50,
+        "core_top3": 242,
+        "nss_top3": 251,
+        "core_only_target_in_nss_top3": 25,
+        "core_only_nss_no_commit": 11,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_same": {
+        "n": 434,
+        "core_fixed": 171,
+        "nss_touch_fixed": 185,
+        "nss_no_taps_fixed": 174,
+        "core_only": 38,
+        "nss_only": 52,
+        "core_top3": 242,
+        "nss_top3": 253,
+        "core_only_target_in_nss_top3": 25,
+        "core_only_nss_no_commit": 11,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "edits_1": {
+        "n": 252,
+        "core_fixed": 156,
+        "nss_touch_fixed": 163,
+        "nss_no_taps_fixed": 155,
+        "core_only": 30,
+        "nss_only": 37,
+        "core_top3": 210,
+        "nss_top3": 205,
+        "core_only_target_in_nss_top3": 21,
+        "core_only_nss_no_commit": 4,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "edits_2": {
+        "n": 116,
+        "core_fixed": 17,
+        "nss_touch_fixed": 22,
+        "nss_no_taps_fixed": 21,
+        "core_only": 8,
+        "nss_only": 13,
+        "core_top3": 33,
+        "nss_top3": 40,
+        "core_only_target_in_nss_top3": 4,
+        "core_only_nss_no_commit": 7,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "first_different": {
+        "n": 16,
+        "core_fixed": 2,
+        "nss_touch_fixed": 3,
+        "nss_no_taps_fixed": 3,
+        "core_only": 0,
+        "nss_only": 1,
+        "core_top3": 4,
+        "nss_top3": 3,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      },
+      "neural_unknown": {
+        "n": 6,
+        "core_fixed": 1,
+        "nss_touch_fixed": 4,
+        "nss_no_taps_fixed": 4,
+        "core_only": 0,
+        "nss_only": 3,
+        "core_top3": 4,
+        "nss_top3": 5,
+        "core_only_target_in_nss_top3": 0,
+        "core_only_nss_no_commit": 0,
+        "core_only_target_outside_neural_vocab": 0
+      }
+    }
+  },
+  "examples": {
+    "ecps_core_only": [
+      {
+        "id": "ecps-01090",
+        "kind": "ac",
+        "context": "lady blooding gin",
+        "typed": "afficianado",
+        "target": "aficionado",
+        "core_correction": "aficionado",
+        "core_suggestions": [
+          "afficianado",
+          "aficionado",
+          "aficionados",
+          "affiliated"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "afficianado",
+          "aficionado",
+          "aficionados"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-01353",
+        "kind": "ac",
+        "context": "stamd the snow",
+        "typed": "agains",
+        "target": "against",
+        "core_correction": "against",
+        "core_suggestions": [
+          "agains",
+          "against",
+          "again",
+          "gains"
+        ],
+        "nss_correction": "again",
+        "nss_suggestions": [
+          "again",
+          "against",
+          "again started"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-01603",
+        "kind": "ac",
+        "context": "the swerve like",
+        "typed": "alchaholics",
+        "target": "alcoholics",
+        "core_correction": "alcoholics",
+        "core_suggestions": [
+          "alchaholics",
+          "alcoholics",
+          "alcoholic",
+          "alcoholic's"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "alchaholics",
+          "alcoholics",
+          "alcoholic"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-01625",
+        "kind": "ac",
+        "context": "not sure yet -",
+        "typed": "alledgely",
+        "target": "allegedly",
+        "core_correction": "allegedly",
+        "core_suggestions": [
+          "alledgely",
+          "allegedly",
+          "alleged",
+          "allergy"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "alledgely",
+          "allegedly",
+          "alleged"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-01950",
+        "kind": "ac",
+        "context": "This",
+        "typed": "Ameretto",
+        "target": "amaretto",
+        "core_correction": "amaretto",
+        "core_suggestions": [
+          "Ameretto",
+          "amaretto",
+          "amerigo",
+          "merest"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "ameretto",
+          "amaretto",
+          "meeting"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-02273",
+        "kind": "ac",
+        "context": "+2 others: nothing",
+        "typed": "androgenous",
+        "target": "androgynous",
+        "core_correction": "androgynous",
+        "core_suggestions": [
+          "androgenous",
+          "androgynous",
+          "endogenous",
+          "indigenous"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "androgenous",
+          "androgynous",
+          "indigenous"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-02353",
+        "kind": "ac",
+        "context": "on webcast new",
+        "typed": "annoucers",
+        "target": "announcers",
+        "core_correction": "announcers",
+        "core_suggestions": [
+          "annoucers",
+          "announcers",
+          "announces",
+          "announcer"
+        ],
+        "nss_correction": "announcer's",
+        "nss_suggestions": [
+          "announcer's",
+          "announcers",
+          "annoucers"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-02541",
+        "kind": "ac",
+        "context": "the same place?",
+        "typed": "Anywhoo",
+        "target": "anyhow",
+        "core_correction": "anyhow",
+        "core_suggestions": [
+          "Anywhoo",
+          "anyhow",
+          "anyway",
+          "anywhere"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "anywhoo",
+          "any who",
+          "anyhow"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 3
+      },
+      {
+        "id": "ecps-02721",
+        "kind": "ac",
+        "context": "think I'm fit",
+        "typed": "anway",
+        "target": "anyway",
+        "core_correction": "anyway",
+        "core_suggestions": [
+          "anway",
+          "anyway",
+          "away",
+          "anyways"
+        ],
+        "nss_correction": "away",
+        "nss_suggestions": [
+          "away",
+          "anyway",
+          "a way"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-03132",
+        "kind": "ac",
+        "context": "GOSH!! wer you",
+        "typed": "applyin",
+        "target": "applying",
+        "core_correction": "applying",
+        "core_suggestions": [
+          "applyin",
+          "applying",
+          "apply",
+          "appliance's"
+        ],
+        "nss_correction": "apply in",
+        "nss_suggestions": [
+          "apply in",
+          "applying",
+          "apply into"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-03322",
+        "kind": "ac",
+        "context": "Wizards star",
+        "typed": "Areanas",
+        "target": "arenas",
+        "core_correction": "arenas",
+        "core_suggestions": [
+          "Areanas",
+          "arenas",
+          "areas",
+          "arena"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "areanas",
+          "area as",
+          "arenas"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-03542",
+        "kind": "ac",
+        "context": "? My word,",
+        "typed": "Artwiculate",
+        "target": "articulate",
+        "core_correction": "articulate",
+        "core_suggestions": [
+          "Artwiculate",
+          "articulate",
+          "articulated",
+          "particulate"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "artwiculate",
+          "articulated",
+          "articulate"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      }
+    ],
+    "ecps_nss_only": [
+      {
+        "id": "ecps-00363",
+        "kind": "ac",
+        "context": "I may",
+        "typed": "'accidentaly",
+        "target": "'accidentally",
+        "core_correction": "accidentally",
+        "core_suggestions": [
+          "accidentaly",
+          "accidentally",
+          "accidental",
+          "accidentals"
+        ],
+        "nss_correction": "'accidentally",
+        "nss_suggestions": [
+          "'accidentally",
+          "'accidental",
+          "'accidentaly"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-00453",
+        "kind": "ac",
+        "context": "you try to",
+        "typed": "accomplis",
+        "target": "accomplish",
+        "core_correction": "accomplished",
+        "core_suggestions": [
+          "accomplis",
+          "accomplished",
+          "accomplishment",
+          "accomplish"
+        ],
+        "nss_correction": "accomplish",
+        "nss_suggestions": [
+          "accomplish",
+          "accomplished",
+          "accomplishment"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-00630",
+        "kind": "ac",
+        "context": "Season one already",
+        "typed": "'aquired",
+        "target": "'acquired",
+        "core_correction": "acquired",
+        "core_suggestions": [
+          "aquired",
+          "acquired",
+          "squired",
+          "squires"
+        ],
+        "nss_correction": "'acquired",
+        "nss_suggestions": [
+          "'acquired",
+          "'required",
+          "'aired"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-00640",
+        "kind": "ac",
+        "context": "when he was",
+        "typed": "acquited",
+        "target": "acquitted",
+        "core_correction": "acquired",
+        "core_suggestions": [
+          "acquited",
+          "acquired",
+          "acquitted",
+          "acquires"
+        ],
+        "nss_correction": "acquitted",
+        "nss_suggestions": [
+          "acquitted",
+          "acquired",
+          "acquainted"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-00710",
+        "kind": "ac",
+        "context": "snow debate raging",
+        "typed": "acros",
+        "target": "across",
+        "core_correction": "act is",
+        "core_suggestions": [
+          "act is",
+          "acros",
+          "across",
+          "acrostics",
+          "acrostic"
+        ],
+        "nss_correction": "across",
+        "nss_suggestions": [
+          "across",
+          "arose",
+          "cross"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-01140",
+        "kind": "ac",
+        "context": "for me I'm",
+        "typed": "'fraid",
+        "target": "'afraid",
+        "core_correction": "afraid",
+        "core_suggestions": [
+          "fraid",
+          "afraid",
+          "fraud",
+          "raid"
+        ],
+        "nss_correction": "'afraid",
+        "nss_suggestions": [
+          "'afraid",
+          "'fairly",
+          "'friday"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-01397",
+        "kind": "ac",
+        "context": "going 2 argue",
+        "typed": "agnst",
+        "target": "against",
+        "core_correction": "angst",
+        "core_suggestions": [
+          "agnst",
+          "angst",
+          "against",
+          "angstroms"
+        ],
+        "nss_correction": "against",
+        "nss_suggestions": [
+          "against",
+          "angst",
+          "a story"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-01417",
+        "kind": "ac",
+        "context": "much time wasting",
+        "typed": "aggrevation",
+        "target": "aggravation",
+        "core_correction": "aggregation",
+        "core_suggestions": [
+          "aggrevation",
+          "aggregation",
+          "aggravation",
+          "aggregations"
+        ],
+        "nss_correction": "aggravation",
+        "nss_suggestions": [
+          "aggravation",
+          "aggrevation",
+          "aggregation"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ecps-01533",
+        "kind": "ac",
+        "context": "afternoon's entertainment watching",
+        "typed": "Aladin",
+        "target": "Aladdin",
+        "core_correction": "paladin",
+        "core_suggestions": [
+          "Aladin",
+          "paladin",
+          "alain",
+          "paladins"
+        ],
+        "nss_correction": "aladdin",
+        "nss_suggestions": [
+          "aladdin",
+          "aladin",
+          "saladin"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-01940",
+        "kind": "ac",
+        "context": "on early onset",
+        "typed": "alzeimers",
+        "target": "Alzheimer's",
+        "core_correction": null,
+        "core_suggestions": [
+          "alzeimers",
+          "alarmists",
+          "sparklers"
+        ],
+        "nss_correction": "alzheimer's",
+        "nss_suggestions": [
+          "alzheimer's",
+          "alzeimers",
+          "alzheimer"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-02086",
+        "kind": "ac",
+        "context": "a souvenir of",
+        "typed": "'Merica",
+        "target": "'America",
+        "core_correction": "america",
+        "core_suggestions": [
+          "Merica",
+          "america",
+          "erica",
+          "american"
+        ],
+        "nss_correction": "'america",
+        "nss_suggestions": [
+          "'america",
+          "'american",
+          "'americans"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ecps-02114",
+        "kind": "ac",
+        "context": "Guess I'm turning",
+        "typed": "'merican",
+        "target": "'American",
+        "core_correction": "american",
+        "core_suggestions": [
+          "merican",
+          "american",
+          "mexican",
+          "americans"
+        ],
+        "nss_correction": "'american",
+        "nss_suggestions": [
+          "'american",
+          "'americans",
+          "'americana"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      }
+    ],
+    "syn_core_only": [
+      {
+        "id": "syn-39454",
+        "kind": "ac",
+        "context": "",
+        "typed": "elephnrts",
+        "target": "elephants",
+        "core_correction": "elephants",
+        "core_suggestions": [
+          "elephnrts",
+          "elephants",
+          "elements",
+          "elephant"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "elephnrts",
+          "elephants",
+          "elephant's"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39663",
+        "kind": "ac",
+        "context": "watch out for low",
+        "typed": "vlying",
+        "target": "flying",
+        "core_correction": "flying",
+        "core_suggestions": [
+          "vlying",
+          "flying",
+          "lying",
+          "plying"
+        ],
+        "nss_correction": "lying",
+        "nss_suggestions": [
+          "lying",
+          "flying",
+          "vlying"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-40163",
+        "kind": "ac",
+        "context": "",
+        "typed": "questfioin",
+        "target": "question",
+        "core_correction": "question",
+        "core_suggestions": [
+          "questfioin",
+          "question",
+          "questions",
+          "questioning"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "questfioin",
+          "questioning",
+          "question"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-40299",
+        "kind": "ac",
+        "context": "the power of",
+        "typed": "denqal",
+        "target": "denial",
+        "core_correction": "denial",
+        "core_suggestions": [
+          "denqal",
+          "denial",
+          "dental",
+          "deal"
+        ],
+        "nss_correction": "dental",
+        "nss_suggestions": [
+          "dental",
+          "denqal",
+          "donald"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-40636",
+        "kind": "ac",
+        "context": "hair gel is very",
+        "typed": "greaxy",
+        "target": "greasy",
+        "core_correction": "greasy",
+        "core_suggestions": [
+          "greaxy",
+          "greasy",
+          "ready",
+          "great"
+        ],
+        "nss_correction": "great",
+        "nss_suggestions": [
+          "great",
+          "greater",
+          "greatly"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-40645",
+        "kind": "ac",
+        "context": "",
+        "typed": "valiu",
+        "target": "Valium",
+        "core_correction": "valium",
+        "core_suggestions": [
+          "valiu",
+          "valium",
+          "valid",
+          "validity"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "valuing",
+          "valium",
+          "valiu"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-40971",
+        "kind": "ac",
+        "context": "popularity is",
+        "typed": "desird",
+        "target": "desired",
+        "core_correction": "desired",
+        "core_suggestions": [
+          "desird",
+          "desired",
+          "desire",
+          "desirable"
+        ],
+        "nss_correction": "desire",
+        "nss_suggestions": [
+          "desire",
+          "desired",
+          "desirable"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-41062",
+        "kind": "ac",
+        "context": "starlight and",
+        "typed": "dewdfrolp",
+        "target": "dewdrop",
+        "core_correction": "dewdrop",
+        "core_suggestions": [
+          "dewdfrolp",
+          "dewdrop",
+          "dewdrops",
+          "redevelop"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "dewdfrolp",
+          "dewdrops",
+          "dewdrop"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-42052",
+        "kind": "ac",
+        "context": "mom made her a",
+        "typed": "tutrledneck",
+        "target": "turtleneck",
+        "core_correction": "turtleneck",
+        "core_suggestions": [
+          "tutrledneck",
+          "turtleneck",
+          "turtlenecks"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "tutrledneck",
+          "turtleneck",
+          "turtlenecks"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-43114",
+        "kind": "ac",
+        "context": "",
+        "typed": "bucolpe",
+        "target": "buckle",
+        "core_correction": "buckle",
+        "core_suggestions": [
+          "bucolpe",
+          "buckle",
+          "bucolic",
+          "become"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "bucolpe",
+          "buckle",
+          "buckley"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-43608",
+        "kind": "ac",
+        "context": "",
+        "typed": "dcommunicwte",
+        "target": "communicate",
+        "core_correction": "communicate",
+        "core_suggestions": [
+          "dcommunicwte",
+          "communicate",
+          "communicates",
+          "communicated"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "dcommunicwte",
+          "communicate",
+          "communicated"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-43826",
+        "kind": "ac",
+        "context": "earth quakes are",
+        "typed": "predictanole",
+        "target": "predictable",
+        "core_correction": "predictable",
+        "core_suggestions": [
+          "predictanole",
+          "predictable",
+          "predictably",
+          "predicable"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "predictanole",
+          "predictable",
+          "predicts old"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      }
+    ],
+    "syn_nss_only": [
+      {
+        "id": "syn-39302",
+        "kind": "ac",
+        "context": "my bank",
+        "typed": "acoun",
+        "target": "account",
+        "core_correction": "acorn",
+        "core_suggestions": [
+          "acoun",
+          "acorn",
+          "account",
+          "acoustics"
+        ],
+        "nss_correction": "account",
+        "nss_suggestions": [
+          "account",
+          "accounts",
+          "accounted"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39423",
+        "kind": "ac",
+        "context": "a",
+        "typed": "probln",
+        "target": "problem",
+        "core_correction": null,
+        "core_suggestions": [
+          "probln",
+          "problem",
+          "problematic",
+          "problematically"
+        ],
+        "nss_correction": "problem",
+        "nss_suggestions": [
+          "problem",
+          "problems",
+          "problematic"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39446",
+        "kind": "ac",
+        "context": "a problem with the",
+        "typed": "egkine",
+        "target": "engine",
+        "core_correction": "ermine",
+        "core_suggestions": [
+          "egkine",
+          "ermine",
+          "engine",
+          "eking"
+        ],
+        "nss_correction": "engine",
+        "nss_suggestions": [
+          "engine",
+          "engines",
+          "egkine"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39494",
+        "kind": "ac",
+        "context": "my",
+        "typed": "favorits",
+        "target": "favorite",
+        "core_correction": "favorites",
+        "core_suggestions": [
+          "favorits",
+          "favorites",
+          "favorite",
+          "favoritism"
+        ],
+        "nss_correction": "favorite",
+        "nss_suggestions": [
+          "favorite",
+          "favourite",
+          "favorites"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-39591",
+        "kind": "ac",
+        "context": "my favorite",
+        "typed": "uject",
+        "target": "subject",
+        "core_correction": "eject",
+        "core_suggestions": [
+          "uject",
+          "eject",
+          "ejection",
+          "jet"
+        ],
+        "nss_correction": "subject",
+        "nss_suggestions": [
+          "subject",
+          "subjects",
+          "just"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39629",
+        "kind": "ac",
+        "context": "circumstances are",
+        "typed": "uacceptablde",
+        "target": "unacceptable",
+        "core_correction": "acceptable",
+        "core_suggestions": [
+          "uacceptablde",
+          "acceptable",
+          "unacceptable",
+          "unacceptably"
+        ],
+        "nss_correction": "unacceptable",
+        "nss_suggestions": [
+          "unacceptable",
+          "uacceptablde",
+          "acceptable"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39727",
+        "kind": "ac",
+        "context": "if at first you do not",
+        "typed": "scueed",
+        "target": "succeed",
+        "core_correction": "screen",
+        "core_suggestions": [
+          "scueed",
+          "screen",
+          "succeed",
+          "scored"
+        ],
+        "nss_correction": "succeed",
+        "nss_suggestions": [
+          "succeed",
+          "succeeded",
+          "scared"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39815",
+        "kind": "ac",
+        "context": "we run the risk of",
+        "typed": "faliured",
+        "target": "failure",
+        "core_correction": "failures",
+        "core_suggestions": [
+          "faliured",
+          "failures",
+          "failure",
+          "faltered"
+        ],
+        "nss_correction": "failure",
+        "nss_suggestions": [
+          "failure",
+          "failures",
+          "faliured"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-39837",
+        "kind": "ac",
+        "context": "prayer in",
+        "typed": "scbhoos",
+        "target": "schools",
+        "core_correction": "school",
+        "core_suggestions": [
+          "scbhoos",
+          "school",
+          "schools",
+          "echoes"
+        ],
+        "nss_correction": "schools",
+        "nss_suggestions": [
+          "schools",
+          "school",
+          "scbhoos"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-40067",
+        "kind": "ac",
+        "context": "can I skate with",
+        "typed": "wister",
+        "target": "sister",
+        "core_correction": "wisteria",
+        "core_suggestions": [
+          "wister",
+          "wisteria",
+          "wisterias",
+          "twister"
+        ],
+        "nss_correction": "sister",
+        "nss_suggestions": [
+          "sister",
+          "sisters",
+          "wisteria"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "syn-40240",
+        "kind": "ac",
+        "context": "",
+        "typed": "dolbe",
+        "target": "double",
+        "core_correction": "dole",
+        "core_suggestions": [
+          "dolbe",
+          "dole",
+          "dolby",
+          "dolce"
+        ],
+        "nss_correction": "double",
+        "nss_suggestions": [
+          "double",
+          "colbert",
+          "does"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "syn-40495",
+        "kind": "ac",
+        "context": "an offer you cannot",
+        "typed": "efue",
+        "target": "refuse",
+        "core_correction": null,
+        "core_suggestions": [
+          "efue",
+          "refuse",
+          "effects",
+          "effective"
+        ],
+        "nss_correction": "refuse",
+        "nss_suggestions": [
+          "refuse",
+          "feel",
+          "effect"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      }
+    ],
+    "realword_core_only": [
+      {
+        "id": "realword-48598",
+        "kind": "ac",
+        "context": "machinery is too",
+        "typed": "complicate",
+        "target": "complicated",
+        "core_correction": "complicated",
+        "core_suggestions": [
+          "complicate",
+          "complicated",
+          "complicates",
+          "complicatedly"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "complicated",
+          "complicate",
+          "complicates"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "realword_nss_only": [
+      {
+        "id": "realword-39413",
+        "kind": "ac",
+        "context": "time to go",
+        "typed": "hopping",
+        "target": "shopping",
+        "core_correction": null,
+        "core_suggestions": [
+          "hopping",
+          "hoping",
+          "shopping"
+        ],
+        "nss_correction": "shopping",
+        "nss_suggestions": [
+          "shopping",
+          "hopping",
+          "hoping"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-39669",
+        "kind": "ac",
+        "context": "watch out for low",
+        "typed": "fling",
+        "target": "flying",
+        "core_correction": null,
+        "core_suggestions": [
+          "fling",
+          "flinging",
+          "flings"
+        ],
+        "nss_correction": "flying",
+        "nss_suggestions": [
+          "flying",
+          "flight",
+          "falling"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-40496",
+        "kind": "ac",
+        "context": "an offer you cannot",
+        "typed": "defuse",
+        "target": "refuse",
+        "core_correction": null,
+        "core_suggestions": [
+          "defuse",
+          "defuses",
+          "defused"
+        ],
+        "nss_correction": "refuse",
+        "nss_suggestions": [
+          "refuse",
+          "refused",
+          "refuses"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-41357",
+        "kind": "ac",
+        "context": "",
+        "typed": "coking",
+        "target": "coming",
+        "core_correction": null,
+        "core_suggestions": [
+          "coking",
+          "cooking",
+          "choking"
+        ],
+        "nss_correction": "coming",
+        "nss_suggestions": [
+          "coming",
+          "cooking",
+          "coking"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-42973",
+        "kind": "ac",
+        "context": "our fax",
+        "typed": "numbed",
+        "target": "number",
+        "core_correction": null,
+        "core_suggestions": [
+          "numbed",
+          "number",
+          "numbered"
+        ],
+        "nss_correction": "number",
+        "nss_suggestions": [
+          "number",
+          "numbers",
+          "numbered"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-43043",
+        "kind": "ac",
+        "context": "no",
+        "typed": "exchanger",
+        "target": "exchange",
+        "core_correction": null,
+        "core_suggestions": [
+          "exchanger",
+          "exchangers",
+          "exchange"
+        ],
+        "nss_correction": "exchange",
+        "nss_suggestions": [
+          "exchange",
+          "exchanged",
+          "exchanges"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-43263",
+        "kind": "ac",
+        "context": "the library is",
+        "typed": "closes",
+        "target": "closed",
+        "core_correction": null,
+        "core_suggestions": [
+          "closes",
+          "closest",
+          "closed"
+        ],
+        "nss_correction": "closed",
+        "nss_suggestions": [
+          "closed",
+          "closest",
+          "closes"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-44790",
+        "kind": "ac",
+        "context": "I hate",
+        "typed": "baling",
+        "target": "baking",
+        "core_correction": null,
+        "core_suggestions": [
+          "baling",
+          "baking",
+          "bawling"
+        ],
+        "nss_correction": "baking",
+        "nss_suggestions": [
+          "baking",
+          "being",
+          "balling"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-45293",
+        "kind": "ac",
+        "context": "he",
+        "typed": "player",
+        "target": "played",
+        "core_correction": null,
+        "core_suggestions": [
+          "player",
+          "players",
+          "player's"
+        ],
+        "nss_correction": "played",
+        "nss_suggestions": [
+          "played",
+          "players",
+          "player"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-45578",
+        "kind": "ac",
+        "context": "the children are",
+        "typed": "plating",
+        "target": "playing",
+        "core_correction": null,
+        "core_suggestions": [
+          "plating",
+          "playing",
+          "planting"
+        ],
+        "nss_correction": "playing",
+        "nss_suggestions": [
+          "playing",
+          "plating",
+          "planting"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-46195",
+        "kind": "ac",
+        "context": "the",
+        "typed": "larges",
+        "target": "largest",
+        "core_correction": null,
+        "core_suggestions": [
+          "larges",
+          "largest",
+          "largess"
+        ],
+        "nss_correction": "largest",
+        "nss_suggestions": [
+          "largest",
+          "large",
+          "larger"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "realword-46788",
+        "kind": "ac",
+        "context": "public transit is much",
+        "typed": "taster",
+        "target": "faster",
+        "core_correction": null,
+        "core_suggestions": [
+          "taster",
+          "taste",
+          "toaster"
+        ],
+        "nss_correction": "faster",
+        "nss_suggestions": [
+          "faster",
+          "taster",
+          "tasters"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "ext_birkbeck_core_only": [
+      {
+        "id": "ext_birkbeck-00112",
+        "kind": "ac",
+        "context": "",
+        "typed": "absense",
+        "target": "absence",
+        "core_correction": "absence",
+        "core_suggestions": [
+          "absense",
+          "absence",
+          "absent",
+          "absentee"
+        ],
+        "nss_correction": "a sense",
+        "nss_suggestions": [
+          "a sense",
+          "absence",
+          "absences"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00113",
+        "kind": "ac",
+        "context": "",
+        "typed": "apsent",
+        "target": "absent",
+        "core_correction": "absent",
+        "core_suggestions": [
+          "apsent",
+          "absent",
+          "assent",
+          "spent"
+        ],
+        "nss_correction": "spent",
+        "nss_suggestions": [
+          "spent",
+          "apsent",
+          "passengers"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00126",
+        "kind": "ac",
+        "context": "",
+        "typed": "abserd",
+        "target": "absurd",
+        "core_correction": "absurd",
+        "core_suggestions": [
+          "abserd",
+          "absurd",
+          "absurdity",
+          "absurdness"
+        ],
+        "nss_correction": "based",
+        "nss_suggestions": [
+          "based",
+          "absurd",
+          "abserd"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00173",
+        "kind": "ac",
+        "context": "",
+        "typed": "ackseptable",
+        "target": "acceptable",
+        "core_correction": "acceptable",
+        "core_suggestions": [
+          "ackseptable",
+          "acceptable",
+          "acceptably",
+          "acceptance"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "ackseptable",
+          "acceptable",
+          "acceptableness"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00208",
+        "kind": "ac",
+        "context": "",
+        "typed": "acciendent",
+        "target": "accident",
+        "core_correction": "accident",
+        "core_suggestions": [
+          "acciendent",
+          "accident",
+          "accidents",
+          "ascendant"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "acciendent",
+          "accident",
+          "accidents"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00332",
+        "kind": "ac",
+        "context": "",
+        "typed": "accompaining",
+        "target": "accompanying",
+        "core_correction": "accompanying",
+        "core_suggestions": [
+          "accompaining",
+          "accompanying",
+          "accompanied",
+          "accomplishing"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accompaining",
+          "accompanying",
+          "a complaining"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00369",
+        "kind": "ac",
+        "context": "",
+        "typed": "accaplished",
+        "target": "accomplished",
+        "core_correction": "accomplished",
+        "core_suggestions": [
+          "accaplished",
+          "accomplished",
+          "accomplishes",
+          "accomplish"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accaplished",
+          "accomplished",
+          "accomplishes"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00423",
+        "kind": "ac",
+        "context": "",
+        "typed": "accrewed",
+        "target": "accrued",
+        "core_correction": "accrued",
+        "core_suggestions": [
+          "accrewed",
+          "accrued",
+          "acceded",
+          "accrues"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accrewed",
+          "screwed",
+          "crewed"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00629",
+        "kind": "ac",
+        "context": "",
+        "typed": "accquaintence",
+        "target": "acquaintance",
+        "core_correction": "acquaintance",
+        "core_suggestions": [
+          "accquaintence",
+          "acquaintance",
+          "acquaintances",
+          "acquainting"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accquaintence",
+          "acquaintance",
+          "acquaintances"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00684",
+        "kind": "ac",
+        "context": "",
+        "typed": "aquiese",
+        "target": "acquiesce",
+        "core_correction": "acquiesce",
+        "core_suggestions": [
+          "aquiese",
+          "acquiesce",
+          "quiescently",
+          "acquiescing"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "aquiese",
+          "acquiesce",
+          "acquiesced"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00785",
+        "kind": "ac",
+        "context": "",
+        "typed": "adabtable",
+        "target": "adaptable",
+        "core_correction": "adaptable",
+        "core_suggestions": [
+          "adabtable",
+          "adaptable",
+          "adoptable",
+          "available"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "adabtable",
+          "ada table",
+          "adaptable"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00895",
+        "kind": "ac",
+        "context": "",
+        "typed": "admissable",
+        "target": "admissible",
+        "core_correction": "admissible",
+        "core_suggestions": [
+          "admissable",
+          "admissible",
+          "admirable",
+          "advisable"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "admissable",
+          "admissible",
+          "disabled"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "ext_birkbeck_nss_only": [
+      {
+        "id": "ext_birkbeck-00017",
+        "kind": "ac",
+        "context": "",
+        "typed": "ingish",
+        "target": "english",
+        "core_correction": "inrush",
+        "core_suggestions": [
+          "ingish",
+          "inrush",
+          "english",
+          "finish"
+        ],
+        "nss_correction": "english",
+        "nss_suggestions": [
+          "english",
+          "ingish",
+          "finish"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00022",
+        "kind": "ac",
+        "context": "",
+        "typed": "franch",
+        "target": "french",
+        "core_correction": "ranch",
+        "core_suggestions": [
+          "franch",
+          "franchise",
+          "ranch",
+          "franchises"
+        ],
+        "nss_correction": "french",
+        "nss_suggestions": [
+          "french",
+          "franchise",
+          "franchises"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00179",
+        "kind": "ac",
+        "context": "",
+        "typed": "asseptable",
+        "target": "acceptable",
+        "core_correction": null,
+        "core_suggestions": [
+          "asseptable",
+          "assemble",
+          "assumable",
+          "assignable"
+        ],
+        "nss_correction": "acceptable",
+        "nss_suggestions": [
+          "acceptable",
+          "asseptable",
+          "acceptableness"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00202",
+        "kind": "ac",
+        "context": "",
+        "typed": "acadent",
+        "target": "accident",
+        "core_correction": "academy",
+        "core_suggestions": [
+          "acadent",
+          "academy",
+          "accident",
+          "accent"
+        ],
+        "nss_correction": "accident",
+        "nss_suggestions": [
+          "accident",
+          "accidents",
+          "accidentally"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00362",
+        "kind": "ac",
+        "context": "",
+        "typed": "companying",
+        "target": "accompanying",
+        "core_correction": "comparing",
+        "core_suggestions": [
+          "companying",
+          "comparing",
+          "commanding",
+          "complying"
+        ],
+        "nss_correction": "accompanying",
+        "nss_suggestions": [
+          "accompanying",
+          "companying",
+          "company in"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00383",
+        "kind": "ac",
+        "context": "",
+        "typed": "aconplised",
+        "target": "accomplished",
+        "core_correction": null,
+        "core_suggestions": [
+          "aconplised",
+          "accomplished",
+          "comprised",
+          "complied"
+        ],
+        "nss_correction": "accomplished",
+        "nss_suggestions": [
+          "accomplished",
+          "aconplised",
+          "accomplices"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 3
+      },
+      {
+        "id": "ext_birkbeck-00458",
+        "kind": "ac",
+        "context": "",
+        "typed": "acreud",
+        "target": "accrued",
+        "core_correction": "acrid",
+        "core_suggestions": [
+          "acreud",
+          "acrid",
+          "agreed",
+          "acted"
+        ],
+        "nss_correction": "accrued",
+        "nss_suggestions": [
+          "accrued",
+          "a reduction",
+          "acreud"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00532",
+        "kind": "ac",
+        "context": "",
+        "typed": "accheived",
+        "target": "achieved",
+        "core_correction": "archived",
+        "core_suggestions": [
+          "accheived",
+          "archived",
+          "accepted",
+          "achieved"
+        ],
+        "nss_correction": "achieved",
+        "nss_suggestions": [
+          "achieved",
+          "accheived",
+          "achieve"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00635",
+        "kind": "ac",
+        "context": "",
+        "typed": "accquiantance",
+        "target": "acquaintance",
+        "core_correction": null,
+        "core_suggestions": [
+          "accquiantance",
+          "acquaintance",
+          "accountancy",
+          "acquaintances"
+        ],
+        "nss_correction": "acquaintance",
+        "nss_suggestions": [
+          "acquaintance",
+          "acquaintances",
+          "accquiantance"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_birkbeck-00692",
+        "kind": "ac",
+        "context": "",
+        "typed": "acros",
+        "target": "across",
+        "core_correction": "act is",
+        "core_suggestions": [
+          "act is",
+          "acros",
+          "across",
+          "acrostics",
+          "acrostic"
+        ],
+        "nss_correction": "across",
+        "nss_suggestions": [
+          "across",
+          "carlos",
+          "cross"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_birkbeck-00708",
+        "kind": "ac",
+        "context": "",
+        "typed": "acctaly",
+        "target": "actually",
+        "core_correction": "acutely",
+        "core_suggestions": [
+          "acctaly",
+          "acutely",
+          "acceptably",
+          "acetaldehyde"
+        ],
+        "nss_correction": "actually",
+        "nss_suggestions": [
+          "actually",
+          "acctaly",
+          "catalyst"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 3
+      },
+      {
+        "id": "ext_birkbeck-00900",
+        "kind": "ac",
+        "context": "",
+        "typed": "addmeted",
+        "target": "admitted",
+        "core_correction": "addicted",
+        "core_suggestions": [
+          "addmeted",
+          "addicted",
+          "added",
+          "admitted"
+        ],
+        "nss_correction": "admitted",
+        "nss_suggestions": [
+          "admitted",
+          "addmeted",
+          "admittedly"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 3
+      }
+    ],
+    "ext_wikipedia_core_only": [
+      {
+        "id": "ext_wikipedia-31328",
+        "kind": "ac",
+        "context": "",
+        "typed": "absense",
+        "target": "absence",
+        "core_correction": "absence",
+        "core_suggestions": [
+          "absense",
+          "absence",
+          "absent",
+          "absentee"
+        ],
+        "nss_correction": "a sense",
+        "nss_suggestions": [
+          "a sense",
+          "absence",
+          "absences"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31335",
+        "kind": "ac",
+        "context": "",
+        "typed": "accension",
+        "target": "accession",
+        "core_correction": "accession",
+        "core_suggestions": [
+          "accension",
+          "accession",
+          "ascension",
+          "ascensions"
+        ],
+        "nss_correction": "ascension",
+        "nss_suggestions": [
+          "ascension",
+          "accension",
+          "accession"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31339",
+        "kind": "ac",
+        "context": "",
+        "typed": "accomadated",
+        "target": "accommodated",
+        "core_correction": "accommodated",
+        "core_suggestions": [
+          "accomadated",
+          "accommodated",
+          "accommodate",
+          "accumulated"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accomadated",
+          "accommodated",
+          "accommodate"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31341",
+        "kind": "ac",
+        "context": "",
+        "typed": "accomadates",
+        "target": "accommodates",
+        "core_correction": "accommodates",
+        "core_suggestions": [
+          "accomadates",
+          "accommodates",
+          "accommodate",
+          "accommodated"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "accomadates",
+          "accommodates",
+          "accommodate"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31371",
+        "kind": "ac",
+        "context": "",
+        "typed": "acquiantence",
+        "target": "acquaintance",
+        "core_correction": "acquaintance",
+        "core_suggestions": [
+          "acquiantence",
+          "acquaintance",
+          "acquiescence",
+          "acquaintances"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "acquiantence",
+          "acquaintance",
+          "acquaintances"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31404",
+        "kind": "ac",
+        "context": "",
+        "typed": "admissable",
+        "target": "admissible",
+        "core_correction": "admissible",
+        "core_suggestions": [
+          "admissable",
+          "admissible",
+          "admirable",
+          "advisable"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "admissable",
+          "admissible",
+          "disabled"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31473",
+        "kind": "ac",
+        "context": "",
+        "typed": "androgenous",
+        "target": "androgynous",
+        "core_correction": "androgynous",
+        "core_suggestions": [
+          "androgenous",
+          "androgynous",
+          "endogenous",
+          "indigenous"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "androgenous",
+          "androgynous",
+          "endogenous"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31474",
+        "kind": "ac",
+        "context": "",
+        "typed": "androgeny",
+        "target": "androgyny",
+        "core_correction": "androgyny",
+        "core_suggestions": [
+          "androgeny",
+          "androgyny",
+          "androgen",
+          "androgenic"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "androgeny",
+          "androgynous",
+          "androgyny"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31487",
+        "kind": "ac",
+        "context": "",
+        "typed": "anonimity",
+        "target": "anonymity",
+        "core_correction": "anonymity",
+        "core_suggestions": [
+          "anonimity",
+          "anonymity",
+          "nobility",
+          "enormity"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "anonimity",
+          "anonymity",
+          "anonymity's"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31559",
+        "kind": "ac",
+        "context": "",
+        "typed": "authobiographic",
+        "target": "autobiographic",
+        "core_correction": "autobiographic",
+        "core_suggestions": [
+          "authobiographic",
+          "autobiographic",
+          "autobiographical",
+          "autobiography"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "authobiographic",
+          "autobiographical",
+          "autobiographic"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31606",
+        "kind": "ac",
+        "context": "",
+        "typed": "beastiality",
+        "target": "bestiality",
+        "core_correction": "bestiality",
+        "core_suggestions": [
+          "beastiality",
+          "bestiality",
+          "bestially",
+          "feasibility"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "beastiality",
+          "be actuality"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31622",
+        "kind": "ac",
+        "context": "",
+        "typed": "buring",
+        "target": "burning",
+        "core_correction": "burning",
+        "core_suggestions": [
+          "buring",
+          "burning",
+          "burying",
+          "burping"
+        ],
+        "nss_correction": "bring",
+        "nss_suggestions": [
+          "bring",
+          "burning",
+          "during"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "ext_wikipedia_nss_only": [
+      {
+        "id": "ext_wikipedia-31296",
+        "kind": "ac",
+        "context": "",
+        "typed": "meranda",
+        "target": "miranda",
+        "core_correction": "veranda",
+        "core_suggestions": [
+          "meranda",
+          "veranda",
+          "miranda",
+          "verandas"
+        ],
+        "nss_correction": "miranda",
+        "nss_suggestions": [
+          "miranda",
+          "meranda",
+          "randall"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31373",
+        "kind": "ac",
+        "context": "",
+        "typed": "aquiantance",
+        "target": "acquaintance",
+        "core_correction": null,
+        "core_suggestions": [
+          "aquiantance",
+          "acquaintance",
+          "quittance",
+          "abundance"
+        ],
+        "nss_correction": "acquaintance",
+        "nss_suggestions": [
+          "acquaintance",
+          "aquiantance",
+          "acquaintances"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31385",
+        "kind": "ac",
+        "context": "",
+        "typed": "acquited",
+        "target": "acquitted",
+        "core_correction": "acquired",
+        "core_suggestions": [
+          "acquited",
+          "acquired",
+          "acquitted",
+          "acquires"
+        ],
+        "nss_correction": "acquitted",
+        "nss_suggestions": [
+          "acquitted",
+          "acquited",
+          "acquainted"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31413",
+        "kind": "ac",
+        "context": "",
+        "typed": "adviced",
+        "target": "advised",
+        "core_correction": "advice",
+        "core_suggestions": [
+          "adviced",
+          "advice",
+          "advised",
+          "advanced"
+        ],
+        "nss_correction": "advised",
+        "nss_suggestions": [
+          "advised",
+          "advice",
+          "advisedly"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31414",
+        "kind": "ac",
+        "context": "",
+        "typed": "aeriel",
+        "target": "aerial",
+        "core_correction": "ariel",
+        "core_suggestions": [
+          "aeriel",
+          "ariel",
+          "aerial",
+          "aeries"
+        ],
+        "nss_correction": "aerial",
+        "nss_suggestions": [
+          "aerial",
+          "ariel",
+          "aeriel"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31417",
+        "kind": "ac",
+        "context": "",
+        "typed": "efford",
+        "target": "afford",
+        "core_correction": "effort",
+        "core_suggestions": [
+          "efford",
+          "effort",
+          "afford",
+          "errors"
+        ],
+        "nss_correction": "afford",
+        "nss_suggestions": [
+          "afford",
+          "efforts",
+          "effort"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31529",
+        "kind": "ac",
+        "context": "",
+        "typed": "accension",
+        "target": "ascension",
+        "core_correction": "accession",
+        "core_suggestions": [
+          "accension",
+          "accession",
+          "ascension",
+          "ascensions"
+        ],
+        "nss_correction": "ascension",
+        "nss_suggestions": [
+          "ascension",
+          "accension",
+          "accession"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31650",
+        "kind": "ac",
+        "context": "",
+        "typed": "casette",
+        "target": "cassette",
+        "core_correction": "case the",
+        "core_suggestions": [
+          "case the",
+          "casette",
+          "cassette",
+          "cassettes",
+          "castle"
+        ],
+        "nss_correction": "cassette",
+        "nss_suggestions": [
+          "cassette",
+          "cassettes",
+          "casette"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31738",
+        "kind": "ac",
+        "context": "",
+        "typed": "comited",
+        "target": "committed",
+        "core_correction": "vomited",
+        "core_suggestions": [
+          "comited",
+          "vomited",
+          "committed",
+          "fomites"
+        ],
+        "nss_correction": "committed",
+        "nss_suggestions": [
+          "committed",
+          "comited",
+          "committee"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31744",
+        "kind": "ac",
+        "context": "",
+        "typed": "comiting",
+        "target": "committing",
+        "core_correction": "vomiting",
+        "core_suggestions": [
+          "comiting",
+          "vomiting",
+          "committing",
+          "coming"
+        ],
+        "nss_correction": "committing",
+        "nss_suggestions": [
+          "committing",
+          "comiting",
+          "vomiting"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_wikipedia-31764",
+        "kind": "ac",
+        "context": "",
+        "typed": "consept",
+        "target": "concept",
+        "core_correction": "consent",
+        "core_suggestions": [
+          "consept",
+          "consent",
+          "concept",
+          "context"
+        ],
+        "nss_correction": "concept",
+        "nss_suggestions": [
+          "concept",
+          "concepts",
+          "conception"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_wikipedia-31777",
+        "kind": "ac",
+        "context": "",
+        "typed": "cannotation",
+        "target": "connotation",
+        "core_correction": "annotation",
+        "core_suggestions": [
+          "cannotation",
+          "annotation",
+          "connotation",
+          "connotations"
+        ],
+        "nss_correction": "connotation",
+        "nss_suggestions": [
+          "connotation",
+          "cannotation",
+          "connotations"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      }
+    ],
+    "ext_aspell_core_only": [
+      {
+        "id": "ext_aspell-30806",
+        "kind": "ac",
+        "context": "",
+        "typed": "aquantance",
+        "target": "acquaintance",
+        "core_correction": "acquaintance",
+        "core_suggestions": [
+          "aquantance",
+          "acquaintance",
+          "acquaintances",
+          "abundance"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "aquantance",
+          "acquaintance",
+          "acquaintances"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30882",
+        "kind": "ac",
+        "context": "",
+        "typed": "comiler",
+        "target": "compiler",
+        "core_correction": "compiler",
+        "core_suggestions": [
+          "comiler",
+          "compiler",
+          "compilers",
+          "collier"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "comiler",
+          "compiler",
+          "compilers"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30898",
+        "kind": "ac",
+        "context": "",
+        "typed": "criqitue",
+        "target": "critique",
+        "core_correction": "critique",
+        "core_suggestions": [
+          "criqitue",
+          "critique",
+          "clique",
+          "critiques"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "criqitue",
+          "critique",
+          "critiques"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30902",
+        "kind": "ac",
+        "context": "",
+        "typed": "crucifiction",
+        "target": "crucifixion",
+        "core_correction": "crucifixion",
+        "core_suggestions": [
+          "crucifiction",
+          "crucifixion",
+          "crucifixions",
+          "certification"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "crucifiction",
+          "crucifixion",
+          "crucifixions"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30941",
+        "kind": "ac",
+        "context": "",
+        "typed": "dymatic",
+        "target": "dynamic",
+        "core_correction": "dynamic",
+        "core_suggestions": [
+          "dymatic",
+          "dynamic",
+          "demotic",
+          "dynastic"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "dymatic",
+          "dynastic",
+          "dogmatic"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30944",
+        "kind": "ac",
+        "context": "",
+        "typed": "efficity",
+        "target": "efficacy",
+        "core_correction": "efficacy",
+        "core_suggestions": [
+          "efficity",
+          "efficacy",
+          "affinity",
+          "efficiently"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "efficity",
+          "efficient",
+          "efficiency"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30962",
+        "kind": "ac",
+        "context": "",
+        "typed": "epitomy",
+        "target": "epitome",
+        "core_correction": "epitome",
+        "core_suggestions": [
+          "epitomy",
+          "epitome",
+          "epitomizing",
+          "epitomes"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "epitomy",
+          "epitome",
+          "epitomize"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30965",
+        "kind": "ac",
+        "context": "",
+        "typed": "expresso",
+        "target": "espresso",
+        "core_correction": "espresso",
+        "core_suggestions": [
+          "expresso",
+          "espresso",
+          "express",
+          "expression"
+        ],
+        "nss_correction": "express",
+        "nss_suggestions": [
+          "express",
+          "expression",
+          "expressions"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30966",
+        "kind": "ac",
+        "context": "",
+        "typed": "evaualtion",
+        "target": "evaluation",
+        "core_correction": "evaluation",
+        "core_suggestions": [
+          "evaualtion",
+          "evaluation",
+          "evacuation",
+          "vacation"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "evaualtion",
+          "evacuation",
+          "evaluation"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30976",
+        "kind": "ac",
+        "context": "",
+        "typed": "exspidient",
+        "target": "expedient",
+        "core_correction": "expedient",
+        "core_suggestions": [
+          "exspidient",
+          "expedient",
+          "expedients",
+          "experiment"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "exspidient",
+          "expedient",
+          "expediently"
+        ],
+        "target_in_neural_vocab": false,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30982",
+        "kind": "ac",
+        "context": "",
+        "typed": "famdasy",
+        "target": "fantasy",
+        "core_correction": "fantasy",
+        "core_suggestions": [
+          "famdasy",
+          "fantasy",
+          "family",
+          "famous"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "famdasy",
+          "a days",
+          "fantasy"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30989",
+        "kind": "ac",
+        "context": "",
+        "typed": "forsee",
+        "target": "foresee",
+        "core_correction": "foresee",
+        "core_suggestions": [
+          "forsee",
+          "foresee",
+          "foreseen",
+          "forswearing"
+        ],
+        "nss_correction": "force",
+        "nss_suggestions": [
+          "force",
+          "forces",
+          "forced"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "ext_aspell_nss_only": [
+      {
+        "id": "ext_aspell-30828",
+        "kind": "ac",
+        "context": "",
+        "typed": "artic",
+        "target": "arctic",
+        "core_correction": "article",
+        "core_suggestions": [
+          "artic",
+          "article",
+          "articles",
+          "articulating"
+        ],
+        "nss_correction": "arctic",
+        "nss_suggestions": [
+          "arctic",
+          "article",
+          "articles"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30845",
+        "kind": "ac",
+        "context": "",
+        "typed": "boygot",
+        "target": "boycott",
+        "core_correction": "bought",
+        "core_suggestions": [
+          "boygot",
+          "bought",
+          "boycotting",
+          "boycotted"
+        ],
+        "nss_correction": "boycott",
+        "nss_suggestions": [
+          "boycott",
+          "boygot",
+          "bogota"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30856",
+        "kind": "ac",
+        "context": "",
+        "typed": "budter",
+        "target": "butter",
+        "core_correction": "buster",
+        "core_suggestions": [
+          "budter",
+          "buster",
+          "butter",
+          "budget"
+        ],
+        "nss_correction": "butter",
+        "nss_suggestions": [
+          "butter",
+          "butterfly's",
+          "butterflies"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30862",
+        "kind": "ac",
+        "context": "",
+        "typed": "changeing",
+        "target": "changing",
+        "core_correction": "changeling",
+        "core_suggestions": [
+          "changeing",
+          "changeling",
+          "changing",
+          "changelings"
+        ],
+        "nss_correction": "changing",
+        "nss_suggestions": [
+          "changing",
+          "changeling",
+          "changelings"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30872",
+        "kind": "ac",
+        "context": "",
+        "typed": "columne",
+        "target": "column",
+        "core_correction": "columned",
+        "core_suggestions": [
+          "columne",
+          "columned",
+          "columns",
+          "column"
+        ],
+        "nss_correction": "column",
+        "nss_suggestions": [
+          "column",
+          "columns",
+          "columnist"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30925",
+        "kind": "ac",
+        "context": "",
+        "typed": "discuess",
+        "target": "discuss",
+        "core_correction": "discuses",
+        "core_suggestions": [
+          "discuess",
+          "discuses",
+          "discuss",
+          "discus"
+        ],
+        "nss_correction": "discuss",
+        "nss_suggestions": [
+          "discuss",
+          "discussing",
+          "discussed"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30940",
+        "kind": "ac",
+        "context": "",
+        "typed": "duren",
+        "target": "during",
+        "core_correction": "sure",
+        "core_suggestions": [
+          "duren",
+          "sure",
+          "due",
+          "turn"
+        ],
+        "nss_correction": "during",
+        "nss_suggestions": [
+          "during",
+          "daren",
+          "darren"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30954",
+        "kind": "ac",
+        "context": "",
+        "typed": "engins",
+        "target": "engine",
+        "core_correction": "engines",
+        "core_suggestions": [
+          "engins",
+          "engines",
+          "engine",
+          "engineering"
+        ],
+        "nss_correction": "engine",
+        "nss_suggestions": [
+          "engine",
+          "engineer",
+          "engineers"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30980",
+        "kind": "ac",
+        "context": "",
+        "typed": "failer",
+        "target": "failure",
+        "core_correction": "frailer",
+        "core_suggestions": [
+          "failer",
+          "frailer",
+          "failed",
+          "fairer"
+        ],
+        "nss_correction": "failure",
+        "nss_suggestions": [
+          "failure",
+          "failed",
+          "failures"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_aspell-30993",
+        "kind": "ac",
+        "context": "",
+        "typed": "gotton",
+        "target": "gotten",
+        "core_correction": "cotton",
+        "core_suggestions": [
+          "gotton",
+          "cotton",
+          "gotten",
+          "bottom"
+        ],
+        "nss_correction": "gotten",
+        "nss_suggestions": [
+          "gotten",
+          "gotton",
+          "got on"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-30997",
+        "kind": "ac",
+        "context": "",
+        "typed": "gracefull",
+        "target": "graceful",
+        "core_correction": "gracefully",
+        "core_suggestions": [
+          "gracefull",
+          "gracefully",
+          "graceful",
+          "grateful"
+        ],
+        "nss_correction": "graceful",
+        "nss_suggestions": [
+          "graceful",
+          "gracefully",
+          "gracefull"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_aspell-31027",
+        "kind": "ac",
+        "context": "",
+        "typed": "imediaetly",
+        "target": "immediately",
+        "core_correction": null,
+        "core_suggestions": [
+          "imediaetly",
+          "immediately",
+          "medially",
+          "immediate"
+        ],
+        "nss_correction": "immediately",
+        "nss_suggestions": [
+          "immediately",
+          "imediaetly",
+          "immediately you"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      }
+    ],
+    "ext_holbrook_core_only": [
+      {
+        "id": "ext_holbrook-30006",
+        "kind": "ac",
+        "context": "",
+        "typed": "beting",
+        "target": "beating",
+        "core_correction": "beating",
+        "core_suggestions": [
+          "beting",
+          "beating",
+          "betting",
+          "besting"
+        ],
+        "nss_correction": "being",
+        "nss_suggestions": [
+          "being",
+          "betting",
+          "beating"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30013",
+        "kind": "ac",
+        "context": "",
+        "typed": "behism",
+        "target": "behind",
+        "core_correction": "behind",
+        "core_suggestions": [
+          "behism",
+          "behind",
+          "behest",
+          "bedims"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "behism",
+          "behind",
+          "heisman"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30032",
+        "kind": "ac",
+        "context": "",
+        "typed": "bravist",
+        "target": "bravest",
+        "core_correction": "bravest",
+        "core_suggestions": [
+          "bravist",
+          "bravest",
+          "racist",
+          "rapist"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "bravist",
+          "bravissimo",
+          "bravest"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30071",
+        "kind": "ac",
+        "context": "",
+        "typed": "carred",
+        "target": "carried",
+        "core_correction": "carried",
+        "core_suggestions": [
+          "carred",
+          "carried",
+          "cared",
+          "scarred"
+        ],
+        "nss_correction": "cared",
+        "nss_suggestions": [
+          "cared",
+          "careful",
+          "carried"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30073",
+        "kind": "ac",
+        "context": "",
+        "typed": "carring",
+        "target": "carrying",
+        "core_correction": "carrying",
+        "core_suggestions": [
+          "carring",
+          "carrying",
+          "caring",
+          "scarring"
+        ],
+        "nss_correction": "caring",
+        "nss_suggestions": [
+          "caring",
+          "carrying",
+          "carrington"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30088",
+        "kind": "ac",
+        "context": "",
+        "typed": "charickter",
+        "target": "character",
+        "core_correction": "character",
+        "core_suggestions": [
+          "charickter",
+          "character",
+          "characters",
+          "charter"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "charickter",
+          "character",
+          "characters"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30170",
+        "kind": "ac",
+        "context": "",
+        "typed": "dispiaying",
+        "target": "displaying",
+        "core_correction": "displaying",
+        "core_suggestions": [
+          "dispiaying",
+          "displaying",
+          "displacing",
+          "dismaying"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "dispiaying",
+          "displaying",
+          "dissipating"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30182",
+        "kind": "ac",
+        "context": "",
+        "typed": "drivern",
+        "target": "driven",
+        "core_correction": "driven",
+        "core_suggestions": [
+          "drivern",
+          "driven",
+          "driver",
+          "drivers"
+        ],
+        "nss_correction": "driver",
+        "nss_suggestions": [
+          "driver",
+          "drivers",
+          "driven"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30226",
+        "kind": "ac",
+        "context": "",
+        "typed": "ferrary",
+        "target": "ferrari",
+        "core_correction": "ferrari",
+        "core_suggestions": [
+          "ferrary",
+          "ferrari",
+          "february",
+          "ferry"
+        ],
+        "nss_correction": "ferry",
+        "nss_suggestions": [
+          "ferry",
+          "ferrari",
+          "ferrary"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30291",
+        "kind": "ac",
+        "context": "",
+        "typed": "guter",
+        "target": "gutter",
+        "core_correction": "gutter",
+        "core_suggestions": [
+          "guter",
+          "gutter",
+          "cuter",
+          "outer"
+        ],
+        "nss_correction": "gunter",
+        "nss_suggestions": [
+          "gunter",
+          "guttersnipe",
+          "gutter"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30312",
+        "kind": "ac",
+        "context": "",
+        "typed": "hertbreake",
+        "target": "heartbreak",
+        "core_correction": "heartbreak",
+        "core_suggestions": [
+          "hertbreake",
+          "heartbreak",
+          "heartbreaks",
+          "vertebrate"
+        ],
+        "nss_correction": null,
+        "nss_suggestions": [
+          "heartbreakers",
+          "hertbreake",
+          "heartbreaker"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30378",
+        "kind": "ac",
+        "context": "",
+        "typed": "leavs",
+        "target": "leaves",
+        "core_correction": "leaves",
+        "core_suggestions": [
+          "leavs",
+          "leaves",
+          "leave",
+          "leafs"
+        ],
+        "nss_correction": "leave",
+        "nss_suggestions": [
+          "leave",
+          "leaves",
+          "leaving"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      }
+    ],
+    "ext_holbrook_nss_only": [
+      {
+        "id": "ext_holbrook-29960",
+        "kind": "ac",
+        "context": "",
+        "typed": "abroard",
+        "target": "aboard",
+        "core_correction": "abroad",
+        "core_suggestions": [
+          "abroard",
+          "abroad",
+          "aboard",
+          "broad"
+        ],
+        "nss_correction": "aboard",
+        "nss_suggestions": [
+          "aboard",
+          "abroad",
+          "abroard"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30012",
+        "kind": "ac",
+        "context": "",
+        "typed": "behed",
+        "target": "behind",
+        "core_correction": "beheld",
+        "core_suggestions": [
+          "behed",
+          "beheld",
+          "behead",
+          "behaved"
+        ],
+        "nss_correction": "behind",
+        "nss_suggestions": [
+          "behind",
+          "beheading",
+          "behest"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30047",
+        "kind": "ac",
+        "context": "",
+        "typed": "billding",
+        "target": "building",
+        "core_correction": "billing",
+        "core_suggestions": [
+          "billding",
+          "billing",
+          "building",
+          "bullring"
+        ],
+        "nss_correction": "building",
+        "nss_suggestions": [
+          "building",
+          "buildings",
+          "billding"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30056",
+        "kind": "ac",
+        "context": "",
+        "typed": "cald",
+        "target": "called",
+        "core_correction": "calf",
+        "core_suggestions": [
+          "cald",
+          "calf",
+          "calderas",
+          "caldera"
+        ],
+        "nss_correction": "called",
+        "nss_suggestions": [
+          "called",
+          "caldwell",
+          "calderon"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30108",
+        "kind": "ac",
+        "context": "",
+        "typed": "colhes",
+        "target": "clothes",
+        "core_correction": "coles",
+        "core_suggestions": [
+          "colhes",
+          "coles",
+          "comes",
+          "copies"
+        ],
+        "nss_correction": "clothes",
+        "nss_suggestions": [
+          "clothes",
+          "colchester",
+          "comes"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30128",
+        "kind": "ac",
+        "context": "",
+        "typed": "creaps",
+        "target": "creeps",
+        "core_correction": "craps",
+        "core_suggestions": [
+          "creaps",
+          "craps",
+          "creeps",
+          "creams"
+        ],
+        "nss_correction": "creeps",
+        "nss_suggestions": [
+          "creeps",
+          "creaps",
+          "creases"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30130",
+        "kind": "ac",
+        "context": "",
+        "typed": "crepy",
+        "target": "creepy",
+        "core_correction": "crept",
+        "core_suggestions": [
+          "crepy",
+          "crept",
+          "creepy",
+          "crepe"
+        ],
+        "nss_correction": "creepy",
+        "nss_suggestions": [
+          "creepy",
+          "crept",
+          "crepe"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30138",
+        "kind": "ac",
+        "context": "",
+        "typed": "cerled",
+        "target": "curled",
+        "core_correction": "celled",
+        "core_suggestions": [
+          "cerled",
+          "celled",
+          "curled",
+          "served"
+        ],
+        "nss_correction": "curled",
+        "nss_suggestions": [
+          "curled",
+          "cerled",
+          "creed"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30145",
+        "kind": "ac",
+        "context": "",
+        "typed": "dauter",
+        "target": "daughter",
+        "core_correction": "tauter",
+        "core_suggestions": [
+          "dauter",
+          "tauter",
+          "darter",
+          "dater"
+        ],
+        "nss_correction": "daughter",
+        "nss_suggestions": [
+          "daughter",
+          "dauter",
+          "deuterium"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30268",
+        "kind": "ac",
+        "context": "",
+        "typed": "funrel",
+        "target": "funeral",
+        "core_correction": "funnel",
+        "core_suggestions": [
+          "funrel",
+          "funnel",
+          "funereal",
+          "funneling"
+        ],
+        "nss_correction": "funeral",
+        "nss_suggestions": [
+          "funeral",
+          "unrelated",
+          "funrel"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      },
+      {
+        "id": "ext_holbrook-30288",
+        "kind": "ac",
+        "context": "",
+        "typed": "grouned",
+        "target": "ground",
+        "core_correction": "grounded",
+        "core_suggestions": [
+          "grouned",
+          "grounded",
+          "ground",
+          "grouped"
+        ],
+        "nss_correction": "ground",
+        "nss_suggestions": [
+          "ground",
+          "grounded",
+          "grounder"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 1
+      },
+      {
+        "id": "ext_holbrook-30308",
+        "kind": "ac",
+        "context": "",
+        "typed": "hethy",
+        "target": "healthy",
+        "core_correction": "get by",
+        "core_suggestions": [
+          "get by",
+          "hethy",
+          "healthy",
+          "methylated",
+          "hey"
+        ],
+        "nss_correction": "healthy",
+        "nss_suggestions": [
+          "healthy",
+          "whether",
+          "hethy"
+        ],
+        "target_in_neural_vocab": true,
+        "edit_distance": 2
+      }
+    ]
+  },
+  "repeated_substitution_run_pattern": {
+    "n": 12,
+    "core_fixed": 4,
+    "nss_touch_fixed": 1,
+    "nss_no_taps_fixed": 1,
+    "core_only": 4,
+    "nss_only": 1,
+    "core_top3": 7,
+    "nss_top3": 4,
+    "core_only_target_in_nss_top3": 1,
+    "core_only_nss_no_commit": 3,
+    "core_only_target_outside_neural_vocab": 0,
+    "examples": [
+      {
+        "id": "ecps-03940",
+        "kind": "ac",
+        "context": "STILL got an",
+        "typed": "additude",
+        "target": "attitude",
+        "core_correction": "additive",
+        "nss_correction": null
+      },
+      {
+        "id": "ecps-03942",
+        "kind": "ac",
+        "context": "New year, new",
+        "typed": "additude",
+        "target": "attitude",
+        "core_correction": "additive",
+        "nss_correction": null
+      },
+      {
+        "id": "ecps-14235",
+        "kind": "ac",
+        "context": "words of utter",
+        "typed": "drivvle",
+        "target": "dribble",
+        "core_correction": "dribble",
+        "nss_correction": "drive"
+      },
+      {
+        "id": "ecps-21907",
+        "kind": "ac",
+        "context": "me in her",
+        "typed": "kangaruu",
+        "target": "kangaroo",
+        "core_correction": "kangaroo",
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-00179",
+        "kind": "ac",
+        "context": "",
+        "typed": "asseptable",
+        "target": "acceptable",
+        "core_correction": null,
+        "nss_correction": "acceptable"
+      },
+      {
+        "id": "ext_birkbeck-00226",
+        "kind": "ac",
+        "context": "",
+        "typed": "addinent",
+        "target": "accident",
+        "core_correction": null,
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-01063",
+        "kind": "ac",
+        "context": "",
+        "typed": "arrectsorately",
+        "target": "affectionately",
+        "core_correction": null,
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-05711",
+        "kind": "ac",
+        "context": "",
+        "typed": "commidded",
+        "target": "committed",
+        "core_correction": "committed",
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-17460",
+        "kind": "ac",
+        "context": "",
+        "typed": "misenaanslous",
+        "target": "miscellaneous",
+        "core_correction": null,
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-23979",
+        "kind": "ac",
+        "context": "",
+        "typed": "scirrors",
+        "target": "scissors",
+        "core_correction": "scissors",
+        "nss_correction": null
+      },
+      {
+        "id": "ext_birkbeck-24371",
+        "kind": "ac",
+        "context": "",
+        "typed": "shakky",
+        "target": "shaggy",
+        "core_correction": "shaky",
+        "nss_correction": "shaky"
+      },
+      {
+        "id": "ext_birkbeck-26593",
+        "kind": "ac",
+        "context": "",
+        "typed": "sreeounded",
+        "target": "surrounded",
+        "core_correction": "rebounded",
+        "nss_correction": null
+      }
+    ]
+  }
+}

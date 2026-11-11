@@ -1,0 +1,2188 @@
+{
+  "cases": {
+    "cases": 59062,
+    "changes": [
+      {
+        "id": "ecps-03232",
+        "before": {
+          "c": null,
+          "s": [
+            "'Artic"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'Artic",
+            "'Artic"
+          ]
+        }
+      },
+      {
+        "id": "ecps-05940",
+        "before": {
+          "c": null,
+          "s": [
+            "Beastiality"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Beastiality",
+            "Beastiality"
+          ]
+        }
+      },
+      {
+        "id": "ecps-05950",
+        "before": {
+          "c": null,
+          "s": [
+            "Beastiality"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Beastiality",
+            "Beastiality"
+          ]
+        }
+      },
+      {
+        "id": "ecps-06241",
+        "before": {
+          "c": null,
+          "s": [
+            "'Blak"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'Blak",
+            "'Blak"
+          ]
+        }
+      },
+      {
+        "id": "ecps-08108",
+        "before": {
+          "c": null,
+          "s": [
+            "'Cel"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'Cel",
+            "'Cel"
+          ]
+        }
+      },
+      {
+        "id": "ecps-19295",
+        "before": {
+          "c": null,
+          "s": [
+            "'Appy"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'Appy",
+            "'Appy"
+          ]
+        }
+      },
+      {
+        "id": "ecps-19900",
+        "before": {
+          "c": null,
+          "s": [
+            "'EHR"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'EHR",
+            "'EHR"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-20021",
+        "before": {
+          "c": null,
+          "s": [
+            "high",
+            "higher",
+            "highly"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "high",
+            "highkey",
+            "higher"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-20023",
+        "before": {
+          "c": null,
+          "s": [
+            "high",
+            "highness",
+            "higher"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "high",
+            "highkey",
+            "highness"
+          ]
+        }
+      },
+      {
+        "id": "ecps-23240",
+        "before": {
+          "c": null,
+          "s": [
+            "'Mak"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "'Mak",
+            "'Mak"
+          ]
+        }
+      },
+      {
+        "id": "ecps-23510",
+        "before": {
+          "c": null,
+          "s": [
+            "Masterbation"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Masterbation",
+            "Masterbation"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-30409",
+        "before": {
+          "c": null,
+          "s": [
+            "situation",
+            "situations",
+            "situationship"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "situation",
+            "situationship",
+            "situations"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-30411",
+        "before": {
+          "c": null,
+          "s": [
+            "situation",
+            "situations",
+            "situationship"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "situation",
+            "situationship",
+            "situations"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-30413",
+        "before": {
+          "c": null,
+          "s": [
+            "situation",
+            "situations",
+            "situationship"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "situation",
+            "situationship",
+            "situations"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-30415",
+        "before": {
+          "c": null,
+          "s": [
+            "situation",
+            "situations",
+            "situationship"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "situation",
+            "situationship",
+            "situations"
+          ]
+        }
+      },
+      {
+        "id": "ecps_ok-30417",
+        "before": {
+          "c": null,
+          "s": [
+            "situation",
+            "situations",
+            "situationship"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "situation",
+            "situationship",
+            "situations"
+          ]
+        }
+      },
+      {
+        "id": "ecps-31106",
+        "before": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx",
+            "Sphynx"
+          ]
+        }
+      },
+      {
+        "id": "ecps-31108",
+        "before": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx",
+            "Sphynx"
+          ]
+        }
+      },
+      {
+        "id": "ecps-31110",
+        "before": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "sphinx",
+            "Sphynx",
+            "Sphynx"
+          ]
+        }
+      },
+      {
+        "id": "ecps-36333",
+        "before": {
+          "c": null,
+          "s": [
+            "Vynil"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Vynil",
+            "Vynil"
+          ]
+        }
+      },
+      {
+        "id": "ecps-36790",
+        "before": {
+          "c": "way",
+          "s": [
+            "way",
+            "wyatt",
+            "wya"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "wya",
+            "wyatt"
+          ]
+        }
+      },
+      {
+        "id": "ecps-36792",
+        "before": {
+          "c": "way",
+          "s": [
+            "way",
+            "wyatt",
+            "wya"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "wya",
+            "wyatt"
+          ]
+        }
+      },
+      {
+        "id": "ecps-36794",
+        "before": {
+          "c": "way",
+          "s": [
+            "way",
+            "wyatt",
+            "wya"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "wya",
+            "wyatt"
+          ]
+        }
+      },
+      {
+        "id": "syn-39351",
+        "before": {
+          "c": "best",
+          "s": [
+            "best",
+            "besides",
+            "beside"
+          ]
+        },
+        "after": {
+          "c": "best",
+          "s": [
+            "best",
+            "bestie",
+            "besides"
+          ]
+        }
+      },
+      {
+        "id": "clean-39653",
+        "before": {
+          "c": null,
+          "s": [
+            "low",
+            "lower",
+            "lowkey"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "low",
+            "lowkey",
+            "lower"
+          ]
+        }
+      },
+      {
+        "id": "nw-39875",
+        "before": {
+          "s": [
+            "a",
+            "as",
+            "one"
+          ]
+        },
+        "after": {
+          "s": [
+            "a",
+            "vibing",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "syn-40596",
+        "before": {
+          "c": "no",
+          "s": [
+            "no",
+            "noon",
+            "noodles"
+          ]
+        },
+        "after": {
+          "c": "no",
+          "s": [
+            "no",
+            "noob",
+            "noon"
+          ]
+        }
+      },
+      {
+        "id": "clean-40807",
+        "before": {
+          "c": null,
+          "s": [
+            "highly",
+            "high",
+            "higher"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "highly",
+            "highkey",
+            "high"
+          ]
+        }
+      },
+      {
+        "id": "clean-41135",
+        "before": {
+          "c": null,
+          "s": [
+            "highly",
+            "high",
+            "higher"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "highly",
+            "highkey",
+            "high"
+          ]
+        }
+      },
+      {
+        "id": "syn-41138",
+        "before": {
+          "c": "high",
+          "s": [
+            "high",
+            "highly",
+            "higher"
+          ]
+        },
+        "after": {
+          "c": "high",
+          "s": [
+            "high",
+            "highkey",
+            "highly"
+          ]
+        }
+      },
+      {
+        "id": "nw-41654",
+        "before": {
+          "s": [
+            "ten",
+            "show",
+            "bang"
+          ]
+        },
+        "after": {
+          "s": [
+            "ten",
+            "mood",
+            "show"
+          ]
+        }
+      },
+      {
+        "id": "syn-41776",
+        "before": {
+          "c": "bed",
+          "s": [
+            "bed",
+            "best",
+            "besides"
+          ]
+        },
+        "after": {
+          "c": "bed",
+          "s": [
+            "bed",
+            "bestie",
+            "best"
+          ]
+        }
+      },
+      {
+        "id": "nw-41819",
+        "before": {
+          "s": [
+            "in",
+            "a",
+            "alive"
+          ]
+        },
+        "after": {
+          "s": [
+            "in",
+            "doomscrolling",
+            "a"
+          ]
+        }
+      },
+      {
+        "id": "nw-42637",
+        "before": {
+          "s": [
+            "a",
+            "as",
+            "before"
+          ]
+        },
+        "after": {
+          "s": [
+            "a",
+            "vibing",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "nw-42935",
+        "before": {
+          "s": [
+            "a",
+            "as",
+            "one"
+          ]
+        },
+        "after": {
+          "s": [
+            "a",
+            "vibing",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "syn-43033",
+        "before": {
+          "c": "no",
+          "s": [
+            "no",
+            "noon",
+            "noodles"
+          ]
+        },
+        "after": {
+          "c": "no",
+          "s": [
+            "no",
+            "noob",
+            "noon"
+          ]
+        }
+      },
+      {
+        "id": "realword-43600",
+        "before": {
+          "c": null,
+          "s": [
+            "low",
+            "lower",
+            "lowkey"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "low",
+            "lowkey",
+            "lower"
+          ]
+        }
+      },
+      {
+        "id": "nw-44503",
+        "before": {
+          "s": [
+            "in",
+            "here",
+            "with"
+          ]
+        },
+        "after": {
+          "s": [
+            "in",
+            "delulu",
+            "here"
+          ]
+        }
+      },
+      {
+        "id": "nw-45047",
+        "before": {
+          "s": [
+            "do",
+            "get",
+            "talk"
+          ]
+        },
+        "after": {
+          "s": [
+            "prepone",
+            "do",
+            "get"
+          ]
+        }
+      },
+      {
+        "id": "syn-45503",
+        "before": {
+          "c": "no",
+          "s": [
+            "no",
+            "noon",
+            "noodles"
+          ]
+        },
+        "after": {
+          "c": "no",
+          "s": [
+            "no",
+            "noob",
+            "noon"
+          ]
+        }
+      },
+      {
+        "id": "nw-45928",
+        "before": {
+          "s": [
+            "be",
+            "do",
+            "see"
+          ]
+        },
+        "after": {
+          "s": [
+            "be",
+            "doomscrolling",
+            "do"
+          ]
+        }
+      },
+      {
+        "id": "clean-47025",
+        "before": {
+          "c": null,
+          "s": [
+            "highly",
+            "high",
+            "higher"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "highly",
+            "highkey",
+            "high"
+          ]
+        }
+      },
+      {
+        "id": "nw-47713",
+        "before": {
+          "s": [
+            "to",
+            "and",
+            "for"
+          ]
+        },
+        "after": {
+          "s": [
+            "to",
+            "launch",
+            "and"
+          ]
+        }
+      },
+      {
+        "id": "nw-48650",
+        "before": {
+          "s": [
+            "want",
+            "wanted",
+            "don't"
+          ]
+        },
+        "after": {
+          "s": [
+            "want",
+            "vibing",
+            "wanted"
+          ]
+        }
+      },
+      {
+        "id": "nw-49175",
+        "before": {
+          "s": [
+            "like",
+            "as",
+            "so"
+          ]
+        },
+        "after": {
+          "s": [
+            "like",
+            "sus",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "nw-50823",
+        "before": {
+          "s": [
+            "the",
+            "it",
+            "up"
+          ]
+        },
+        "after": {
+          "s": [
+            "the",
+            "vibing",
+            "it"
+          ]
+        }
+      },
+      {
+        "id": "syn-51486",
+        "before": {
+          "c": "best",
+          "s": [
+            "best",
+            "besides",
+            "beside"
+          ]
+        },
+        "after": {
+          "c": "best",
+          "s": [
+            "best",
+            "bestie",
+            "besides"
+          ]
+        }
+      },
+      {
+        "id": "nw-51812",
+        "before": {
+          "s": [
+            "of",
+            "that",
+            "tom"
+          ]
+        },
+        "after": {
+          "s": [
+            "of",
+            "lowkey",
+            "that"
+          ]
+        }
+      },
+      {
+        "id": "nw-52403",
+        "before": {
+          "s": [
+            "the",
+            "your",
+            "this"
+          ]
+        },
+        "after": {
+          "s": [
+            "the",
+            "vibing",
+            "your"
+          ]
+        }
+      },
+      {
+        "id": "nw-52642",
+        "before": {
+          "s": [
+            "and",
+            "ten",
+            "show"
+          ]
+        },
+        "after": {
+          "s": [
+            "and",
+            "mood",
+            "ten"
+          ]
+        }
+      },
+      {
+        "id": "nw-52978",
+        "before": {
+          "s": [
+            "a",
+            "as",
+            "before"
+          ]
+        },
+        "after": {
+          "s": [
+            "a",
+            "vibing",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "nw-53088",
+        "before": {
+          "s": [
+            "ten",
+            "show",
+            "bang"
+          ]
+        },
+        "after": {
+          "s": [
+            "ten",
+            "mood",
+            "show"
+          ]
+        }
+      },
+      {
+        "id": "nw-53386",
+        "before": {
+          "s": [
+            "deal",
+            "mistake",
+            "fan"
+          ]
+        },
+        "after": {
+          "s": [
+            "deal",
+            "mood",
+            "mistake"
+          ]
+        }
+      },
+      {
+        "id": "realword-53783",
+        "before": {
+          "c": "find",
+          "s": [
+            "find",
+            "fine",
+            "finally"
+          ]
+        },
+        "after": {
+          "c": "find",
+          "s": [
+            "find",
+            "finna",
+            "fine"
+          ]
+        }
+      },
+      {
+        "id": "realword-54128",
+        "before": {
+          "c": null,
+          "s": [
+            "low",
+            "lower",
+            "lowkey"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "low",
+            "lowkey",
+            "lower"
+          ]
+        }
+      },
+      {
+        "id": "nw-54420",
+        "before": {
+          "s": [
+            "the",
+            "it",
+            "his"
+          ]
+        },
+        "after": {
+          "s": [
+            "the",
+            "vibing",
+            "it"
+          ]
+        }
+      },
+      {
+        "id": "clean-54443",
+        "before": {
+          "c": null,
+          "s": [
+            "high",
+            "higher",
+            "highness"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "high",
+            "highkey",
+            "higher"
+          ]
+        }
+      },
+      {
+        "id": "clean-55075",
+        "before": {
+          "c": null,
+          "s": [
+            "highest",
+            "high",
+            "highway"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "highest",
+            "highkey",
+            "high"
+          ]
+        }
+      },
+      {
+        "id": "clean-56051",
+        "before": {
+          "c": null,
+          "s": [
+            "sit",
+            "situation",
+            "sitting"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "sit",
+            "situationship",
+            "situation"
+          ]
+        }
+      },
+      {
+        "id": "nw-56273",
+        "before": {
+          "s": [
+            "the",
+            "it",
+            "up"
+          ]
+        },
+        "after": {
+          "s": [
+            "the",
+            "vibing",
+            "it"
+          ]
+        }
+      },
+      {
+        "id": "syn-56646",
+        "before": {
+          "c": "best",
+          "s": [
+            "best",
+            "besides",
+            "beside"
+          ]
+        },
+        "after": {
+          "c": "best",
+          "s": [
+            "best",
+            "bestie",
+            "besides"
+          ]
+        }
+      },
+      {
+        "id": "realword-57200",
+        "before": {
+          "c": "find",
+          "s": [
+            "find",
+            "fine",
+            "finally"
+          ]
+        },
+        "after": {
+          "c": "find",
+          "s": [
+            "find",
+            "finna",
+            "fine"
+          ]
+        }
+      },
+      {
+        "id": "nw-57294",
+        "before": {
+          "s": [
+            "a",
+            "as",
+            "before"
+          ]
+        },
+        "after": {
+          "s": [
+            "a",
+            "vibing",
+            "as"
+          ]
+        }
+      },
+      {
+        "id": "realword-57682",
+        "before": {
+          "c": "find",
+          "s": [
+            "find",
+            "finally",
+            "fine"
+          ]
+        },
+        "after": {
+          "c": "find",
+          "s": [
+            "find",
+            "finna",
+            "finally"
+          ]
+        }
+      },
+      {
+        "id": "nw-58768",
+        "before": {
+          "s": [
+            "to",
+            "for",
+            "and"
+          ]
+        },
+        "after": {
+          "s": [
+            "to",
+            "launch",
+            "for"
+          ]
+        }
+      },
+      {
+        "id": "hard-58972",
+        "before": {
+          "c": null,
+          "s": [
+            "Krzysztof"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Krzysztof",
+            "Krzysztof"
+          ]
+        }
+      },
+      {
+        "id": "hard-58976",
+        "before": {
+          "c": null,
+          "s": [
+            "Xiomara"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Xiomara",
+            "Xiomara"
+          ]
+        }
+      },
+      {
+        "id": "hard-58999",
+        "before": {
+          "c": null,
+          "s": [
+            "pay tm",
+            "Paytm"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "pay tm",
+            "Paytm",
+            "Paytm"
+          ]
+        }
+      },
+      {
+        "id": "hard-59000",
+        "before": {
+          "c": null,
+          "s": [
+            "fig a",
+            "Figma"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "fig a",
+            "Figma",
+            "Figma"
+          ]
+        }
+      },
+      {
+        "id": "hard-59022",
+        "before": {
+          "c": null,
+          "s": [
+            "imogen",
+            "imogene",
+            "imo"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "imo",
+            "imogen",
+            "imogene"
+          ]
+        }
+      },
+      {
+        "id": "hard-59051",
+        "before": {
+          "c": null,
+          "s": [
+            "jihad",
+            "jughead",
+            "jugaad"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jugaad"
+          ]
+        }
+      }
+    ]
+  },
+  "contraction-cases": {
+    "cases": 9712,
+    "changes": []
+  },
+  "ext-cases": {
+    "cases": 33503,
+    "changes": [
+      {
+        "id": "ext_birkbeck-00841",
+        "before": {
+          "c": "arguing",
+          "s": [
+            "arguing",
+            "argonaut",
+            "argus"
+          ]
+        },
+        "after": {
+          "c": "arguing",
+          "s": [
+            "arguing",
+            "ragebait",
+            "argonaut"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-04003",
+        "before": {
+          "c": "best",
+          "s": [
+            "best",
+            "besides",
+            "beside"
+          ]
+        },
+        "after": {
+          "c": "best",
+          "s": [
+            "best",
+            "bestie",
+            "besides"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-04098",
+        "before": {
+          "c": "best",
+          "s": [
+            "best",
+            "besides",
+            "beside"
+          ]
+        },
+        "after": {
+          "c": "best",
+          "s": [
+            "best",
+            "bestie",
+            "besides"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-09322",
+        "before": {
+          "c": "delulu",
+          "s": [
+            "delulu",
+            "deeply",
+            "duly"
+          ]
+        },
+        "after": {
+          "c": "deeply",
+          "s": [
+            "deeply",
+            "delulu",
+            "duly"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-12005",
+        "before": {
+          "c": "tldr",
+          "s": [
+            "tldr",
+            "fl dr"
+          ]
+        },
+        "after": {
+          "c": "fdr",
+          "s": [
+            "fdr",
+            "fl dr"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-21086",
+        "before": {
+          "c": "prolly",
+          "s": [
+            "prolly",
+            "properly",
+            "promptly"
+          ]
+        },
+        "after": {
+          "c": "properly",
+          "s": [
+            "properly",
+            "prolly",
+            "promptly"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-21247",
+        "before": {
+          "c": "prolly",
+          "s": [
+            "prolly",
+            "properly",
+            "promptly"
+          ]
+        },
+        "after": {
+          "c": "properly",
+          "s": [
+            "properly",
+            "prolly",
+            "promptly"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-23937",
+        "before": {
+          "c": "smh",
+          "s": [
+            "smh",
+            "se mh"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "se mh",
+            "semh"
+          ]
+        }
+      },
+      {
+        "id": "ext_birkbeck-28815",
+        "before": {
+          "c": "vibing",
+          "s": [
+            "vibing",
+            "gabbing",
+            "bong"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "vibing",
+            "gabbing",
+            "vabong"
+          ]
+        }
+      },
+      {
+        "id": "ext_holbrook-30580",
+        "before": {
+          "c": "smh",
+          "s": [
+            "smh",
+            "shmuck"
+          ]
+        },
+        "after": {
+          "c": "sum",
+          "s": [
+            "sum",
+            "shmuck"
+          ]
+        }
+      }
+    ]
+  },
+  "keep-cases": {
+    "cases": 3578,
+    "changes": [
+      {
+        "id": "keep_name-00035-0",
+        "before": {
+          "c": null,
+          "s": [
+            "hiroshi",
+            "Hirotoshi"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "hiroshi",
+            "Hirotoshi",
+            "Hirotoshi"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00035-1",
+        "before": {
+          "c": null,
+          "s": [
+            "hiroshi",
+            "Hirotoshi"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "hiroshi",
+            "Hirotoshi",
+            "Hirotoshi"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00051-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Izumi"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Izumi",
+            "Izumi"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00051-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Izumi"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Izumi",
+            "Izumi"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00056-0",
+        "before": {
+          "c": null,
+          "s": [
+            "jar mo",
+            "Jarmo"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jar mo",
+            "Jarmo",
+            "Jarmo"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00056-1",
+        "before": {
+          "c": null,
+          "s": [
+            "jar mo",
+            "Jarmo"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jar mo",
+            "Jarmo",
+            "Jarmo"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00077-0",
+        "before": {
+          "c": null,
+          "s": [
+            "jurgen",
+            "Juergen"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jurgen",
+            "Juergen",
+            "Juergen"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00077-1",
+        "before": {
+          "c": null,
+          "s": [
+            "jurgen",
+            "Juergen"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jurgen",
+            "Juergen",
+            "Juergen"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00084-0",
+        "before": {
+          "c": null,
+          "s": [
+            "jawahar",
+            "Jwahar"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jawahar",
+            "Jwahar",
+            "Jwahar"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00084-1",
+        "before": {
+          "c": null,
+          "s": [
+            "jawahar",
+            "Jwahar"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "jawahar",
+            "Jwahar",
+            "Jwahar"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00093-0",
+        "before": {
+          "c": null,
+          "s": [
+            "kem al",
+            "Kemal"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "kem al",
+            "Kemal",
+            "Kemal"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00093-1",
+        "before": {
+          "c": null,
+          "s": [
+            "kem al",
+            "Kemal"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "kem al",
+            "Kemal",
+            "Kemal"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00106-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Krzysztof"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Krzysztof",
+            "Krzysztof"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00158-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Novorolsky"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Novorolsky",
+            "Novorolsky"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00158-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Novorolsky"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Novorolsky",
+            "Novorolsky"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00161-0",
+        "before": {
+          "c": null,
+          "s": [
+            "oz an",
+            "Ozan"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "oz an",
+            "Ozan",
+            "Ozan"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00161-1",
+        "before": {
+          "c": null,
+          "s": [
+            "oz an",
+            "Ozan"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "oz an",
+            "Ozan",
+            "Ozan"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00167-0",
+        "before": {
+          "c": null,
+          "s": [
+            "phiroza",
+            "Phiroze"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "phiroza",
+            "Phiroze",
+            "Phiroze"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00167-1",
+        "before": {
+          "c": null,
+          "s": [
+            "phiroza",
+            "Phiroze"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "phiroza",
+            "Phiroze",
+            "Phiroze"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00175-0",
+        "before": {
+          "c": null,
+          "s": [
+            "parvin",
+            "Pravin"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "parvin",
+            "Pravin",
+            "Pravin"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00175-1",
+        "before": {
+          "c": null,
+          "s": [
+            "parvin",
+            "Pravin"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "parvin",
+            "Pravin",
+            "Pravin"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00187-0",
+        "before": {
+          "c": null,
+          "s": [
+            "ravindranath",
+            "Ravindran"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "ravindranath",
+            "Ravindran",
+            "Ravindran"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00187-1",
+        "before": {
+          "c": null,
+          "s": [
+            "ravindranath",
+            "Ravindran"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "ravindranath",
+            "Ravindran",
+            "Ravindran"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00208-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Sehyo"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Sehyo",
+            "Sehyo"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00208-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Sehyo"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Sehyo",
+            "Sehyo"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00222-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Skef"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Skef",
+            "Skef"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00222-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Skef"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Skef",
+            "Skef"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00223-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Slartibartfast"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Slartibartfast",
+            "Slartibartfast"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00223-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Slartibartfast"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Slartibartfast",
+            "Slartibartfast"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00224-0",
+        "before": {
+          "c": null,
+          "s": [
+            "socorro",
+            "Socorrito"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "socorro",
+            "Socorrito",
+            "Socorrito"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00224-1",
+        "before": {
+          "c": null,
+          "s": [
+            "socorro",
+            "Socorrito"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "socorro",
+            "Socorrito",
+            "Socorrito"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00244-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Suyog"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Suyog",
+            "Suyog"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00244-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Suyog"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Suyog",
+            "Suyog"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00252-0",
+        "before": {
+          "c": null,
+          "s": [
+            "tar eq",
+            "Tareq"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "tar eq",
+            "Tareq",
+            "Tareq"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00252-1",
+        "before": {
+          "c": null,
+          "s": [
+            "tar eq",
+            "Tareq"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "tar eq",
+            "Tareq",
+            "Tareq"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00255-0",
+        "before": {
+          "c": null,
+          "s": [
+            "teriyaki",
+            "Teruyuki"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "teriyaki",
+            "Teruyuki",
+            "Teruyuki"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00255-1",
+        "before": {
+          "c": null,
+          "s": [
+            "teriyaki",
+            "Teruyuki"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "teriyaki",
+            "Teruyuki",
+            "Teruyuki"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00263-0",
+        "before": {
+          "c": null,
+          "s": [
+            "thorsten",
+            "Torsten"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "thorsten",
+            "Torsten",
+            "Torsten"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00263-1",
+        "before": {
+          "c": null,
+          "s": [
+            "thorsten",
+            "Torsten"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "thorsten",
+            "Torsten",
+            "Torsten"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00266-0",
+        "before": {
+          "c": null,
+          "s": [
+            "Triantaphyllos"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Triantaphyllos",
+            "Triantaphyllos"
+          ]
+        }
+      },
+      {
+        "id": "keep_name-00266-1",
+        "before": {
+          "c": null,
+          "s": [
+            "Triantaphyllos"
+          ]
+        },
+        "after": {
+          "c": null,
+          "s": [
+            "Triantaphyllos",
+            "Triantaphyllos"
+          ]
+        }
+      },
+      {
+        "id": "keep_word-00359",
+        "before": {
+          "c": "powder",
+          "s": [
+            "powder"
+          ]
+        },
+        "after": {
+          "c": "powder",
+          "s": [
+            "powder",
+            "pookie"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -4,17 +4,17 @@
   "artifacts": [
     {
       "path": "keyboard/langdata.bin",
-      "sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
-      "bytes": 28311910,
+      "sha256": "a549a5306501c80fc317cb2a855b95428996ad1c4a24b759cbecfcbe3a979d93",
+      "bytes": 28312209,
       "format": "KBLM v6",
       "builder": "tools/build_language_data.py",
       "contents": {
-        "words": 114283,
+        "words": 114288,
         "bigramContexts": 55520,
         "bigramEntries": 1280074,
         "trigramContexts": 266840,
         "trigramEntries": 767271,
-        "trieNodes": 275561,
+        "trieNodes": 275577,
         "sentenceStarters": 20
       },
       "inputs": [
@@ -67,7 +67,7 @@
         {
           "name": "Project-curated supplemental English vocabulary",
           "path": "tools/data/english_supplemental.tsv",
-          "sha256": "12c1cfefc2ae47785de897e2d4cf719064e1fd82e57638906409f8b4aa95dc8d",
+          "sha256": "849c3f832bc4ada015d23a54a627b5203c710aa468f0bc39312cfb78dfb844f0",
           "license": "Project-owned"
         },
         {
@@ -87,7 +87,7 @@
         {
           "name": "English expansion provenance and admission rules",
           "path": "tools/data/english-expansion-v1.manifest.json",
-          "sha256": "ac70a2d47058ff2ec2cb79995ac461444e20ea6e0a047fc7c957312bdbe666eb",
+          "sha256": "39301da01c1694c5582c55ace9d22963238846536b6449750130d1f9b997cd8f",
           "license": "Metadata; source licenses recorded per entry"
         },
         {
@@ -96,6 +96,12 @@
           "sha256": "64085e863a726407c3eb0c7a077bf78b560cfd28ae4987a49115a2580a5dbd5f",
           "provenance": "tools/data/corev4/english/manifest.json",
           "transformation": "Union with existing vocabulary; retain existing frequencies; new frequency prior 1; preserve four contraction-policy exclusions. Original context files are offline assets."
+        },
+        {
+          "name": "Modern English editorial vocabulary",
+          "path": "tools/vocabulary/modern_catalog.json",
+          "sha256": "043d80a0055b8efa743a327909c9457fe661edec3113035963c65ba0b1f6cbbe",
+          "license": "Project-authored metadata; external corroboration links only"
         }
       ],
       "integrationReport": "docs/corev4-import/IMPORT-RESULTS.txt",
@@ -308,6 +314,41 @@
           "license": "Unicode-3.0"
         }
       ]
+    },
+    {
+      "path": "keyboard/langdata.kbmodern",
+      "sha256": "b9c381a1eef4a9924bf919de557299ed2a231653085055a590fcb76ccb98f30d",
+      "bytes": 1368,
+      "format": "KBMODERN v1",
+      "builder": "tools/vocabulary/build_modern.py",
+      "contents": {
+        "policies": 60,
+        "contexts": 50,
+        "pack_sha256": "a549a5306501c80fc317cb2a855b95428996ad1c4a24b759cbecfcbe3a979d93"
+      },
+      "inputs": [
+        {
+          "path": "tools/vocabulary/modern_contexts.json",
+          "sha256": "47469fbced0d2d1ae1caf3ada2b6ffab1ab5e313a674e1eea9008e21a2d33275",
+          "license": "Project-authored"
+        }
+      ]
+    },
+    {
+      "path": "tools/data/nss/unigram-v1/english-unigram.bin",
+      "bytes": 9254997,
+      "sha256": "f7f3c5f01aa30619544b3312c7f774bf34e2f088810a15d819d822d3f04344b1",
+      "builder": "tools/vocabulary/build_unigram.py",
+      "purpose": "Production NSS extension resource; selected by Config/Extension.xcconfig",
+      "manifest": "tools/data/nss/unigram-v1/manifest.json"
+    },
+    {
+      "path": "tools/data/nss/unigram-v1/english-unigram.kbmodern",
+      "bytes": 568,
+      "sha256": "47975beb810c4265e604f75969ced3f86b5f618e1228af5d47f57fc764c989b3",
+      "builder": "tools/vocabulary/build_unigram.py",
+      "purpose": "Production NSS extension resource; selected by Config/Extension.xcconfig",
+      "manifest": "tools/data/nss/unigram-v1/manifest.json"
     }
   ],
   "excludedReleaseArtifacts": [

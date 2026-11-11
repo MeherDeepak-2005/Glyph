@@ -1,0 +1,12 @@
+{
+  "native_suites": 12,
+  "native_suites_passed": 12,
+  "python_tests": 20,
+  "python_tests_passed": 20,
+  "simulator": "Unavailable: CoreSimulator connection refused",
+  "physical_iphone_latency_memory": "Not measured; 5% gate pending",
+  "full_ios_build": "Blocked by SwiftUIMacros.StateMacro tool response failure",
+  "regional_review": "Editorial only; independent native-speaker review pending",
+  "swift_bridge_api_typecheck": "Passed against iPhoneOS SDK",
+  "standard_build_reproduces_bundled_artifacts": true
+}

@@ -12,6 +12,7 @@
 #include <mutex>
 #include <array>
 #include "SpatialModel.hpp"
+#include "ModernVocabulary.hpp"
 
 namespace kb {
 class IncrementalSeedSet;
@@ -28,6 +29,14 @@ struct WordFrequencyBoost { std::string word; std::uint32_t count; };
 class PackedLexicon final {
 public:
     explicit PackedLexicon(std::span<const std::byte> bytes);
+    // Call before publishing the lexicon to decode queues; invalid metadata is ignored.
+    bool installModern(std::span<const std::byte> data) const;
+    bool hasModern() const noexcept { return modern_ != nullptr; }
+    std::uint32_t modernFlags(std::string_view word) const;
+    bool preserves(std::string_view word) const { return modernFlags(word) & 1; }
+    bool allowsCorrection(std::string_view word) const;
+    std::vector<std::string> modernSuggestions(std::string_view typed, std::span<const std::string> context,
+        std::span<const std::string> existing) const;
     std::uint32_t version() const noexcept { return version_; }
     std::uint32_t wordCount() const noexcept { return words_; }
     struct TextMetadata { std::int32_t id; std::size_t characters; std::optional<std::uint8_t> first, last; };
@@ -88,6 +97,7 @@ public:
         std::span<const std::uint8_t> roots = {}) const;
 private:
     struct Range { std::uint32_t total, start, count; };
+    mutable std::shared_ptr<const ModernVocabulary> modern_;
     std::span<const std::byte> bytes_;
     std::uint32_t version_, words_, biBuckets_, biEntries_, triBuckets_, triEntries_, nodes_, starters_;
     std::size_t frequencies_, offsets_, biHash_, biData_, triHash_, triData_, trie_, starterData_, blob_;

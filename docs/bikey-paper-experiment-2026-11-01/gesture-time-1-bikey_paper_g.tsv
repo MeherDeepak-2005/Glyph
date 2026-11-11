@@ -1,0 +1,600 @@
+stress-0	courteously	0	0	28.6685	courteously	courageously	coquettishly
+stress-1	courteously	0.15	0	28.8255	courteously	courageously	coquettishly
+stress-2	courteously	0.3	1	33.969	choreography	courteously	courageously
+stress-3	exercises	0	0	16.6484	exercises	exercise	exercised
+stress-4	exercises	0.15	0	17.6385	exercises	exercise	exercised
+stress-5	exercises	0.3	0	24.4106	exercises	excuses	executives
+stress-6	exercises	0	0	16.4862	exercises	exercise	exercised
+stress-7	exercises	0.15	0	16.9075	exercises	exercise	exercised
+stress-8	exercises	0.3	0	22.4677	exercises	excuses	executives
+stress-9	exercises	0	0	16.96	exercises	exercise	exercised
+stress-10	exercises	0.15	0	16.8845	exercises	exercise	exercised
+stress-11	exercises	0.3	0	24.1695	exercises	excuses	executives
+stress-12	exercises	0	0	16.6176	exercises	exercise	exercised
+stress-13	exercises	0.15	0	16.8653	exercises	exercise	exercised
+stress-14	exercises	0.3	0	22.4599	exercises	excuses	executives
+stress-15	exercises	0	0	17.7705	exercises	exercise	exercised
+stress-16	exercises	0.15	0	17.5373	exercises	exercise	exercised
+stress-17	exercises	0.3	0	23.0619	exercises	excuses	executives
+stress-18	exercises	0	0	16.7051	exercises	exercise	exercised
+stress-19	exercises	0.15	0	17.238	exercises	exercise	exercised
+stress-20	exercises	0.3	0	22.2603	exercises	excuses	executives
+stress-21	exercises	0	0	16.2168	exercises	exercise	exercised
+stress-22	exercises	0.15	0	16.6713	exercises	exercise	exercised
+stress-23	exercises	0.3	0	21.9604	exercises	excuses	executives
+stress-24	exercises	0	0	16.7607	exercises	exercise	exercised
+stress-25	exercises	0.15	0	16.5388	exercises	exercise	exercised
+stress-26	exercises	0.3	0	21.9698	exercises	excuses	executives
+stress-27	exercises	0	0	16.2914	exercises	exercise	exercised
+stress-28	exercises	0.15	0	17.0519	exercises	exercise	exercised
+stress-29	exercises	0.3	0	21.9779	exercises	excuses	executives
+stress-30	exercises	0	0	16.0914	exercises	exercise	exercised
+stress-31	exercises	0.15	0	16.4013	exercises	exercise	exercised
+stress-32	exercises	0.3	0	21.9223	exercises	excuses	executives
+stress-33	heard	0	0	16.7327	heard	heated	hearted
+stress-34	heard	0.15	0	17.6877	heard	hearts	heated
+stress-35	heard	0.3	0	19.5001	heard	hearted	howard
+stress-36	heard	0	0	16.6572	heard	heated	hearted
+stress-37	heard	0.15	0	17.4907	heard	hearts	heated
+stress-38	heard	0.3	0	19.454	heard	hearted	howard
+stress-39	heard	0	0	16.7385	heard	heated	hearted
+stress-40	heard	0.15	0	17.8893	heard	hearts	heated
+stress-41	heard	0.3	0	21.0419	heard	hearted	howard
+stress-42	heard	0	0	16.8132	heard	heated	hearted
+stress-43	heard	0.15	0	17.6792	heard	hearts	heated
+stress-44	heard	0.3	0	19.4623	heard	hearted	howard
+stress-45	heard	0	0	16.6927	heard	heated	hearted
+stress-46	heard	0.15	0	17.6566	heard	hearts	heated
+stress-47	heard	0.3	0	20.1822	heard	hearted	howard
+stress-48	heard	0	0	18.1461	heard	heated	hearted
+stress-49	heard	0.15	0	19.0075	heard	hearts	heated
+stress-50	heard	0.3	0	20.7784	heard	hearted	howard
+stress-51	heard	0	0	17.1878	heard	heated	hearted
+stress-52	heard	0.15	0	18.5083	heard	hearts	heated
+stress-53	heard	0.3	0	20.1798	heard	hearted	howard
+stress-54	heard	0	0	18.1847	heard	heated	hearted
+stress-55	heard	0.15	0	18.6696	heard	hearts	heated
+stress-56	heard	0.3	0	21.2583	heard	hearted	howard
+stress-57	heard	0	0	17.2322	heard	heated	hearted
+stress-58	heard	0.15	0	18.5235	heard	hearts	heated
+stress-59	heard	0.3	0	20.1151	heard	hearted	howard
+stress-60	balloon	0	0	20.7538	balloon	ballon	balkan
+stress-61	balloon	0.15	0	20.9238	balloon	ballon	babylon
+stress-62	balloon	0.3	0	26.503	balloon	ballon	ballroom
+stress-63	balloon	0	0	21.366	balloon	ballon	balkan
+stress-64	balloon	0.15	0	21.2022	balloon	ballon	babylon
+stress-65	balloon	0.3	0	26.0489	balloon	ballon	ballroom
+stress-66	balloon	0	0	21.0935	balloon	ballon	balkan
+stress-67	balloon	0.15	0	21.1948	balloon	ballon	babylon
+stress-68	balloon	0.3	0	26.0726	balloon	ballon	ballroom
+stress-69	balloon	0	0	21.6085	balloon	ballon	balkan
+stress-70	balloon	0.15	0	21.8442	balloon	ballon	babylon
+stress-71	balloon	0.3	0	27.0252	balloon	ballon	ballroom
+stress-72	regardless	0	0	18.4119	regardless
+stress-73	regardless	0.15	0	20.2481	regardless
+stress-74	regardless	0.3	0	21.672	regardless
+stress-75	regardless	0	0	18.9067	regardless
+stress-76	regardless	0.15	0	20.1188	regardless
+stress-77	regardless	0.3	0	21.0589	regardless
+stress-78	regardless	0	0	18.2226	regardless
+stress-79	regardless	0.15	0	20.5021	regardless
+stress-80	regardless	0.3	0	22.2837	regardless
+stress-81	regardless	0	0	18.7151	regardless
+stress-82	regardless	0.15	0	20.2293	regardless
+stress-83	regardless	0.3	0	21.053	regardless
+stress-84	spoonfuls	0	0	26.1013	spoonfuls	springfield	sometimes
+stress-85	spoonfuls	0.15	0	30.3527	spoonfuls	springfield	spineless
+stress-86	spoonfuls	0.3	0	30.6834	spoonfuls	springfield	spineless
+stress-87	deliberately	0	0	20.9895	deliberately
+stress-88	deliberately	0.15	0	20.9165	deliberately
+stress-89	deliberately	0.3	0	26.3819	deliberately
+stress-90	deliberately	0	0	22.3621	deliberately
+stress-91	deliberately	0.15	0	21.1455	deliberately
+stress-92	deliberately	0.3	0	26.5575	deliberately
+stress-93	similar	0	0	21.8303	similar	simulate	simulated
+stress-94	similar	0.15	0	23.7631	similar	simulate	simulated
+stress-95	similar	0.3	0	22.3856	similar	stimulate	simulate
+stress-96	similar	0	0	21.5414	similar	simulate	simulated
+stress-97	similar	0.15	0	23.0205	similar	simulate	simulated
+stress-98	similar	0.3	0	22.4724	similar	stimulate	simulate
+stress-99	similar	0	0	22.8152	similar	simulate	simulated
+stress-100	similar	0.15	0	27.2899	similar	simulate	simulated
+stress-101	similar	0.3	0	22.7817	similar	stimulate	simulate
+stress-102	similar	0	0	22.4678	similar	simulate	simulated
+stress-103	similar	0.15	0	25.7958	similar	simulate	simulated
+stress-104	similar	0.3	0	22.7799	similar	stimulate	simulate
+stress-105	similar	0	0	21.9362	similar	simulate	simulated
+stress-106	similar	0.15	0	22.5076	similar	simulate	simulated
+stress-107	similar	0.3	0	22.6779	similar	stimulate	simulate
+stress-108	similar	0	0	21.9048	similar	simulate	simulated
+stress-109	similar	0.15	0	23.2245	similar	simulate	simulated
+stress-110	similar	0.3	0	24.3654	similar	stimulate	simulate
+stress-111	similar	0	0	21.4967	similar	simulate	simulated
+stress-112	similar	0.15	0	22.6663	similar	simulate	simulated
+stress-113	similar	0.3	0	22.4886	similar	stimulate	simulate
+stress-114	similar	0	0	21.5685	similar	simulate	simulated
+stress-115	similar	0.15	0	22.5846	similar	simulate	simulated
+stress-116	similar	0.3	0	22.0529	similar	stimulate	simulate
+stress-117	similar	0	0	21.5403	similar	simulate	simulated
+stress-118	similar	0.15	0	23.3715	similar	simulate	simulated
+stress-119	similar	0.3	0	22.7135	similar	stimulate	simulate
+stress-120	similar	0	0	21.5041	similar	simulate	simulated
+stress-121	similar	0.15	0	22.6887	similar	simulate	simulated
+stress-122	similar	0.3	0	24.8586	similar	stimulate	simulate
+stress-123	similar	0	0	21.5195	similar	simulate	simulated
+stress-124	similar	0.15	0	23.2273	similar	simulate	simulated
+stress-125	similar	0.3	0	22.5031	similar	stimulate	simulate
+stress-126	similar	0	0	21.4615	similar	simulate	simulated
+stress-127	similar	0.15	0	23.5479	similar	simulate	simulated
+stress-128	similar	0.3	0	24.2851	similar	stimulate	simulate
+stress-129	similar	0	0	22.1178	similar	simulate	simulated
+stress-130	similar	0.15	0	24.092	similar	simulate	simulated
+stress-131	similar	0.3	0	22.077	similar	stimulate	simulate
+stress-132	similar	0	0	22.3385	similar	simulate	simulated
+stress-133	similar	0.15	0	22.853	similar	simulate	simulated
+stress-134	similar	0.3	0	22.0703	similar	stimulate	simulate
+stress-135	similar	0	0	22.6026	similar	simulate	simulated
+stress-136	similar	0.15	0	23.6373	similar	simulate	simulated
+stress-137	similar	0.3	0	22.198	similar	stimulate	simulate
+stress-138	roommates	0	0	19.342	roommates	tomatoes	roommate
+stress-139	roommates	0.15	0	20.7086	roommates	tomatoes	roommate
+stress-140	roommates	0.3	0	21.1767	roommates	tomatoes	roommate
+stress-141	roommates	0	0	18.8012	roommates	tomatoes	roommate
+stress-142	roommates	0.15	0	22.7591	roommates	tomatoes	roommate
+stress-143	roommates	0.3	0	22.3773	roommates	tomatoes	roommate
+stress-144	roommates	0	0	24.409	roommates	tomatoes	roommate
+stress-145	roommates	0.15	0	20.4448	roommates	tomatoes	roommate
+stress-146	roommates	0.3	0	21.832	roommates	tomatoes	roommate
+stress-147	roommates	0	0	18.5052	roommates	tomatoes	roommate
+stress-148	roommates	0.15	0	19.3795	roommates	tomatoes	roommate
+stress-149	roommates	0.3	0	22.5906	roommates	tomatoes	roommate
+stress-150	roommates	0	0	25.7085	roommates	tomatoes	roommate
+stress-151	roommates	0.15	0	19.5398	roommates	tomatoes	roommate
+stress-152	roommates	0.3	0	21.5196	roommates	tomatoes	roommate
+stress-153	roommates	0	0	18.6829	roommates	tomatoes	roommate
+stress-154	roommates	0.15	0	20.8555	roommates	tomatoes	roommate
+stress-155	roommates	0.3	0	21.323	roommates	tomatoes	roommate
+stress-156	roommates	0	0	18.826	roommates	tomatoes	roommate
+stress-157	roommates	0.15	0	19.9619	roommates	tomatoes	roommate
+stress-158	roommates	0.3	0	21.5603	roommates	tomatoes	roommate
+stress-159	noticeably	0	0	17.545	noticeably
+stress-160	noticeably	0.15	0	17.3938	noticeably
+stress-161	noticeably	0.3	0	21.3818	noticeably
+stress-162	noticeably	0	0	17.9072	noticeably
+stress-163	noticeably	0.15	0	17.8449	noticeably
+stress-164	noticeably	0.3	0	21.7922	noticeably
+stress-165	noticeably	0	0	17.9874	noticeably
+stress-166	noticeably	0.15	0	17.7041	noticeably
+stress-167	noticeably	0.3	0	21.4193	noticeably
+stress-168	rocking	0	0	19.3236	rocking	ticking	tricking
+stress-169	rocking	0.15	0	19.4353	rocking	ticking	tricking
+stress-170	rocking	0.3	0	20.4407	rocking	ticking	tricking
+stress-171	rocking	0	0	23.262	rocking	ticking	tricking
+stress-172	rocking	0.15	0	21.2201	rocking	ticking	tricking
+stress-173	rocking	0.3	0	21.086	rocking	ticking	tricking
+stress-174	rocking	0	0	20.2416	rocking	ticking	tricking
+stress-175	rocking	0.15	0	20.0538	rocking	ticking	tricking
+stress-176	rocking	0.3	0	20.5458	rocking	ticking	tricking
+stress-177	rocking	0	0	20.6642	rocking	ticking	tricking
+stress-178	rocking	0.15	0	23.3033	rocking	ticking	tricking
+stress-179	rocking	0.3	0	20.425	rocking	ticking	tricking
+stress-180	amazing	0	0	21.7741	amazing	amazingly
+stress-181	amazing	0.15	0	24.3919	amazing	amazingly	amassing
+stress-182	amazing	0.3	0	19.2463	amazing	amazingly
+stress-183	amazing	0	0	21.8261	amazing	amazingly
+stress-184	amazing	0.15	0	24.5729	amazing	amazingly	amassing
+stress-185	amazing	0.3	0	19.0865	amazing	amazingly
+stress-186	amazing	0	0	20.9931	amazing	amazingly
+stress-187	amazing	0.15	0	23.6867	amazing	amazingly	amassing
+stress-188	amazing	0.3	0	19.247	amazing	amazingly
+stress-189	amazing	0	0	21.1044	amazing	amazingly
+stress-190	amazing	0.15	0	23.6451	amazing	amazingly	amassing
+stress-191	amazing	0.3	0	18.8225	amazing	amazingly
+stress-192	amazing	0	0	21.3278	amazing	amazingly
+stress-193	amazing	0.15	0	23.4332	amazing	amazingly	amassing
+stress-194	amazing	0.3	0	18.9887	amazing	amazingly
+stress-195	amazing	0	0	22.0627	amazing	amazingly
+stress-196	amazing	0.15	0	26.6493	amazing	amazingly	amassing
+stress-197	amazing	0.3	0	20.9267	amazing	amazingly
+stress-198	amazing	0	0	22.6785	amazing	amazingly
+stress-199	amazing	0.15	0	25.852	amazing	amazingly	amassing
+stress-200	amazing	0.3	0	19.5506	amazing	amazingly
+stress-201	amazing	0	0	21.6006	amazing	amazingly
+stress-202	amazing	0.15	0	24.302	amazing	amazingly	amassing
+stress-203	amazing	0.3	0	19.3529	amazing	amazingly
+stress-204	amazing	0	0	24.1172	amazing	amazingly
+stress-205	amazing	0.15	0	24.7677	amazing	amazingly	amassing
+stress-206	amazing	0.3	0	19.5972	amazing	amazingly
+stress-207	amazing	0	0	21.6083	amazing	amazingly
+stress-208	amazing	0.15	0	24.0979	amazing	amazingly	amassing
+stress-209	amazing	0.3	0	19.6232	amazing	amazingly
+stress-210	amazing	0	0	23.6509	amazing	amazingly
+stress-211	amazing	0.15	0	24.2382	amazing	amazingly	amassing
+stress-212	amazing	0.3	0	19.787	amazing	amazingly
+stress-213	amazing	0	0	21.938	amazing	amazingly
+stress-214	amazing	0.15	0	25.2011	amazing	amazingly	amassing
+stress-215	amazing	0.3	0	19.6884	amazing	amazingly
+stress-216	amazing	0	0	21.6046	amazing	amazingly
+stress-217	amazing	0.15	0	24.2163	amazing	amazingly	amassing
+stress-218	amazing	0.3	0	19.4592	amazing	amazingly
+stress-219	amazing	0	0	21.8897	amazing	amazingly
+stress-220	amazing	0.15	0	24.6925	amazing	amazingly	amassing
+stress-221	amazing	0.3	0	21.9188	amazing	amazingly
+stress-222	amazing	0	0	22.7563	amazing	amazingly
+stress-223	amazing	0.15	0	24.4604	amazing	amazingly	amassing
+stress-224	amazing	0.3	0	19.6554	amazing	amazingly
+stress-225	amazing	0	0	21.6083	amazing	amazingly
+stress-226	amazing	0.15	0	24.2115	amazing	amazingly	amassing
+stress-227	amazing	0.3	0	19.5432	amazing	amazingly
+stress-228	amazing	0	0	21.6924	amazing	amazingly
+stress-229	amazing	0.15	0	24.2331	amazing	amazingly	amassing
+stress-230	amazing	0.3	0	19.5153	amazing	amazingly
+stress-231	amazing	0	0	21.8205	amazing	amazingly
+stress-232	amazing	0.15	0	23.7408	amazing	amazingly	amassing
+stress-233	amazing	0.3	0	19.3204	amazing	amazingly
+stress-234	amazing	0	0	21.5453	amazing	amazingly
+stress-235	amazing	0.15	0	23.7453	amazing	amazingly	amassing
+stress-236	amazing	0.3	0	19.7602	amazing	amazingly
+stress-237	amazing	0	0	21.2572	amazing	amazingly
+stress-238	amazing	0.15	0	23.7548	amazing	amazingly	amassing
+stress-239	amazing	0.3	0	22.0181	amazing	amazingly
+stress-240	amazing	0	0	25.223	amazing	amazingly
+stress-241	amazing	0.15	0	23.9518	amazing	amazingly	amassing
+stress-242	amazing	0.3	0	19.5455	amazing	amazingly
+stress-243	amazing	0	0	21.835	amazing	amazingly
+stress-244	amazing	0.15	0	23.967	amazing	amazingly	amassing
+stress-245	amazing	0.3	0	22.0525	amazing	amazingly
+stress-246	amazing	0	0	24.1119	amazing	amazingly
+stress-247	amazing	0.15	0	24.3425	amazing	amazingly	amassing
+stress-248	amazing	0.3	0	21.2345	amazing	amazingly
+stress-249	amazing	0	0	21.9579	amazing	amazingly
+stress-250	amazing	0.15	0	24.5535	amazing	amazingly	amassing
+stress-251	amazing	0.3	0	20.9321	amazing	amazingly
+stress-252	amazing	0	0	26.012	amazing	amazingly
+stress-253	amazing	0.15	0	24.2479	amazing	amazingly	amassing
+stress-254	amazing	0.3	0	19.1727	amazing	amazingly
+stress-255	amazing	0	0	21.6026	amazing	amazingly
+stress-256	amazing	0.15	0	25.5262	amazing	amazingly	amassing
+stress-257	amazing	0.3	0	20.4117	amazing	amazingly
+stress-258	amazing	0	0	21.7109	amazing	amazingly
+stress-259	amazing	0.15	0	24.3108	amazing	amazingly	amassing
+stress-260	amazing	0.3	0	19.2697	amazing	amazingly
+stress-261	amazing	0	0	21.595	amazing	amazingly
+stress-262	amazing	0.15	0	24.727	amazing	amazingly	amassing
+stress-263	amazing	0.3	0	21.1728	amazing	amazingly
+stress-264	amazing	0	0	26.3044	amazing	amazingly
+stress-265	amazing	0.15	0	25.7666	amazing	amazingly	amassing
+stress-266	amazing	0.3	0	19.7215	amazing	amazingly
+stress-267	amazing	0	0	21.942	amazing	amazingly
+stress-268	amazing	0.15	0	23.9521	amazing	amazingly	amassing
+stress-269	amazing	0.3	0	19.8024	amazing	amazingly
+stress-270	amazing	0	0	27.4083	amazing	amazingly
+stress-271	amazing	0.15	0	24.1166	amazing	amazingly	amassing
+stress-272	amazing	0.3	0	19.2653	amazing	amazingly
+stress-273	amazing	0	0	22.1417	amazing	amazingly
+stress-274	amazing	0.15	0	23.9438	amazing	amazingly	amassing
+stress-275	amazing	0.3	0	19.8261	amazing	amazingly
+stress-276	amazing	0	0	22.0076	amazing	amazingly
+stress-277	amazing	0.15	0	23.8841	amazing	amazingly	amassing
+stress-278	amazing	0.3	0	19.8183	amazing	amazingly
+stress-279	amazing	0	0	21.8033	amazing	amazingly
+stress-280	amazing	0.15	0	23.7704	amazing	amazingly	amassing
+stress-281	amazing	0.3	0	18.9432	amazing	amazingly
+stress-282	amazing	0	0	22.0597	amazing	amazingly
+stress-283	amazing	0.15	0	32.7375	amazing	amazingly	amassing
+stress-284	amazing	0.3	0	19.4193	amazing	amazingly
+stress-285	amazing	0	0	21.6002	amazing	amazingly
+stress-286	amazing	0.15	0	24.2249	amazing	amazingly	amassing
+stress-287	amazing	0.3	0	19.3824	amazing	amazingly
+stress-288	amazing	0	0	21.41	amazing	amazingly
+stress-289	amazing	0.15	0	23.3492	amazing	amazingly	amassing
+stress-290	amazing	0.3	0	18.8574	amazing	amazingly
+stress-291	amazing	0	0	21.4597	amazing	amazingly
+stress-292	amazing	0.15	0	23.489	amazing	amazingly	amassing
+stress-293	amazing	0.3	0	19.0421	amazing	amazingly
+stress-294	amazing	0	0	21.3465	amazing	amazingly
+stress-295	amazing	0.15	0	24.0923	amazing	amazingly	amassing
+stress-296	amazing	0.3	0	18.9367	amazing	amazingly
+stress-297	amazing	0	0	21.1301	amazing	amazingly
+stress-298	amazing	0.15	0	23.7707	amazing	amazingly	amassing
+stress-299	amazing	0.3	0	18.7785	amazing	amazingly
+stress-300	amazing	0	0	21.1668	amazing	amazingly
+stress-301	amazing	0.15	0	24.9744	amazing	amazingly	amassing
+stress-302	amazing	0.3	0	19.4051	amazing	amazingly
+stress-303	amazing	0	0	21.603	amazing	amazingly
+stress-304	amazing	0.15	0	24.466	amazing	amazingly	amassing
+stress-305	amazing	0.3	0	19.106	amazing	amazingly
+stress-306	airborne	0	0	21.8966	airborne
+stress-307	airborne	0.15	0	22.3194	airborne
+stress-308	airborne	0.3	0	24.6542	airborne
+stress-309	airborne	0	0	21.701	airborne
+stress-310	airborne	0.15	0	22.6084	airborne
+stress-311	airborne	0.3	0	24.077	airborne
+stress-312	others	0	0	17.6599	others	otherwise	outlets
+stress-313	others	0.15	0	18.8877	others	owners	otherwise
+stress-314	others	0.3	0	25.3368	others	outlets	papers
+stress-315	others	0	0	17.4791	others	otherwise	outlets
+stress-316	others	0.15	0	19.9326	others	owners	otherwise
+stress-317	others	0.3	0	29.8454	others	outlets	papers
+stress-318	inflammatory	0	0	16.2402	inflammatory
+stress-319	inflammatory	0.15	0	17.9468	inflammatory
+stress-320	inflammatory	0.3	0	16.485	inflammatory
+stress-321	inflammatory	0	0	15.9507	inflammatory
+stress-322	inflammatory	0.15	0	16.8388	inflammatory
+stress-323	inflammatory	0.3	0	16.566	inflammatory
+stress-324	dreamt	0	0	21.1534	dreamt	durant	dreamboat
+stress-325	dreamt	0.15	0	21.7305	dreamt	dreamboat	distant
+stress-326	dreamt	0.3	0	22.8959	dreamt	dreamy	dreamboat
+stress-327	dreamt	0	0	19.9553	dreamt	durant	dreamboat
+stress-328	dreamt	0.15	0	20.7044	dreamt	dreamboat	distant
+stress-329	dreamt	0.3	0	22.4603	dreamt	dreamy	dreamboat
+stress-330	dreamt	0	0	20.2161	dreamt	durant	dreamboat
+stress-331	dreamt	0.15	0	20.6457	dreamt	dreamboat	distant
+stress-332	dreamt	0.3	0	22.8817	dreamt	dreamy	dreamboat
+stress-333	predictable	0	0	24.9962	predictable
+stress-334	predictable	0.15	0	25.0278	predictable
+stress-335	predictable	0.3	0	25.5544	predictable
+stress-336	predictable	0	0	22.3773	predictable
+stress-337	predictable	0.15	0	26.0405	predictable
+stress-338	predictable	0.3	0	24.802	predictable
+stress-339	interview	0	0	17.0649	interview	interviews	intercourse
+stress-340	interview	0.15	0	18.7855	interview	interviews	interviewee
+stress-341	interview	0.3	0	23.0942	interview	interviews	interviewed
+stress-342	interview	0	0	16.7007	interview	interviews	intercourse
+stress-343	interview	0.15	0	18.2066	interview	interviews	interviewee
+stress-344	interview	0.3	0	20.0503	interview	interviews	interviewed
+stress-345	independent	0	0	19.0887	independent	independently
+stress-346	independent	0.15	0	18.8447	independent	independently
+stress-347	independent	0.3	0	18.1885	independent	independently
+stress-348	independent	0	0	18.7846	independent	independently
+stress-349	independent	0.15	0	18.8913	independent	independently
+stress-350	independent	0.3	0	18.0925	independent	independently
+stress-351	independent	0	0	18.1882	independent	independently
+stress-352	independent	0.15	0	18.5684	independent	independently
+stress-353	independent	0.3	0	18.0345	independent	independently
+stress-354	independent	0	0	18.214	independent	independently
+stress-355	independent	0.15	0	18.6256	independent	independently
+stress-356	independent	0.3	0	18.4871	independent	independently
+stress-357	independent	0	0	18.674	independent	independently
+stress-358	independent	0.15	0	18.8529	independent	independently
+stress-359	independent	0.3	0	17.9934	independent	independently
+stress-360	independent	0	0	18.1	independent	independently
+stress-361	independent	0.15	0	18.615	independent	independently
+stress-362	independent	0.3	0	17.988	independent	independently
+stress-363	independent	0	0	18.1714	independent	independently
+stress-364	independent	0.15	0	18.6815	independent	independently
+stress-365	independent	0.3	0	17.8386	independent	independently
+stress-366	independent	0	0	18.0541	independent	independently
+stress-367	independent	0.15	0	18.7273	independent	independently
+stress-368	independent	0.3	0	18.2351	independent	independently
+stress-369	independent	0	0	18.1312	independent	independently
+stress-370	independent	0.15	0	19.4915	independent	independently
+stress-371	independent	0.3	0	22.9042	independent	independently
+stress-372	independent	0	0	28.324	independent	independently
+stress-373	independent	0.15	0	23.7228	independent	independently
+stress-374	independent	0.3	0	19.1777	independent	independently
+stress-375	independent	0	0	21.8571	independent	independently
+stress-376	independent	0.15	0	19.8252	independent	independently
+stress-377	independent	0.3	0	20.5802	independent	independently
+stress-378	independent	0	0	18.8538	independent	independently
+stress-379	independent	0.15	0	19.8199	independent	independently
+stress-380	independent	0.3	0	18.6682	independent	independently
+stress-381	independent	0	0	18.9789	independent	independently
+stress-382	independent	0.15	0	19.5967	independent	independently
+stress-383	independent	0.3	0	23.3445	independent	independently
+stress-384	independent	0	0	22.705	independent	independently
+stress-385	independent	0.15	0	21.2799	independent	independently
+stress-386	independent	0.3	0	21.3634	independent	independently
+stress-387	independent	0	0	21.0576	independent	independently
+stress-388	independent	0.15	0	19.0276	independent	independently
+stress-389	independent	0.3	0	18.7702	independent	independently
+stress-390	independent	0	0	20.2487	independent	independently
+stress-391	independent	0.15	0	24.7567	independent	independently
+stress-392	independent	0.3	0	22.6509	independent	independently
+stress-393	independent	0	0	20.3407	independent	independently
+stress-394	independent	0.15	0	22.3577	independent	independently
+stress-395	independent	0.3	0	18.6351	independent	independently
+stress-396	independent	0	0	18.7665	independent	independently
+stress-397	independent	0.15	0	19.8951	independent	independently
+stress-398	independent	0.3	0	20.6508	independent	independently
+stress-399	independent	0	0	20.9143	independent	independently
+stress-400	independent	0.15	0	22.52	independent	independently
+stress-401	independent	0.3	0	18.3702	independent	independently
+stress-402	independent	0	0	18.8225	independent	independently
+stress-403	independent	0.15	0	19.8968	independent	independently
+stress-404	independent	0.3	0	18.7913	independent	independently
+stress-405	independent	0	0	19.973	independent	independently
+stress-406	independent	0.15	0	20.7258	independent	independently
+stress-407	independent	0.3	0	21.6541	independent	independently
+stress-408	independent	0	0	19.2952	independent	independently
+stress-409	independent	0.15	0	19.9535	independent	independently
+stress-410	independent	0.3	0	18.7147	independent	independently
+stress-411	independent	0	0	18.3346	independent	independently
+stress-412	independent	0.15	0	18.8191	independent	independently
+stress-413	independent	0.3	0	18.0678	independent	independently
+stress-414	independent	0	0	18.8406	independent	independently
+stress-415	independent	0.15	0	19.0435	independent	independently
+stress-416	independent	0.3	0	18.2025	independent	independently
+stress-417	independent	0	0	18.713	independent	independently
+stress-418	independent	0.15	0	19.1805	independent	independently
+stress-419	independent	0.3	0	18.798	independent	independently
+stress-420	independent	0	0	18.2937	independent	independently
+stress-421	independent	0.15	0	18.9672	independent	independently
+stress-422	independent	0.3	0	19.2469	independent	independently
+stress-423	chiropractic	0	0	26.8975	chiropractic
+stress-424	chiropractic	0.15	0	24.6751	chiropractic
+stress-425	chiropractic	0.3	0	27.4917	chiropractic
+stress-426	recent	0	0	17.828	recent	recently	resident
+stress-427	recent	0.15	0	18.6058	recent	recently	transparent
+stress-428	recent	0.3	0	23.0787	recent	recently	revenant
+stress-429	recent	0	0	18.2752	recent	recently	resident
+stress-430	recent	0.15	0	18.4575	recent	recently	transparent
+stress-431	recent	0.3	0	23.0908	recent	recently	revenant
+stress-432	cartoonish	0	0	19.3452	cartoonish
+stress-433	cartoonish	0.15	0	20.0527	cartoonish
+stress-434	cartoonish	0.3	0	23.7858	cartoonish
+stress-435	intelligent	0	0	17.4611	intelligent	intelligently
+stress-436	intelligent	0.15	0	19.5325	intelligent	intelligently
+stress-437	intelligent	0.3	0	19.3772	intelligent	intelligently
+stress-438	intelligent	0	0	17.5963	intelligent	intelligently
+stress-439	intelligent	0.15	0	19.4877	intelligent	intelligently
+stress-440	intelligent	0.3	0	23.1988	intelligent	intelligently
+stress-441	intelligent	0	0	19.961	intelligent	intelligently
+stress-442	intelligent	0.15	0	21.0024	intelligent	intelligently
+stress-443	intelligent	0.3	0	23.0743	intelligent	intelligently
+stress-444	intelligent	0	0	18.0375	intelligent	intelligently
+stress-445	intelligent	0.15	0	20.1159	intelligent	intelligently
+stress-446	intelligent	0.3	0	21.8653	intelligent	intelligently
+stress-447	intelligent	0	0	18.2692	intelligent	intelligently
+stress-448	intelligent	0.15	0	20.2034	intelligent	intelligently
+stress-449	intelligent	0.3	0	19.7762	intelligent	intelligently
+stress-450	intelligent	0	0	17.6731	intelligent	intelligently
+stress-451	intelligent	0.15	0	19.6923	intelligent	intelligently
+stress-452	intelligent	0.3	0	20.3472	intelligent	intelligently
+stress-453	procedure	0	0	24.2306	procedure	procedures	processor
+stress-454	procedure	0.15	0	23.5672	procedure	procedures	processor
+stress-455	procedure	0.3	0	25.4335	procedure	procedures	processor
+stress-456	steroid	0	0	27.9472	steroid	stepdad	steps
+stress-457	steroid	0.15	0	28.7248	steroid	stepdad	steps
+stress-458	steroid	0.3	2	28.471	stepdad	steps	steroid
+stress-459	steroid	0	0	23.5339	steroid	stepdad	steps
+stress-460	steroid	0.15	0	25.7378	steroid	stepdad	steps
+stress-461	steroid	0.3	2	29.8669	stepdad	steps	steroid
+stress-462	steroid	0	0	79.5193	steroid	stepdad	steps
+stress-463	steroid	0.15	0	40.8765	steroid	stepdad	steps
+stress-464	steroid	0.3	2	24.395	stepdad	steps	steroid
+stress-465	steroid	0	0	23.4511	steroid	stepdad	steps
+stress-466	steroid	0.15	0	24.1373	steroid	stepdad	steps
+stress-467	steroid	0.3	2	24.8643	stepdad	steps	steroid
+stress-468	asparagus	0	0	25.9682	asparagus	spartacus
+stress-469	asparagus	0.15	0	26.2082	asparagus	spartacus
+stress-470	asparagus	0.3	0	26.6625	asparagus
+stress-471	asparagus	0	0	26.5873	asparagus	spartacus
+stress-472	asparagus	0.15	0	25.5426	asparagus	spartacus
+stress-473	asparagus	0.3	0	24.831	asparagus
+stress-474	ensconced	0	0	19.6107	ensconced	ensconces	ensconce
+stress-475	ensconced	0.15	0	20.9278	ensconced	ensconces	ensconce
+stress-476	ensconced	0.3	0	22.5083	ensconced	ensconces	ensconce
+stress-477	ensconced	0	0	19.7294	ensconced	ensconces	ensconce
+stress-478	ensconced	0.15	0	20.923	ensconced	ensconces	ensconce
+stress-479	ensconced	0.3	0	22.2561	ensconced	ensconces	ensconce
+stress-480	ensconced	0	0	20.6368	ensconced	ensconces	ensconce
+stress-481	ensconced	0.15	0	21.1555	ensconced	ensconces	ensconce
+stress-482	ensconced	0.3	0	22.0804	ensconced	ensconces	ensconce
+stress-483	accommodations	0	0	17.5521	accommodations
+stress-484	accommodations	0.15	0	20.796	accommodations
+stress-485	accommodations	0.3	0	18.2876	accommodations
+stress-486	accommodations	0	0	16.8493	accommodations
+stress-487	accommodations	0.15	0	19.457	accommodations
+stress-488	accommodations	0.3	0	17.4331	accommodations
+stress-489	accommodations	0	0	17.397	accommodations
+stress-490	accommodations	0.15	0	19.7864	accommodations
+stress-491	accommodations	0.3	0	18.0453	accommodations
+stress-492	accommodations	0	0	16.8289	accommodations
+stress-493	accommodations	0.15	0	20.1136	accommodations
+stress-494	accommodations	0.3	0	18.2032	accommodations
+stress-495	billiards	0	0	19.9032	billiards	billboards	billboard
+stress-496	billiards	0.15	0	18.4864	billiards	billboards	biologists
+stress-497	billiards	0.3	0	24.5548	billiards	billboards	billboard
+stress-498	billiards	0	0	18.9385	billiards	billboards	billboard
+stress-499	billiards	0.15	0	19.085	billiards	billboards	biologists
+stress-500	billiards	0.3	0	25.3144	billiards	billboards	billboard
+stress-501	finished	0	0	18.1635	finished	diminished	finishes
+stress-502	finished	0.15	0	19.3667	finished	diminished	finishes
+stress-503	finished	0.3	0	22.8588	finished	cupboard	finalised
+stress-504	finished	0	0	17.9431	finished	diminished	finishes
+stress-505	finished	0.15	0	18.9458	finished	diminished	finishes
+stress-506	finished	0.3	0	21.4507	finished	cupboard	finalised
+stress-507	finished	0	0	17.821	finished	diminished	finishes
+stress-508	finished	0.15	0	19.1457	finished	diminished	finishes
+stress-509	finished	0.3	0	23.1484	finished	cupboard	finalised
+stress-510	finished	0	0	19.9496	finished	diminished	finishes
+stress-511	finished	0.15	0	18.8494	finished	diminished	finishes
+stress-512	finished	0.3	0	21.2485	finished	cupboard	finalised
+stress-513	finished	0	0	17.8982	finished	diminished	finishes
+stress-514	finished	0.15	0	18.7004	finished	diminished	finishes
+stress-515	finished	0.3	0	21.0574	finished	cupboard	finalised
+stress-516	finished	0	0	17.7055	finished	diminished	finishes
+stress-517	finished	0.15	0	18.7964	finished	diminished	finishes
+stress-518	finished	0.3	0	21.4902	finished	cupboard	finalised
+stress-519	finished	0	0	19.0632	finished	diminished	finishes
+stress-520	finished	0.15	0	19.642	finished	diminished	finishes
+stress-521	finished	0.3	0	21.653	finished	cupboard	finalised
+stress-522	finished	0	0	17.9399	finished	diminished	finishes
+stress-523	finished	0.15	0	18.8932	finished	diminished	finishes
+stress-524	finished	0.3	0	21.5653	finished	cupboard	finalised
+stress-525	finished	0	0	18.536	finished	diminished	finishes
+stress-526	finished	0.15	0	19.0993	finished	diminished	finishes
+stress-527	finished	0.3	0	21.5321	finished	cupboard	finalised
+stress-528	finished	0	0	17.866	finished	diminished	finishes
+stress-529	finished	0.15	0	19.1693	finished	diminished	finishes
+stress-530	finished	0.3	0	22.0166	finished	cupboard	finalised
+stress-531	finished	0	0	18.2933	finished	diminished	finishes
+stress-532	finished	0.15	0	18.6962	finished	diminished	finishes
+stress-533	finished	0.3	0	21.422	finished	cupboard	finalised
+stress-534	finished	0	0	17.756	finished	diminished	finishes
+stress-535	finished	0.15	0	18.8007	finished	diminished	finishes
+stress-536	finished	0.3	0	21.5467	finished	cupboard	finalised
+stress-537	finished	0	0	17.6953	finished	diminished	finishes
+stress-538	finished	0.15	0	18.8386	finished	diminished	finishes
+stress-539	finished	0.3	0	21.3453	finished	cupboard	finalised
+stress-540	finished	0	0	17.7146	finished	diminished	finishes
+stress-541	finished	0.15	0	18.6665	finished	diminished	finishes
+stress-542	finished	0.3	0	21.5793	finished	cupboard	finalised
+stress-543	finished	0	0	17.7721	finished	diminished	finishes
+stress-544	finished	0.15	0	18.904	finished	diminished	finishes
+stress-545	finished	0.3	0	21.3896	finished	cupboard	finalised
+stress-546	finished	0	0	17.6723	finished	diminished	finishes
+stress-547	finished	0.15	0	18.763	finished	diminished	finishes
+stress-548	finished	0.3	0	21.1339	finished	cupboard	finalised
+stress-549	finished	0	0	17.6882	finished	diminished	finishes
+stress-550	finished	0.15	0	18.6462	finished	diminished	finishes
+stress-551	finished	0.3	0	21.0125	finished	cupboard	finalised
+stress-552	finished	0	0	17.6433	finished	diminished	finishes
+stress-553	finished	0.15	0	18.5203	finished	diminished	finishes
+stress-554	finished	0.3	0	21.3006	finished	cupboard	finalised
+stress-555	finished	0	0	18.1543	finished	diminished	finishes
+stress-556	finished	0.15	0	18.8916	finished	diminished	finishes
+stress-557	finished	0.3	0	21.1047	finished	cupboard	finalised
+stress-558	finished	0	0	17.4182	finished	diminished	finishes
+stress-559	finished	0.15	0	18.612	finished	diminished	finishes
+stress-560	finished	0.3	0	21.245	finished	cupboard	finalised
+stress-561	tenants	0	0	19.4003	tenants	remnants	revenants
+stress-562	tenants	0.15	0	19.283	tenants	remnants	renamed
+stress-563	tenants	0.3	0	22.6143	tenants	remnants	renamed
+stress-564	tenants	0	0	18.931	tenants	remnants	revenants
+stress-565	tenants	0.15	0	21.5957	tenants	remnants	renamed
+stress-566	tenants	0.3	0	22.9297	tenants	remnants	renamed
+stress-567	tenants	0	0	19.0504	tenants	remnants	revenants
+stress-568	tenants	0.15	0	19.4587	tenants	remnants	renamed
+stress-569	tenants	0.3	0	22.7437	tenants	remnants	renamed
+stress-570	tenants	0	0	18.7267	tenants	remnants	revenants
+stress-571	tenants	0.15	0	18.7644	tenants	remnants	renamed
+stress-572	tenants	0.3	0	22.7049	tenants	remnants	renamed
+stress-573	tenants	0	0	18.7272	tenants	remnants	revenants
+stress-574	tenants	0.15	0	19.2421	tenants	remnants	renamed
+stress-575	tenants	0.3	0	22.6665	tenants	remnants	renamed
+stress-576	tenants	0	0	18.564	tenants	remnants	revenants
+stress-577	tenants	0.15	0	18.9827	tenants	remnants	renamed
+stress-578	tenants	0.3	0	22.3892	tenants	remnants	renamed
+stress-579	tenants	0	0	18.8301	tenants	remnants	revenants
+stress-580	tenants	0.15	0	19.2003	tenants	remnants	renamed
+stress-581	tenants	0.3	0	22.6612	tenants	remnants	renamed
+stress-582	tenants	0	0	18.6832	tenants	remnants	revenants
+stress-583	tenants	0.15	0	18.7937	tenants	remnants	renamed
+stress-584	tenants	0.3	0	22.9724	tenants	remnants	renamed
+stress-585	tenants	0	0	18.5798	tenants	remnants	revenants
+stress-586	tenants	0.15	0	18.6265	tenants	remnants	renamed
+stress-587	tenants	0.3	0	22.371	tenants	remnants	renamed
+stress-588	tenants	0	0	18.5222	tenants	remnants	revenants
+stress-589	tenants	0.15	0	19.0204	tenants	remnants	renamed
+stress-590	tenants	0.3	0	22.6539	tenants	remnants	renamed
+stress-591	tenants	0	0	18.5652	tenants	remnants	revenants
+stress-592	tenants	0.15	0	18.7978	tenants	remnants	renamed
+stress-593	tenants	0.3	0	22.2215	tenants	remnants	renamed
+stress-594	tenants	0	0	20.355	tenants	remnants	revenants
+stress-595	tenants	0.15	0	19.2963	tenants	remnants	renamed
+stress-596	tenants	0.3	0	22.6149	tenants	remnants	renamed
+stress-597	tenants	0	0	18.8392	tenants	remnants	revenants
+stress-598	tenants	0.15	0	19.1363	tenants	remnants	renamed
+stress-599	tenants	0.3	0	22.7187	tenants	remnants	renamed

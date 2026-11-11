@@ -1,0 +1,1 @@
+{"python": "3.11.15 (main, Mar 11 2026, 17:14:47) [Clang 20.1.8 ]", "packages": {"torch": "2.11.0", "sentencepiece": "0.2.1", "numpy": "2.4.3", "pyarrow": "25.0.1"}}

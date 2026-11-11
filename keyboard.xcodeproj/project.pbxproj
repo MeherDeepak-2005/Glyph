@@ -147,7 +147,6 @@
 				"Engine/Vocabulary/LangData+PackedTrie.swift",
 				Engine/Vocabulary/ModifiedKneserNeyModel.swift,
 				english_layout.kbpack,
-				langdata.bin,
 				safety.kbguard,
 				Shared/HostDocumentReconciler.swift,
 				Shared/KBClipboard.swift,
@@ -514,16 +513,22 @@
 				"$(SRCROOT)/tools/lm/install_internal_gru.sh",
 				"$(SRCROOT)/tools/nss/install_nss.sh",
 				"$(NSS_MODEL)",
+				"$(NSS_DICTIONARY_DIR)/english-unigram.bin",
+				"$(NSS_DICTIONARY_DIR)/english-unigram.kbmodern",
+				"$(NSS_DICTIONARY_DIR)/bundle.sha256",
+				"$(NSS_DICTIONARY_DIR)/model.sha256",
 			);
 			name = "Install Neural Models";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/nss-english.nsslm",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/langdata.bin",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/langdata.kbmodern",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# The GRU installer self-gates on INTERNAL_GRU_ENABLED; the NSS installer bundles the\n# English word model unless NSS_ENABLED=NO.\n\"${SRCROOT}/tools/lm/install_internal_gru.sh\"\n\"${SRCROOT}/tools/nss/install_nss.sh\"\n";
+			shellScript = "# The GRU installer self-gates on INTERNAL_GRU_ENABLED; the NSS installer bundles the\n# paired English CIFG model and unigram dictionary.\n\"${SRCROOT}/tools/lm/install_internal_gru.sh\"\n\"${SRCROOT}/tools/nss/install_nss.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

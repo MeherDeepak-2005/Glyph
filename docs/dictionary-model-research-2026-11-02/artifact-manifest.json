@@ -1,0 +1,118 @@
+{
+  "status": "research only; no promotion",
+  "artifacts": [
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/langdata-candidate.bin",
+      "bytes": 28312535,
+      "sha256": "7b97efd17ab2c50663b26075ca87dc64a9626adea72d92b834b767204d84488d"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/word-gru.nsslm",
+      "bytes": 2767184,
+      "sha256": "485703384bce68e32dbe2c1d6f308428a2d4e6b61a5f29c3d9fd17940c84b1d3"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/sentencepiece-6000.model",
+      "bytes": 105943,
+      "sha256": "3631899b930bee58b44c3932604af6fa6e42a48ed45128a13c5c30425a230aad"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/word-cifg.best.pt",
+      "bytes": 8266793,
+      "sha256": "8e27855203bc324fbf0fd1885d134af593b8dba0ff4cf49c8a19a24717a54e3a"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/word-gru.best.pt",
+      "bytes": 8859935,
+      "sha256": "b5e053919d664eef014bc53538b6d7d302db8293702b407164eaca8f2708ee7b"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/sp-lstm.best.pt",
+      "bytes": 3220753,
+      "sha256": "5b8cb1121b89b546d8e59ef530f225c2f9a21bf03fafb8bf8c1278cdd075afb4"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/sp-gru.best.pt",
+      "bytes": 3517957,
+      "sha256": "329cc5d204cb0a3e10ac335a6e169bc51d7079135896103239f89db1be1949cb"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/sp-transformer.best.pt",
+      "bytes": 3746756,
+      "sha256": "1dfe548d17f0609d6b5c4483dc21a7803ad225721119c088591024b0e9991b88"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs/warm-chat.best.pt",
+      "bytes": 13454441,
+      "sha256": "d3edca1297800b58516dc00f1ed717eb53708ae445cfda9644545ae9dafa16c6"
+    },
+    {
+      "path": "tools/.cache/dictionary-research-2026-11-02/runs-control/warm-chat-control.best.pt",
+      "bytes": 13454537,
+      "sha256": "028cb2197beeae572b063bea937b35984c543763c001c793b7e90478cf8c0fd6"
+    }
+  ],
+  "code": [
+    {
+      "path": "tools/nss/research_2026_11_02/audit_dictionary.py",
+      "sha256": "9be27ce2a19e27193042049377cbf242c13e57c0b471bdf976c255f22992eb0b"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/build_candidate_pack.py",
+      "sha256": "a13a228cceae48e1c45a2c247cffec1aaf5f16d92f8407ea8038e46326d4766a"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/build_parity.py",
+      "sha256": "5afc944c3e9bd991444d10ac4f50f3932154b98f143f8bc1538f9e53491a53da"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/check_splits.py",
+      "sha256": "6884b6d5526d850b570f371cb805d90de699b466f5053c84c4e966343397b013"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/evaluate_candidates.py",
+      "sha256": "ecb1196a33dfc0473f16c3ae7dde93844289805cc1dc5d7f969102d8cde30fc1"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/evaluate_dictionary.py",
+      "sha256": "2db247edfeb63045f7a7a0720ad7539d66bcfb2285b9fc5726779ea41961016a"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/export_recurrent.py",
+      "sha256": "3448a780ffb1b8801b268c52fc909f6bcf002c293e67e86d5f966f473cfe1ca9"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/fetch_modern.py",
+      "sha256": "2510c5cd6b8a66d21db78a79fbd781ee6aa568913f3a163a5425962fceb5deed"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/merge_control.py",
+      "sha256": "a55bb499bc2a3ccd9ee2b1c8f0a2ac1e0ae7b947a4aa5e351211c949eb0bb127"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/summarize_decoder.py",
+      "sha256": "00e9e531d2e78f28cce6b4645fd215eb4eab3955a60d1af48a00bea7c6b651fd"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/test_research.py",
+      "sha256": "1e1d4c99392b8795a99e32c022d5537dfc1837302c9ab5b2b54185d10d080ceb"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/train_challengers.py",
+      "sha256": "bac14c875f1cf85234cb2338f475e2e809e4119354590f76ec8916d058b3bb50"
+    },
+    {
+      "path": "tools/nss/research_2026_11_02/verify_research.py",
+      "sha256": "6e2e492e6f342f70be0da33e03725c8c8c0a7215be34a15fd5ebd9c3365fdef2"
+    }
+  ],
+  "environment": {
+    "python": "3.11.15 (main, Mar 11 2026, 17:14:47) [Clang 20.1.8 ]",
+    "packages": {
+      "torch": "2.11.0",
+      "sentencepiece": "0.2.1",
+      "numpy": "2.4.3",
+      "pyarrow": "25.0.1"
+    }
+  }
+}

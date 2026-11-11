@@ -1,0 +1,10 @@
+tatoeba.train: 1,711,243 sentences, 12,618,611 words, unk 3.19%, lexicon share of unk 26.44%
+tatoeba.valid: 8,774 sentences, 64,712 words, unk 3.13%, lexicon share of unk 26.28%
+tatoeba.test: 8,651 sentences, 64,926 words, unk 3.24%, lexicon share of unk 27.28%
+wikitext.train: 4,032,168 sentences, 81,316,141 words, unk 6.40%, lexicon share of unk 45.86%
+wikitext.valid: 19,770 sentences, 394,080 words, unk 6.62%, lexicon share of unk 47.19%
+wikitext.test: 20,718 sentences, 421,600 words, unk 6.85%, lexicon share of unk 44.80%
+soda.train: 18,896,758 sentences, 145,075,791 words, unk 0.81%, lexicon share of unk 30.92%
+soda.valid: 95,380 sentences, 733,715 words, unk 0.78%, lexicon share of unk 32.04%
+soda.test: 95,050 sentences, 730,914 words, unk 0.79%, lexicon share of unk 31.57%
+masc.test: 7,078 sentences, 65,244 words, unk 4.14%

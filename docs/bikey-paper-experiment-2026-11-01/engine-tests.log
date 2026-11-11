@@ -1,0 +1,4 @@
+Safety lexicon: 997 entries, lookups, penalties, ordering/hash validation and truncation passed
+Blocked generation: 279 dictionary words excluded from search, completions, seeds and successors; typed literal kept; blocked-aimed typos left alone
+Shared engine matches 132 iOS decode goldens and 60 iOS streaming Glide goldens
+Shared engine, snapshot ownership, deterministic ties, serialization, reset/reuse and cancellation passed

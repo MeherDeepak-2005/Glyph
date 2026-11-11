@@ -1,0 +1,235 @@
+{
+  "method": "685 fixed requests (586 typed words, 99 next-word cases), every next-word prefix, two sequential forward/reverse runs per arm; per-case means before percentiles; no quality jobs concurrent. Desktop host only.",
+  "tap": {
+    "current": {
+      "word": {
+        "n": 586,
+        "p50": 7.49929,
+        "p95": 10.7925,
+        "p99": 12.70875,
+        "p95_ratio": 1.0,
+        "latency_failed": false
+      },
+      "next_word": {
+        "n": 99,
+        "p50": 1.5255450000000002,
+        "p95": 1.820315,
+        "p99": 2.030205,
+        "p95_ratio": 1.0,
+        "latency_failed": false
+      },
+      "keystroke": {
+        "n": 407,
+        "p50": 1.3570000000000002,
+        "p95": 2.386045,
+        "p99": 2.72706,
+        "p95_ratio": 1.0,
+        "latency_failed": false
+      },
+      "peak_rss_mib": 68.953125
+    },
+    "paper_g": {
+      "word": {
+        "n": 586,
+        "p50": 11.01815,
+        "p95": 15.816099999999999,
+        "p99": 18.08105,
+        "p95_ratio": 1.4654713921704885,
+        "latency_failed": true
+      },
+      "next_word": {
+        "n": 99,
+        "p50": 2.75404,
+        "p95": 3.42779,
+        "p99": 3.653585,
+        "p95_ratio": 1.8830751820426685,
+        "latency_failed": true
+      },
+      "keystroke": {
+        "n": 407,
+        "p50": 1.619125,
+        "p95": 3.1133100000000002,
+        "p99": 3.568085,
+        "p95_ratio": 1.3047993646389737,
+        "latency_failed": true
+      },
+      "peak_rss_mib": 52.234375
+    },
+    "bikey": {
+      "word": {
+        "n": 586,
+        "p50": 7.77977,
+        "p95": 13.17795,
+        "p99": 19.59635,
+        "p95_ratio": 1.221028492008339,
+        "latency_failed": true
+      },
+      "next_word": {
+        "n": 99,
+        "p50": 1.5110649999999999,
+        "p95": 1.81356,
+        "p99": 2.5897900000000003,
+        "p95_ratio": 0.9962891038089562,
+        "latency_failed": false
+      },
+      "keystroke": {
+        "n": 407,
+        "p50": 1.34477,
+        "p95": 2.4263950000000003,
+        "p99": 2.73923,
+        "p95_ratio": 1.0169108294269387,
+        "latency_failed": false
+      },
+      "peak_rss_mib": 68.8125
+    },
+    "bikey_paper_g": {
+      "word": {
+        "n": 586,
+        "p50": 11.19215,
+        "p95": 17.144599999999997,
+        "p99": 22.49435,
+        "p95_ratio": 1.5885661338892747,
+        "latency_failed": true
+      },
+      "next_word": {
+        "n": 99,
+        "p50": 2.85869,
+        "p95": 3.53371,
+        "p99": 6.359655,
+        "p95_ratio": 1.9412629132869863,
+        "latency_failed": true
+      },
+      "keystroke": {
+        "n": 407,
+        "p50": 1.63319,
+        "p95": 3.1448099999999997,
+        "p99": 3.46575,
+        "p95_ratio": 1.3180011273886283,
+        "latency_failed": true
+      },
+      "peak_rss_mib": 52.28125
+    }
+  },
+  "gesture": {
+    "glide-current": {
+      "n": 60,
+      "top1": 42,
+      "top3": 47
+    },
+    "glide-paper_g": {
+      "n": 60,
+      "top1": 43,
+      "top3": 47
+    },
+    "glide-bikey": {
+      "n": 60,
+      "top1": 60,
+      "top3": 60
+    },
+    "glide-bikey_paper_g": {
+      "n": 60,
+      "top1": 60,
+      "top3": 60
+    },
+    "stress-current": {
+      "n": 600,
+      "top1": 486,
+      "top3": 566,
+      "by_noise": {
+        "0": {
+          "n": 200,
+          "top1": 164,
+          "top3": 182
+        },
+        "0.15": {
+          "n": 200,
+          "top1": 167,
+          "top3": 192
+        },
+        "0.3": {
+          "n": 200,
+          "top1": 155,
+          "top3": 192
+        }
+      }
+    },
+    "stress-paper_g": {
+      "n": 600,
+      "top1": 488,
+      "top3": 561,
+      "by_noise": {
+        "0": {
+          "n": 200,
+          "top1": 158,
+          "top3": 180
+        },
+        "0.15": {
+          "n": 200,
+          "top1": 165,
+          "top3": 189
+        },
+        "0.3": {
+          "n": 200,
+          "top1": 165,
+          "top3": 192
+        }
+      }
+    },
+    "stress-bikey": {
+      "n": 600,
+      "top1": 595,
+      "top3": 600,
+      "by_noise": {
+        "0": {
+          "n": 200,
+          "top1": 200,
+          "top3": 200
+        },
+        "0.15": {
+          "n": 200,
+          "top1": 200,
+          "top3": 200
+        },
+        "0.3": {
+          "n": 200,
+          "top1": 195,
+          "top3": 200
+        }
+      }
+    },
+    "stress-bikey_paper_g": {
+      "n": 600,
+      "top1": 595,
+      "top3": 600,
+      "by_noise": {
+        "0": {
+          "n": 200,
+          "top1": 200,
+          "top3": 200
+        },
+        "0.15": {
+          "n": 200,
+          "top1": 200,
+          "top3": 200
+        },
+        "0.3": {
+          "n": 200,
+          "top1": 195,
+          "top3": 200
+        }
+      }
+    },
+    "timing-current": {
+      "n": 600,
+      "p50": 24.35585,
+      "p95": 25.6614,
+      "p99": 26.81345
+    },
+    "timing-bikey_paper_g": {
+      "n": 600,
+      "p50": 20.6732,
+      "p95": 25.7621,
+      "p99": 28.597099999999998
+    }
+  }
+}

@@ -40,6 +40,9 @@ Engine::Engine(std::shared_ptr<const PackedLexicon> packed, EngineOptions option
         std::shared_ptr<const NeuralWordModel> neural)
     : packed_(std::move(packed)), options_(options), language_(language ? std::move(language) : std::make_shared<const LanguageModel>(packed_.get(), options.smoothing)),
       neural_(std::move(neural)) {
+    if (options_.nssOnly) {
+        options_.raw = true; options_.nssExact = true; options_.nssTypedUnknown = true;
+    }
     if (neural_ || options_.raw) {
         if (!packed_) throw std::invalid_argument("the neural search space needs a packed lexicon");
         neuralLexicon_ = std::make_shared<NeuralLexicon>(*packed_);
@@ -59,6 +62,7 @@ NeuralFst& EngineSession::neuralGraph() {
     return *neuralGraph_;
 }
 std::vector<std::string> EngineSession::nextWords(std::span<const std::string> context, const EngineView& view, std::size_t limit) const {
+    if (engine_->options_.nssOnly) return {}; // NSS predicts through its graph in decodeRaw.
     auto tri = engine_->language_->successors(context, counts(view), true, limit);
     auto bi = engine_->language_->successors(context, counts(view), false, limit);
     return LanguageModel::nextWords(std::move(tri), std::move(bi), limit);
@@ -105,10 +109,25 @@ std::vector<RankedRow> EngineSession::score(std::vector<ChannelCandidate> rows, 
     return rank(std::move(list), typed ? typed->word : "", true);
 }
 DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& view, const CancellationToken* token) {
+    auto out = decodeBase(input, view, token);
+    if (out.status != EngineStatus::ok || !engine_->packed_ || !engine_->packed_->hasModern()) return out;
+    const auto start = Clock::now();
+    const auto& lex = *engine_->packed_;
+    const auto& typed = input.normalized;
+    if (lex.preserves(typed) || (out.correction.word && !lex.allowsCorrection(*out.correction.word))) out.correction = {};
+    if (!engine_->options_.nssOnly) out.suggestions = lex.modernSuggestions(typed, input.context, out.suggestions);
+    std::erase_if(out.suggestions, [&](const auto& w) { return w != typed && view.lexicon.isBlocked(w); });
+    if (!typed.empty()) placeDecision(out, typed, input, lex.preserves(typed) || engine_->options_.raw);
+    if (engine_->options_.profile) out.timings.policy += elapsed(start);
+    if (token && token->cancelled()) { out = {}; out.identity=input.identity; out.status=EngineStatus::cancelled; }
+    return out;
+}
+DecodeOutput EngineSession::decodeBase(const DecodeInput& input, const EngineView& view, const CancellationToken* token) {
     DecodeOutput out; out.identity = input.identity;
     auto cancelled = [&] { return token && token->cancelled(); };
     if (input.language != "en") { out.status = EngineStatus::unsupportedLanguage; return out; }
     const bool neural = input.modelTier == "nss";
+    if (engine_->options_.nssOnly && (!neural || !engine_->neural_)) { out.status = EngineStatus::unsupportedModel; return out; }
     if (input.modelTier != "ngram" && !(neural && engine_->neural_)) { out.status = EngineStatus::unsupportedModel; return out; }
     if (cancelled()) { out.status = EngineStatus::cancelled; return out; }
     if (view.lexicon.packed != engine_->packed_.get()) throw std::invalid_argument("engine/view dictionary mismatch");
@@ -219,6 +238,7 @@ void EngineSession::beginGlide(std::vector<std::string> context) { neuralSearch_
 std::vector<RankedRow> EngineSession::updateGlide(std::span<const Point> path, const GlideLayout& layout, const EngineView& view,
         std::span<const std::string> dynamic, const CancellationToken* token) {
     if (token && token->cancelled()) return {};
+    if (engine_->options_.nssOnly && !engine_->neural_) return {};
     if (!glide_) beginGlide({});
     if (engine_->neural_) {
         neuralGraph();
@@ -235,6 +255,7 @@ std::vector<RankedRow> EngineSession::updateGlide(std::span<const Point> path, c
             if (view.lexicon.isBlocked(row.word)) continue;
             double prior;
             if (auto id = engine_->packed_->wordID(row.word)) prior = neuralGraph_->wordScore(0, std::uint32_t(*id));
+            else if (engine_->options_.nssOnly) prior = neuralGraph_->typedUnknown();
             else { std::vector<std::string> labels{row.word}; prior = engine_->language_->scores(labels, {}, counts(view), view.lexicon)[0]; }
             prior += LanguageModel::personalBoost(row.word, glideContext_, counts(view), view.lexicon);
             auto safety = view.penalty(row.word);

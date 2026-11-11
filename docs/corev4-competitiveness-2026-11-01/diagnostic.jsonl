@@ -1,0 +1,1771 @@
+{"kind":"startup","engine":"ioskeyboard","tier":"nss","words":114283,"startup_ms":73.0105}
+{"kind":"process","at":"after_startup","peak_rss_bytes":39223296,"footprint_bytes":25855040,"heap_in_use_bytes":18353728,"heap_allocated_bytes":46137344}
+{"id":"ext_birkbeck-00112","s":["a sense","absence","absences"],"c":"a sense","ms":23.5443,"ok":1}
+{"id":"ext_birkbeck-00113","s":["spent","apsent","passengers"],"c":"spent","ms":9.34904,"ok":1}
+{"id":"ext_birkbeck-00126","s":["based","absurd","abserd"],"c":"based","ms":8.77567,"ok":1}
+{"id":"ext_birkbeck-00128","s":["absered","aberdeen","answered"],"c":null,"ms":11.2953,"ok":1}
+{"id":"ext_birkbeck-00129","s":["abserid","a series","a serious"],"c":null,"ms":9.85329,"ok":1}
+{"id":"ext_birkbeck-00139","s":["absorb","absurd","absorbed"],"c":"absorb","ms":8.96562,"ok":1}
+{"id":"ext_birkbeck-00142","s":["absurded","a sudden","absurd"],"c":null,"ms":11.6656,"ok":1}
+{"id":"ext_birkbeck-00173","s":["ackseptable","acceptable","acceptableness"],"c":null,"ms":12.1832,"ok":1}
+{"id":"ext_birkbeck-00177","s":["actseptable","acceptable","acceptableness"],"c":null,"ms":13.2126,"ok":1}
+{"id":"ext_birkbeck-00181","s":["axceptiable","acceptable","acceptableness"],"c":null,"ms":6.63546,"ok":1}
+{"id":"ext_birkbeck-00208","s":["acciendent","accident","accidents"],"c":null,"ms":13.944,"ok":1}
+{"id":"ext_birkbeck-00209","s":["accierdent","accident","accidents"],"c":null,"ms":10.7105,"ok":1}
+{"id":"ext_birkbeck-00332","s":["accompaining","accompanying","a complaining"],"c":null,"ms":7.94437,"ok":1}
+{"id":"ext_birkbeck-00334","s":["accompanining","accompanying","a complaining"],"c":null,"ms":18.9006,"ok":1}
+{"id":"ext_birkbeck-00338","s":["accompening","accompanying","as opening"],"c":null,"ms":8.72754,"ok":1}
+{"id":"ext_birkbeck-00341","s":["accompining","accompanying","a complaining"],"c":null,"ms":8.14621,"ok":1}
+{"id":"ext_birkbeck-00344","s":["accomponing","accompanying","accompanied"],"c":null,"ms":8.46813,"ok":1}
+{"id":"ext_birkbeck-00349","s":["acconpaning","accompanying","accompanied"],"c":null,"ms":8.79079,"ok":1}
+{"id":"ext_birkbeck-00350","s":["acconpenying","accompanying","a competing"],"c":null,"ms":9.01908,"ok":1}
+{"id":"ext_birkbeck-00369","s":["accaplished","accomplished","accomplishes"],"c":null,"ms":9.60017,"ok":1}
+{"id":"ext_birkbeck-00423","s":["accrewed","screwed","crewed"],"c":null,"ms":10.9505,"ok":1}
+{"id":"ext_birkbeck-00434","s":["accrueded","accrued","acceded"],"c":null,"ms":10.3878,"ok":1}
+{"id":"ext_birkbeck-00435","s":["accruell","a cruel","a cruelty"],"c":null,"ms":8.2305,"ok":1}
+{"id":"ext_birkbeck-00437","s":["accruide","accrued","accident"],"c":null,"ms":9.10971,"ok":1}
+{"id":"ext_birkbeck-00453","s":["ackruid","according","accrued"],"c":null,"ms":9.04671,"ok":1}
+{"id":"ext_birkbeck-00629","s":["accquaintence","acquaintance","acquaintances"],"c":null,"ms":8.84058,"ok":1}
+{"id":"ext_birkbeck-00642","s":["ackwaintance","acquaintance","acquaintances"],"c":null,"ms":21.5553,"ok":1}
+{"id":"ext_birkbeck-00651","s":["acquanitence","acquaintance","acquaintances"],"c":null,"ms":8.64213,"ok":1}
+{"id":"ext_birkbeck-00655","s":["acquantence","acquaintance","acquaintances"],"c":null,"ms":9.386,"ok":1}
+{"id":"ext_birkbeck-00656","s":["acquantiance","acquaintance","acquaintances"],"c":null,"ms":9.637,"ok":1}
+{"id":"ext_birkbeck-00666","s":["aqquantance","acquaintance","acquaintances"],"c":null,"ms":10.5958,"ok":1}
+{"id":"ext_birkbeck-00669","s":["aquaintence","acquaintance","acquaintances"],"c":null,"ms":9.17696,"ok":1}
+{"id":"ext_birkbeck-00674","s":["aquantance","acquaintance","acquaintances"],"c":null,"ms":9.43179,"ok":1}
+{"id":"ext_birkbeck-00684","s":["aquiese","acquiesce","acquiesced"],"c":null,"ms":7.15704,"ok":1}
+{"id":"ext_birkbeck-00785","s":["adabtable","ada table","adaptable"],"c":null,"ms":11.8646,"ok":1}
+{"id":"ext_birkbeck-00895","s":["admissable","admissible","disabled"],"c":null,"ms":8.92392,"ok":1}
+{"id":"ext_birkbeck-00912","s":["admitted","admitting","admitten"],"c":null,"ms":9.59088,"ok":1}
+{"id":"ext_birkbeck-00915","s":["atmited","admitted","at tide"],"c":null,"ms":12.0126,"ok":1}
+{"id":"ext_birkbeck-00926","s":["advatige","advantage","advantages"],"c":null,"ms":10.6678,"ok":1}
+{"id":"ext_birkbeck-00963","s":["affecianate","affectionate","affectionately"],"c":null,"ms":9.47867,"ok":1}
+{"id":"ext_birkbeck-00968","s":["affectanate","affectionate","affectionately"],"c":null,"ms":10.4373,"ok":1}
+{"id":"ext_birkbeck-00975","s":["affectionant","affectionate","affectionately"],"c":null,"ms":8.17863,"ok":1}
+{"id":"ext_birkbeck-00980","s":["affectionnet","affectionate","affectionately"],"c":null,"ms":8.46417,"ok":1}
+{"id":"ext_birkbeck-00986","s":["affectunate","affectionate","affectionately"],"c":null,"ms":9.23196,"ok":1}
+{"id":"ext_birkbeck-00994","s":["effecionate","affectionate","affectionately"],"c":null,"ms":8.39054,"ok":1}
+{"id":"ext_birkbeck-01021","s":["affecionatly","affectionately","affectionate"],"c":null,"ms":7.28592,"ok":1}
+{"id":"ext_birkbeck-01028","s":["affectinatly","affectionately","affectingly"],"c":null,"ms":7.59479,"ok":1}
+{"id":"ext_birkbeck-01030","s":["affectionally","affectionately","affection ally"],"c":null,"ms":9.54021,"ok":1}
+{"id":"ext_birkbeck-01031","s":["affectionaly","affectionately","affectionate"],"c":null,"ms":7.64246,"ok":1}
+{"id":"ext_birkbeck-01032","s":["affectionantly","affectionately","affectionate"],"c":null,"ms":9.38425,"ok":1}
+{"id":"ext_birkbeck-01035","s":["affectionely","affectionately","affection"],"c":null,"ms":8.372,"ok":1}
+{"id":"ext_birkbeck-01039","s":["affectionlatly","affectionately","affection lately"],"c":null,"ms":8.54767,"ok":1}
+{"id":"ext_birkbeck-01042","s":["affectiontlly","affectionately","affection fly"],"c":null,"ms":9.05042,"ok":1}
+{"id":"ext_birkbeck-01043","s":["affectonatly","affectionately","affectionate"],"c":null,"ms":8.17338,"ok":1}
+{"id":"ext_birkbeck-01050","s":["affestionatly","affectionately","affectionate"],"c":null,"ms":7.05592,"ok":1}
+{"id":"ext_birkbeck-01053","s":["afficionately","affectionately","affectionate"],"c":null,"ms":7.97854,"ok":1}
+{"id":"ext_birkbeck-01082","s":["effectionatly","affectionately","affectionate"],"c":null,"ms":8.60971,"ok":1}
+{"id":"ext_birkbeck-01279","s":["against","aghast","agasti"],"c":"against","ms":6.21729,"ok":1}
+{"id":"ext_birkbeck-01302","s":["life","alice's","alice"],"c":"life","ms":7.54004,"ok":1}
+{"id":"ext_birkbeck-01335","s":["alfpint","alpine","flint"],"c":null,"ms":9.73121,"ok":1}
+{"id":"ext_birkbeck-01336","s":["aline","alkine","talking"],"c":"aline","ms":8.46375,"ok":1}
+{"id":"ext_birkbeck-01370","s":["as","also","some"],"c":"as","ms":5.40238,"ok":1}
+{"id":"ext_birkbeck-01503","s":["alimui","aluminum","ali is"],"c":null,"ms":9.26483,"ok":1}
+{"id":"ext_birkbeck-01537","s":["alumnigh","all night","alumni"],"c":null,"ms":11.4317,"ok":1}
+{"id":"ext_birkbeck-01549","s":["anumny","anonymous","any you"],"c":null,"ms":10.5072,"ok":1}
+{"id":"ext_birkbeck-01570","s":["amberlance","ambulance","ambulances"],"c":null,"ms":13.8946,"ok":1}
+{"id":"ext_birkbeck-01662","s":["alalasis","salas is","tallahassee"],"c":null,"ms":15.0411,"ok":1}
+{"id":"ext_birkbeck-01664","s":["analasys","analysis","analysts"],"c":null,"ms":12.6404,"ok":1}
+{"id":"ext_birkbeck-01665","s":["analasysis","analysis","a analysis"],"c":null,"ms":12.2481,"ok":1}
+{"id":"ext_birkbeck-01669","s":["analyses","analess","analgesic"],"c":"analyses","ms":11.1175,"ok":1}
+{"id":"ext_birkbeck-01673","s":["analicis","analysis","a alicia"],"c":null,"ms":13.4593,"ok":1}
+{"id":"ext_birkbeck-01674","s":["analises","a alice's","analysis"],"c":null,"ms":12.1704,"ok":1}
+{"id":"ext_birkbeck-01675","s":["analisies","analysis","a alice's"],"c":null,"ms":16.0626,"ok":1}
+{"id":"ext_birkbeck-01677","s":["analisise","analysis","banalities"],"c":null,"ms":16.4762,"ok":1}
+{"id":"ext_birkbeck-01680","s":["analissis","analysis","analysis is"],"c":null,"ms":12.958,"ok":1}
+{"id":"ext_birkbeck-01682","s":["analisys","analysis","analysts"],"c":null,"ms":10.2227,"ok":1}
+{"id":"ext_birkbeck-01692","s":["analygus","analysis","analysts"],"c":null,"ms":10.8716,"ok":1}
+{"id":"ext_birkbeck-01694","s":["analyst","analysis","analysts"],"c":"analyst","ms":7.23813,"ok":1}
+{"id":"ext_birkbeck-01697","s":["an analysis","a analysis","ananalysis"],"c":null,"ms":11.0397,"ok":1}
+{"id":"ext_birkbeck-01715","s":["annalasis","analysis","an assistant"],"c":null,"ms":14.1462,"ok":1}
+{"id":"ext_birkbeck-01746","s":["unalisis","analysis","unless"],"c":null,"ms":12.8108,"ok":1}
+{"id":"ext_birkbeck-01776","s":["anerversary","anniversary","anniversary's"],"c":null,"ms":13.8057,"ok":1}
+{"id":"ext_birkbeck-01813","s":["annaversery","anniversary","anniversary's"],"c":null,"ms":13.6298,"ok":1}
+{"id":"ext_birkbeck-01814","s":["annaversiry","anniversary","university's"],"c":null,"ms":13.3449,"ok":1}
+{"id":"ext_birkbeck-01825","s":["anneversery","anniversary","anniversary's"],"c":null,"ms":14.442,"ok":1}
+{"id":"ext_birkbeck-01832","s":["anniverscy","anniversary","anniversaries"],"c":null,"ms":14.4438,"ok":1}
+{"id":"ext_birkbeck-01836","s":["anniverserys","anniversary","anniversary's"],"c":null,"ms":9.39167,"ok":1}
+{"id":"ext_birkbeck-01837","s":["anniversily","university's","anniversary"],"c":null,"ms":15.1856,"ok":1}
+{"id":"ext_birkbeck-01838","s":["anniversiory","anniversary","university's"],"c":null,"ms":10.1103,"ok":1}
+{"id":"ext_birkbeck-01840","s":["university","university's","anniversity"],"c":"university","ms":8.89692,"ok":1}
+{"id":"ext_birkbeck-01841","s":["anniversty","university's","anniversary"],"c":null,"ms":9.67617,"ok":1}
+{"id":"ext_birkbeck-01858","s":["anyversary","anniversary","anniversary's"],"c":null,"ms":13.6543,"ok":1}
+{"id":"ext_birkbeck-02089","s":["antcspating","anticipating","ant spitting"],"c":null,"ms":18.3568,"ok":1}
+{"id":"ext_birkbeck-02091","s":["antiapating","anticipating","anita paying"],"c":null,"ms":11.065,"ok":1}
+{"id":"ext_birkbeck-02099","s":["anticipitating","anticipating","anticipation"],"c":null,"ms":11.1424,"ok":1}
+{"id":"ext_birkbeck-02104","s":["antiecpating","anticipating","a tie paying"],"c":null,"ms":13.3045,"ok":1}
+{"id":"ext_birkbeck-02105","s":["antisapating","anticipating","anticipation"],"c":null,"ms":11.0725,"ok":1}
+{"id":"ext_birkbeck-02111","s":["antisepating","anticipating","anticipation"],"c":null,"ms":10.3369,"ok":1}
+{"id":"ext_birkbeck-02114","s":["antisispating","anticipating","anticipation"],"c":null,"ms":11.3839,"ok":1}
+{"id":"ext_birkbeck-02116","s":["antistipating","anticipating","anticipation"],"c":null,"ms":11.5148,"ok":1}
+{"id":"ext_birkbeck-02118","s":["antizapating","anticipating","antiquating"],"c":null,"ms":17.3844,"ok":1}
+{"id":"ext_birkbeck-02150","s":["ancioty","anxiety","a city"],"c":null,"ms":11.7225,"ok":1}
+{"id":"ext_birkbeck-02153","s":["anexity","anxiety","a deity"],"c":null,"ms":10.4661,"ok":1}
+{"id":"ext_birkbeck-02157","s":["angeiety","a gaiety","anxiety"],"c":null,"ms":15.2298,"ok":1}
+{"id":"ext_birkbeck-02162","s":["angry","angity","vanity"],"c":"angry","ms":9.35554,"ok":1}
+{"id":"ext_birkbeck-02164","s":["angsiety","anxiety","anisette"],"c":null,"ms":9.62387,"ok":1}
+{"id":"ext_birkbeck-02174","s":["aniaty","anita","anxiety"],"c":null,"ms":8.38254,"ok":1}
+{"id":"ext_birkbeck-02176","s":["a city","anicty","a city's"],"c":null,"ms":8.68742,"ok":1}
+{"id":"ext_birkbeck-02179","s":["aniexty","anxiety","next"],"c":null,"ms":9.44025,"ok":1}
+{"id":"ext_birkbeck-02182","s":["ansiaty","anxiety","a city"],"c":null,"ms":10.6441,"ok":1}
+{"id":"ext_birkbeck-02188","s":["ansitty","a city","a city's"],"c":null,"ms":10.8994,"ok":1}
+{"id":"ext_birkbeck-02192","s":["anxiciety","anxiety","anxiety's"],"c":null,"ms":9.67721,"ok":1}
+{"id":"ext_birkbeck-02207","s":["anziaty","anxiety","anita"],"c":null,"ms":10.1665,"ok":1}
+{"id":"ext_birkbeck-02213","s":["axieaty","anxiety","society's"],"c":null,"ms":6.74471,"ok":1}
+{"id":"ext_birkbeck-02345","s":["apologised","apologized","appologised"],"c":"apologised","ms":6.54042,"ok":1}
+{"id":"ext_birkbeck-02347","s":["abology","biology","analogy"],"c":null,"ms":9.46279,"ok":1}
+{"id":"ext_birkbeck-02354","s":["apoladgy","apology","apologize"],"c":null,"ms":7.768,"ok":1}
+{"id":"ext_birkbeck-02355","s":["apolage","apologetic","apologize"],"c":null,"ms":7.23821,"ok":1}
+{"id":"ext_birkbeck-02370","s":["apolyge","apology","apologize"],"c":null,"ms":7.31075,"ok":1}
+{"id":"ext_birkbeck-02371","s":["apolygy","apology","polygamist"],"c":null,"ms":6.78071,"ok":1}
+{"id":"ext_birkbeck-02523","s":["apparently","appaite","apparent"],"c":null,"ms":6.80863,"ok":1}
+{"id":"ext_birkbeck-02524","s":["appatiate","appetite","apatite"],"c":null,"ms":7.4765,"ok":1}
+{"id":"ext_birkbeck-02527","s":["appreciate","appecite","appreciated"],"c":"appreciate","ms":7.23533,"ok":1}
+{"id":"ext_birkbeck-02530","s":["appetite","appetiat","appetites"],"c":null,"ms":6.28992,"ok":1}
+{"id":"ext_birkbeck-02532","s":["appetitale","appetite","appetite let"],"c":null,"ms":7.84158,"ok":1}
+{"id":"ext_birkbeck-02533","s":["appetitite","appetite","appetite tell"],"c":null,"ms":7.90021,"ok":1}
+{"id":"ext_birkbeck-02537","s":["appitate","appetite","amputated"],"c":null,"ms":6.73583,"ok":1}
+{"id":"ext_birkbeck-02538","s":["spite","appite","appointed"],"c":"spite","ms":6.80967,"ok":1}
+{"id":"ext_birkbeck-02539","s":["appitete","appetite","pipette"],"c":null,"ms":7.78321,"ok":1}
+{"id":"ext_birkbeck-02540","s":["appitiate","appetite","appetites"],"c":null,"ms":7.43929,"ok":1}
+{"id":"ext_birkbeck-02542","s":["appititle","appetite","spiritless"],"c":null,"ms":8.53442,"ok":1}
+{"id":"ext_birkbeck-02573","s":["apples","applied","apple"],"c":"apples","ms":6.57092,"ok":1}
+{"id":"ext_birkbeck-02574","s":["applyed","apples","applied"],"c":null,"ms":6.61121,"ok":1}
+{"id":"ext_birkbeck-02577","s":["applieing","applying","applied"],"c":null,"ms":13.0433,"ok":1}
+{"id":"ext_birkbeck-02618","s":["aprechate","appreciate","appreciated"],"c":null,"ms":10.3918,"ok":1}
+{"id":"ext_birkbeck-02775","s":["appocimate","approximately","approximate"],"c":null,"ms":7.63779,"ok":1}
+{"id":"ext_birkbeck-02777","s":["apporoxinate","approximately","approximate"],"c":null,"ms":6.80467,"ok":1}
+{"id":"ext_birkbeck-02779","s":["approximately","approcamate","approximate"],"c":null,"ms":6.23021,"ok":1}
+{"id":"ext_birkbeck-02780","s":["approccmate","approximately","approximate"],"c":null,"ms":9.81242,"ok":1}
+{"id":"ext_birkbeck-02781","s":["approximately","approciamate","approximate"],"c":null,"ms":5.94904,"ok":1}
+{"id":"ext_birkbeck-02789","s":["approimaze","approximately","approximate"],"c":null,"ms":10.1379,"ok":1}
+{"id":"ext_birkbeck-02791","s":["approximately","appromate","approximate"],"c":null,"ms":6.13996,"ok":1}
+{"id":"ext_birkbeck-02792","s":["appromimate","approximately","approximate"],"c":null,"ms":6.47762,"ok":1}
+{"id":"ext_birkbeck-02795","s":["approximately","approsamate","approximate"],"c":null,"ms":6.13338,"ok":1}
+{"id":"ext_birkbeck-02796","s":["approximately","approsumate","approximate"],"c":null,"ms":6.3565,"ok":1}
+{"id":"ext_birkbeck-02797","s":["approvimate","approximately","approximate"],"c":null,"ms":7.28679,"ok":1}
+{"id":"ext_birkbeck-02798","s":["approxamante","approximately","approximate"],"c":null,"ms":6.97417,"ok":1}
+{"id":"ext_birkbeck-02801","s":["approxamite","approximately","approximate"],"c":null,"ms":6.50383,"ok":1}
+{"id":"ext_birkbeck-02803","s":["approxcmate","approximately","approximate"],"c":null,"ms":7.35625,"ok":1}
+{"id":"ext_birkbeck-02808","s":["approximately","approximant","approximate"],"c":null,"ms":6.09308,"ok":1}
+{"id":"ext_birkbeck-02827","s":["opproxamate","approximately","approximate"],"c":null,"ms":6.58604,"ok":1}
+{"id":"ext_birkbeck-02858","s":["appromixately","approximately","appropriately"],"c":null,"ms":8.94775,"ok":1}
+{"id":"ext_birkbeck-02860","s":["approrilmately","approximately","appropriately"],"c":null,"ms":13.5844,"ok":1}
+{"id":"ext_birkbeck-02877","s":["approximinately","approximately","approximately you"],"c":null,"ms":7.12771,"ok":1}
+{"id":"ext_birkbeck-02929","s":["opproxsimately","approximately","approximately you"],"c":null,"ms":7.29167,"ok":1}
+{"id":"ext_birkbeck-02947","s":["argumentitive","argumentative","argumentatively"],"c":null,"ms":7.84704,"ok":1}
+{"id":"ext_birkbeck-02989","s":["arrangemence","arrangement","arrangements"],"c":null,"ms":11.3377,"ok":1}
+{"id":"ext_birkbeck-03052","s":["asher's","washers","ashes"],"c":"asher's","ms":9.15113,"ok":1}
+{"id":"ext_birkbeck-03077","s":["assemberly","assembly","assemblyman"],"c":null,"ms":10.365,"ok":1}
+{"id":"ext_birkbeck-03102","s":["athsma","tasmania","this a"],"c":null,"ms":8.64312,"ok":1}
+{"id":"ext_birkbeck-03121","s":["acttaching","attaching","catching"],"c":null,"ms":10.2487,"ok":1}
+{"id":"ext_birkbeck-03123","s":["watching","attaching","ataching"],"c":"watching","ms":7.72392,"ok":1}
+{"id":"ext_birkbeck-03132","s":["attachaing","attaching","attacking"],"c":null,"ms":8.88604,"ok":1}
+{"id":"ext_birkbeck-03134","s":["attacheing","attaching","attache night"],"c":null,"ms":8.85567,"ok":1}
+{"id":"ext_birkbeck-03136","s":["attactching","attacking","attaching"],"c":null,"ms":14.8705,"ok":1}
+{"id":"ext_birkbeck-03139","s":["attatchig","attaching","attractive"],"c":null,"ms":10.6717,"ok":1}
+{"id":"ext_birkbeck-03143","s":["watching","catching","matching"],"c":"watching","ms":9.25788,"ok":1}
+{"id":"ext_birkbeck-03233","s":["aditorum","auditorium","auditoriums"],"c":null,"ms":8.02862,"ok":1}
+{"id":"ext_birkbeck-03243","s":["audatoreum","auditorium","auditoriums"],"c":null,"ms":8.16596,"ok":1}
+{"id":"ext_birkbeck-03245","s":["audatorum","auditorium","auditoriums"],"c":null,"ms":7.3175,"ok":1}
+{"id":"ext_birkbeck-03248","s":["audiatorum","auditorium","auditoriums"],"c":null,"ms":7.59917,"ok":1}
+{"id":"ext_birkbeck-03249","s":["audiortium","auditorium","auditoriums"],"c":null,"ms":8.99183,"ok":1}
+{"id":"ext_birkbeck-03255","s":["auditorial","auditorium","auditoria"],"c":null,"ms":5.90562,"ok":1}
+{"id":"ext_birkbeck-03270","s":["auditoryum","auditorium","auditory"],"c":null,"ms":7.507,"ok":1}
+{"id":"ext_birkbeck-03273","s":["audortorium","auditorium","auditoriums"],"c":null,"ms":8.07054,"ok":1}
+{"id":"ext_birkbeck-03279","s":["autitorium","auditorium","auditoriums"],"c":null,"ms":8.25104,"ok":1}
+{"id":"ext_birkbeck-03280","s":["autitorum","auditorium","auditoriums"],"c":null,"ms":13.8402,"ok":1}
+{"id":"ext_birkbeck-03285","s":["autotorium","auditorium","auto triumph"],"c":null,"ms":12.7933,"ok":1}
+{"id":"ext_birkbeck-03310","s":["authorative","authorities","authoritative"],"c":null,"ms":8.86171,"ok":1}
+{"id":"ext_birkbeck-03324","s":["advalable","available","a valuable"],"c":null,"ms":10.1384,"ok":1}
+{"id":"ext_birkbeck-03334","s":["availieble","available","availability"],"c":null,"ms":9.77492,"ok":1}
+{"id":"ext_birkbeck-03336","s":["avalaible","available","availability"],"c":null,"ms":8.83417,"ok":1}
+{"id":"ext_birkbeck-03392","s":["avordy","according","a royal"],"c":null,"ms":8.99263,"ok":1}
+{"id":"ext_birkbeck-03400","s":["avoyde","avoided","avoid"],"c":null,"ms":8.57312,"ok":1}
+{"id":"ext_birkbeck-03476","s":["aufully","awfully","fully"],"c":null,"ms":7.37063,"ok":1}
+{"id":"ext_birkbeck-03481","s":["aukward","awkward","award"],"c":null,"ms":6.901,"ok":1}
+{"id":"ext_birkbeck-03498","s":["babies","babeish","babies have"],"c":"babies","ms":8.21879,"ok":1}
+{"id":"ext_birkbeck-03524","s":["barking","baking","bakeing"],"c":"barking","ms":7.602,"ok":1}
+{"id":"ext_birkbeck-03537","s":["bankrucy","bankruptcy","bankruptcies"],"c":null,"ms":7.34525,"ok":1}
+{"id":"ext_birkbeck-03545","s":["bankburtcy","bankruptcy","banbury you"],"c":null,"ms":13.2029,"ok":1}
+{"id":"ext_birkbeck-03546","s":["bankrauptsy","bankruptcy","bankrupts"],"c":null,"ms":8.94629,"ok":1}
+{"id":"ext_birkbeck-03547","s":["bankrucpty","bankruptcy","bankrupt"],"c":null,"ms":7.98067,"ok":1}
+{"id":"ext_birkbeck-03551","s":["bankrupercy","bankruptcy","bankruptcy's"],"c":null,"ms":8.19092,"ok":1}
+{"id":"ext_birkbeck-03554","s":["bankrupicy","bankruptcy","bankruptcies"],"c":null,"ms":8.10054,"ok":1}
+{"id":"ext_birkbeck-03555","s":["bankruposy","bankruptcy","bankrupts"],"c":null,"ms":9.45758,"ok":1}
+{"id":"ext_birkbeck-03557","s":["bankrupsay","bankruptcy","bankrupt say"],"c":null,"ms":10.3805,"ok":1}
+{"id":"ext_birkbeck-03558","s":["bankrupscy","bankruptcy","bankrupts you"],"c":null,"ms":8.52637,"ok":1}
+{"id":"ext_birkbeck-03559","s":["bankrupsicy","bankruptcy","bankrupts you"],"c":null,"ms":15.3885,"ok":1}
+{"id":"ext_birkbeck-03564","s":["bankruptercy","bankruptcy","bankrupted you"],"c":null,"ms":9.42342,"ok":1}
+{"id":"ext_birkbeck-03566","s":["bankruptcies","bankruptcy","bankruptic"],"c":null,"ms":7.84683,"ok":1}
+{"id":"ext_birkbeck-03568","s":["bankruptsay","bankruptcy","bankrupt say"],"c":null,"ms":9.72496,"ok":1}
+{"id":"ext_birkbeck-03570","s":["bankruptsey","bankruptcy","bankrupted"],"c":null,"ms":9.13504,"ok":1}
+{"id":"ext_birkbeck-03573","s":["bankrupuy","bankrupt","bankruptcy"],"c":null,"ms":11.2069,"ok":1}
+{"id":"ext_birkbeck-03588","s":["barely","barley","barry"],"c":"barely","ms":6.58533,"ok":1}
+{"id":"ext_birkbeck-03611","s":["bastestball","basketball","basest all"],"c":null,"ms":17.6599,"ok":1}
+{"id":"ext_birkbeck-03623","s":["neared","bearded","beard"],"c":"neared","ms":7.41463,"ok":1}
+{"id":"ext_birkbeck-03624","s":["being","betting","beating"],"c":"being","ms":7.95942,"ok":1}
+{"id":"ext_birkbeck-03871","s":["begin","beginning","began"],"c":"begin","ms":6.82783,"ok":1}
+{"id":"ext_birkbeck-03979","s":["beligerant","belligerent","belligerently"],"c":null,"ms":7.38046,"ok":1}
+{"id":"ext_birkbeck-04045","s":["benefial","beneficial","benefit"],"c":null,"ms":8.32404,"ok":1}
+{"id":"ext_birkbeck-04048","s":["benefician","beneficial","beneficiary"],"c":null,"ms":8.00971,"ok":1}
+{"id":"ext_birkbeck-04049","s":["beneficicel","beneficial","beneficially"],"c":null,"ms":9.29821,"ok":1}
+{"id":"ext_birkbeck-04052","s":["benefictal","beneficial","benedict all"],"c":null,"ms":9.89225,"ok":1}
+{"id":"ext_birkbeck-04053","s":["benefitical","beneficial","benefit all"],"c":null,"ms":10.2941,"ok":1}
+{"id":"ext_birkbeck-04054","s":["benefitual","benefits","beneficial"],"c":null,"ms":14.3978,"ok":1}
+{"id":"ext_birkbeck-04057","s":["benffical","beneficial","he officially"],"c":null,"ms":11.024,"ok":1}
+{"id":"ext_birkbeck-04064","s":["benifecial","beneficial","beneficially"],"c":null,"ms":11.2536,"ok":1}
+{"id":"ext_birkbeck-04065","s":["benifficial","beneficial","be officially"],"c":null,"ms":9.47796,"ok":1}
+{"id":"ext_birkbeck-04067","s":["benifical","beneficial","be difficult"],"c":null,"ms":9.64517,"ok":1}
+{"id":"ext_birkbeck-04070","s":["benifichial","beneficial","beneficially"],"c":null,"ms":10.637,"ok":1}
+{"id":"ext_birkbeck-04075","s":["bennificial","beneficial","beneficially"],"c":null,"ms":9.33983,"ok":1}
+{"id":"ext_birkbeck-04079","s":["binificial","beneficial","beneficially"],"c":null,"ms":9.23975,"ok":1}
+{"id":"ext_birkbeck-04080","s":["feneficial","beneficial","beneficially"],"c":null,"ms":7.41633,"ok":1}
+{"id":"ext_birkbeck-04082","s":["penefical","beneficial","genetically"],"c":null,"ms":10.4356,"ok":1}
+{"id":"ext_birkbeck-04100","s":["bush","behind","best"],"c":"bush","ms":6.187,"ok":1}
+{"id":"ext_birkbeck-04123","s":["icicle","bicicle","icicles"],"c":"icicle","ms":7.08708,"ok":1}
+{"id":"ext_birkbeck-04124","s":["bicicly","basically","icicle"],"c":null,"ms":8.48571,"ok":1}
+{"id":"ext_birkbeck-04125","s":["bickckle","bicycle","bicycles"],"c":null,"ms":12.6649,"ok":1}
+{"id":"ext_birkbeck-04126","s":["bickcle","buckle","buckley"],"c":null,"ms":9.10358,"ok":1}
+{"id":"ext_birkbeck-04129","s":["biclyce","bicycle","bicycles"],"c":null,"ms":8.11692,"ok":1}
+{"id":"ext_birkbeck-04131","s":["bicycle","bicycles","bicycal"],"c":null,"ms":7.07125,"ok":1}
+{"id":"ext_birkbeck-04148","s":["biycile","bicycle","bicycles"],"c":null,"ms":10.5073,"ok":1}
+{"id":"ext_birkbeck-04150","s":["biycyle","bicycle","bicycles"],"c":null,"ms":9.32054,"ok":1}
+{"id":"ext_birkbeck-04155","s":["bycicle","by iceland","by i let"],"c":null,"ms":10.3129,"ok":1}
+{"id":"ext_birkbeck-04161","s":["bycycle","bicycle","bicycles"],"c":null,"ms":9.78596,"ok":1}
+{"id":"ext_birkbeck-04168","s":["bycicles","bicycles","by isles"],"c":null,"ms":12.0631,"ok":1}
+{"id":"ext_birkbeck-04295","s":["boulsters","bolsters","blusters"],"c":null,"ms":6.87175,"ok":1}
+{"id":"ext_birkbeck-04307","s":["black","blake","book"],"c":"black","ms":4.30233,"ok":1}
+{"id":"ext_birkbeck-04311","s":["boomaranges","boomerangs","boomeranged"],"c":null,"ms":8.87942,"ok":1}
+{"id":"ext_birkbeck-04430","s":["board","broadcast","broad"],"c":"board","ms":5.33675,"ok":1}
+{"id":"ext_birkbeck-04448","s":["born","bruno","round"],"c":"born","ms":4.64183,"ok":1}
+{"id":"ext_birkbeck-04546","s":["bounglow","bungalows","bungalow"],"c":null,"ms":7.19804,"ok":1}
+{"id":"ext_birkbeck-04547","s":["bungalows","bungalow","bugalo"],"c":null,"ms":6.55929,"ok":1}
+{"id":"ext_birkbeck-04552","s":["bungalows","bungalow","bunaglo"],"c":null,"ms":6.73042,"ok":1}
+{"id":"ext_birkbeck-04553","s":["bundgallow","bungalows","bungalow"],"c":null,"ms":8.26454,"ok":1}
+{"id":"ext_birkbeck-04554","s":["bungalows","bungalow","bungallo"],"c":null,"ms":6.84079,"ok":1}
+{"id":"ext_birkbeck-04557","s":["bungalows","bungalowe","bungalow"],"c":"bungalows","ms":6.32392,"ok":1}
+{"id":"ext_birkbeck-04558","s":["bungalows","bungelo","bungalow"],"c":null,"ms":7.68779,"ok":1}
+{"id":"ext_birkbeck-04560","s":["bungerlow","bungalows","bungalow"],"c":null,"ms":10.1311,"ok":1}
+{"id":"ext_birkbeck-04562","s":["bunglelow","bungalows","bungalow"],"c":null,"ms":8.35771,"ok":1}
+{"id":"ext_birkbeck-04566","s":["bungalows","bungolo","bungalow"],"c":null,"ms":8.10446,"ok":1}
+{"id":"ext_birkbeck-04569","s":["bungalows","bungulo","bungalow"],"c":null,"ms":7.65792,"ok":1}
+{"id":"ext_birkbeck-04576","s":["bulgar","bulgarian","bulgaria"],"c":"bulgar","ms":5.447,"ok":1}
+{"id":"ext_birkbeck-04605","s":["burns","burundi's","burned"],"c":"burns","ms":6.48667,"ok":1}
+{"id":"ext_birkbeck-04628","s":["bipass","bipasha","bias"],"c":null,"ms":6.66217,"ok":1}
+{"id":"ext_birkbeck-04674","s":["cancialation","cancellation","cancellations"],"c":null,"ms":12.2882,"ok":1}
+{"id":"ext_birkbeck-04686","s":["cansallation","cancellation","cancellations"],"c":null,"ms":8.88862,"ok":1}
+{"id":"ext_birkbeck-04738","s":["capabiltes","capabilities","capability"],"c":null,"ms":7,"ok":1}
+{"id":"ext_birkbeck-04814","s":["cared","carried","carted"],"c":"cared","ms":7.10521,"ok":1}
+{"id":"ext_birkbeck-04815","s":["carted","carryed","carter"],"c":"carted","ms":8.50158,"ok":1}
+{"id":"ext_birkbeck-04818","s":["caring","carrying","carrington"],"c":"caring","ms":6.95279,"ok":1}
+{"id":"ext_birkbeck-04830","s":["cash","cachet","catch"],"c":"cash","ms":5.01138,"ok":1}
+{"id":"ext_birkbeck-04831","s":["catagoris","categories","categorize"],"c":null,"ms":7.92037,"ok":1}
+{"id":"ext_birkbeck-04832","s":["catagorey","category","categories"],"c":null,"ms":8.52683,"ok":1}
+{"id":"ext_birkbeck-04899","s":["cease","eastern","ceased"],"c":"cease","ms":6.46146,"ok":1}
+{"id":"ext_birkbeck-04936","s":["selling","calling","ceiling"],"c":"selling","ms":8.185,"ok":1}
+{"id":"ext_birkbeck-04946","s":["cematary","cemetery","crematory"],"c":null,"ms":8.53829,"ok":1}
+{"id":"ext_birkbeck-04950","s":["cemeatry","cemetery","commentary"],"c":null,"ms":8.19117,"ok":1}
+{"id":"ext_birkbeck-04951","s":["commentary","cementary","cemetery"],"c":"commentary","ms":8.27896,"ok":1}
+{"id":"ext_birkbeck-04955","s":["cemertary","cemetery","commentary"],"c":null,"ms":8.81604,"ok":1}
+{"id":"ext_birkbeck-04960","s":["cemertry","cemetery","cemetery's"],"c":null,"ms":7.63404,"ok":1}
+{"id":"ext_birkbeck-04970","s":["cemitary","cemetery","chemistry"],"c":null,"ms":8.62633,"ok":1}
+{"id":"ext_birkbeck-04980","s":["cesetary","secretary","cemetery"],"c":null,"ms":8.04063,"ok":1}
+{"id":"ext_birkbeck-05155","s":["cheek","cheating","cheap"],"c":"cheek","ms":6.69467,"ok":1}
+{"id":"ext_birkbeck-05165","s":["she's","cheese","chess"],"c":"she's","ms":6.40463,"ok":1}
+{"id":"ext_birkbeck-05175","s":["cemastry","chemistry","seamstresses"],"c":null,"ms":8.2855,"ok":1}
+{"id":"ext_birkbeck-05178","s":["cemestry","chemistry","cemetery"],"c":null,"ms":7.98121,"ok":1}
+{"id":"ext_birkbeck-05179","s":["cemistery","chemistry","cemetery"],"c":null,"ms":9.55479,"ok":1}
+{"id":"ext_birkbeck-05189","s":["chemestary","chemistry","she started"],"c":null,"ms":12.4497,"ok":1}
+{"id":"ext_birkbeck-05190","s":["chemestery","chemistry","cemetery"],"c":null,"ms":12.562,"ok":1}
+{"id":"ext_birkbeck-05191","s":["chemestra","chemistry","she started"],"c":null,"ms":15.3321,"ok":1}
+{"id":"ext_birkbeck-05192","s":["chemestri","chemistry","she estimated"],"c":null,"ms":15.083,"ok":1}
+{"id":"ext_birkbeck-05201","s":["chemistny","chemist you","chemist your"],"c":null,"ms":10.4844,"ok":1}
+{"id":"ext_birkbeck-05202","s":["chemistry","chemistre","chemist really"],"c":null,"ms":9.22787,"ok":1}
+{"id":"ext_birkbeck-05205","s":["chemstrey","chemistry","chester"],"c":null,"ms":12.5782,"ok":1}
+{"id":"ext_birkbeck-05208","s":["cremistery","chemistry","cemetery"],"c":null,"ms":14.6257,"ok":1}
+{"id":"ext_birkbeck-05209","s":["cremistry","chemistry","chemistry's"],"c":null,"ms":8.34054,"ok":1}
+{"id":"ext_birkbeck-05395","s":["clarooms","classrooms","claro so"],"c":null,"ms":7.42271,"ok":1}
+{"id":"ext_birkbeck-05415","s":["club","climb","columbia"],"c":"club","ms":4.704,"ok":1}
+{"id":"ext_birkbeck-05421","s":["cloackrooms","cloakrooms","cloakroom"],"c":null,"ms":7.64283,"ok":1}
+{"id":"ext_birkbeck-05422","s":["clockrooms","clock rooms","cloakrooms"],"c":null,"ms":9.29283,"ok":1}
+{"id":"ext_birkbeck-05423","s":["look","close","clock"],"c":"look","ms":4.02521,"ok":1}
+{"id":"ext_birkbeck-05443","s":["case","coast's","coast"],"c":"case","ms":5.45779,"ok":1}
+{"id":"ext_birkbeck-05683","s":["come","comieg","commie"],"c":"come","ms":7.76417,"ok":1}
+{"id":"ext_birkbeck-05711","s":["commidded","commanded","com added"],"c":null,"ms":11.8559,"ok":1}
+{"id":"ext_birkbeck-05754","s":["comments","commenest","commonest"],"c":"comments","ms":11.8338,"ok":1}
+{"id":"ext_birkbeck-05760","s":["commenecate","communicate","communicated"],"c":null,"ms":14.0194,"ok":1}
+{"id":"ext_birkbeck-05764","s":["commuacate","communicate","communicated"],"c":null,"ms":10.5454,"ok":1}
+{"id":"ext_birkbeck-05769","s":["commulicate","communicate","communicated"],"c":null,"ms":10.3887,"ok":1}
+{"id":"ext_birkbeck-05774","s":["communitate","communicate","communities"],"c":null,"ms":10.2483,"ok":1}
+{"id":"ext_birkbeck-05786","s":["comunitate","communicate","communities"],"c":null,"ms":10.3136,"ok":1}
+{"id":"ext_birkbeck-05960","s":["complaint","complanig","complaints"],"c":"complaint","ms":7.26129,"ok":1}
+{"id":"ext_birkbeck-06124","s":["conducted","conducting","conduck"],"c":null,"ms":7.39987,"ok":1}
+{"id":"ext_birkbeck-06134","s":["comfeirmation","confirmation","confirmations"],"c":null,"ms":11.1768,"ok":1}
+{"id":"ext_birkbeck-06138","s":["confeimation","confirmation","confirmations"],"c":null,"ms":9.34863,"ok":1}
+{"id":"ext_birkbeck-06139","s":["confermasion","confirmation","confirmations"],"c":null,"ms":18.292,"ok":1}
+{"id":"ext_birkbeck-06157","s":["concradulations","congratulations","congratulation's"],"c":null,"ms":16.4254,"ok":1}
+{"id":"ext_birkbeck-06161","s":["congradualtions","congratulations","congratulation's"],"c":null,"ms":9.99662,"ok":1}
+{"id":"ext_birkbeck-06163","s":["congraduations","congratulations","co graduations"],"c":null,"ms":14.5158,"ok":1}
+{"id":"ext_birkbeck-06172","s":["congralutations","congratulations","consultations"],"c":null,"ms":9.62579,"ok":1}
+{"id":"ext_birkbeck-06175","s":["congratalutions","congratulations","congratulation's"],"c":null,"ms":7.84679,"ok":1}
+{"id":"ext_birkbeck-06184","s":["congraturalations","congratulations","congratulation's"],"c":null,"ms":8.50504,"ok":1}
+{"id":"ext_birkbeck-06185","s":["congraudulations","congratulations","congratulation's"],"c":null,"ms":14.1557,"ok":1}
+{"id":"ext_birkbeck-06206","s":["connectivies","connectives","connectivity"],"c":null,"ms":8.99708,"ok":1}
+{"id":"ext_birkbeck-06214","s":["conchence","conscience","on hence"],"c":null,"ms":16.9088,"ok":1}
+{"id":"ext_birkbeck-06215","s":["conchience","conscience","consciences"],"c":null,"ms":10.7042,"ok":1}
+{"id":"ext_birkbeck-06238","s":["conisience","conscience","coincidence"],"c":null,"ms":9.60225,"ok":1}
+{"id":"ext_birkbeck-06249","s":["conscients","conscientious","conscientiously"],"c":null,"ms":8.10013,"ok":1}
+{"id":"ext_birkbeck-06254","s":["consciousness","consciounce","conscience"],"c":null,"ms":8.25263,"ok":1}
+{"id":"ext_birkbeck-06290","s":["comcientious","conscientious","conscientiously"],"c":null,"ms":12.2951,"ok":1}
+{"id":"ext_birkbeck-06313","s":["conchientious","conscientious","conscientiously"],"c":null,"ms":11.3074,"ok":1}
+{"id":"ext_birkbeck-06314","s":["conciantious","conscientious","conscientiously"],"c":null,"ms":10.6441,"ok":1}
+{"id":"ext_birkbeck-06324","s":["conciencious","conscientious","conscientiously"],"c":null,"ms":16.0799,"ok":1}
+{"id":"ext_birkbeck-06330","s":["conciensious","conscientious","conscientiously"],"c":null,"ms":16.0952,"ok":1}
+{"id":"ext_birkbeck-06331","s":["concienteous","conscientious","conscientiously"],"c":null,"ms":10.4071,"ok":1}
+{"id":"ext_birkbeck-06334","s":["concientius","conscientious","conscientiously"],"c":null,"ms":9.69608,"ok":1}
+{"id":"ext_birkbeck-06335","s":["concientous","conscientious","conscientiously"],"c":null,"ms":10.3422,"ok":1}
+{"id":"ext_birkbeck-06336","s":["concientuous","conscientious","conscientiously"],"c":null,"ms":10.3253,"ok":1}
+{"id":"ext_birkbeck-06350","s":["conscciencious","conscientious","conscientiously"],"c":null,"ms":10.2212,"ok":1}
+{"id":"ext_birkbeck-06351","s":["consceincious","conscientious","conscientiously"],"c":null,"ms":10.4745,"ok":1}
+{"id":"ext_birkbeck-06353","s":["conscencious","conscientious","conscientiously"],"c":null,"ms":15.0948,"ok":1}
+{"id":"ext_birkbeck-06358","s":["consciencious","conscientious","conscientiously"],"c":null,"ms":9.20992,"ok":1}
+{"id":"ext_birkbeck-06359","s":["consciencous","consciences","conscience us"],"c":null,"ms":8.89733,"ok":1}
+{"id":"ext_birkbeck-06361","s":["conscienctous","conscientious","conscientiously"],"c":null,"ms":8.48917,"ok":1}
+{"id":"ext_birkbeck-06363","s":["conscieneous","conscientious","conscientiously"],"c":null,"ms":8.46675,"ok":1}
+{"id":"ext_birkbeck-06365","s":["conscienous","conscientious","conscientiously"],"c":null,"ms":7.67729,"ok":1}
+{"id":"ext_birkbeck-06366","s":["conscienscious","conscientious","conscientiously"],"c":null,"ms":16.3874,"ok":1}
+{"id":"ext_birkbeck-06367","s":["conscienscous","consciences","conscience cousin"],"c":null,"ms":15.9833,"ok":1}
+{"id":"ext_birkbeck-06368","s":["consciensious","conscientious","conscientiously"],"c":null,"ms":8.52767,"ok":1}
+{"id":"ext_birkbeck-06375","s":["conscientscious","conscientious","conscientiously"],"c":null,"ms":9.82329,"ok":1}
+{"id":"ext_birkbeck-06377","s":["conscietinous","conscientious","conscientiously"],"c":null,"ms":8.36783,"ok":1}
+{"id":"ext_birkbeck-06378","s":["conscietous","conscientious","conscientiously"],"c":null,"ms":7.59588,"ok":1}
+{"id":"ext_birkbeck-06380","s":["conscinious","conscientious","conscientiously"],"c":null,"ms":8.48488,"ok":1}
+{"id":"ext_birkbeck-06414","s":["consiencious","conscientious","conscientiously"],"c":null,"ms":15.1468,"ok":1}
+{"id":"ext_birkbeck-06419","s":["consientous","conscientious","conscientiously"],"c":null,"ms":9.99625,"ok":1}
+{"id":"ext_birkbeck-06430","s":["consyiensious","conscientious","conscientiously"],"c":null,"ms":16.362,"ok":1}
+{"id":"ext_birkbeck-06436","s":["conceious","consciousness","conscious"],"c":null,"ms":8.99054,"ok":1}
+{"id":"ext_birkbeck-06446","s":["concieous","consciousness","conscious"],"c":null,"ms":9.26512,"ok":1}
+{"id":"ext_birkbeck-06453","s":["conciouse","consciousness","conscious"],"c":null,"ms":8.60258,"ok":1}
+{"id":"ext_birkbeck-06455","s":["conicious","consciousness","conscious"],"c":null,"ms":8.72004,"ok":1}
+{"id":"ext_birkbeck-06457","s":["conisious","consciousness","conscious"],"c":null,"ms":8.47104,"ok":1}
+{"id":"ext_birkbeck-06470","s":["consencious","consciousness","conscious"],"c":null,"ms":9.92713,"ok":1}
+{"id":"ext_birkbeck-06480","s":["consiouse","consciousness","conscious"],"c":null,"ms":7.74546,"ok":1}
+{"id":"ext_birkbeck-06488","s":["conuious","conscious","contagious"],"c":null,"ms":12.019,"ok":1}
+{"id":"ext_birkbeck-06494","s":["counsious","consciousness","conscious"],"c":null,"ms":6.92479,"ok":1}
+{"id":"ext_birkbeck-06508","s":["consisted","consiter","consider"],"c":"consisted","ms":7.92921,"ok":1}
+{"id":"ext_birkbeck-06524","s":["conscistant","consistent","consistently"],"c":null,"ms":10.2347,"ok":1}
+{"id":"ext_birkbeck-06533","s":["consistaunt","consistent","consistently"],"c":null,"ms":10.0913,"ok":1}
+{"id":"ext_birkbeck-06547","s":["constistant","consistent","consistently"],"c":null,"ms":9.43471,"ok":1}
+{"id":"ext_birkbeck-06604","s":["contentment","contenten","contentedly"],"c":null,"ms":8.30537,"ok":1}
+{"id":"ext_birkbeck-06617","s":["contentedly","contented","cotente"],"c":null,"ms":7.18792,"ok":1}
+{"id":"ext_birkbeck-06627","s":["contension","contention","confession"],"c":null,"ms":9.879,"ok":1}
+{"id":"ext_birkbeck-06700","s":["contract","contracts","contrack"],"c":null,"ms":8.04688,"ok":1}
+{"id":"ext_birkbeck-06791","s":["convalensence","convalescence","convalescences"],"c":null,"ms":9.6365,"ok":1}
+{"id":"ext_birkbeck-06792","s":["convalerssence","convalescence","convalescences"],"c":null,"ms":9.87079,"ok":1}
+{"id":"ext_birkbeck-06793","s":["convalesance","convalescence","convalescent"],"c":null,"ms":9.34437,"ok":1}
+{"id":"ext_birkbeck-06796","s":["convalesense","convalescence","convalescences"],"c":null,"ms":8.93975,"ok":1}
+{"id":"ext_birkbeck-06798","s":["convalessance","convalescence","convalescences"],"c":null,"ms":9.13717,"ok":1}
+{"id":"ext_birkbeck-06810","s":["convelesence","convalescence","convalescences"],"c":null,"ms":10.1925,"ok":1}
+{"id":"ext_birkbeck-06818","s":["converlescence","convalescence","convalescences"],"c":null,"ms":10.7517,"ok":1}
+{"id":"ext_birkbeck-06907","s":["convension","convention","conversion"],"c":null,"ms":10.0022,"ok":1}
+{"id":"ext_birkbeck-06914","s":["convicks","convicts","convicted"],"c":null,"ms":10.563,"ok":1}
+{"id":"ext_birkbeck-06926","s":["cooper","copper","coppers"],"c":"cooper","ms":7.1005,"ok":1}
+{"id":"ext_birkbeck-07108","s":["countriman","countermand","countermanded"],"c":null,"ms":6.47554,"ok":1}
+{"id":"ext_birkbeck-07187","s":["courseties","course ties","courtesies"],"c":null,"ms":11.2286,"ok":1}
+{"id":"ext_birkbeck-07199","s":["courtesesies","courtesies","courtesies is"],"c":null,"ms":9.65675,"ok":1}
+{"id":"ext_birkbeck-07203","s":["courtezes","courtesies","courtesan"],"c":null,"ms":7.3055,"ok":1}
+{"id":"ext_birkbeck-07218","s":["courtisiss","courtesies","courtside"],"c":null,"ms":10.4898,"ok":1}
+{"id":"ext_birkbeck-07231","s":["cuourtesyes","courtesies","courtesy"],"c":null,"ms":8.92675,"ok":1}
+{"id":"ext_birkbeck-07331","s":["create","created","creates"],"c":"create","ms":5.69542,"ok":1}
+{"id":"ext_birkbeck-07332","s":["creatitivity","creativity","creativity's"],"c":null,"ms":7.70758,"ok":1}
+{"id":"ext_birkbeck-07342","s":["crictet","critter","cricket"],"c":null,"ms":7.48658,"ok":1}
+{"id":"ext_birkbeck-07372","s":["criticisiom","criticism","criticising"],"c":null,"ms":8.13646,"ok":1}
+{"id":"ext_birkbeck-07373","s":["criticisium","criticism","criticising"],"c":null,"ms":7.967,"ok":1}
+{"id":"ext_birkbeck-07377","s":["criticizasm","criticism","criticisms"],"c":null,"ms":8.74067,"ok":1}
+{"id":"ext_birkbeck-07383","s":["critics","criticism","criticisms"],"c":"critics","ms":7.58567,"ok":1}
+{"id":"ext_birkbeck-07398","s":["critisisam","criticism","criticisms"],"c":null,"ms":7.30483,"ok":1}
+{"id":"ext_birkbeck-07399","s":["critisisem","criticism","criticised"],"c":null,"ms":6.77883,"ok":1}
+{"id":"ext_birkbeck-07400","s":["critisisim","criticism","criticising"],"c":null,"ms":6.7965,"ok":1}
+{"id":"ext_birkbeck-07403","s":["critisisum","criticism","criticisms"],"c":null,"ms":6.67479,"ok":1}
+{"id":"ext_birkbeck-07404","s":["critisium","criticism","criticisms"],"c":null,"ms":8.61071,"ok":1}
+{"id":"ext_birkbeck-07411","s":["critics","critism","critical"],"c":"critics","ms":6.84983,"ok":1}
+{"id":"ext_birkbeck-07422","s":["critizim","criticized","criticizing"],"c":null,"ms":10.8097,"ok":1}
+{"id":"ext_birkbeck-07423","s":["critizisim","criticism","criticisms"],"c":null,"ms":14.1978,"ok":1}
+{"id":"ext_birkbeck-07424","s":["critizism","criticism","criticisms"],"c":null,"ms":7.85417,"ok":1}
+{"id":"ext_birkbeck-07425","s":["critizisum","criticism","criticisms"],"c":null,"ms":12.8177,"ok":1}
+{"id":"ext_birkbeck-07428","s":["critizium","criticizing","criticized"],"c":null,"ms":11.3088,"ok":1}
+{"id":"ext_birkbeck-07436","s":["crypticism","criticism","cryptic is"],"c":null,"ms":15.6124,"ok":1}
+{"id":"ext_birkbeck-07438","s":["griticism","criticism","criticisms"],"c":null,"ms":7.10325,"ok":1}
+{"id":"ext_birkbeck-07442","s":["criticised","criticized","critisised"],"c":"criticised","ms":5.5015,"ok":1}
+{"id":"ext_birkbeck-07455","s":["crouded","shrouded","crowded"],"c":null,"ms":6.77217,"ok":1}
+{"id":"ext_birkbeck-07458","s":["croon","country's","crohn's"],"c":"croon","ms":5.19771,"ok":1}
+{"id":"ext_birkbeck-07487","s":["couriosoty","curiosity's","curiosity"],"c":null,"ms":7.16792,"ok":1}
+{"id":"ext_birkbeck-07488","s":["couriousity","curiosity's","curiosity"],"c":null,"ms":7.65742,"ok":1}
+{"id":"ext_birkbeck-07490","s":["courisity","curiosity's","curiosity"],"c":null,"ms":7.28238,"ok":1}
+{"id":"ext_birkbeck-07495","s":["courosity","curiosity's","curiosity"],"c":null,"ms":7.35342,"ok":1}
+{"id":"ext_birkbeck-07503","s":["curecosity","curiosity's","curiosity"],"c":null,"ms":8.40137,"ok":1}
+{"id":"ext_birkbeck-07504","s":["cureosaty","curiosity's","curiosity"],"c":null,"ms":6.89687,"ok":1}
+{"id":"ext_birkbeck-07506","s":["cureousity","curiosity's","curiosity"],"c":null,"ms":7.19254,"ok":1}
+{"id":"ext_birkbeck-07508","s":["curioctity","curiosity's","curiosity"],"c":null,"ms":5.92308,"ok":1}
+{"id":"ext_birkbeck-07511","s":["curiosisity","curiosity's","curiosity"],"c":null,"ms":6.179,"ok":1}
+{"id":"ext_birkbeck-07514","s":["curiosity's","curiostic","curiosity"],"c":null,"ms":5.51546,"ok":1}
+{"id":"ext_birkbeck-07517","s":["curiouity","curiosity's","curiosity"],"c":null,"ms":5.50467,"ok":1}
+{"id":"ext_birkbeck-07519","s":["curiousite","curiosity's","curiosity"],"c":null,"ms":10.3631,"ok":1}
+{"id":"ext_birkbeck-07523","s":["curisioty","curiosity's","curiosity"],"c":null,"ms":6.31504,"ok":1}
+{"id":"ext_birkbeck-07529","s":["curosiety","curiosity's","curiosity"],"c":null,"ms":6.34133,"ok":1}
+{"id":"ext_birkbeck-07530","s":["curosisty","curiosity's","curiosity"],"c":null,"ms":6.26962,"ok":1}
+{"id":"ext_birkbeck-07533","s":["curouity","curiosity's","curiosity"],"c":null,"ms":6.84825,"ok":1}
+{"id":"ext_birkbeck-07539","s":["curyocity","curiosity's","curiosity"],"c":null,"ms":8.49371,"ok":1}
+{"id":"ext_birkbeck-07545","s":["quriosity","curiosity's","curiosity"],"c":null,"ms":5.98633,"ok":1}
+{"id":"ext_birkbeck-07546","s":["qurosity","curiosity's","curiosity"],"c":null,"ms":9.02742,"ok":1}
+{"id":"ext_birkbeck-07568","s":["curryous","curious","curiously"],"c":null,"ms":7.34438,"ok":1}
+{"id":"ext_birkbeck-07580","s":["qurious","furious","curious"],"c":null,"ms":6.24696,"ok":1}
+{"id":"ext_birkbeck-07581","s":["carl","carlos","circle"],"c":"carl","ms":5.05254,"ok":1}
+{"id":"ext_birkbeck-07663","s":["costamary","costa mary's","customary"],"c":null,"ms":11.9784,"ok":1}
+{"id":"ext_birkbeck-07674","s":["costomry","customary","customers"],"c":null,"ms":9.7835,"ok":1}
+{"id":"ext_birkbeck-07675","s":["costumary","customary","costumer"],"c":null,"ms":9.275,"ok":1}
+{"id":"ext_birkbeck-07682","s":["cumstonary","customary","customarily"],"c":null,"ms":8.02412,"ok":1}
+{"id":"ext_birkbeck-07683","s":["cumtomary","customary","summary"],"c":null,"ms":9.98046,"ok":1}
+{"id":"ext_birkbeck-07689","s":["custamory","customary","customers"],"c":null,"ms":8.75029,"ok":1}
+{"id":"ext_birkbeck-07692","s":["custarmary","customary","custar mary's"],"c":null,"ms":10.4165,"ok":1}
+{"id":"ext_birkbeck-07696","s":["custermary","customary","custer mary's"],"c":null,"ms":11.1581,"ok":1}
+{"id":"ext_birkbeck-07709","s":["custrmay","customary","castrate"],"c":null,"ms":11.3302,"ok":1}
+{"id":"ext_birkbeck-07717","s":["custurmary","customary","customarily"],"c":null,"ms":9.52737,"ok":1}
+{"id":"ext_birkbeck-07722","s":["calender","cilender","slender"],"c":"calender","ms":7.31037,"ok":1}
+{"id":"ext_birkbeck-07723","s":["cilinder","cylinder","cinderella"],"c":null,"ms":8.17317,"ok":1}
+{"id":"ext_birkbeck-07726","s":["raises","daises","daisies"],"c":"raises","ms":6.19408,"ok":1}
+{"id":"ext_birkbeck-07730","s":["damagage","damage","damaged"],"c":null,"ms":8.59437,"ok":1}
+{"id":"ext_birkbeck-07788","s":["dageross","dangerous","dangerously"],"c":null,"ms":7.86992,"ok":1}
+{"id":"ext_birkbeck-07825","s":["dangierious","dangerous","dangerously"],"c":null,"ms":9.73558,"ok":1}
+{"id":"ext_birkbeck-07828","s":["dangourous","dangerous","dangerously"],"c":null,"ms":10.1035,"ok":1}
+{"id":"ext_birkbeck-08052","s":["declaratrions","declarations","declaration"],"c":null,"ms":7.8955,"ok":1}
+{"id":"ext_birkbeck-08057","s":["decrepid","decrepitude","decrepit"],"c":null,"ms":7.62733,"ok":1}
+{"id":"ext_birkbeck-08154","s":["difinate","definitely","definite"],"c":null,"ms":9.64625,"ok":1}
+{"id":"ext_birkbeck-08160","s":["defanetely","definitely","defiantly"],"c":null,"ms":9.21604,"ok":1}
+{"id":"ext_birkbeck-08162","s":["defenately","definitely","defiantly"],"c":null,"ms":8.12175,"ok":1}
+{"id":"ext_birkbeck-08191","s":["definatenly","definitely","defiantly"],"c":null,"ms":9.08358,"ok":1}
+{"id":"ext_birkbeck-08193","s":["definatily","definitely","defiantly"],"c":null,"ms":7.48208,"ok":1}
+{"id":"ext_birkbeck-08194","s":["defiantly","definatlly","definitely"],"c":"defiantly","ms":6.37763,"ok":1}
+{"id":"ext_birkbeck-08204","s":["definitatly","definitely","indefinitely"],"c":null,"ms":7.86225,"ok":1}
+{"id":"ext_birkbeck-08210","s":["defionately","definitely","defiantly"],"c":null,"ms":8.85388,"ok":1}
+{"id":"ext_birkbeck-08213","s":["deftinately","definitely","defiantly"],"c":null,"ms":9.26917,"ok":1}
+{"id":"ext_birkbeck-08228","s":["definishion","definition","refinishing"],"c":null,"ms":13.5885,"ok":1}
+{"id":"ext_birkbeck-08238","s":["delegalis","legalistic","de legalistic"],"c":null,"ms":11.9358,"ok":1}
+{"id":"ext_birkbeck-08242","s":["delegants","delegates","delegate"],"c":null,"ms":7.18517,"ok":1}
+{"id":"ext_birkbeck-08249","s":["deltagates","delegates","delta gates"],"c":null,"ms":11.2018,"ok":1}
+{"id":"ext_birkbeck-08346","s":["delifured","delivered","delighted"],"c":null,"ms":8.71196,"ok":1}
+{"id":"ext_birkbeck-08356","s":["diliverd","delivered","delivery"],"c":null,"ms":8.49304,"ok":1}
+{"id":"ext_birkbeck-08492","s":["disigined","designed","i signed"],"c":null,"ms":8.3665,"ok":1}
+{"id":"ext_birkbeck-08495","s":["disignhed","designed","disinherited"],"c":null,"ms":8.67442,"ok":1}
+{"id":"ext_birkbeck-08499","s":["disingned","designed","disingenuous"],"c":null,"ms":10.318,"ok":1}
+{"id":"ext_birkbeck-08603","s":["dertermided","determined","deter died"],"c":null,"ms":13.454,"ok":1}
+{"id":"ext_birkbeck-08616","s":["determamed","determined","determines"],"c":null,"ms":10.0171,"ok":1}
+{"id":"ext_birkbeck-08618","s":["determanded","determined","determine"],"c":null,"ms":9.42192,"ok":1}
+{"id":"ext_birkbeck-08642","s":["deturmaned","determined","determine"],"c":null,"ms":9.73492,"ok":1}
+{"id":"ext_birkbeck-08655","s":["deyveliper","developers","developer"],"c":null,"ms":8.36967,"ok":1}
+{"id":"ext_birkbeck-08671","s":["daimon","diamond","diamonds"],"c":"daimon","ms":5.38017,"ok":1}
+{"id":"ext_birkbeck-08672","s":["diamonds","diamond","diamonde"],"c":"diamonds","ms":6.891,"ok":1}
+{"id":"ext_birkbeck-08673","s":["diamore","diamorphine","diamond"],"c":null,"ms":6.42504,"ok":1}
+{"id":"ext_birkbeck-08687","s":["diamonds","dimonde","i wonder"],"c":"diamonds","ms":9.39917,"ok":1}
+{"id":"ext_birkbeck-08688","s":["dimound","diamond","diamonds"],"c":null,"ms":8.79804,"ok":1}
+{"id":"ext_birkbeck-08692","s":["dirmend","friends","friend"],"c":null,"ms":9.57096,"ok":1}
+{"id":"ext_birkbeck-08700","s":["did","died","didn't"],"c":"did","ms":5.60388,"ok":1}
+{"id":"ext_birkbeck-08807","s":["desippoint","disappointed","disappointment"],"c":null,"ms":7.30638,"ok":1}
+{"id":"ext_birkbeck-08816","s":["diserpoint","disappointed","disappointment"],"c":null,"ms":9.46004,"ok":1}
+{"id":"ext_birkbeck-08825","s":["dissipoint","disappointed","disappointment"],"c":null,"ms":7.45121,"ok":1}
+{"id":"ext_birkbeck-08829","s":["dissypoint","disappointed","disappointment"],"c":null,"ms":8.37567,"ok":1}
+{"id":"ext_birkbeck-08862","s":["disapline","discipline","disciplined"],"c":null,"ms":7.52137,"ok":1}
+{"id":"ext_birkbeck-08863","s":["disciplyn","discipline","disciplined"],"c":null,"ms":12.0056,"ok":1}
+{"id":"ext_birkbeck-08940","s":["disonist","dishonest","dishonestly"],"c":null,"ms":9.17867,"ok":1}
+{"id":"ext_birkbeck-08943","s":["dismell","dismally","i smell"],"c":null,"ms":9.19513,"ok":1}
+{"id":"ext_birkbeck-08977","s":["distingwish","distinguished","distinguish"],"c":null,"ms":7.57038,"ok":1}
+{"id":"ext_birkbeck-09007","s":["dissingrished","distinguished","dissing rushed"],"c":null,"ms":16.1469,"ok":1}
+{"id":"ext_birkbeck-09015","s":["distingisted","distinguished","distinguishes"],"c":null,"ms":13.1475,"ok":1}
+{"id":"ext_birkbeck-09016","s":["distingquised","distinguished","distinguishes"],"c":null,"ms":7.68896,"ok":1}
+{"id":"ext_birkbeck-09017","s":["distingquisted","distinguished","distinguishes"],"c":null,"ms":13.8489,"ok":1}
+{"id":"ext_birkbeck-09020","s":["distingrished","distinguished","distinguishes"],"c":null,"ms":8.05775,"ok":1}
+{"id":"ext_birkbeck-09026","s":["distinguiste","distinguished","distinguishes"],"c":null,"ms":9.01371,"ok":1}
+{"id":"ext_birkbeck-09029","s":["distingushid","distinguished","distinguishing"],"c":null,"ms":7.69058,"ok":1}
+{"id":"ext_birkbeck-09030","s":["distingusted","distinguished","distinguishes"],"c":null,"ms":12.7903,"ok":1}
+{"id":"ext_birkbeck-09031","s":["distingwhished","distinguished","distinguishes"],"c":null,"ms":7.65029,"ok":1}
+{"id":"ext_birkbeck-09033","s":["distingwished","distinguished","distinguishes"],"c":null,"ms":7.53175,"ok":1}
+{"id":"ext_birkbeck-09035","s":["distinquished","distinguished","distinguishes"],"c":null,"ms":8.13021,"ok":1}
+{"id":"ext_birkbeck-09047","s":["dish","dichotomy","duchess's"],"c":"dish","ms":5.44592,"ok":1}
+{"id":"ext_birkbeck-09052","s":["divide the","divide this","divident"],"c":null,"ms":8.48788,"ok":1}
+{"id":"ext_birkbeck-09071","s":["doctments","documents","comments"],"c":null,"ms":10.4374,"ok":1}
+{"id":"ext_birkbeck-09076","s":["dockiments","documents","documentary"],"c":null,"ms":9.338,"ok":1}
+{"id":"ext_birkbeck-09079","s":["docquements","documents","documented"],"c":null,"ms":8.636,"ok":1}
+{"id":"ext_birkbeck-09085","s":["doctumints","documents","documentary"],"c":null,"ms":10.3355,"ok":1}
+{"id":"ext_birkbeck-09086","s":["docturments","documents","documentary"],"c":null,"ms":11.2097,"ok":1}
+{"id":"ext_birkbeck-09090","s":["document","documents","documentary"],"c":"document","ms":5.45479,"ok":1}
+{"id":"ext_birkbeck-09091","s":["documence","documented","documents"],"c":null,"ms":8.49621,"ok":1}
+{"id":"ext_birkbeck-09097","s":["dordments","oddments","rodents"],"c":null,"ms":9.63454,"ok":1}
+{"id":"ext_birkbeck-09098","s":["dotuments","documents","documented"],"c":null,"ms":9.88279,"ok":1}
+{"id":"ext_birkbeck-09114","s":["dodjed","does","doddering"],"c":null,"ms":7.80925,"ok":1}
+{"id":"ext_birkbeck-09136","s":["dolor","dolores","dollars"],"c":"dolor","ms":5.52858,"ok":1}
+{"id":"ext_birkbeck-09235","s":["out","doupt","deputy"],"c":"out","ms":5.21329,"ok":1}
+{"id":"ext_birkbeck-09248","s":["don","don't","found"],"c":"don","ms":4.97912,"ok":1}
+{"id":"ext_birkbeck-09253","s":["does","doesn't","dozens"],"c":"does","ms":5.59458,"ok":1}
+{"id":"ext_birkbeck-09257","s":["earned","darnedest","drained"],"c":"earned","ms":6.4955,"ok":1}
+{"id":"ext_birkbeck-09260","s":["dropped","draped","drapped"],"c":"dropped","ms":6.11467,"ok":1}
+{"id":"ext_birkbeck-09267","s":["darwin","drawing","darwin's"],"c":"darwin","ms":5.79413,"ok":1}
+{"id":"ext_birkbeck-09280","s":["did","didn't","director"],"c":"did","ms":5.40888,"ok":1}
+{"id":"ext_birkbeck-09297","s":["driveren","driver","drivers"],"c":null,"ms":8.40242,"ok":1}
+{"id":"ext_birkbeck-09298","s":["driver","drivers","driven"],"c":"driver","ms":7.80692,"ok":1}
+{"id":"ext_birkbeck-09349","s":["dublicate","duplicate","delicate"],"c":null,"ms":9.0265,"ok":1}
+{"id":"ext_birkbeck-09394","s":["exactly","easyly","easily"],"c":"exactly","ms":8.428,"ok":1}
+{"id":"ext_birkbeck-09454","s":["economal","economically","economic"],"c":null,"ms":6.03388,"ok":1}
+{"id":"ext_birkbeck-09461","s":["eccomical","comical","comically"],"c":null,"ms":10.2576,"ok":1}
+{"id":"ext_birkbeck-09471","s":["ecmomical","economically","economical"],"c":null,"ms":7.63525,"ok":1}
+{"id":"ext_birkbeck-09475","s":["ecomdomical","economically","economical"],"c":null,"ms":11.4608,"ok":1}
+{"id":"ext_birkbeck-09482","s":["ecommical","comical","comically"],"c":null,"ms":9.31121,"ok":1}
+{"id":"ext_birkbeck-09488","s":["econalical","economically","economical"],"c":null,"ms":9.09542,"ok":1}
+{"id":"ext_birkbeck-09491","s":["econcomial","economically","economical"],"c":null,"ms":8.33658,"ok":1}
+{"id":"ext_birkbeck-09504","s":["economycal","economy all","economy also"],"c":null,"ms":10.5141,"ok":1}
+{"id":"ext_birkbeck-09507","s":["ecunumical","economically","economical"],"c":null,"ms":7.99388,"ok":1}
+{"id":"ext_birkbeck-09513","s":["enomical","economically","economical"],"c":null,"ms":11.3219,"ok":1}
+{"id":"ext_birkbeck-09542","s":["ecomnomices","economics","economies"],"c":null,"ms":8.69317,"ok":1}
+{"id":"ext_birkbeck-09559","s":["economects","economists","economics"],"c":null,"ms":6.98804,"ok":1}
+{"id":"ext_birkbeck-09560","s":["economicies","economics","economic is"],"c":null,"ms":9.63929,"ok":1}
+{"id":"ext_birkbeck-09562","s":["economists","economics","economicts"],"c":"economists","ms":6.91229,"ok":1}
+{"id":"ext_birkbeck-09563","s":["economic","economists","economist"],"c":"economic","ms":5.16704,"ok":1}
+{"id":"ext_birkbeck-09566","s":["econopics","economics","economic"],"c":null,"ms":6.72412,"ok":1}
+{"id":"ext_birkbeck-09682","s":["affeminate","effeminate","effeminately"],"c":null,"ms":10.8318,"ok":1}
+{"id":"ext_birkbeck-09850","s":["even","eleven","eventually"],"c":"even","ms":6.61783,"ok":1}
+{"id":"ext_birkbeck-09851","s":["elegable","eligible","legible"],"c":null,"ms":8.32358,"ok":1}
+{"id":"ext_birkbeck-09857","s":["elemanate","eliminate","eliminated"],"c":null,"ms":10.0394,"ok":1}
+{"id":"ext_birkbeck-09861","s":["elemiate","eliminate","eliminated"],"c":null,"ms":8.22458,"ok":1}
+{"id":"ext_birkbeck-09864","s":["elemintate","eliminate","eliminated"],"c":null,"ms":8.92446,"ok":1}
+{"id":"ext_birkbeck-09872","s":["elimitate","eliminate","eliminated"],"c":null,"ms":7.5255,"ok":1}
+{"id":"ext_birkbeck-09874","s":["elimtnate","eliminate","eliminated"],"c":null,"ms":7.99529,"ok":1}
+{"id":"ext_birkbeck-09880","s":["elminlate","eliminate","eliminated"],"c":null,"ms":9.30096,"ok":1}
+{"id":"ext_birkbeck-09994","s":["emptyed","empty","tempted"],"c":null,"ms":8.32908,"ok":1}
+{"id":"ext_birkbeck-10465","s":["epesale","repealed","please"],"c":null,"ms":6.7325,"ok":1}
+{"id":"ext_birkbeck-10466","s":["ephisile","there","philip"],"c":null,"ms":11.5441,"ok":1}
+{"id":"ext_birkbeck-10467","s":["epissel","epistle","episode"],"c":null,"ms":6.48238,"ok":1}
+{"id":"ext_birkbeck-10492","s":["epicale","epically","epical"],"c":null,"ms":6.04679,"ok":1}
+{"id":"ext_birkbeck-10494","s":["epicatle","epistle","epically"],"c":null,"ms":7.93738,"ok":1}
+{"id":"ext_birkbeck-10498","s":["epicile","epilepsy","pericles"],"c":null,"ms":7.10417,"ok":1}
+{"id":"ext_birkbeck-10501","s":["episale","epically","episode"],"c":null,"ms":6.17329,"ok":1}
+{"id":"ext_birkbeck-10503","s":["episcel","episode","episcopalian"],"c":null,"ms":6.97775,"ok":1}
+{"id":"ext_birkbeck-10505","s":["episcle","epic let","epistle"],"c":null,"ms":6.80462,"ok":1}
+{"id":"ext_birkbeck-10508","s":["episel","spielberg","epistle"],"c":null,"ms":5.43304,"ok":1}
+{"id":"ext_birkbeck-10513","s":["episicle","episode","episodes"],"c":null,"ms":11.1152,"ok":1}
+{"id":"ext_birkbeck-10514","s":["episil","epsilon","episiotomy"],"c":null,"ms":5.55954,"ok":1}
+{"id":"ext_birkbeck-10515","s":["episile","epistle","epilepsy"],"c":null,"ms":6.25875,"ok":1}
+{"id":"ext_birkbeck-10516","s":["episille","epistle","epilepsy"],"c":null,"ms":7.58096,"ok":1}
+{"id":"ext_birkbeck-10524","s":["epissile","possible","epistle"],"c":null,"ms":7.33583,"ok":1}
+{"id":"ext_birkbeck-10525","s":["epissle","epistle","episode"],"c":null,"ms":5.65542,"ok":1}
+{"id":"ext_birkbeck-10526","s":["epistal","epistle","pital's"],"c":null,"ms":5.87546,"ok":1}
+{"id":"ext_birkbeck-10530","s":["episule","epistle","episode"],"c":null,"ms":6.72133,"ok":1}
+{"id":"ext_birkbeck-10531","s":["episuple","people","there"],"c":null,"ms":11.2935,"ok":1}
+{"id":"ext_birkbeck-10541","s":["eppissle","epistle","episode"],"c":null,"ms":6.22446,"ok":1}
+{"id":"ext_birkbeck-10544","s":["pestle","epstein","epistle"],"c":"pestle","ms":4.88167,"ok":1}
+{"id":"ext_birkbeck-10556","s":["equilisation","equalisation","equalisation's"],"c":null,"ms":6.29,"ok":1}
+{"id":"ext_birkbeck-10611","s":["equasion","equation","equations"],"c":null,"ms":7.07921,"ok":1}
+{"id":"ext_birkbeck-10672","s":["equivelant","equivalent","equivalents"],"c":null,"ms":5.79479,"ok":1}
+{"id":"ext_birkbeck-10691","s":["errounous","erroneously","erroneous"],"c":null,"ms":7.86504,"ok":1}
+{"id":"ext_birkbeck-10693","s":["arrow","arrows","error"],"c":"arrow","ms":5.69792,"ok":1}
+{"id":"ext_birkbeck-10746","s":["espeasally","especially","specially"],"c":null,"ms":9.75108,"ok":1}
+{"id":"ext_birkbeck-10855","s":["asteblishing","establishing","astonishing"],"c":null,"ms":11.9774,"ok":1}
+{"id":"ext_birkbeck-10859","s":["edstaplishing","establishing","reestablishing"],"c":null,"ms":15.4846,"ok":1}
+{"id":"ext_birkbeck-10871","s":["establesing","establishing","established"],"c":null,"ms":7.59217,"ok":1}
+{"id":"ext_birkbeck-10878","s":["estallising","establishing","serialising"],"c":null,"ms":8.62929,"ok":1}
+{"id":"ext_birkbeck-10879","s":["estaplishing","establishing","reestablishing"],"c":null,"ms":8.33212,"ok":1}
+{"id":"ext_birkbeck-10883","s":["exstaplishing","establishing","establish night"],"c":null,"ms":14.7487,"ok":1}
+{"id":"ext_birkbeck-10885","s":["istablising","establishing","stabilising"],"c":null,"ms":9.31738,"ok":1}
+{"id":"ext_birkbeck-11168","s":["exemplyfied","exemplified","exemplifies"],"c":null,"ms":7.14692,"ok":1}
+{"id":"ext_birkbeck-11180","s":["exhaustation","exhaustion","exhaust action"],"c":null,"ms":8.68254,"ok":1}
+{"id":"ext_birkbeck-11261","s":["exists","exist","existence"],"c":"exists","ms":6.27583,"ok":1}
+{"id":"ext_birkbeck-11270","s":["exastance","existence","existences"],"c":null,"ms":10.3421,"ok":1}
+{"id":"ext_birkbeck-11272","s":["excistance","existence","resistance"],"c":null,"ms":9.80708,"ok":1}
+{"id":"ext_birkbeck-11274","s":["excitence","existence","excitement"],"c":null,"ms":8.76321,"ok":1}
+{"id":"ext_birkbeck-11278","s":["exestance","existence","existences"],"c":null,"ms":8.679,"ok":1}
+{"id":"ext_birkbeck-11281","s":["exgistance","existence","existences"],"c":null,"ms":9.41042,"ok":1}
+{"id":"ext_birkbeck-11282","s":["exhistance","existence","existences"],"c":null,"ms":8.18504,"ok":1}
+{"id":"ext_birkbeck-11284","s":["exisance","existence","existences"],"c":null,"ms":8.91767,"ok":1}
+{"id":"ext_birkbeck-11285","s":["exisatance","existence","existences"],"c":null,"ms":9.03779,"ok":1}
+{"id":"ext_birkbeck-11292","s":["existiance","existence","distance"],"c":null,"ms":8.50096,"ok":1}
+{"id":"ext_birkbeck-11302","s":["exsistance","resistance","existence"],"c":null,"ms":8.44279,"ok":1}
+{"id":"ext_birkbeck-11307","s":["exzistance","existence","resistance"],"c":null,"ms":9.0055,"ok":1}
+{"id":"ext_birkbeck-11318","s":["exchists","exists","exhausts"],"c":null,"ms":9.56596,"ok":1}
+{"id":"ext_birkbeck-11331","s":["exisess","excessive","excess"],"c":null,"ms":7.39667,"ok":1}
+{"id":"ext_birkbeck-11334","s":["exisists","exists","existence"],"c":null,"ms":8.96617,"ok":1}
+{"id":"ext_birkbeck-11361","s":["expenature","expenditure","expenditures"],"c":null,"ms":6.93333,"ok":1}
+{"id":"ext_birkbeck-11364","s":["expendehure","expenditure","expenditures"],"c":null,"ms":13.0746,"ok":1}
+{"id":"ext_birkbeck-11365","s":["expendenture","expenditure","expenditures"],"c":null,"ms":9.25229,"ok":1}
+{"id":"ext_birkbeck-11372","s":["expendicure","expenditure","expenditures"],"c":null,"ms":8.13167,"ok":1}
+{"id":"ext_birkbeck-11375","s":["expendidure","expenditure","expenditures"],"c":null,"ms":7.27529,"ok":1}
+{"id":"ext_birkbeck-11376","s":["expendijur","expenditure","expenditures"],"c":null,"ms":10.7946,"ok":1}
+{"id":"ext_birkbeck-11380","s":["expendure","expenditure","expenditures"],"c":null,"ms":6.32825,"ok":1}
+{"id":"ext_birkbeck-11385","s":["expenisture","expenditure","expenditures"],"c":null,"ms":5.36163,"ok":1}
+{"id":"ext_birkbeck-11389","s":["expentiture","expenditure","expenditures"],"c":null,"ms":6.81067,"ok":1}
+{"id":"ext_birkbeck-11390","s":["expenture","expenditure","expenditures"],"c":null,"ms":7.59546,"ok":1}
+{"id":"ext_birkbeck-11399","s":["exspeniture","expenditure","expenditures"],"c":null,"ms":8.3425,"ok":1}
+{"id":"ext_birkbeck-11401","s":["ixpinditure","expenditure","expenditures"],"c":null,"ms":7.33996,"ok":1}
+{"id":"ext_birkbeck-11451","s":["eixplaned","explained","expanded"],"c":null,"ms":6.60875,"ok":1}
+{"id":"ext_birkbeck-11461","s":["explain","explained","expaine"],"c":"explain","ms":5.75229,"ok":1}
+{"id":"ext_birkbeck-11466","s":["explain","explained","explaining"],"c":"explain","ms":5.497,"ok":1}
+{"id":"ext_birkbeck-11468","s":["explairded","explained","explored"],"c":null,"ms":12.0028,"ok":1}
+{"id":"ext_birkbeck-11481","s":["exsplaned","explained","esplanade"],"c":null,"ms":7.00679,"ok":1}
+{"id":"ext_birkbeck-11549","s":["exdended","extended","expended"],"c":null,"ms":8.33638,"ok":1}
+{"id":"ext_birkbeck-11552","s":["exsended","extended","expended"],"c":null,"ms":8.19396,"ok":1}
+{"id":"ext_birkbeck-11556","s":["extanted","extended","extraterrestrial"],"c":null,"ms":8.73208,"ok":1}
+{"id":"ext_birkbeck-11557","s":["extenand","extended","extend"],"c":null,"ms":7.92371,"ok":1}
+{"id":"ext_birkbeck-11561","s":["extented","extended","extender"],"c":null,"ms":6.879,"ok":1}
+{"id":"ext_birkbeck-11566","s":["extinguser","extinguishers","extinguisher"],"c":null,"ms":6.486,"ok":1}
+{"id":"ext_birkbeck-11572","s":["exirordinary","extraordinary","extraordinarily"],"c":null,"ms":13.823,"ok":1}
+{"id":"ext_birkbeck-11581","s":["exterordinary","extraordinary","extraordinarily"],"c":null,"ms":7.82258,"ok":1}
+{"id":"ext_birkbeck-11582","s":["extheordinary","extraordinary","the ordinary"],"c":null,"ms":16.7915,"ok":1}
+{"id":"ext_birkbeck-11588","s":["extorordinary","extraordinary","extraordinarily"],"c":null,"ms":7.79842,"ok":1}
+{"id":"ext_birkbeck-11595","s":["extraoratinary","extraordinary","extraordinarily"],"c":null,"ms":14.3314,"ok":1}
+{"id":"ext_birkbeck-11606","s":["extraordorinary","extraordinary","extraordinarily"],"c":null,"ms":8.46567,"ok":1}
+{"id":"ext_birkbeck-11614","s":["extreordenary","extraordinary","extraordinarily"],"c":null,"ms":7.50604,"ok":1}
+{"id":"ext_birkbeck-11616","s":["extriodinary","extraordinary","extraordinarily"],"c":null,"ms":7.30604,"ok":1}
+{"id":"ext_birkbeck-11637","s":["extrordanary","extraordinary","extraordinarily"],"c":null,"ms":7.16442,"ok":1}
+{"id":"ext_birkbeck-11640","s":["extrordenary","extraordinary","extraordinarily"],"c":null,"ms":7.01267,"ok":1}
+{"id":"ext_birkbeck-11773","s":["far","gary","fairy"],"c":"far","ms":5.78963,"ok":1}
+{"id":"ext_birkbeck-11883","s":["facanating","fascinating","fascinatingly"],"c":null,"ms":9.28471,"ok":1}
+{"id":"ext_birkbeck-11889","s":["facinateing","fascinating","fascinatingly"],"c":null,"ms":8.14246,"ok":1}
+{"id":"ext_birkbeck-11896","s":["facisnating","fascinating","fascinatingly"],"c":null,"ms":10.1339,"ok":1}
+{"id":"ext_birkbeck-11899","s":["fasanating","fascinating","fascinatingly"],"c":null,"ms":9.7125,"ok":1}
+{"id":"ext_birkbeck-11908","s":["fasenating","fascinating","fascinatingly"],"c":null,"ms":11.1369,"ok":1}
+{"id":"ext_birkbeck-11910","s":["fasicinateing","fascinating","fascinatingly"],"c":null,"ms":10.0928,"ok":1}
+{"id":"ext_birkbeck-11911","s":["fasignating","fascinating","designating"],"c":null,"ms":9.54937,"ok":1}
+{"id":"ext_birkbeck-11917","s":["fasionating","fascinating","fascinatingly"],"c":null,"ms":9.34379,"ok":1}
+{"id":"ext_birkbeck-11918","s":["fastanating","fascinating","stagnating"],"c":null,"ms":18.2645,"ok":1}
+{"id":"ext_birkbeck-11919","s":["fastenating","fastening","castrating"],"c":null,"ms":14.6385,"ok":1}
+{"id":"ext_birkbeck-11920","s":["fastinating","fascinating","fascinatingly"],"c":null,"ms":11.1182,"ok":1}
+{"id":"ext_birkbeck-11923","s":["faucinating","fascinating","fascinatingly"],"c":null,"ms":7.41287,"ok":1}
+{"id":"ext_birkbeck-11924","s":["fausinating","fascinating","fascinatingly"],"c":null,"ms":8.15987,"ok":1}
+{"id":"ext_birkbeck-11926","s":["festinating","destination","destinations"],"c":null,"ms":12.2984,"ok":1}
+{"id":"ext_birkbeck-11932","s":["vaccinating","vascinating","fascinating"],"c":"vaccinating","ms":8.55217,"ok":1}
+{"id":"ext_birkbeck-11934","s":["vasinating","fascinating","vaccinating"],"c":null,"ms":9.16233,"ok":1}
+{"id":"ext_birkbeck-11995","s":["tied","field","fiedler"],"c":"tied","ms":5.12646,"ok":1}
+{"id":"ext_birkbeck-12013","s":["force","forces","fierce"],"c":"force","ms":5.13621,"ok":1}
+{"id":"ext_birkbeck-12017","s":["fithteen","fifteen","frightened"],"c":null,"ms":13.0605,"ok":1}
+{"id":"ext_birkbeck-12155","s":["fianancally","financially","financial"],"c":null,"ms":9.26313,"ok":1}
+{"id":"ext_birkbeck-12158","s":["fianicially","financially","financial"],"c":null,"ms":8.74,"ok":1}
+{"id":"ext_birkbeck-12164","s":["finally","finacilly","financially"],"c":"finally","ms":11.2684,"ok":1}
+{"id":"ext_birkbeck-12172","s":["financhally","financially","financial"],"c":null,"ms":11.052,"ok":1}
+{"id":"ext_birkbeck-12173","s":["financhilly","financially","financial"],"c":null,"ms":10.3151,"ok":1}
+{"id":"ext_birkbeck-12184","s":["finantially","financially","financial"],"c":null,"ms":10.4101,"ok":1}
+{"id":"ext_birkbeck-12186","s":["finantually","financially","if naturally"],"c":null,"ms":16.6822,"ok":1}
+{"id":"ext_birkbeck-12192","s":["finally","fincially","financially"],"c":"finally","ms":10.7534,"ok":1}
+{"id":"ext_birkbeck-12195","s":["finiancally","financially","financial"],"c":null,"ms":12.7909,"ok":1}
+{"id":"ext_birkbeck-12202","s":["finincally","financially","finally"],"c":null,"ms":13.2683,"ok":1}
+{"id":"ext_birkbeck-12273","s":["vagrancy","fagrancy","flagrancy"],"c":"vagrancy","ms":6.50417,"ok":1}
+{"id":"ext_birkbeck-12275","s":["fagrany","fragrance","fragrances"],"c":null,"ms":7.05325,"ok":1}
+{"id":"ext_birkbeck-12277","s":["falayrancy","flagrancy","flagrance"],"c":null,"ms":8.37667,"ok":1}
+{"id":"ext_birkbeck-12278","s":["falgrancey","flagrance","flagrancy"],"c":null,"ms":7.66396,"ok":1}
+{"id":"ext_birkbeck-12279","s":["falgrncy","flagrancy","agency's"],"c":null,"ms":7.08454,"ok":1}
+{"id":"ext_birkbeck-12291","s":["flacracy","flagrancy","flagrantly"],"c":null,"ms":6.65254,"ok":1}
+{"id":"ext_birkbeck-12294","s":["flaganay","flanagan","flags you"],"c":null,"ms":12.2022,"ok":1}
+{"id":"ext_birkbeck-12295","s":["flagancy","flagrancy","flagon you"],"c":null,"ms":8.50375,"ok":1}
+{"id":"ext_birkbeck-12296","s":["flagany","flag any","flagrantly"],"c":null,"ms":6.73308,"ok":1}
+{"id":"ext_birkbeck-12301","s":["flagerancy","flagrancy","algerian you"],"c":null,"ms":6.95983,"ok":1}
+{"id":"ext_birkbeck-12302","s":["flagglancy","flagrancy","fallacy"],"c":null,"ms":10.078,"ok":1}
+{"id":"ext_birkbeck-12308","s":["flagracy","flagrancy","flagrantly"],"c":null,"ms":5.47929,"ok":1}
+{"id":"ext_birkbeck-12309","s":["flagrancey","flagrance","flagrancy"],"c":null,"ms":5.68696,"ok":1}
+{"id":"ext_birkbeck-12311","s":["flagraphy","flagrantly","flagrant"],"c":null,"ms":10.4689,"ok":1}
+{"id":"ext_birkbeck-12312","s":["flagray","flagrantly","flagrant"],"c":null,"ms":5.25717,"ok":1}
+{"id":"ext_birkbeck-12314","s":["flagrency","flagrancy","agency's"],"c":null,"ms":7.70446,"ok":1}
+{"id":"ext_birkbeck-12320","s":["flangrancy","flagrancy","flanagan you"],"c":null,"ms":6.97004,"ok":1}
+{"id":"ext_birkbeck-12321","s":["flangraney","lagrange","flagrantly"],"c":null,"ms":12.522,"ok":1}
+{"id":"ext_birkbeck-12334","s":["flayrancy","flagrancy","flagrance"],"c":null,"ms":6.39967,"ok":1}
+{"id":"ext_birkbeck-12338","s":["flogancy","logan you","logan your"],"c":null,"ms":8.30896,"ok":1}
+{"id":"ext_birkbeck-12353","s":["flash","flesh","flashlight"],"c":"flash","ms":5.45371,"ok":1}
+{"id":"ext_birkbeck-12375","s":["for","flotilla","flotsam"],"c":"for","ms":4.04733,"ok":1}
+{"id":"ext_birkbeck-12381","s":["for","florence's","florida's"],"c":"for","ms":3.87067,"ok":1}
+{"id":"ext_birkbeck-12407","s":["of","for","following"],"c":"of","ms":4.26608,"ok":1}
+{"id":"ext_birkbeck-12412","s":["oh","following","foolhardy"],"c":"oh","ms":4.46988,"ok":1}
+{"id":"ext_birkbeck-12477","s":["force","forces","forced"],"c":"force","ms":7.36146,"ok":1}
+{"id":"ext_birkbeck-12507","s":["former","fomerm","formerly"],"c":"former","ms":9.80021,"ok":1}
+{"id":"ext_birkbeck-12508","s":["for","formula","former"],"c":"for","ms":6.53004,"ok":1}
+{"id":"ext_birkbeck-12513","s":["from","former","foremost"],"c":"from","ms":6.45283,"ok":1}
+{"id":"ext_birkbeck-12514","s":["for","from","formula"],"c":"for","ms":6.33063,"ok":1}
+{"id":"ext_birkbeck-12845","s":["tom","tom's","from"],"c":"tom","ms":5.37162,"ok":1}
+{"id":"ext_birkbeck-12937","s":["finney","funeral","funny"],"c":"finney","ms":6.66725,"ok":1}
+{"id":"ext_birkbeck-12940","s":["for","further","furthermore"],"c":"for","ms":4.87971,"ok":1}
+{"id":"ext_birkbeck-12972","s":["gallare","galatea","gallery"],"c":null,"ms":7.43608,"ok":1}
+{"id":"ext_birkbeck-12974","s":["gale","gallery","galleries"],"c":"gale","ms":5.731,"ok":1}
+{"id":"ext_birkbeck-12982","s":["gallowry","gallery","galloway"],"c":null,"ms":7.68508,"ok":1}
+{"id":"ext_birkbeck-13008","s":["garllry","gallery","gnarly"],"c":null,"ms":7.35729,"ok":1}
+{"id":"ext_birkbeck-13137","s":["genova","geneva","geniva"],"c":"genova","ms":7.42904,"ok":1}
+{"id":"ext_birkbeck-13181","s":["geomotery","geometry","geometry's"],"c":null,"ms":7.98958,"ok":1}
+{"id":"ext_birkbeck-13186","s":["gemeotry","geometry","geometry's"],"c":null,"ms":8.03304,"ok":1}
+{"id":"ext_birkbeck-13193","s":["geomatery","geometry","geometry's"],"c":null,"ms":8.47263,"ok":1}
+{"id":"ext_birkbeck-13194","s":["geomatory","geometry","go story"],"c":null,"ms":9.69492,"ok":1}
+{"id":"ext_birkbeck-13209","s":["geomometry","geometry","geometry's"],"c":null,"ms":9.98092,"ok":1}
+{"id":"ext_birkbeck-13211","s":["geomotary","geometry","geometry's"],"c":null,"ms":9.6045,"ok":1}
+{"id":"ext_birkbeck-13212","s":["geomotre","geometry","geometric"],"c":null,"ms":9.2825,"ok":1}
+{"id":"ext_birkbeck-13215","s":["geomratry","geometry","geometry's"],"c":null,"ms":8.74271,"ok":1}
+{"id":"ext_birkbeck-13218","s":["geoomentry","geometry","geometry's"],"c":null,"ms":8.49,"ok":1}
+{"id":"ext_birkbeck-13222","s":["geumatry","geometry","geometry's"],"c":null,"ms":9.76437,"ok":1}
+{"id":"ext_birkbeck-13301","s":["gower","glowed","vowed"],"c":"gower","ms":5.99933,"ok":1}
+{"id":"ext_birkbeck-13338","s":["georgious","gorgeous","georgia"],"c":null,"ms":7.96037,"ok":1}
+{"id":"ext_birkbeck-13345","s":["gordeous","gorgeous","gorgeously"],"c":null,"ms":7.56992,"ok":1}
+{"id":"ext_birkbeck-13347","s":["gordgous","gorgeous","gorgeously"],"c":null,"ms":7.51458,"ok":1}
+{"id":"ext_birkbeck-13350","s":["gordious","glorious","gloriously"],"c":null,"ms":7.0835,"ok":1}
+{"id":"ext_birkbeck-13354","s":["gorduous","arduous","glorious"],"c":null,"ms":8.28833,"ok":1}
+{"id":"ext_birkbeck-13366","s":["gorgouse","gorgeous","gorgeousness"],"c":null,"ms":7.90925,"ok":1}
+{"id":"ext_birkbeck-13372","s":["glorious","gorjous","gloriously"],"c":"glorious","ms":6.69113,"ok":1}
+{"id":"ext_birkbeck-13374","s":["goudeous","hideously","hideous"],"c":null,"ms":9.12233,"ok":1}
+{"id":"ext_birkbeck-13377","s":["gourgous","gorgeous","gorgeously"],"c":null,"ms":10.8663,"ok":1}
+{"id":"ext_birkbeck-13469","s":["graguation","graduation","graduations"],"c":null,"ms":6.55175,"ok":1}
+{"id":"ext_birkbeck-13495","s":["graditude","gratitude","graduated"],"c":null,"ms":6.94896,"ok":1}
+{"id":"ext_birkbeck-13514","s":["get","great","eat"],"c":"get","ms":4.89179,"ok":1}
+{"id":"ext_birkbeck-13590","s":["garantea","guarantee","guaranteed"],"c":null,"ms":7.96012,"ok":1}
+{"id":"ext_birkbeck-13597","s":["garantue","guarantee","guaranteed"],"c":null,"ms":7.52513,"ok":1}
+{"id":"ext_birkbeck-13599","s":["garanutee","guarantee","guaranteed"],"c":null,"ms":8.25962,"ok":1}
+{"id":"ext_birkbeck-13601","s":["garage","garatee","grateful"],"c":"garage","ms":6.814,"ok":1}
+{"id":"ext_birkbeck-13605","s":["garauntee","guarantee","guaranteed"],"c":null,"ms":8.60637,"ok":1}
+{"id":"ext_birkbeck-13615","s":["garentee","guarantee","granted"],"c":null,"ms":9.51704,"ok":1}
+{"id":"ext_birkbeck-13620","s":["granite","garintee","guarantee"],"c":"granite","ms":7.25742,"ok":1}
+{"id":"ext_birkbeck-13637","s":["garrntee","granted","guarantee"],"c":null,"ms":8.80637,"ok":1}
+{"id":"ext_birkbeck-13644","s":["garuantee","guarantee","guaranteed"],"c":null,"ms":8.58633,"ok":1}
+{"id":"ext_birkbeck-13649","s":["garuntee","guarantee","granted"],"c":null,"ms":8.31462,"ok":1}
+{"id":"ext_birkbeck-13673","s":["grarentee","granted","rare tell"],"c":null,"ms":9.08542,"ok":1}
+{"id":"ext_birkbeck-13679","s":["guanantee","guarantee","guaranteed"],"c":null,"ms":9.00338,"ok":1}
+{"id":"ext_birkbeck-13702","s":["guarrtee","guarantee","guaranteed"],"c":null,"ms":7.18508,"ok":1}
+{"id":"ext_birkbeck-13712","s":["gurrentee","guarantee","guaranteed"],"c":null,"ms":9.73188,"ok":1}
+{"id":"ext_birkbeck-13714","s":["guurentee","guarantee","guaranteed"],"c":null,"ms":7.85725,"ok":1}
+{"id":"ext_birkbeck-13715","s":["quarantee","guarantee","quarantine"],"c":null,"ms":5.89129,"ok":1}
+{"id":"ext_birkbeck-13716","s":["quarentee","quarter","quarterback"],"c":null,"ms":11.7903,"ok":1}
+{"id":"ext_birkbeck-13730","s":["garateed","guaranteed","granted"],"c":null,"ms":7.73554,"ok":1}
+{"id":"ext_birkbeck-13732","s":["garaunteed","guaranteed","granted"],"c":null,"ms":8.55021,"ok":1}
+{"id":"ext_birkbeck-13735","s":["garnered","garenteed","granted"],"c":"garnered","ms":9.722,"ok":1}
+{"id":"ext_birkbeck-13740","s":["garinteed","granted","guaranteed"],"c":null,"ms":8.51137,"ok":1}
+{"id":"ext_birkbeck-13743","s":["granted","garnteed","guaranteed"],"c":"granted","ms":6.648,"ok":1}
+{"id":"ext_birkbeck-13750","s":["garuanteed","guaranteed","granted"],"c":null,"ms":8.98167,"ok":1}
+{"id":"ext_birkbeck-13751","s":["garunteed","granted","guaranteed"],"c":null,"ms":8.83425,"ok":1}
+{"id":"ext_birkbeck-13764","s":["grananteed","granted","guaranteed"],"c":null,"ms":9.79729,"ok":1}
+{"id":"ext_birkbeck-13770","s":["guareenteed","guaranteed","guarantee"],"c":null,"ms":9.24829,"ok":1}
+{"id":"ext_birkbeck-13777","s":["guarnenteed","guaranteed","guarantee"],"c":null,"ms":8.67075,"ok":1}
+{"id":"ext_birkbeck-13869","s":["gunter","guttersnipe","gutter"],"c":"gunter","ms":4.36896,"ok":1}
+{"id":"ext_birkbeck-13974","s":["hardware","hardwear","harder"],"c":null,"ms":8.54733,"ok":1}
+{"id":"ext_birkbeck-13979","s":["bach","have","he has"],"c":"bach","ms":6.23054,"ok":1}
+{"id":"ext_birkbeck-14011","s":["heated","heard","hearted"],"c":"heated","ms":7.19879,"ok":1}
+{"id":"ext_birkbeck-14023","s":["even","he entered","he enjoyed"],"c":"even","ms":9.06542,"ok":1}
+{"id":"ext_birkbeck-14036","s":["he","hedgehog","hedge"],"c":"he","ms":6.00346,"ok":1}
+{"id":"ext_birkbeck-14038","s":["he","hegel","hegemony"],"c":"he","ms":6.35658,"ok":1}
+{"id":"ext_birkbeck-14056","s":["high","hightail","hightailed"],"c":"high","ms":5.38767,"ok":1}
+{"id":"ext_birkbeck-14065","s":["elecopter","helicopter","helicopters"],"c":null,"ms":8.16458,"ok":1}
+{"id":"ext_birkbeck-14083","s":["helecepter","helicopter","helicopters"],"c":null,"ms":10.27,"ok":1}
+{"id":"ext_birkbeck-14085","s":["helecoper","helicopter","helicopters"],"c":null,"ms":8.97225,"ok":1}
+{"id":"ext_birkbeck-14086","s":["helecopeter","helicopter","helicopters"],"c":null,"ms":9.03908,"ok":1}
+{"id":"ext_birkbeck-14087","s":["helecopker","helicopter","helicopters"],"c":null,"ms":15.1277,"ok":1}
+{"id":"ext_birkbeck-14089","s":["helecoptor","helicopter","helicopters"],"c":null,"ms":8.45796,"ok":1}
+{"id":"ext_birkbeck-14091","s":["heleycopter","helicopter","helicopters"],"c":null,"ms":10.9205,"ok":1}
+{"id":"ext_birkbeck-14092","s":["helicockter","helicopter","helicopters"],"c":null,"ms":14.4572,"ok":1}
+{"id":"ext_birkbeck-14093","s":["helicoctor","helicopter","helicopters"],"c":null,"ms":12.2572,"ok":1}
+{"id":"ext_birkbeck-14096","s":["helicopitor","helicopter","helicopters"],"c":null,"ms":7.30979,"ok":1}
+{"id":"ext_birkbeck-14104","s":["helycopter","helicopter","helicopters"],"c":null,"ms":10.2053,"ok":1}
+{"id":"ext_birkbeck-14114","s":["huelecopter","helicopter","helicopters"],"c":null,"ms":7.278,"ok":1}
+{"id":"ext_birkbeck-14146","s":["hearafter","hear after","her after"],"c":null,"ms":9.98725,"ok":1}
+{"id":"ext_birkbeck-14153","s":["heydey","heyday","heydays"],"c":null,"ms":8.07521,"ok":1}
+{"id":"ext_birkbeck-14154","s":["hierachial","hierarchical","hierarchically"],"c":null,"ms":7.44254,"ok":1}
+{"id":"ext_birkbeck-14157","s":["hierchy","hierarchy","her you"],"c":null,"ms":9.62896,"ok":1}
+{"id":"ext_birkbeck-14172","s":["hindge","hinder","hinged"],"c":null,"ms":8.22554,"ok":1}
+{"id":"ext_birkbeck-14174","s":["hippopatams","hippopotamus","hippopotamuses"],"c":null,"ms":7.07613,"ok":1}
+{"id":"ext_birkbeck-14207","s":["hurried","horried","hurriedly"],"c":"hurried","ms":6.01387,"ok":1}
+{"id":"ext_birkbeck-14325","s":["dear","idea","ideas"],"c":"dear","ms":6.68054,"ok":1}
+{"id":"ext_birkbeck-14347","s":["immatation","imitation","imitations"],"c":null,"ms":10.5658,"ok":1}
+{"id":"ext_birkbeck-14350","s":["meditation","emitation","imitation"],"c":"meditation","ms":7.79788,"ok":1}
+{"id":"ext_birkbeck-14358","s":["imitatation","imitation","imitations"],"c":null,"ms":9.75517,"ok":1}
+{"id":"ext_birkbeck-14360","s":["imititation","imitation","mitigation"],"c":null,"ms":9.95471,"ok":1}
+{"id":"ext_birkbeck-14361","s":["immataion","imitation","imation"],"c":null,"ms":12.6999,"ok":1}
+{"id":"ext_birkbeck-14492","s":["immedictly","immediately","immediacy"],"c":null,"ms":12.7064,"ok":1}
+{"id":"ext_birkbeck-14585","s":["impedence","impudence","impedance"],"c":null,"ms":10.1193,"ok":1}
+{"id":"ext_birkbeck-14609","s":["anaccessable","inaccessible","a accessible"],"c":null,"ms":14.9119,"ok":1}
+{"id":"ext_birkbeck-14617","s":["inaccesitble","inaccessible","i accessible"],"c":null,"ms":9.26208,"ok":1}
+{"id":"ext_birkbeck-14620","s":["inacesesible","inaccessible","i accessible"],"c":null,"ms":9.76433,"ok":1}
+{"id":"ext_birkbeck-14629","s":["inacsessable","inaccessible","i accessible"],"c":null,"ms":11.1137,"ok":1}
+{"id":"ext_birkbeck-14631","s":["inactesible","inaccessible","incredible"],"c":null,"ms":10.4733,"ok":1}
+{"id":"ext_birkbeck-14632","s":["inactessable","inaccessible","i accessible"],"c":null,"ms":14.8591,"ok":1}
+{"id":"ext_birkbeck-14644","s":["inaxcessable","inaccessible","i accessible"],"c":null,"ms":10.3984,"ok":1}
+{"id":"ext_birkbeck-14655","s":["inexcessible","inaccessible","inexcusable"],"c":null,"ms":10.1358,"ok":1}
+{"id":"ext_birkbeck-14670","s":["incedint","in edinburgh","incident"],"c":null,"ms":11.8275,"ok":1}
+{"id":"ext_birkbeck-15139","s":["indstre","instead","industry's"],"c":null,"ms":8.87283,"ok":1}
+{"id":"ext_birkbeck-15140","s":["industry's","industrial","induster"],"c":null,"ms":7.86646,"ok":1}
+{"id":"ext_birkbeck-15145","s":["indutrey","industry's","industry"],"c":null,"ms":8.84279,"ok":1}
+{"id":"ext_birkbeck-15160","s":["infant's","infants","enfants"],"c":"infant's","ms":7.96967,"ok":1}
+{"id":"ext_birkbeck-15232","s":["ingratitoode","ingratitude","i gratitude"],"c":null,"ms":8.23833,"ok":1}
+{"id":"ext_birkbeck-15257","s":["inatitals","initials","initially"],"c":null,"ms":11.6271,"ok":1}
+{"id":"ext_birkbeck-15263","s":["inichals","nicholas","nichols"],"c":null,"ms":10.8103,"ok":1}
+{"id":"ext_birkbeck-15265","s":["inicials","initials","initially"],"c":null,"ms":10.0069,"ok":1}
+{"id":"ext_birkbeck-15269","s":["inishals","i shall","kinshasa"],"c":null,"ms":14.4414,"ok":1}
+{"id":"ext_birkbeck-15270","s":["inisials","initials","initially"],"c":null,"ms":9.89792,"ok":1}
+{"id":"ext_birkbeck-15275","s":["initihls","initials","initially"],"c":null,"ms":7.22904,"ok":1}
+{"id":"ext_birkbeck-15288","s":["intitals","initials","initially"],"c":null,"ms":10.0813,"ok":1}
+{"id":"ext_birkbeck-15413","s":["iniscent","inside the","incident"],"c":null,"ms":11.1102,"ok":1}
+{"id":"ext_birkbeck-15437","s":["it","initially","initial"],"c":"it","ms":6.08775,"ok":1}
+{"id":"ext_birkbeck-15523","s":["interest","interlect","intellectual"],"c":"interest","ms":8.46083,"ok":1}
+{"id":"ext_birkbeck-15534","s":["incollectual","i collect all","intellectual"],"c":null,"ms":18.9991,"ok":1}
+{"id":"ext_birkbeck-15557","s":["intellectel","intellectual","intellectuals"],"c":null,"ms":8.48196,"ok":1}
+{"id":"ext_birkbeck-15561","s":["intellectoul","intellectual","intellectuals"],"c":null,"ms":8.55117,"ok":1}
+{"id":"ext_birkbeck-15564","s":["intellecurl","intellectual","intellectuals"],"c":null,"ms":8.239,"ok":1}
+{"id":"ext_birkbeck-15565","s":["intellegual","intellectual","intellectuals"],"c":null,"ms":8.72671,"ok":1}
+{"id":"ext_birkbeck-15568","s":["intellictal","intellectual","intellectuals"],"c":null,"ms":8.8975,"ok":1}
+{"id":"ext_birkbeck-15570","s":["intellicual","intellectual","intellectuals"],"c":null,"ms":8.71333,"ok":1}
+{"id":"ext_birkbeck-15574","s":["intelluctial","intellectual","intellectuals"],"c":null,"ms":9.59421,"ok":1}
+{"id":"ext_birkbeck-15576","s":["intellutual","intellectual","intellectuals"],"c":null,"ms":9.22779,"ok":1}
+{"id":"ext_birkbeck-15581","s":["interlectial","intellectual","intellectuals"],"c":null,"ms":10.1391,"ok":1}
+{"id":"ext_birkbeck-15595","s":["intillectral","intellectual","intellectuals"],"c":null,"ms":17.3989,"ok":1}
+{"id":"ext_birkbeck-15605","s":["intrulectual","intellectual","intellectuals"],"c":null,"ms":10.1406,"ok":1}
+{"id":"ext_birkbeck-15609","s":["intullictual","intellectual","intellectuals"],"c":null,"ms":10.2141,"ok":1}
+{"id":"ext_birkbeck-15681","s":["irrepairable","irreparable","repairable"],"c":null,"ms":7.04704,"ok":1}
+{"id":"ext_birkbeck-15697","s":["inresistable","irresistible","i resist able"],"c":null,"ms":11.4905,"ok":1}
+{"id":"ext_birkbeck-15718","s":["irrisestible","irresistible","irresistibly"],"c":null,"ms":8.95192,"ok":1}
+{"id":"ext_birkbeck-15720","s":["irrisistable","irresistible","irresistibly"],"c":null,"ms":7.94479,"ok":1}
+{"id":"ext_birkbeck-15721","s":["irrisistble","irresistible","irresistibly"],"c":null,"ms":6.41579,"ok":1}
+{"id":"ext_birkbeck-15736","s":["is us","is used","is usually"],"c":"is us","ms":8.02946,"ok":1}
+{"id":"ext_birkbeck-15739","s":["itomised","itemized","atomised"],"c":null,"ms":12.4512,"ok":1}
+{"id":"ext_birkbeck-15751","s":["idemized","idealized","itemized"],"c":null,"ms":9.15612,"ok":1}
+{"id":"ext_birkbeck-15762","s":["itamised","itemized","itemised"],"c":null,"ms":10.6788,"ok":1}
+{"id":"ext_birkbeck-15766","s":["itemimized","itemized","itemize"],"c":null,"ms":11.0545,"ok":1}
+{"id":"ext_birkbeck-15771","s":["itenised","itemized","itemised"],"c":null,"ms":9.09696,"ok":1}
+{"id":"ext_birkbeck-15773","s":["itiamized","itemized","it amazed"],"c":null,"ms":9.37517,"ok":1}
+{"id":"ext_birkbeck-15778","s":["itimised","itemized","itemised"],"c":null,"ms":10.3548,"ok":1}
+{"id":"ext_birkbeck-15780","s":["itiomized","itemized","atomized"],"c":null,"ms":9.43071,"ok":1}
+{"id":"ext_birkbeck-15815","s":["well","newly","jewelry"],"c":"well","ms":5.09508,"ok":1}
+{"id":"ext_birkbeck-15895","s":["hurry","jury","jerry"],"c":"hurry","ms":5.08104,"ok":1}
+{"id":"ext_birkbeck-15994","s":["no","know","known"],"c":"no","ms":4.68379,"ok":1}
+{"id":"ext_birkbeck-16001","s":["knolewge","knowledge","college"],"c":null,"ms":11.8134,"ok":1}
+{"id":"ext_birkbeck-16007","s":["knowledable","knowledgeable","knowledge let"],"c":null,"ms":7.77596,"ok":1}
+{"id":"ext_birkbeck-16008","s":["knowlegable","knowledgeable","knowledge let"],"c":null,"ms":6.99712,"ok":1}
+{"id":"ext_birkbeck-16012","s":["labarotory","laboratory","laboratory's"],"c":null,"ms":8.7725,"ok":1}
+{"id":"ext_birkbeck-16017","s":["labertory","laboratory","alberto"],"c":null,"ms":7.95854,"ok":1}
+{"id":"ext_birkbeck-16022","s":["laborbtory","laboratory","labor tory"],"c":null,"ms":11.3032,"ok":1}
+{"id":"ext_birkbeck-16032","s":["labritory","laboratory","laboratory's"],"c":null,"ms":8.14354,"ok":1}
+{"id":"ext_birkbeck-16037","s":["lavortory","laboratory","lavatory"],"c":null,"ms":8.55092,"ok":1}
+{"id":"ext_birkbeck-16080","s":["laitist","elitist","latest"],"c":null,"ms":7.03212,"ok":1}
+{"id":"ext_birkbeck-16093","s":["lattes","latest","later"],"c":"lattes","ms":6.79308,"ok":1}
+{"id":"ext_birkbeck-16094","s":["lattes","latest","latesd"],"c":"lattes","ms":8.10854,"ok":1}
+{"id":"ext_birkbeck-16096","s":["latested","attested","latest"],"c":null,"ms":9.20729,"ok":1}
+{"id":"ext_birkbeck-16099","s":["latetest","late yesterday","latest"],"c":null,"ms":10.2034,"ok":1}
+{"id":"ext_birkbeck-16100","s":["latetist","latest","lattes"],"c":null,"ms":11.4767,"ok":1}
+{"id":"ext_birkbeck-16150","s":["paul","layla","laulh"],"c":"paul","ms":5.60871,"ok":1}
+{"id":"ext_birkbeck-16153","s":["laughter","laurght","laughton"],"c":null,"ms":6.56937,"ok":1}
+{"id":"ext_birkbeck-16187","s":["leave","leaves","league"],"c":"leave","ms":5.19379,"ok":1}
+{"id":"ext_birkbeck-16188","s":["large","larger","leagre"],"c":"large","ms":6.1485,"ok":1}
+{"id":"ext_birkbeck-16215","s":["red","led","laredo"],"c":"red","ms":4.16596,"ok":1}
+{"id":"ext_birkbeck-16220","s":["less","lee said","lesbian"],"c":"less","ms":6.37142,"ok":1}
+{"id":"ext_birkbeck-16297","s":["lesions","lessons","lessions"],"c":"lesions","ms":7.37733,"ok":1}
+{"id":"ext_birkbeck-16303","s":["leave","level","leaves"],"c":"leave","ms":5.88837,"ok":1}
+{"id":"ext_birkbeck-16304","s":["delulu","euler's","leuul"],"c":"delulu","ms":5.47037,"ok":1}
+{"id":"ext_birkbeck-16309","s":["lowell","llewellyn","llewelyn"],"c":"lowell","ms":5.40787,"ok":1}
+{"id":"ext_birkbeck-16312","s":["likeable","lieable","liable"],"c":"likeable","ms":8.14513,"ok":1}
+{"id":"ext_birkbeck-16314","s":["please","liaise","laser"],"c":"please","ms":5.46604,"ok":1}
+{"id":"ext_birkbeck-16343","s":["likelyhood","likelihood","likely hood"],"c":null,"ms":8.78833,"ok":1}
+{"id":"ext_birkbeck-16364","s":["it's","listen","listening"],"c":"it's","ms":5.50446,"ok":1}
+{"id":"ext_birkbeck-16369","s":["listen","lisend","listened"],"c":"listen","ms":7.63175,"ok":1}
+{"id":"ext_birkbeck-16428","s":["livelyhood","livelihoods","livelihood"],"c":null,"ms":9.66725,"ok":1}
+{"id":"ext_birkbeck-16470","s":["lollypop","lollipop","lollipops"],"c":null,"ms":7.41012,"ok":1}
+{"id":"ext_birkbeck-16471","s":["lonelyness","loneliness","lonely essential"],"c":null,"ms":9.96779,"ok":1}
+{"id":"ext_birkbeck-16495","s":["last","lost","located"],"c":"last","ms":4.78963,"ok":1}
+{"id":"ext_birkbeck-16542","s":["lord","lourdes","loud"],"c":"lord","ms":4.77721,"ok":1}
+{"id":"ext_birkbeck-16557","s":["lucy","lucky","luke"],"c":"lucy","ms":3.97058,"ok":1}
+{"id":"ext_birkbeck-16559","s":["lubber","lubbers","liberty"],"c":"lubber","ms":4.803,"ok":1}
+{"id":"ext_birkbeck-16603","s":["magerzine","magazine","magazines"],"c":null,"ms":7.88758,"ok":1}
+{"id":"ext_birkbeck-16605","s":["majical","manically","maniacal"],"c":null,"ms":8.61329,"ok":1}
+{"id":"ext_birkbeck-16615","s":["macnifacent","magnificent","magnificently"],"c":null,"ms":16.6074,"ok":1}
+{"id":"ext_birkbeck-16616","s":["macnifcent","magnificent","magnificently"],"c":null,"ms":11.9672,"ok":1}
+{"id":"ext_birkbeck-16617","s":["macnifecent","magnificent","magnificently"],"c":null,"ms":10.3707,"ok":1}
+{"id":"ext_birkbeck-16623","s":["madnifisent","magnificent","magnificently"],"c":null,"ms":11.4196,"ok":1}
+{"id":"ext_birkbeck-16626","s":["magaficent","magnificent","magnificently"],"c":null,"ms":7.53163,"ok":1}
+{"id":"ext_birkbeck-16633","s":["magifacent","magnificent","magnificently"],"c":null,"ms":8.54,"ok":1}
+{"id":"ext_birkbeck-16642","s":["maginificant","significant","magnificent"],"c":null,"ms":7.91721,"ok":1}
+{"id":"ext_birkbeck-16644","s":["magmificant","magnificent","magnificently"],"c":null,"ms":12.7502,"ok":1}
+{"id":"ext_birkbeck-16648","s":["magneficant","magnificent","magnificently"],"c":null,"ms":8.1605,"ok":1}
+{"id":"ext_birkbeck-16653","s":["magneicent","magnificent","magnificently"],"c":null,"ms":8.23687,"ok":1}
+{"id":"ext_birkbeck-16660","s":["magnicificent","magnificent","magnificently"],"c":null,"ms":11.2824,"ok":1}
+{"id":"ext_birkbeck-16664","s":["magniefecent","magnificent","magnificently"],"c":null,"ms":8.19054,"ok":1}
+{"id":"ext_birkbeck-16667","s":["magnifacet","magnificent","magnificently"],"c":null,"ms":6.70042,"ok":1}
+{"id":"ext_birkbeck-16669","s":["magnifactent","magnificent","magnificently"],"c":null,"ms":7.43129,"ok":1}
+{"id":"ext_birkbeck-16676","s":["magnifatcent","magnificent","magnificently"],"c":null,"ms":8.07279,"ok":1}
+{"id":"ext_birkbeck-16677","s":["magnifcant","magnificent","magnificently"],"c":null,"ms":7.79075,"ok":1}
+{"id":"ext_birkbeck-16679","s":["magnificent","magnificence","magnifecen"],"c":null,"ms":6.59467,"ok":1}
+{"id":"ext_birkbeck-16682","s":["magnifecint","magnificent","magnificently"],"c":null,"ms":7.62075,"ok":1}
+{"id":"ext_birkbeck-16684","s":["magnifercent","magnificent","magnificently"],"c":null,"ms":11.3949,"ok":1}
+{"id":"ext_birkbeck-16697","s":["magnifhent","magnificent","magnificently"],"c":null,"ms":12.7114,"ok":1}
+{"id":"ext_birkbeck-16698","s":["magnifico","magnificent","magnificence"],"c":"magnifico","ms":5.39033,"ok":1}
+{"id":"ext_birkbeck-16700","s":["magnificante","magnificent","magnificently"],"c":null,"ms":7.56154,"ok":1}
+{"id":"ext_birkbeck-16706","s":["magnificiant","magnificent","magnificently"],"c":null,"ms":7.54012,"ok":1}
+{"id":"ext_birkbeck-16718","s":["magnifiscant","magnificent","magnificently"],"c":null,"ms":8.55996,"ok":1}
+{"id":"ext_birkbeck-16722","s":["magnifisend","magnificence","magnificent"],"c":null,"ms":8.33762,"ok":1}
+{"id":"ext_birkbeck-16727","s":["magnifitent","magnificent","magnificently"],"c":null,"ms":7.02129,"ok":1}
+{"id":"ext_birkbeck-16730","s":["magnifscent","magnificent","magnificently"],"c":null,"ms":7.67938,"ok":1}
+{"id":"ext_birkbeck-16735","s":["magnigicient","magnificent","magnificently"],"c":null,"ms":7.88338,"ok":1}
+{"id":"ext_birkbeck-16742","s":["magnisfcent","magnificent","magnificently"],"c":null,"ms":8.77892,"ok":1}
+{"id":"ext_birkbeck-16744","s":["magnisivent","magnificent","magnificently"],"c":null,"ms":12.0113,"ok":1}
+{"id":"ext_birkbeck-16762","s":["mancificent","magnificent","magnificently"],"c":null,"ms":11.1294,"ok":1}
+{"id":"ext_birkbeck-16776","s":["megneficent","magnificent","magnificently"],"c":null,"ms":8.66875,"ok":1}
+{"id":"ext_birkbeck-16793","s":["magoroty","maturity","majority"],"c":null,"ms":8.90779,"ok":1}
+{"id":"ext_birkbeck-16797","s":["make","makes","mask"],"c":"make","ms":5.32437,"ok":1}
+{"id":"ext_birkbeck-16801","s":["manutriction","malnutrition","malnutrition's"],"c":null,"ms":10.7203,"ok":1}
+{"id":"ext_birkbeck-16944","s":["matamatics","mathematics","mathematical"],"c":null,"ms":9.48596,"ok":1}
+{"id":"ext_birkbeck-16948","s":["mathamactics","mathematics","mathematical"],"c":null,"ms":11.9302,"ok":1}
+{"id":"ext_birkbeck-16950","s":["mathematic","mathematics","mathematical"],"c":"mathematic","ms":9.51829,"ok":1}
+{"id":"ext_birkbeck-16951","s":["mathamatices","mathematics","mathematical"],"c":null,"ms":10.3953,"ok":1}
+{"id":"ext_birkbeck-16952","s":["mathamatick","mathematics","mathematical"],"c":null,"ms":10.0058,"ok":1}
+{"id":"ext_birkbeck-16954","s":["mathametics","mathematics","athletics"],"c":null,"ms":11.4905,"ok":1}
+{"id":"ext_birkbeck-16958","s":["mathemectics","mathematics","mathematical"],"c":null,"ms":11.0818,"ok":1}
+{"id":"ext_birkbeck-16963","s":["mathematic","mathematics","mathematical"],"c":"mathematic","ms":8.44421,"ok":1}
+{"id":"ext_birkbeck-16966","s":["mathmantics","mathematics","math antics"],"c":null,"ms":11.5035,"ok":1}
+{"id":"ext_birkbeck-16967","s":["mathmatecs","mathematics","mathematical"],"c":null,"ms":10.3314,"ok":1}
+{"id":"ext_birkbeck-16969","s":["mathematic","mathematics","mathematical"],"c":"mathematic","ms":8.78146,"ok":1}
+{"id":"ext_birkbeck-16974","s":["mathymatices","mathematics","mathematicaster"],"c":null,"ms":15.9893,"ok":1}
+{"id":"ext_birkbeck-16975","s":["matimatics","mathematics","mathematical"],"c":null,"ms":9.18492,"ok":1}
+{"id":"ext_birkbeck-16979","s":["mathematic","mathematics","mathematical"],"c":"mathematic","ms":9.37092,"ok":1}
+{"id":"ext_birkbeck-17015","s":["malencholy","melancholy","allen holy"],"c":null,"ms":11.2562,"ok":1}
+{"id":"ext_birkbeck-17020","s":["melanchohy","melancholy","melancholia"],"c":null,"ms":6.96646,"ok":1}
+{"id":"ext_birkbeck-17021","s":["melanchole","melancholy","melancholia"],"c":null,"ms":6.68487,"ok":1}
+{"id":"ext_birkbeck-17024","s":["melancoley","melancholy","melancholia"],"c":null,"ms":8.11204,"ok":1}
+{"id":"ext_birkbeck-17032","s":["melecholy","melancholy","melee holy"],"c":null,"ms":8.68271,"ok":1}
+{"id":"ext_birkbeck-17039","s":["melencholly","melancholy","melancholia"],"c":null,"ms":8.70442,"ok":1}
+{"id":"ext_birkbeck-17049","s":["melencoly","melancholy","melancholia"],"c":null,"ms":9.20321,"ok":1}
+{"id":"ext_birkbeck-17050","s":["melincoly","melancholy","lincoln"],"c":null,"ms":8.75554,"ok":1}
+{"id":"ext_birkbeck-17056","s":["mellencholy","melancholy","melancholia"],"c":null,"ms":9.78171,"ok":1}
+{"id":"ext_birkbeck-17061","s":["melloncholy","melancholy","mellon holy"],"c":null,"ms":9.94929,"ok":1}
+{"id":"ext_birkbeck-17069","s":["melocholy","melancholy","melancholia"],"c":null,"ms":7.95454,"ok":1}
+{"id":"ext_birkbeck-17073","s":["meloncholly","melancholy","melancholia"],"c":null,"ms":9.30246,"ok":1}
+{"id":"ext_birkbeck-17083","s":["meloncoly","melancholy","melon only"],"c":null,"ms":9.76933,"ok":1}
+{"id":"ext_birkbeck-17087","s":["mencholy","melancholy","men holy"],"c":null,"ms":11.5134,"ok":1}
+{"id":"ext_birkbeck-17090","s":["menloncholy","melancholy","melancholia"],"c":null,"ms":11.8691,"ok":1}
+{"id":"ext_birkbeck-17108","s":["memandum","memorandum","me and"],"c":null,"ms":11.392,"ok":1}
+{"id":"ext_birkbeck-17116","s":["memerandom","memorandum","me random"],"c":null,"ms":11.2775,"ok":1}
+{"id":"ext_birkbeck-17117","s":["memmorandem","memorandum","memorandums"],"c":null,"ms":6.76129,"ok":1}
+{"id":"ext_birkbeck-17118","s":["memmorandom","memorandum","memorandums"],"c":null,"ms":7.13513,"ok":1}
+{"id":"ext_birkbeck-17122","s":["memoramdom","memorandum","memorandums"],"c":null,"ms":7.79404,"ok":1}
+{"id":"ext_birkbeck-17125","s":["memorandiam","memorandum","memorandums"],"c":null,"ms":7.72358,"ok":1}
+{"id":"ext_birkbeck-17132","s":["memoraniam","memorandum","memorial"],"c":null,"ms":9.18621,"ok":1}
+{"id":"ext_birkbeck-17134","s":["memorardum","memorandum","memorandums"],"c":null,"ms":7.73142,"ok":1}
+{"id":"ext_birkbeck-17137","s":["memordanium","memorandum","memorandums"],"c":null,"ms":14.0306,"ok":1}
+{"id":"ext_birkbeck-17141","s":["memorrandom","memorandum","memorandums"],"c":null,"ms":7.0535,"ok":1}
+{"id":"ext_birkbeck-17143","s":["memradum","memorandum","memorandums"],"c":null,"ms":8.23325,"ok":1}
+{"id":"ext_birkbeck-17150","s":["menorandom","memorandum","me random"],"c":null,"ms":11.1346,"ok":1}
+{"id":"ext_birkbeck-17164","s":["memerories","memories","memorise"],"c":null,"ms":9.02675,"ok":1}
+{"id":"ext_birkbeck-17171","s":["memoraries","memories","memorise"],"c":null,"ms":9.57396,"ok":1}
+{"id":"ext_birkbeck-17174","s":["memoreres","memories","memorise"],"c":null,"ms":9.24175,"ok":1}
+{"id":"ext_birkbeck-17177","s":["memoryes","memories","memory is"],"c":null,"ms":8.22188,"ok":1}
+{"id":"ext_birkbeck-17184","s":["merores","metres","morris"],"c":null,"ms":7.52929,"ok":1}
+{"id":"ext_birkbeck-17185","s":["merories","memories","merriest"],"c":null,"ms":7.45875,"ok":1}
+{"id":"ext_birkbeck-17197","s":["mentmory","memory","mentor"],"c":null,"ms":10.8483,"ok":1}
+{"id":"ext_birkbeck-17202","s":["mercanery","mercenary","mercantile"],"c":null,"ms":9.26975,"ok":1}
+{"id":"ext_birkbeck-17208","s":["merritt","merit","merits"],"c":"merritt","ms":5.63863,"ok":1}
+{"id":"ext_birkbeck-17222","s":["math","maiht","maigret"],"c":"math","ms":6.14138,"ok":1}
+{"id":"ext_birkbeck-17245","s":["mimamum","minimum","immanuel"],"c":null,"ms":9.55304,"ok":1}
+{"id":"ext_birkbeck-17257","s":["maximum","mimum","minutes"],"c":"maximum","ms":6.64867,"ok":1}
+{"id":"ext_birkbeck-17262","s":["minamume","minimum","mina immediately"],"c":null,"ms":11.0513,"ok":1}
+{"id":"ext_birkbeck-17263","s":["minamun","minimum","mina and"],"c":null,"ms":10.5804,"ok":1}
+{"id":"ext_birkbeck-17267","s":["minemom","mine money","minimum"],"c":null,"ms":10.5282,"ok":1}
+{"id":"ext_birkbeck-17269","s":["money","mineum","moneymaker"],"c":"money","ms":9.25996,"ok":1}
+{"id":"ext_birkbeck-17283","s":["minixam","minimal","minimally"],"c":null,"ms":8.33883,"ok":1}
+{"id":"ext_birkbeck-17286","s":["minneum","minimum","minnesota"],"c":null,"ms":9.58767,"ok":1}
+{"id":"ext_birkbeck-17294","s":["minomom","minimum","minimums"],"c":null,"ms":10.4079,"ok":1}
+{"id":"ext_birkbeck-17337","s":["mescelaneous","miscellaneous","miscellaneously"],"c":null,"ms":8.55608,"ok":1}
+{"id":"ext_birkbeck-17339","s":["mesellaneous","miscellaneous","miscellaneously"],"c":null,"ms":15.6266,"ok":1}
+{"id":"ext_birkbeck-17348","s":["miccellanous","miscellaneous","miscellaneously"],"c":null,"ms":8.27396,"ok":1}
+{"id":"ext_birkbeck-17353","s":["micellaneouse","miscellaneous","miscellaneously"],"c":null,"ms":10.1582,"ok":1}
+{"id":"ext_birkbeck-17354","s":["micellanious","miscellaneous","miscellaneously"],"c":null,"ms":10.5786,"ok":1}
+{"id":"ext_birkbeck-17355","s":["micellanous","miscellaneous","miscellaneously"],"c":null,"ms":10.4772,"ok":1}
+{"id":"ext_birkbeck-17394","s":["misallaneous","miscellaneous","misalliances"],"c":null,"ms":17.2665,"ok":1}
+{"id":"ext_birkbeck-17405","s":["miscalaneous","miscellaneous","miscellaneously"],"c":null,"ms":9.47725,"ok":1}
+{"id":"ext_birkbeck-17410","s":["miscallaneos","miscellaneous","miscellaneously"],"c":null,"ms":11.2414,"ok":1}
+{"id":"ext_birkbeck-17416","s":["miscelanious","miscellaneous","miscellaneously"],"c":null,"ms":8.21637,"ok":1}
+{"id":"ext_birkbeck-17421","s":["misceleanious","miscellaneous","miscellaneously"],"c":null,"ms":11.5143,"ok":1}
+{"id":"ext_birkbeck-17424","s":["miscellainious","miscellaneous","miscellaneously"],"c":null,"ms":9.14217,"ok":1}
+{"id":"ext_birkbeck-17425","s":["miscellaious","miscellaneous","miscellaneously"],"c":null,"ms":8.82833,"ok":1}
+{"id":"ext_birkbeck-17430","s":["miscelleanious","miscellaneous","miscellaneously"],"c":null,"ms":10.1515,"ok":1}
+{"id":"ext_birkbeck-17431","s":["miscelleanous","miscellaneous","miscellaneously"],"c":null,"ms":9.77775,"ok":1}
+{"id":"ext_birkbeck-17433","s":["miscellenious","miscellaneous","miscellaneously"],"c":null,"ms":11.2623,"ok":1}
+{"id":"ext_birkbeck-17434","s":["miscellenous","miscellaneous","miscellaneously"],"c":null,"ms":9.65221,"ok":1}
+{"id":"ext_birkbeck-17436","s":["miscellianeous","miscellaneous","miscellaneously"],"c":null,"ms":8.80304,"ok":1}
+{"id":"ext_birkbeck-17437","s":["miscellianious","miscellaneous","miscellaneously"],"c":null,"ms":10.0496,"ok":1}
+{"id":"ext_birkbeck-17438","s":["miscellianous","miscellaneous","miscellaneously"],"c":null,"ms":9.58921,"ok":1}
+{"id":"ext_birkbeck-17442","s":["mischellaneous","miscellaneous","miscellaneously"],"c":null,"ms":10.0762,"ok":1}
+{"id":"ext_birkbeck-17445","s":["miscillanious","miscellaneous","miscellaneously"],"c":null,"ms":10.4794,"ok":1}
+{"id":"ext_birkbeck-17447","s":["miscleaneous","miscellaneous","miscellaneously"],"c":null,"ms":9.64062,"ok":1}
+{"id":"ext_birkbeck-17448","s":["miscllanious","miscellaneous","miscellaneously"],"c":null,"ms":10.0503,"ok":1}
+{"id":"ext_birkbeck-17449","s":["miscolaneous","miscellaneous","miscellaneously"],"c":null,"ms":9.23475,"ok":1}
+{"id":"ext_birkbeck-17459","s":["misellanious","miscellaneous","miscellaneously"],"c":null,"ms":9.68075,"ok":1}
+{"id":"ext_birkbeck-17475","s":["misillaneous","miscellaneous","missiles"],"c":null,"ms":15.7961,"ok":1}
+{"id":"ext_birkbeck-17519","s":["missellanious","miscellaneous","miscellaneously"],"c":null,"ms":9.11933,"ok":1}
+{"id":"ext_birkbeck-17567","s":["mixpet","mixed","impetigo"],"c":null,"ms":7.73054,"ok":1}
+{"id":"ext_birkbeck-17612","s":["moorings","mornings","morings"],"c":"moorings","ms":6.66696,"ok":1}
+{"id":"ext_birkbeck-17741","s":["nuked","mukden","mucked"],"c":"nuked","ms":5.72487,"ok":1}
+{"id":"ext_birkbeck-17764","s":["meuse","meusem","amusement"],"c":"meuse","ms":6.68075,"ok":1}
+{"id":"ext_birkbeck-17782","s":["muszesm","museums","muses"],"c":null,"ms":7.88908,"ok":1}
+{"id":"ext_birkbeck-17815","s":["muticual","mutual","multicultural"],"c":null,"ms":8.61396,"ok":1}
+{"id":"ext_birkbeck-17817","s":["mutril","mutilate","mutilations"],"c":null,"ms":6.51708,"ok":1}
+{"id":"ext_birkbeck-17867","s":["mastery","mestery","mystery"],"c":"mastery","ms":7.25346,"ok":1}
+{"id":"ext_birkbeck-17873","s":["misteary","mister","misery"],"c":null,"ms":9.36921,"ok":1}
+{"id":"ext_birkbeck-17874","s":["misterey","mister","misery"],"c":null,"ms":9.94196,"ok":1}
+{"id":"ext_birkbeck-17877","s":["mister","misterry","misery"],"c":"mister","ms":8.06004,"ok":1}
+{"id":"ext_birkbeck-17878","s":["mister","misery","mistery"],"c":"mister","ms":7.41788,"ok":1}
+{"id":"ext_birkbeck-17880","s":["mistlery","mister","misery"],"c":null,"ms":9.97625,"ok":1}
+{"id":"ext_birkbeck-17895","s":["mithical","mythical","ethical"],"c":null,"ms":11.1802,"ok":1}
+{"id":"ext_birkbeck-17899","s":["and","named","name"],"c":"and","ms":6.53062,"ok":1}
+{"id":"ext_birkbeck-17903","s":["naphta","naphthalene","nathan"],"c":null,"ms":6.09612,"ok":1}
+{"id":"ext_birkbeck-17904","s":["nathan","nathaniel","naptha"],"c":null,"ms":6.73879,"ok":1}
+{"id":"ext_birkbeck-17997","s":["necassery","necessary","necessity"],"c":null,"ms":10.1836,"ok":1}
+{"id":"ext_birkbeck-18042","s":["neglegant","elegant","inelegant"],"c":null,"ms":7.80179,"ok":1}
+{"id":"ext_birkbeck-18043","s":["negligable","negligible","ineligible"],"c":null,"ms":5.88396,"ok":1}
+{"id":"ext_birkbeck-18044","s":["negoseations","negotiations","negotiation"],"c":null,"ms":13.893,"ok":1}
+{"id":"ext_birkbeck-18047","s":["degosiations","depositions","deviations"],"c":null,"ms":14.8242,"ok":1}
+{"id":"ext_birkbeck-18048","s":["degotitions","negotiations","decorations"],"c":null,"ms":13.7089,"ok":1}
+{"id":"ext_birkbeck-18049","s":["degotuations","negotiations","detonations"],"c":null,"ms":14.3509,"ok":1}
+{"id":"ext_birkbeck-18053","s":["necogiations","negotiations","negotiation"],"c":null,"ms":8.75646,"ok":1}
+{"id":"ext_birkbeck-18055","s":["negatations","negotiations","negotiation"],"c":null,"ms":7.13558,"ok":1}
+{"id":"ext_birkbeck-18062","s":["negiotations","negotiations","negotiation"],"c":null,"ms":7.12729,"ok":1}
+{"id":"ext_birkbeck-18064","s":["negoacations","negotiations","evocations"],"c":null,"ms":14.0943,"ok":1}
+{"id":"ext_birkbeck-18070","s":["negocations","negotiations","evocations"],"c":null,"ms":9.23879,"ok":1}
+{"id":"ext_birkbeck-18072","s":["negoceations","negotiations","negotiation"],"c":null,"ms":14.2217,"ok":1}
+{"id":"ext_birkbeck-18074","s":["negochiations","negotiations","negotiation"],"c":null,"ms":15.3444,"ok":1}
+{"id":"ext_birkbeck-18076","s":["negociasions","negotiations","envisions"],"c":null,"ms":14.8138,"ok":1}
+{"id":"ext_birkbeck-18079","s":["negociatione","negotiations","negotiation"],"c":null,"ms":13.354,"ok":1}
+{"id":"ext_birkbeck-18080","s":["negociations","negotiations","negotiation"],"c":null,"ms":8.16658,"ok":1}
+{"id":"ext_birkbeck-18081","s":["negoeations","negotiations","negotiation"],"c":null,"ms":7.20483,"ok":1}
+{"id":"ext_birkbeck-18082","s":["negogations","negotiations","renovations"],"c":null,"ms":8.28133,"ok":1}
+{"id":"ext_birkbeck-18088","s":["negoodations","negotiations","negotiation"],"c":null,"ms":14.2848,"ok":1}
+{"id":"ext_birkbeck-18098","s":["negoshiations","negotiations","negotiation"],"c":null,"ms":14.7659,"ok":1}
+{"id":"ext_birkbeck-18101","s":["negosiations","negotiations","negotiation"],"c":null,"ms":7.80387,"ok":1}
+{"id":"ext_birkbeck-18102","s":["negossiations","negotiations","negotiation"],"c":null,"ms":14.7026,"ok":1}
+{"id":"ext_birkbeck-18111","s":["negotianations","negotiations","negotiation"],"c":null,"ms":7.03008,"ok":1}
+{"id":"ext_birkbeck-18113","s":["negotiatetions","negotiations","negotiation"],"c":null,"ms":9.20075,"ok":1}
+{"id":"ext_birkbeck-18115","s":["negotiolations","negotiations","negotiation"],"c":null,"ms":7.27375,"ok":1}
+{"id":"ext_birkbeck-18138","s":["nerve","nerves","never"],"c":"nerve","ms":6.09983,"ok":1}
+{"id":"ext_birkbeck-18182","s":["nintieth","ninetieth","ninetieths"],"c":null,"ms":8.49867,"ok":1}
+{"id":"ext_birkbeck-18202","s":["noise","noisy","noises"],"c":"noise","ms":6.85896,"ok":1}
+{"id":"ext_birkbeck-18219","s":["boys","noysy","nosy"],"c":"boys","ms":6.23083,"ok":1}
+{"id":"ext_birkbeck-18236","s":["most","not","nothing"],"c":"most","ms":6.06046,"ok":1}
+{"id":"ext_birkbeck-18242","s":["nolticable","noticeable","notable"],"c":null,"ms":10.0591,"ok":1}
+{"id":"ext_birkbeck-18258","s":["noticble","noticeable","notice"],"c":null,"ms":10.4807,"ok":1}
+{"id":"ext_birkbeck-18274","s":["moorish","nourishing","nourishes"],"c":"moorish","ms":7.6715,"ok":1}
+{"id":"ext_birkbeck-18305","s":["obliged","oblidge","obliges"],"c":null,"ms":7.70704,"ok":1}
+{"id":"ext_birkbeck-18385","s":["occurred","occurrence","occurrences"],"c":"occurred","ms":6.47696,"ok":1}
+{"id":"ext_birkbeck-18487","s":["open","opened","opening"],"c":"open","ms":5.31467,"ok":1}
+{"id":"ext_birkbeck-18497","s":["oponod","opened","london"],"c":null,"ms":6.25933,"ok":1}
+{"id":"ext_birkbeck-18509","s":["oberatur","overturned","overtures"],"c":null,"ms":12.3652,"ok":1}
+{"id":"ext_birkbeck-18525","s":["opreraytor","operator","operators"],"c":null,"ms":7.408,"ok":1}
+{"id":"ext_birkbeck-18551","s":["oppertunaties","opportunities","opportunity"],"c":null,"ms":7.37929,"ok":1}
+{"id":"ext_birkbeck-18555","s":["oppertunties","opportunities","opportunity"],"c":null,"ms":6.95712,"ok":1}
+{"id":"ext_birkbeck-18559","s":["opportumties","opportunities","opportunity"],"c":null,"ms":6.01696,"ok":1}
+{"id":"ext_birkbeck-18567","s":["oppourtunites","opportunities","opportunity"],"c":null,"ms":6.67108,"ok":1}
+{"id":"ext_birkbeck-18574","s":["oppurtuneties","opportunities","opportunity"],"c":null,"ms":6.88413,"ok":1}
+{"id":"ext_birkbeck-18676","s":["optitian","optician","titian"],"c":null,"ms":6.79,"ok":1}
+{"id":"ext_birkbeck-18714","s":["orcestrar","orchestra","orchestral"],"c":null,"ms":8.59008,"ok":1}
+{"id":"ext_birkbeck-18715","s":["orcestro","orchestra","orchestral"],"c":null,"ms":9.04787,"ok":1}
+{"id":"ext_birkbeck-18722","s":["orchestra","orchestral","orchestur"],"c":null,"ms":7.24692,"ok":1}
+{"id":"ext_birkbeck-18729","s":["orcresta","or restaurant","or restaurants"],"c":null,"ms":13.6728,"ok":1}
+{"id":"ext_birkbeck-18731","s":["orcristra","orchestra","orchestral"],"c":null,"ms":14.4983,"ok":1}
+{"id":"ext_birkbeck-18751","s":["ordanaily","ordinarily","road daily"],"c":null,"ms":9.26246,"ok":1}
+{"id":"ext_birkbeck-18753","s":["ordanaraly","ordinarily","ordinary"],"c":null,"ms":9.06092,"ok":1}
+{"id":"ext_birkbeck-18756","s":["ordanaryily","ordinarily","ordinary"],"c":null,"ms":9.2175,"ok":1}
+{"id":"ext_birkbeck-18760","s":["ordarnarily","ordinarily","order marilyn"],"c":null,"ms":10.5006,"ok":1}
+{"id":"ext_birkbeck-18761","s":["ordenarlly","ordinarily","orderly"],"c":null,"ms":10.1568,"ok":1}
+{"id":"ext_birkbeck-18770","s":["ordinarally","ordinarily","ordinary"],"c":null,"ms":6.89138,"ok":1}
+{"id":"ext_birkbeck-18772","s":["ordinarelly","ordinarily","ordinary"],"c":null,"ms":6.41962,"ok":1}
+{"id":"ext_birkbeck-18774","s":["ordinarially","ordinarily","ordinarily you"],"c":null,"ms":6.48412,"ok":1}
+{"id":"ext_birkbeck-18776","s":["ordinariarly","ordinarily","ordinary"],"c":null,"ms":7.42854,"ok":1}
+{"id":"ext_birkbeck-18777","s":["ordinarilily","ordinarily","ordinary"],"c":null,"ms":7.52242,"ok":1}
+{"id":"ext_birkbeck-18782","s":["ordinary","ordinarily","ordinarly"],"c":"ordinary","ms":5.9745,"ok":1}
+{"id":"ext_birkbeck-18784","s":["ordinary","ordinarrly","ordinarily"],"c":"ordinary","ms":5.96221,"ok":1}
+{"id":"ext_birkbeck-18787","s":["ordinaryly","ordinary","ordinarily"],"c":null,"ms":8.54637,"ok":1}
+{"id":"ext_birkbeck-18792","s":["ordionarlly","ordinarily","ordinary"],"c":null,"ms":9.56933,"ok":1}
+{"id":"ext_birkbeck-18805","s":["morgen","organized","organization"],"c":"morgen","ms":7.11562,"ok":1}
+{"id":"ext_birkbeck-19021","s":["panphelets","pamphlets","pamphlet"],"c":null,"ms":7.82888,"ok":1}
+{"id":"ext_birkbeck-19022","s":["apanphlets","pamphlets","a pamphlets"],"c":null,"ms":8.70554,"ok":1}
+{"id":"ext_birkbeck-19024","s":["pamfelets","platelets","a fleets"],"c":null,"ms":13.9677,"ok":1}
+{"id":"ext_birkbeck-19026","s":["pamflets","palestine","pallets"],"c":null,"ms":11.3619,"ok":1}
+{"id":"ext_birkbeck-19031","s":["pamphates","pamphlets","pam hates"],"c":null,"ms":10.9145,"ok":1}
+{"id":"ext_birkbeck-19032","s":["pamphats","pamphlets","pampas"],"c":null,"ms":9.28421,"ok":1}
+{"id":"ext_birkbeck-19054","s":["paniphlets","pamphlets","pamphlet"],"c":null,"ms":13.6448,"ok":1}
+{"id":"ext_birkbeck-19067","s":["panthlets","panthers","athletes"],"c":null,"ms":9.80271,"ok":1}
+{"id":"ext_birkbeck-19071","s":["patphlets","pamphlets","athletes"],"c":null,"ms":8.80996,"ok":1}
+{"id":"ext_birkbeck-19079","s":["phamphets","pamphlets","pamphlet"],"c":null,"ms":8.57896,"ok":1}
+{"id":"ext_birkbeck-19082","s":["phamplets","pamphlets","hamlets"],"c":null,"ms":9.05467,"ok":1}
+{"id":"ext_birkbeck-19086","s":["phaphlets","pamphlets","pamphlet"],"c":null,"ms":6.78971,"ok":1}
+{"id":"ext_birkbeck-19088","s":["pantemine","pantomime","pantomime's"],"c":null,"ms":9.65137,"ok":1}
+{"id":"ext_birkbeck-19094","s":["pride","pradesh","parade"],"c":"pride","ms":4.76704,"ok":1}
+{"id":"ext_birkbeck-19102","s":["perametres","parameters","perimeters"],"c":null,"ms":8.21775,"ok":1}
+{"id":"ext_birkbeck-19105","s":["saresitic","sadistic","agrestic"],"c":null,"ms":15.3352,"ok":1}
+{"id":"ext_birkbeck-19405","s":["pretend","perpendicular","pretending"],"c":"pretend","ms":6.39637,"ok":1}
+{"id":"ext_birkbeck-19410","s":["perifery","prefer","perrier"],"c":null,"ms":8.59633,"ok":1}
+{"id":"ext_birkbeck-19411","s":["perrishine","perishing","parishioner"],"c":null,"ms":8.16358,"ok":1}
+{"id":"ext_birkbeck-19478","s":["permaiently","permanently","prominently"],"c":null,"ms":8.82608,"ok":1}
+{"id":"ext_birkbeck-19479","s":["permalently","permanently","presently"],"c":null,"ms":9.67121,"ok":1}
+{"id":"ext_birkbeck-19485","s":["permanatly","permanently","per analysis"],"c":null,"ms":8.33442,"ok":1}
+{"id":"ext_birkbeck-19487","s":["permanentally","permanently","permanent ally"],"c":null,"ms":8.39696,"ok":1}
+{"id":"ext_birkbeck-19490","s":["permanientaly","permanently","permanent all"],"c":null,"ms":9.46358,"ok":1}
+{"id":"ext_birkbeck-19497","s":["permantly","permanently","penalty"],"c":null,"ms":8.21429,"ok":1}
+{"id":"ext_birkbeck-19504","s":["permenantly","permanently","preeminently"],"c":null,"ms":9.87954,"ok":1}
+{"id":"ext_birkbeck-19515","s":["permently","permanently","presently"],"c":null,"ms":8.60204,"ok":1}
+{"id":"ext_birkbeck-19516","s":["permiently","permanently","prominently"],"c":null,"ms":9.24754,"ok":1}
+{"id":"ext_birkbeck-19518","s":["perminantly","permanently","predominantly"],"c":null,"ms":10.555,"ok":1}
+{"id":"ext_birkbeck-19519","s":["perminmently","permanently","prominently"],"c":null,"ms":11.7398,"ok":1}
+{"id":"ext_birkbeck-19561","s":["perswade","persuade","president"],"c":null,"ms":7.76175,"ok":1}
+{"id":"ext_birkbeck-19589","s":["please","passengers","passed"],"c":"please","ms":5.48046,"ok":1}
+{"id":"ext_birkbeck-19603","s":["phylosiphy","philosophy","philosopher"],"c":null,"ms":7.09079,"ok":1}
+{"id":"ext_birkbeck-19647","s":["philophsophy","philosophy","philosopher"],"c":null,"ms":8.01342,"ok":1}
+{"id":"ext_birkbeck-19649","s":["philosophy","philosopher","philosaph"],"c":null,"ms":6.04833,"ok":1}
+{"id":"ext_birkbeck-19651","s":["philosaphys","philosophy","philosophy's"],"c":null,"ms":6.08917,"ok":1}
+{"id":"ext_birkbeck-19663","s":["philosthy","philosophy","philosopher"],"c":null,"ms":9.91829,"ok":1}
+{"id":"ext_birkbeck-19674","s":["phlosaphy","philosophy","philosopher"],"c":null,"ms":6.46683,"ok":1}
+{"id":"ext_birkbeck-19688","s":["phyilosophey","philosophy","philosopher"],"c":null,"ms":6.70696,"ok":1}
+{"id":"ext_birkbeck-19694","s":["phylosophy","philosophy","philosopher"],"c":null,"ms":5.89646,"ok":1}
+{"id":"ext_birkbeck-19695","s":["phylosphy","philosophy","phosphorus"],"c":null,"ms":9.03567,"ok":1}
+{"id":"ext_birkbeck-19697","s":["phylosyphy","philosophy","phosphorus"],"c":null,"ms":10.4178,"ok":1}
+{"id":"ext_birkbeck-19798","s":["pickuresque","picturesque","picturesquely"],"c":null,"ms":8.8955,"ok":1}
+{"id":"ext_birkbeck-19799","s":["picquesque","picturesque","picaresque"],"c":null,"ms":10.1831,"ok":1}
+{"id":"ext_birkbeck-19801","s":["picturesque","pictiresqu","picturesquely"],"c":null,"ms":7.09375,"ok":1}
+{"id":"ext_birkbeck-19819","s":["pictureques","picturesque","picture question"],"c":null,"ms":6.78667,"ok":1}
+{"id":"ext_birkbeck-19821","s":["picturequse","picturesque","picture question"],"c":null,"ms":7.04475,"ok":1}
+{"id":"ext_birkbeck-19830","s":["pictureskae","picture sake","pictures are"],"c":null,"ms":12.8864,"ok":1}
+{"id":"ext_birkbeck-19832","s":["pictures","picturesque","picturesquely"],"c":"pictures","ms":6.10633,"ok":1}
+{"id":"ext_birkbeck-19838","s":["picturique","picturesque","picturesquely"],"c":null,"ms":7.55983,"ok":1}
+{"id":"ext_birkbeck-19841","s":["picturque","picturesque","pictures"],"c":null,"ms":6.12821,"ok":1}
+{"id":"ext_birkbeck-19845","s":["pictusque","picturesque","picturesquely"],"c":null,"ms":6.48487,"ok":1}
+{"id":"ext_birkbeck-19996","s":["placing","pleasing","passing"],"c":"placing","ms":5.11771,"ok":1}
+{"id":"ext_birkbeck-20011","s":["phnumonia","pneumonia","pneumonia's"],"c":null,"ms":7.81446,"ok":1}
+{"id":"ext_birkbeck-20025","s":["nemonia","nominated","nomination"],"c":null,"ms":8.94508,"ok":1}
+{"id":"ext_birkbeck-20029","s":["newmonia","newtonian","new indian"],"c":null,"ms":15.4307,"ok":1}
+{"id":"ext_birkbeck-20040","s":["peunmonia","pneumonia","pneumonia's"],"c":null,"ms":8.03479,"ok":1}
+{"id":"ext_birkbeck-20043","s":["phemonia","pneumonia","phenomena"],"c":null,"ms":10.4888,"ok":1}
+{"id":"ext_birkbeck-20047","s":["pheneumonia","pneumonia","pneumonia's"],"c":null,"ms":9.72296,"ok":1}
+{"id":"ext_birkbeck-20064","s":["phewmonia","pneumonia","pneumonia's"],"c":null,"ms":14.8301,"ok":1}
+{"id":"ext_birkbeck-20068","s":["phnemonia","pneumonia","phenomena"],"c":null,"ms":9.42021,"ok":1}
+{"id":"ext_birkbeck-20088","s":["pnemounia","pneumonia","pneumonia's"],"c":null,"ms":8.48717,"ok":1}
+{"id":"ext_birkbeck-20093","s":["pnenumoia","pneumonia","pneumonia's"],"c":null,"ms":10.2494,"ok":1}
+{"id":"ext_birkbeck-20105","s":["pnomonia","pneumonia","pomona"],"c":null,"ms":9.14929,"ok":1}
+{"id":"ext_birkbeck-20109","s":["pnumonea","pneumonia","pneumonia's"],"c":null,"ms":6.68067,"ok":1}
+{"id":"ext_birkbeck-20196","s":["poatary","poetry","pastry"],"c":null,"ms":6.34958,"ok":1}
+{"id":"ext_birkbeck-20201","s":["poatrey","poetry","pottery"],"c":null,"ms":6.40821,"ok":1}
+{"id":"ext_birkbeck-20205","s":["poeitre","poetry","peter"],"c":null,"ms":6.16563,"ok":1}
+{"id":"ext_birkbeck-20206","s":["poemetry","poetry","geometry"],"c":null,"ms":7.39233,"ok":1}
+{"id":"ext_birkbeck-20211","s":["porter","poertre","porterhouse"],"c":"porter","ms":6.27054,"ok":1}
+{"id":"ext_birkbeck-20222","s":["pierre","poetry","peter"],"c":"pierre","ms":6.46404,"ok":1}
+{"id":"ext_birkbeck-20223","s":["poetree","porter","poetry"],"c":null,"ms":6.9485,"ok":1}
+{"id":"ext_birkbeck-20225","s":["poetries","poetrie","poetry"],"c":null,"ms":5.87154,"ok":1}
+{"id":"ext_birkbeck-20235","s":["poltory","poltergeists","poultry"],"c":null,"ms":7.43096,"ok":1}
+{"id":"ext_birkbeck-20245","s":["porertry","poetry","property"],"c":null,"ms":8.04975,"ok":1}
+{"id":"ext_birkbeck-20265","s":["poutrey","poetry","pottery"],"c":null,"ms":6.40963,"ok":1}
+{"id":"ext_birkbeck-20267","s":["powetrey","poetry","powered"],"c":null,"ms":7.40829,"ok":1}
+{"id":"ext_birkbeck-20271","s":["powtrey","poetry","pottery"],"c":null,"ms":6.45758,"ok":1}
+{"id":"ext_birkbeck-20276","s":["proatry","poetry","property"],"c":null,"ms":6.93117,"ok":1}
+{"id":"ext_birkbeck-20390","s":["possablities","possibilities","possibility"],"c":null,"ms":7.01625,"ok":1}
+{"id":"ext_birkbeck-20411","s":["popatoes","potatoes","opposed"],"c":null,"ms":7.8905,"ok":1}
+{"id":"ext_birkbeck-20499","s":["precious","precion","preconceived"],"c":null,"ms":6.61092,"ok":1}
+{"id":"ext_birkbeck-20503","s":["prediction","precition","predictions"],"c":"prediction","ms":7.26483,"ok":1}
+{"id":"ext_birkbeck-20514","s":["presishion","precision","permission"],"c":null,"ms":9.41283,"ok":1}
+{"id":"ext_birkbeck-20515","s":["presisian","precision","presiding"],"c":null,"ms":8.084,"ok":1}
+{"id":"ext_birkbeck-20517","s":["prediction","presistion","predictions"],"c":"prediction","ms":7.60825,"ok":1}
+{"id":"ext_birkbeck-20520","s":["pressision","precision","pressing"],"c":null,"ms":9.19629,"ok":1}
+{"id":"ext_birkbeck-20522","s":["procession","processions","professional"],"c":"procession","ms":8.23896,"ok":1}
+{"id":"ext_birkbeck-20525","s":["pricistion","precision","practitioners"],"c":null,"ms":8.54267,"ok":1}
+{"id":"ext_birkbeck-20550","s":["peter","prefer","peterson's"],"c":"peter","ms":4.66079,"ok":1}
+{"id":"ext_birkbeck-20588","s":["preastoric","prehistoric","predators"],"c":null,"ms":8.84442,"ok":1}
+{"id":"ext_birkbeck-20589","s":["pregidice","prejudice","prejudiced"],"c":null,"ms":8.87008,"ok":1}
+{"id":"ext_birkbeck-20600","s":["predadice","president","predicted"],"c":null,"ms":11.8127,"ok":1}
+{"id":"ext_birkbeck-20607","s":["predgdice","predicted","predecessor"],"c":null,"ms":11.1143,"ok":1}
+{"id":"ext_birkbeck-20625","s":["predgudice","prejudice","prejudiced"],"c":null,"ms":11.9384,"ok":1}
+{"id":"ext_birkbeck-20631","s":["predidice","president","prejudice"],"c":null,"ms":8.98833,"ok":1}
+{"id":"ext_birkbeck-20655","s":["predjidice","prejudice","prejudiced"],"c":null,"ms":7.2225,"ok":1}
+{"id":"ext_birkbeck-20658","s":["prejudice","predjudic","prejudicial"],"c":null,"ms":6.73925,"ok":1}
+{"id":"ext_birkbeck-20665","s":["predjuduce","prejudice","prejudiced"],"c":null,"ms":7.08742,"ok":1}
+{"id":"ext_birkbeck-20666","s":["predjuice","prejudice","prejudiced"],"c":null,"ms":7.57667,"ok":1}
+{"id":"ext_birkbeck-20670","s":["predudice","prejudice","prejudiced"],"c":null,"ms":7.90512,"ok":1}
+{"id":"ext_birkbeck-20673","s":["predudise","prejudice","prejudiced"],"c":null,"ms":8.98854,"ok":1}
+{"id":"ext_birkbeck-20679","s":["predugdice","prejudice","prejudiced"],"c":null,"ms":12.8968,"ok":1}
+{"id":"ext_birkbeck-20687","s":["predujice","prejudice","prejudiced"],"c":null,"ms":8.7865,"ok":1}
+{"id":"ext_birkbeck-20711","s":["pregudice","prejudice","prejudiced"],"c":null,"ms":7.41296,"ok":1}
+{"id":"ext_birkbeck-20712","s":["pregudise","prejudice","prejudiced"],"c":null,"ms":8.98137,"ok":1}
+{"id":"ext_birkbeck-20719","s":["prejeduce","prejudice","prejudiced"],"c":null,"ms":7.71208,"ok":1}
+{"id":"ext_birkbeck-20720","s":["prejidace","prejudice","prejudiced"],"c":null,"ms":7.44225,"ok":1}
+{"id":"ext_birkbeck-20811","s":["pass","parsons","press"],"c":"pass","ms":4.59479,"ok":1}
+{"id":"ext_birkbeck-21018","s":["priveliged","privileged","privileges"],"c":null,"ms":7.72788,"ok":1}
+{"id":"ext_birkbeck-21023","s":["probibilities","probabilities","pro abilities"],"c":null,"ms":7.37233,"ok":1}
+{"id":"ext_birkbeck-21053","s":["probalum","problem","problems"],"c":null,"ms":8.09104,"ok":1}
+{"id":"ext_birkbeck-21057","s":["proberlem","problem","problems"],"c":null,"ms":8.60854,"ok":1}
+{"id":"ext_birkbeck-21069","s":["prodlim","preliminary","promise"],"c":null,"ms":6.80817,"ok":1}
+{"id":"ext_birkbeck-21072","s":["prombleme","problem","problems"],"c":null,"ms":9.179,"ok":1}
+{"id":"ext_birkbeck-21075","s":["promleam","pro league","problematic"],"c":null,"ms":11.7317,"ok":1}
+{"id":"ext_birkbeck-21081","s":["people","proplem","problem"],"c":"people","ms":8.00388,"ok":1}
+{"id":"ext_birkbeck-21084","s":["proplom","proposed","proposals"],"c":null,"ms":7.33917,"ok":1}
+{"id":"ext_birkbeck-21085","s":["proplum","propulsion","popular"],"c":null,"ms":7.23221,"ok":1}
+{"id":"ext_birkbeck-21098","s":["procecire","procedure","procedures"],"c":null,"ms":9.14604,"ok":1}
+{"id":"ext_birkbeck-21102","s":["procedeuere","procedure","procedures"],"c":null,"ms":8.00238,"ok":1}
+{"id":"ext_birkbeck-21103","s":["procedure","procedures","procedeur"],"c":null,"ms":7.36258,"ok":1}
+{"id":"ext_birkbeck-21105","s":["procedger","procedure","procedures"],"c":null,"ms":9.72617,"ok":1}
+{"id":"ext_birkbeck-21110","s":["procedural","procedure","procedures"],"c":"procedural","ms":7.44667,"ok":1}
+{"id":"ext_birkbeck-21126","s":["procegure","procedure","procedures"],"c":null,"ms":8.22208,"ok":1}
+{"id":"ext_birkbeck-21128","s":["procejure","procedure","procedures"],"c":null,"ms":8.15092,"ok":1}
+{"id":"ext_birkbeck-21129","s":["proceture","procedure","procedures"],"c":null,"ms":8.76212,"ok":1}
+{"id":"ext_birkbeck-21134","s":["procedure","procedures","procudur"],"c":null,"ms":7.26088,"ok":1}
+{"id":"ext_birkbeck-21163","s":["proqure","procurer","poured"],"c":null,"ms":7.12125,"ok":1}
+{"id":"ext_birkbeck-21247","s":["prolly","proply","properly"],"c":"prolly","ms":5.75217,"ok":1}
+{"id":"ext_birkbeck-21259","s":["pretecteng","protecting","protesting"],"c":null,"ms":9.04233,"ok":1}
+{"id":"ext_birkbeck-21425","s":["hurley","hurple","hurled"],"c":null,"ms":5.79737,"ok":1}
+{"id":"ext_birkbeck-21441","s":["people","pulled","pulple"],"c":"people","ms":6.69783,"ok":1}
+{"id":"ext_birkbeck-21442","s":["punlpe","pulled","unpleasant"],"c":null,"ms":6.549,"ok":1}
+{"id":"ext_birkbeck-21448","s":["people","purple","people's"],"c":"people","ms":4.92471,"ok":1}
+{"id":"ext_birkbeck-21462","s":["persueing","perusing","pursuing"],"c":null,"ms":8.36271,"ok":1}
+{"id":"ext_birkbeck-21476","s":["quarall","quarrel","quarrelling"],"c":null,"ms":6.03196,"ok":1}
+{"id":"ext_birkbeck-21525","s":["quiscent","quiescent","quiescently"],"c":null,"ms":8.341,"ok":1}
+{"id":"ext_birkbeck-21534","s":["question","quotion","quoting"],"c":"question","ms":6.28517,"ok":1}
+{"id":"ext_birkbeck-21548","s":["rallyway","always","rally way"],"c":null,"ms":10.3335,"ok":1}
+{"id":"ext_birkbeck-21551","s":["raincoad","raincoats","raincoat"],"c":null,"ms":9.10879,"ok":1}
+{"id":"ext_birkbeck-21552","s":["raincort","raincoats","raincoat"],"c":null,"ms":10.1997,"ok":1}
+{"id":"ext_birkbeck-21554","s":["rainhat","rainwater","rain hates"],"c":null,"ms":8.82971,"ok":1}
+{"id":"ext_birkbeck-21562","s":["rindcoat","raincoats","raincoat"],"c":null,"ms":10.2081,"ok":1}
+{"id":"ext_birkbeck-21571","s":["are","arsenal","race"],"c":"are","ms":5.88042,"ok":1}
+{"id":"ext_birkbeck-21674","s":["reciapt","recapture","recaptured"],"c":null,"ms":6.64858,"ok":1}
+{"id":"ext_birkbeck-21676","s":["recicipt","precipitation","receipt"],"c":null,"ms":8.64646,"ok":1}
+{"id":"ext_birkbeck-21779","s":["recantyly","recently","recently you"],"c":null,"ms":7.59604,"ok":1}
+{"id":"ext_birkbeck-21781","s":["recendle","rekindled","the endless"],"c":null,"ms":8.59217,"ok":1}
+{"id":"ext_birkbeck-21785","s":["recetey","recently","erected"],"c":null,"ms":7.51204,"ok":1}
+{"id":"ext_birkbeck-22007","s":["recommdations","recommendations","recommendation"],"c":null,"ms":6.88817,"ok":1}
+{"id":"ext_birkbeck-22039","s":["recommedctions","recommendations","recommendation"],"c":null,"ms":16.9071,"ok":1}
+{"id":"ext_birkbeck-22049","s":["recremendations","recommendations","recriminations"],"c":null,"ms":11.4973,"ok":1}
+{"id":"ext_birkbeck-22070","s":["recomemented","recommended","recommend"],"c":null,"ms":13.0349,"ok":1}
+{"id":"ext_birkbeck-22079","s":["recommendent","recommended the","recommended to"],"c":null,"ms":8.31483,"ok":1}
+{"id":"ext_birkbeck-22081","s":["recommented","recommended","recommend"],"c":null,"ms":6.89054,"ok":1}
+{"id":"ext_birkbeck-22134","s":["reformed","reffored","referred"],"c":"reformed","ms":6.66129,"ok":1}
+{"id":"ext_birkbeck-22163","s":["reafrehment","refreshments","refreshment"],"c":null,"ms":9.37438,"ok":1}
+{"id":"ext_birkbeck-22164","s":["reafreshment","refreshments","refreshment"],"c":null,"ms":7.38037,"ok":1}
+{"id":"ext_birkbeck-22169","s":["referchment","refreshments","refreshment"],"c":null,"ms":9.96346,"ok":1}
+{"id":"ext_birkbeck-22172","s":["refeshmont","refreshments","refreshment"],"c":null,"ms":9.46742,"ok":1}
+{"id":"ext_birkbeck-22173","s":["refesiment","refreshments","refreshment"],"c":null,"ms":14.1851,"ok":1}
+{"id":"ext_birkbeck-22174","s":["refesment","refreshments","refreshment"],"c":null,"ms":9.51871,"ok":1}
+{"id":"ext_birkbeck-22178","s":["refleshment","refreshments","refreshment"],"c":null,"ms":9.77033,"ok":1}
+{"id":"ext_birkbeck-22179","s":["refrastment","refreshments","refreshment"],"c":null,"ms":11.9186,"ok":1}
+{"id":"ext_birkbeck-22180","s":["refreashent","refreshments","refreshment"],"c":null,"ms":9.36187,"ok":1}
+{"id":"ext_birkbeck-22181","s":["refreashment","refreshments","refreshment"],"c":null,"ms":7.70508,"ok":1}
+{"id":"ext_birkbeck-22183","s":["refrecment","refreshments","refreshment"],"c":null,"ms":10.5286,"ok":1}
+{"id":"ext_birkbeck-22186","s":["refrement","preferment","retirement"],"c":null,"ms":9.05312,"ok":1}
+{"id":"ext_birkbeck-22189","s":["refreschment","refreshments","refreshment"],"c":null,"ms":9.38058,"ok":1}
+{"id":"ext_birkbeck-22190","s":["refreshement","refreshments","refreshment"],"c":null,"ms":8.66071,"ok":1}
+{"id":"ext_birkbeck-22192","s":["refreshmant","refreshments","refreshment"],"c":null,"ms":8.347,"ok":1}
+{"id":"ext_birkbeck-22193","s":["refreshmat","refresh at","refreshments"],"c":null,"ms":8.57096,"ok":1}
+{"id":"ext_birkbeck-22194","s":["refreshmeant","refreshments","refreshment"],"c":null,"ms":7.48442,"ok":1}
+{"id":"ext_birkbeck-22196","s":["refreshmernt","refreshments","refreshment"],"c":null,"ms":7.62208,"ok":1}
+{"id":"ext_birkbeck-22198","s":["refreshmint","refreshments","refreshment"],"c":null,"ms":7.75304,"ok":1}
+{"id":"ext_birkbeck-22199","s":["refreshments","refresmen","refreshment"],"c":null,"ms":8.83308,"ok":1}
+{"id":"ext_birkbeck-22201","s":["refressmant","refreshments","refreshment"],"c":null,"ms":11.9317,"ok":1}
+{"id":"ext_birkbeck-22202","s":["refressment","refreshments","refreshment"],"c":null,"ms":9.52229,"ok":1}
+{"id":"ext_birkbeck-22203","s":["refressmunt","refreshments","regress until"],"c":null,"ms":11.1901,"ok":1}
+{"id":"ext_birkbeck-22204","s":["refrestment","refreshments","refreshment"],"c":null,"ms":10.267,"ok":1}
+{"id":"ext_birkbeck-22205","s":["refrestmert","refreshments","refresher"],"c":null,"ms":15.6186,"ok":1}
+{"id":"ext_birkbeck-22206","s":["refrheshment","refreshments","refreshment"],"c":null,"ms":7.24188,"ok":1}
+{"id":"ext_birkbeck-22209","s":["refrshmint","refreshments","refreshment"],"c":null,"ms":8.97942,"ok":1}
+{"id":"ext_birkbeck-22210","s":["refruesment","refreshments","refreshment"],"c":null,"ms":10.8858,"ok":1}
+{"id":"ext_birkbeck-22211","s":["refshment","refreshments","refreshment"],"c":null,"ms":9.15488,"ok":1}
+{"id":"ext_birkbeck-22215","s":["rephreshment","representative","representing"],"c":null,"ms":14.199,"ok":1}
+{"id":"ext_birkbeck-22217","s":["rereashment","refreshments","refreshment"],"c":null,"ms":11.964,"ok":1}
+{"id":"ext_birkbeck-22226","s":["riefreshmet","refreshments","refreshment"],"c":null,"ms":8.0725,"ok":1}
+{"id":"ext_birkbeck-22227","s":["rifreshment","refreshments","refreshment"],"c":null,"ms":8.13271,"ok":1}
+{"id":"ext_birkbeck-22393","s":["redishter","redistribution","redistribute"],"c":null,"ms":13.7123,"ok":1}
+{"id":"ext_birkbeck-22415","s":["regretted","regretite","regretting"],"c":null,"ms":7.62492,"ok":1}
+{"id":"ext_birkbeck-22422","s":["regurarly","regularly","irregularly"],"c":null,"ms":6.94833,"ok":1}
+{"id":"ext_birkbeck-22430","s":["recite","reacted","recanted"],"c":"recite","ms":6.14533,"ok":1}
+{"id":"ext_birkbeck-22437","s":["relitivly","relatively","relative"],"c":null,"ms":6.44196,"ok":1}
+{"id":"ext_birkbeck-22440","s":["relavent","leave the","leave to"],"c":null,"ms":9.11629,"ok":1}
+{"id":"ext_birkbeck-22487","s":["if","life","life's"],"c":"if","ms":4.03925,"ok":1}
+{"id":"ext_birkbeck-22563","s":["rembrance","remembrance","remembrances"],"c":null,"ms":7.62913,"ok":1}
+{"id":"ext_birkbeck-22569","s":["rememberence","remembrance","remembrances"],"c":null,"ms":11.0092,"ok":1}
+{"id":"ext_birkbeck-22571","s":["remembunce","remembrance","remembrances"],"c":null,"ms":6.96475,"ok":1}
+{"id":"ext_birkbeck-22572","s":["rememerance","remembrance","remembrances"],"c":null,"ms":9.94037,"ok":1}
+{"id":"ext_birkbeck-22575","s":["remenberance","remembrance","remembrances"],"c":null,"ms":10.8102,"ok":1}
+{"id":"ext_birkbeck-22578","s":["remmberance","remembrance","remembrances"],"c":null,"ms":11.2296,"ok":1}
+{"id":"ext_birkbeck-22581","s":["remmbranse","remembrance","remembrances"],"c":null,"ms":6.07475,"ok":1}
+{"id":"ext_birkbeck-22582","s":["remmeberance","remembrance","remembrances"],"c":null,"ms":10.7226,"ok":1}
+{"id":"ext_birkbeck-22686","s":["repaired","repairs","repaires"],"c":"repaired","ms":6.40604,"ok":1}
+{"id":"ext_birkbeck-22709","s":["replace","replacing","replaced"],"c":"replace","ms":5.05254,"ok":1}
+{"id":"ext_birkbeck-22712","s":["peportery","reporters","reporter"],"c":null,"ms":10.3542,"ok":1}
+{"id":"ext_birkbeck-22725","s":["represenitives","representatives","representative"],"c":null,"ms":6.91142,"ok":1}
+{"id":"ext_birkbeck-22741","s":["represenetives","representatives","representative"],"c":null,"ms":7.33925,"ok":1}
+{"id":"ext_birkbeck-22745","s":["representitatives","representatives","representative"],"c":null,"ms":8.055,"ok":1}
+{"id":"ext_birkbeck-22781","s":["recwesting","are westinghouse","recasting"],"c":null,"ms":10.1307,"ok":1}
+{"id":"ext_birkbeck-22785","s":["reguesting","requesting","retesting"],"c":null,"ms":8.8125,"ok":1}
+{"id":"ext_birkbeck-22788","s":["regwesting","reversing","resetting"],"c":null,"ms":11.6822,"ok":1}
+{"id":"ext_birkbeck-22797","s":["requsteng","requesting","requested"],"c":null,"ms":7.79525,"ok":1}
+{"id":"ext_birkbeck-22799","s":["requstuing","requesting","resting"],"c":null,"ms":7.56958,"ok":1}
+{"id":"ext_birkbeck-22829","s":["recoquisition","requisition","requisitioned"],"c":null,"ms":8.39521,"ok":1}
+{"id":"ext_birkbeck-22835","s":["recquasition","requisition","requisitioned"],"c":null,"ms":8.39754,"ok":1}
+{"id":"ext_birkbeck-22837","s":["recquesition","requisition","requisitioned"],"c":null,"ms":8.70171,"ok":1}
+{"id":"ext_birkbeck-22840","s":["recquisision","requisition","requisitioned"],"c":null,"ms":12.9944,"ok":1}
+{"id":"ext_birkbeck-22842","s":["recquistion","requisition","requisitioned"],"c":null,"ms":7.71729,"ok":1}
+{"id":"ext_birkbeck-22844","s":["recquizition","requisition","requisitioned"],"c":null,"ms":7.10754,"ok":1}
+{"id":"ext_birkbeck-22851","s":["recqusition","requisition","requisitioned"],"c":null,"ms":8.20637,"ok":1}
+{"id":"ext_birkbeck-22861","s":["recrisition","recruiting","restrictions"],"c":null,"ms":13.3323,"ok":1}
+{"id":"ext_birkbeck-22864","s":["rectquisition","requisition","requisitioned"],"c":null,"ms":8.85013,"ok":1}
+{"id":"ext_birkbeck-22867","s":["recuisition","requisition","requisitioned"],"c":null,"ms":7.73733,"ok":1}
+{"id":"ext_birkbeck-22869","s":["recusition","recruiting","requisition"],"c":null,"ms":13.5905,"ok":1}
+{"id":"ext_birkbeck-22871","s":["recwisition","requisition","requisitioned"],"c":null,"ms":13.4592,"ok":1}
+{"id":"ext_birkbeck-22885","s":["requesetion","requisition","requisitioned"],"c":null,"ms":7.36225,"ok":1}
+{"id":"ext_birkbeck-22893","s":["requiscion","requisition","requisitioned"],"c":null,"ms":10.75,"ok":1}
+{"id":"ext_birkbeck-22895","s":["requisision","requisition","requisitioned"],"c":null,"ms":6.24992,"ok":1}
+{"id":"ext_birkbeck-22896","s":["requission","requisition","requisitioned"],"c":null,"ms":6.22725,"ok":1}
+{"id":"ext_birkbeck-22904","s":["requsision","requisition","requisitioned"],"c":null,"ms":11.1062,"ok":1}
+{"id":"ext_birkbeck-22940","s":["resauece","resources","resource"],"c":null,"ms":8.01571,"ok":1}
+{"id":"ext_birkbeck-22943","s":["respect","resoce","resources"],"c":null,"ms":5.94888,"ok":1}
+{"id":"ext_birkbeck-23027","s":["reyterned","returned","referendum"],"c":null,"ms":9.24392,"ok":1}
+{"id":"ext_birkbeck-23038","s":["raphsody","rhapsody","rhapsody's"],"c":null,"ms":7.97808,"ok":1}
+{"id":"ext_birkbeck-23040","s":["rhymatism","rheumatism","rheumatic"],"c":null,"ms":10.3972,"ok":1}
+{"id":"ext_birkbeck-23049","s":["rehunatism","rheumatism","rheumatic"],"c":null,"ms":9.36054,"ok":1}
+{"id":"ext_birkbeck-23054","s":["reuhmatism","rheumatism","rheumatic"],"c":null,"ms":7.84008,"ok":1}
+{"id":"ext_birkbeck-23058","s":["reumetism","rheumatism","sometimes"],"c":null,"ms":8.50396,"ok":1}
+{"id":"ext_birkbeck-23062","s":["reumitism","rheumatism","rheumatic"],"c":null,"ms":11.6008,"ok":1}
+{"id":"ext_birkbeck-23065","s":["rhematisum","rheumatism","rheumatic"],"c":null,"ms":10.5582,"ok":1}
+{"id":"ext_birkbeck-23066","s":["rhemitism","rheumatism","the time"],"c":null,"ms":14.7226,"ok":1}
+{"id":"ext_birkbeck-23067","s":["rhemutism","rheumatism","the autism"],"c":null,"ms":11.7121,"ok":1}
+{"id":"ext_birkbeck-23068","s":["rheoumatism","rheumatism","rheumatic"],"c":null,"ms":7.67879,"ok":1}
+{"id":"ext_birkbeck-23070","s":["rheumantism","rheumatism","rheumatic"],"c":null,"ms":9.30704,"ok":1}
+{"id":"ext_birkbeck-23071","s":["rheumastism","rheumatism","rheumatic"],"c":null,"ms":7.36675,"ok":1}
+{"id":"ext_birkbeck-23072","s":["rheumaticism","rheumatism","rheumatic is"],"c":null,"ms":10.0122,"ok":1}
+{"id":"ext_birkbeck-23074","s":["rheumaticsm","rheumatism","rheumatics"],"c":null,"ms":7.464,"ok":1}
+{"id":"ext_birkbeck-23075","s":["rheumatisim","rheumatism","rheumatic i'm"],"c":null,"ms":7.60504,"ok":1}
+{"id":"ext_birkbeck-23076","s":["rheumatisium","rheumatism","rheumatic i'm"],"c":null,"ms":9.07437,"ok":1}
+{"id":"ext_birkbeck-23077","s":["rheumatisum","rheumatism","rheumatic"],"c":null,"ms":6.53804,"ok":1}
+{"id":"ext_birkbeck-23079","s":["rheumetism","rheumatism","rheumatic"],"c":null,"ms":7.97904,"ok":1}
+{"id":"ext_birkbeck-23081","s":["rheumitism","rheumatism","rheumatic"],"c":null,"ms":8.7765,"ok":1}
+{"id":"ext_birkbeck-23082","s":["rheumitizm","rheumatism","rheumatic"],"c":null,"ms":7.26658,"ok":1}
+{"id":"ext_birkbeck-23086","s":["rheusmatism","rheumatism","rheumatic"],"c":null,"ms":8.12975,"ok":1}
+{"id":"ext_birkbeck-23087","s":["rheutism","rheumatism","the time"],"c":null,"ms":11.2759,"ok":1}
+{"id":"ext_birkbeck-23088","s":["rhmatism","rheumatism","rheumatic"],"c":null,"ms":7.56037,"ok":1}
+{"id":"ext_birkbeck-23094","s":["rhuemetism","rheumatism","rheumatic"],"c":null,"ms":7.8985,"ok":1}
+{"id":"ext_birkbeck-23095","s":["rhuemitism","rheumatism","rheumatic"],"c":null,"ms":9.48033,"ok":1}
+{"id":"ext_birkbeck-23097","s":["rhumatisim","rheumatism","rheumatic i'm"],"c":null,"ms":8.33425,"ok":1}
+{"id":"ext_birkbeck-23099","s":["rhumatisum","rheumatism","rheumatic"],"c":null,"ms":7.62996,"ok":1}
+{"id":"ext_birkbeck-23102","s":["rhumetism","rheumatism","rhyme time"],"c":null,"ms":8.19546,"ok":1}
+{"id":"ext_birkbeck-23106","s":["rhumitism","rheumatism","rheumatic"],"c":null,"ms":9.04308,"ok":1}
+{"id":"ext_birkbeck-23107","s":["rhummatism","rheumatism","rheumatic"],"c":null,"ms":7.31396,"ok":1}
+{"id":"ext_birkbeck-23137","s":["rhyno","they only","they often"],"c":null,"ms":7.57183,"ok":1}
+{"id":"ext_birkbeck-23258","s":["reomentic","romantic","romantics"],"c":null,"ms":11.2185,"ok":1}
+{"id":"ext_birkbeck-23259","s":["rhomentic","romantic","romantics"],"c":null,"ms":10.272,"ok":1}
+{"id":"ext_birkbeck-23268","s":["romatict","romantic","romantics"],"c":null,"ms":9.45446,"ok":1}
+{"id":"ext_birkbeck-23271","s":["romentict","romantic","romantics"],"c":null,"ms":11.1404,"ok":1}
+{"id":"ext_birkbeck-23274","s":["ronandic","romancing","romantic"],"c":null,"ms":12.2264,"ok":1}
+{"id":"ext_birkbeck-23309","s":["rudy","route","roudy"],"c":"rudy","ms":5.33929,"ok":1}
+{"id":"ext_birkbeck-23460","s":["saciffaction","satisfaction","scarification"],"c":null,"ms":19.8783,"ok":1}
+{"id":"ext_birkbeck-23501","s":["satisfacshion","satisfaction","satisfactions"],"c":null,"ms":15.1998,"ok":1}
+{"id":"ext_birkbeck-23503","s":["satisfacshon","satisfaction","satisfactions"],"c":null,"ms":14.0208,"ok":1}
+{"id":"ext_birkbeck-23505","s":["satisfacsion","satisfaction","satisfactions"],"c":null,"ms":8.40042,"ok":1}
+{"id":"ext_birkbeck-23522","s":["satishfaktion","satisfaction","satisfactions"],"c":null,"ms":9.43921,"ok":1}
+{"id":"ext_birkbeck-23523","s":["satishfation","satisfaction","satisfactions"],"c":null,"ms":9.39242,"ok":1}
+{"id":"ext_birkbeck-23527","s":["satitfaction","satisfaction","satisfactions"],"c":null,"ms":9.4095,"ok":1}
+{"id":"ext_birkbeck-23659","s":["s and","scandal","scandinavian"],"c":"s and","ms":6.86287,"ok":1}
+{"id":"ext_birkbeck-23667","s":["scanduol","scandalous","scandal"],"c":null,"ms":11.9742,"ok":1}
+{"id":"ext_birkbeck-23668","s":["cantaloupe","scantal","scantily"],"c":null,"ms":8.51117,"ok":1}
+{"id":"ext_birkbeck-23672","s":["schandel","chandler","chandelier"],"c":null,"ms":10.1668,"ok":1}
+{"id":"ext_birkbeck-23675","s":["skandel","scandal","scandalous"],"c":null,"ms":7.655,"ok":1}
+{"id":"ext_birkbeck-23698","s":["scarcarly","scarcely","scar early"],"c":null,"ms":8.88867,"ok":1}
+{"id":"ext_birkbeck-23709","s":["scareelfy","scarcely","scared"],"c":null,"ms":9.40571,"ok":1}
+{"id":"ext_birkbeck-23731","s":["scercly","scarcely","secrecy"],"c":null,"ms":7.78871,"ok":1}
+{"id":"ext_birkbeck-23928","s":["scenes","schemes","seems"],"c":"scenes","ms":7.09317,"ok":1}
+{"id":"ext_birkbeck-23940","s":["she sees","she seems","she seemed"],"c":"she sees","ms":10.179,"ok":1}
+{"id":"ext_birkbeck-23944","s":["schooler","schoolers","scholars"],"c":"schooler","ms":7.05683,"ok":1}
+{"id":"ext_birkbeck-23967","s":["since","science","silence"],"c":"since","ms":6.59783,"ok":1}
+{"id":"ext_birkbeck-23979","s":["scirrors","scirocco","errors"],"c":null,"ms":10.5105,"ok":1}
+{"id":"ext_birkbeck-23982","s":["scisous","scissors","scissor"],"c":null,"ms":9.54846,"ok":1}
+{"id":"ext_birkbeck-23985","s":["scissocers","scissors","scissor rest"],"c":null,"ms":10.2931,"ok":1}
+{"id":"ext_birkbeck-24002","s":["sisscors","scissors","discourse"],"c":null,"ms":9.51212,"ok":1}
+{"id":"ext_birkbeck-24011","s":["schools","school","schooldays"],"c":"schools","ms":8.40667,"ok":1}
+{"id":"ext_birkbeck-24038","s":["scambld","scrambled","scrambler"],"c":null,"ms":8.57687,"ok":1}
+{"id":"ext_birkbeck-24050","s":["scrameled","scrambled","scrawled"],"c":null,"ms":8.83517,"ok":1}
+{"id":"ext_birkbeck-24053","s":["scrampled","scrambled","sampled"],"c":null,"ms":9.55046,"ok":1}
+{"id":"ext_birkbeck-24064","s":["sramled","scrambled","sealed"],"c":null,"ms":7.80692,"ok":1}
+{"id":"ext_birkbeck-24100","s":["screams","scremd","screamed"],"c":"screams","ms":6.82133,"ok":1}
+{"id":"ext_birkbeck-24105","s":["such","scuba","subsequently"],"c":"such","ms":5.36771,"ok":1}
+{"id":"ext_birkbeck-24108","s":["scrutiniesed","scrutinized","scrutinised"],"c":null,"ms":7.072,"ok":1}
+{"id":"ext_birkbeck-24117","s":["crashed","sarshed","searched"],"c":"crashed","ms":7.73921,"ok":1}
+{"id":"ext_birkbeck-24123","s":["searcked","searched","sacked"],"c":null,"ms":10.0287,"ok":1}
+{"id":"ext_birkbeck-24127","s":["secured","scheduled","schedule"],"c":"secured","ms":7.84063,"ok":1}
+{"id":"ext_birkbeck-24143","s":["sherched","she had","she reached"],"c":null,"ms":11.1309,"ok":1}
+{"id":"ext_birkbeck-24222","s":["some","seemed","seem"],"c":"some","ms":6.17196,"ok":1}
+{"id":"ext_birkbeck-24225","s":["some","something","someone"],"c":"some","ms":5.39787,"ok":1}
+{"id":"ext_birkbeck-24281","s":["sepaphore","sapphires","semaphore"],"c":null,"ms":8.69958,"ok":1}
+{"id":"ext_birkbeck-24301","s":["senseably","sensibly","sensually"],"c":null,"ms":12.3443,"ok":1}
+{"id":"ext_birkbeck-24363","s":["have","shagey","shave"],"c":"have","ms":6.85837,"ok":1}
+{"id":"ext_birkbeck-24364","s":["shaggy","shags","shagg"],"c":null,"ms":5.67704,"ok":1}
+{"id":"ext_birkbeck-24462","s":["sound","shouldn't","sounds"],"c":"sound","ms":5.85646,"ok":1}
+{"id":"ext_birkbeck-24469","s":["could","should","couldn't"],"c":"could","ms":6.64138,"ok":1}
+{"id":"ext_birkbeck-24491","s":["how","however","how many"],"c":"how","ms":4.27029,"ok":1}
+{"id":"ext_birkbeck-24691","s":["some","solemn","solemnity"],"c":"some","ms":6.25025,"ok":1}
+{"id":"ext_birkbeck-24692","s":["coleman","soleman","solemn"],"c":"coleman","ms":7.92008,"ok":1}
+{"id":"ext_birkbeck-24693","s":["solomon","someone","someone's"],"c":"solomon","ms":8.05317,"ok":1}
+{"id":"ext_birkbeck-24694","s":["solemum","solemn","solemnity"],"c":null,"ms":8.65104,"ok":1}
+{"id":"ext_birkbeck-24707","s":["some","solmem","something"],"c":"some","ms":8.44583,"ok":1}
+{"id":"ext_birkbeck-24739","s":["so what","so what's","somewhat"],"c":"so what","ms":7.82808,"ok":1}
+{"id":"ext_birkbeck-24765","s":["sarorrity","sorority","sororities"],"c":null,"ms":7.93129,"ok":1}
+{"id":"ext_birkbeck-24766","s":["sarrority","sorority","sororities"],"c":null,"ms":7.68546,"ok":1}
+{"id":"ext_birkbeck-24783","s":["shrority","sorority","shortly"],"c":null,"ms":7.68646,"ok":1}
+{"id":"ext_birkbeck-24788","s":["soiority","sorority","seniority"],"c":null,"ms":8.04096,"ok":1}
+{"id":"ext_birkbeck-24791","s":["soraraty","sorority","sorry"],"c":null,"ms":9.42512,"ok":1}
+{"id":"ext_birkbeck-24800","s":["sorry","sority","spiritual"],"c":"sorry","ms":7.19971,"ok":1}
+{"id":"ext_birkbeck-24802","s":["soroarite","sororities","sorority"],"c":null,"ms":12.3955,"ok":1}
+{"id":"ext_birkbeck-24804","s":["soroartity","sorority","sororities"],"c":null,"ms":9.19854,"ok":1}
+{"id":"ext_birkbeck-24810","s":["sororitity","sorority","sororities"],"c":null,"ms":7.68138,"ok":1}
+{"id":"ext_birkbeck-24813","s":["sorowety","sorry","sorority"],"c":null,"ms":12.4938,"ok":1}
+{"id":"ext_birkbeck-24817","s":["sorroraty","sorority","corporate"],"c":null,"ms":7.5535,"ok":1}
+{"id":"ext_birkbeck-24819","s":["sorrourity","sorority","sororities"],"c":null,"ms":7.88758,"ok":1}
+{"id":"ext_birkbeck-24832","s":["suroarity","sorority","curiosity's"],"c":null,"ms":8.72738,"ok":1}
+{"id":"ext_birkbeck-24836","s":["surrority","sorority","superiority"],"c":null,"ms":7.17421,"ok":1}
+{"id":"ext_birkbeck-24839","s":["syrority","sorority","sorry"],"c":null,"ms":7.07442,"ok":1}
+{"id":"ext_birkbeck-24922","s":["spacecraft's","spacecraft","spacecrawf"],"c":null,"ms":8.1225,"ok":1}
+{"id":"ext_birkbeck-25132","s":["spacificially","specifically","sacrificially"],"c":null,"ms":8.5385,"ok":1}
+{"id":"ext_birkbeck-25145","s":["specifacully","specifically","specially"],"c":null,"ms":7.02137,"ok":1}
+{"id":"ext_birkbeck-25150","s":["specifecully","specifically","specifically you"],"c":null,"ms":8.4475,"ok":1}
+{"id":"ext_birkbeck-25155","s":["specificately","specifically","specifications"],"c":null,"ms":10.1045,"ok":1}
+{"id":"ext_birkbeck-25161","s":["specificulty","specificity","specifically"],"c":null,"ms":7.11567,"ok":1}
+{"id":"ext_birkbeck-25171","s":["spectfically","specifically","electrically"],"c":null,"ms":7.72229,"ok":1}
+{"id":"ext_birkbeck-25197","s":["specaman","specimens","specimen"],"c":null,"ms":9.70883,"ok":1}
+{"id":"ext_birkbeck-25199","s":["speaking","specamin","specimens"],"c":null,"ms":7.54175,"ok":1}
+{"id":"ext_birkbeck-25203","s":["specemin","space in","specimens"],"c":null,"ms":9.31312,"ok":1}
+{"id":"ext_birkbeck-25223","s":["specmicn","specimens","specimen"],"c":null,"ms":9.349,"ok":1}
+{"id":"ext_birkbeck-25231","s":["spesimon","specimens","specimen"],"c":null,"ms":6.80483,"ok":1}
+{"id":"ext_birkbeck-25232","s":["spessimen","specimens","specimen"],"c":null,"ms":7.93996,"ok":1}
+{"id":"ext_birkbeck-25234","s":["spiciman","specimens","specimen"],"c":null,"ms":9.08354,"ok":1}
+{"id":"ext_birkbeck-25236","s":["spiecmen","specimens","spacemen"],"c":null,"ms":8.89229,"ok":1}
+{"id":"ext_birkbeck-25293","s":["speer","september","spare"],"c":"speer","ms":5.093,"ok":1}
+{"id":"ext_birkbeck-25294","s":["special","spherical","sperical"],"c":"special","ms":5.91417,"ok":1}
+{"id":"ext_birkbeck-25326","s":["speratual","spiritual","spirituality"],"c":null,"ms":7.93246,"ok":1}
+{"id":"ext_birkbeck-25334","s":["spirical","special","spirit all"],"c":null,"ms":9.07392,"ok":1}
+{"id":"ext_birkbeck-25335","s":["spirisul","spiritual","sirius"],"c":null,"ms":11.8703,"ok":1}
+{"id":"ext_birkbeck-25339","s":["spirititual","spiritual","spirituality"],"c":null,"ms":8.54717,"ok":1}
+{"id":"ext_birkbeck-25343","s":["spiriturel","spiritual","spirituality"],"c":null,"ms":6.79229,"ok":1}
+{"id":"ext_birkbeck-25351","s":["spirtural","spiritual","spirituality"],"c":null,"ms":7.49137,"ok":1}
+{"id":"ext_birkbeck-25356","s":["sprirtual","spiritual","spirituality"],"c":null,"ms":8.12438,"ok":1}
+{"id":"ext_birkbeck-25362","s":["spritural","spiritual","spirituality"],"c":null,"ms":7.50725,"ok":1}
+{"id":"ext_birkbeck-25365","s":["spiritous","spurious","spirituous"],"c":null,"ms":6.08488,"ok":1}
+{"id":"ext_birkbeck-25454","s":["squeeks","squeeze","squeaks"],"c":null,"ms":5.87583,"ok":1}
+{"id":"ext_birkbeck-25476","s":["starts","start his","start her"],"c":"starts","ms":9.51163,"ok":1}
+{"id":"ext_birkbeck-25622","s":["switch","stick","stitches"],"c":"switch","ms":6.87125,"ok":1}
+{"id":"ext_birkbeck-25635","s":["slomac","somalia's","solace"],"c":null,"ms":8.04329,"ok":1}
+{"id":"ext_birkbeck-25643","s":["stomach","stamac","stomachache"],"c":null,"ms":8.39675,"ok":1}
+{"id":"ext_birkbeck-25646","s":["stamoch","stomach","stanchion"],"c":null,"ms":9.12712,"ok":1}
+{"id":"ext_birkbeck-25648","s":["stomach","stoamac","stomachache"],"c":null,"ms":8.49221,"ok":1}
+{"id":"ext_birkbeck-25654","s":["stomach","stomack","stomachache"],"c":null,"ms":10.6837,"ok":1}
+{"id":"ext_birkbeck-25655","s":["stomach","stomact","stomachache"],"c":null,"ms":9.773,"ok":1}
+{"id":"ext_birkbeck-25658","s":["roman","stomach","tom and"],"c":"roman","ms":9.28379,"ok":1}
+{"id":"ext_birkbeck-25659","s":["stomarck","stomach","stomachache"],"c":null,"ms":15.1646,"ok":1}
+{"id":"ext_birkbeck-25660","s":["stomach","stomatc","stomachache"],"c":null,"ms":11.3443,"ok":1}
+{"id":"ext_birkbeck-25685","s":["stomach","stoumac","stomachache"],"c":null,"ms":8.33354,"ok":1}
+{"id":"ext_birkbeck-25692","s":["sumac","stomach","stumac"],"c":"sumac","ms":7.27,"ok":1}
+{"id":"ext_birkbeck-25693","s":["stumace","stomach","stomachache"],"c":null,"ms":8.89308,"ok":1}
+{"id":"ext_birkbeck-25694","s":["stumache","stomach","stomached"],"c":null,"ms":9.33737,"ok":1}
+{"id":"ext_birkbeck-25695","s":["stumack","stuck","stomach"],"c":null,"ms":9.08221,"ok":1}
+{"id":"ext_birkbeck-25696","s":["stumagh","stomach","stomachache"],"c":null,"ms":8.58646,"ok":1}
+{"id":"ext_birkbeck-25751","s":["strawes","strawberry","straws"],"c":null,"ms":6.44917,"ok":1}
+{"id":"ext_birkbeck-25763","s":["streets","test","steest"],"c":"streets","ms":6.59496,"ok":1}
+{"id":"ext_birkbeck-25772","s":["sprenuious","strenuously","seriously"],"c":null,"ms":13.4408,"ok":1}
+{"id":"ext_birkbeck-25782","s":["strainuous","strenuously","strenuous"],"c":null,"ms":10.0769,"ok":1}
+{"id":"ext_birkbeck-25786","s":["straneous","extraneous","strenuously"],"c":null,"ms":7.79263,"ok":1}
+{"id":"ext_birkbeck-25787","s":["stranious","strenuously","strenuous"],"c":null,"ms":8.70179,"ok":1}
+{"id":"ext_birkbeck-25789","s":["stranuious","strenuously","strenuous"],"c":null,"ms":8.99417,"ok":1}
+{"id":"ext_birkbeck-25793","s":["streanious","strenuously","strenuous"],"c":null,"ms":8.99454,"ok":1}
+{"id":"ext_birkbeck-25794","s":["streanous","strenuously","strenuous"],"c":null,"ms":9.58342,"ok":1}
+{"id":"ext_birkbeck-25796","s":["streinous","strenuously","seriously"],"c":null,"ms":8.76725,"ok":1}
+{"id":"ext_birkbeck-25797","s":["stremious","strenuously","strenuous"],"c":null,"ms":7.66046,"ok":1}
+{"id":"ext_birkbeck-25800","s":["strenerous","strenuously","strenuous"],"c":null,"ms":10.5209,"ok":1}
+{"id":"ext_birkbeck-25802","s":["strengeous","strenuously","strenuous"],"c":null,"ms":9.53721,"ok":1}
+{"id":"ext_birkbeck-25807","s":["strenius","strenuously","strenuous"],"c":null,"ms":8.27129,"ok":1}
+{"id":"ext_birkbeck-25809","s":["strenlous","strenuously","strenuous"],"c":null,"ms":9.24858,"ok":1}
+{"id":"ext_birkbeck-25810","s":["strennous","strenuously","strenuous"],"c":null,"ms":7.86142,"ok":1}
+{"id":"ext_birkbeck-25811","s":["strenoues","strenuously","strenuous"],"c":null,"ms":7.94538,"ok":1}
+{"id":"ext_birkbeck-25812","s":["strenouos","strenuously","strenuous"],"c":null,"ms":7.46196,"ok":1}
+{"id":"ext_birkbeck-25815","s":["strenrus","strenuously","strenuous"],"c":null,"ms":9.96513,"ok":1}
+{"id":"ext_birkbeck-25816","s":["strenuas","strenuously","strenuous"],"c":null,"ms":8.75292,"ok":1}
+{"id":"ext_birkbeck-25817","s":["strenueas","strenuously","strenuous"],"c":null,"ms":9.31571,"ok":1}
+{"id":"ext_birkbeck-25821","s":["strenuis","strenuously","strenuous"],"c":null,"ms":8.06854,"ok":1}
+{"id":"ext_birkbeck-25824","s":["strenumious","strenuously","strenuous"],"c":null,"ms":10.4059,"ok":1}
+{"id":"ext_birkbeck-25826","s":["strenus","strenuously","strenuous"],"c":null,"ms":7.12021,"ok":1}
+{"id":"ext_birkbeck-25828","s":["strinious","strenuously","strenuous"],"c":null,"ms":8.04783,"ok":1}
+{"id":"ext_birkbeck-25833","s":["treneous","tremendous","strenuously"],"c":null,"ms":8.35008,"ok":1}
+{"id":"ext_birkbeck-25836","s":["streach","treacherous","treachery"],"c":null,"ms":8.0405,"ok":1}
+{"id":"ext_birkbeck-25853","s":["structure","structures","structured"],"c":"structure","ms":5.52079,"ok":1}
+{"id":"ext_birkbeck-25876","s":["subgect","subject","suggest"],"c":null,"ms":8.38383,"ok":1}
+{"id":"ext_birkbeck-25880","s":["subjecks","subjects","subject"],"c":null,"ms":6.52804,"ok":1}
+{"id":"ext_birkbeck-26215","s":["subtle","sitble","it let"],"c":"subtle","ms":9.05096,"ok":1}
+{"id":"ext_birkbeck-26244","s":["suitaball","suitable","suitability"],"c":null,"ms":9.42492,"ok":1}
+{"id":"ext_birkbeck-26245","s":["suitable","suitabul","suitability"],"c":null,"ms":7.27888,"ok":1}
+{"id":"ext_birkbeck-26247","s":["suiterble","suitable","suite let"],"c":null,"ms":11.2041,"ok":1}
+{"id":"ext_birkbeck-26298","s":["supervised","supervisser","supervisor"],"c":"supervised","ms":8.89342,"ok":1}
+{"id":"ext_birkbeck-26302","s":["suclement","clement","clements"],"c":null,"ms":10.6949,"ok":1}
+{"id":"ext_birkbeck-26322","s":["supplyment","supplement","supply entire"],"c":null,"ms":10.742,"ok":1}
+{"id":"ext_birkbeck-26324","s":["supulment","supplement","supplements"],"c":null,"ms":9.92629,"ok":1}
+{"id":"ext_birkbeck-26561","s":["serpising","surprisingly","surprising"],"c":null,"ms":8.19075,"ok":1}
+{"id":"ext_birkbeck-26611","s":["surrownded","surrounded","surrender"],"c":null,"ms":9.56654,"ok":1}
+{"id":"ext_birkbeck-26629","s":["supicsion","suspicion","suspicions"],"c":null,"ms":8.63883,"ok":1}
+{"id":"ext_birkbeck-26633","s":["supition","suppositions","supposition"],"c":null,"ms":8.32812,"ok":1}
+{"id":"ext_birkbeck-26645","s":["susiption","suspicion","audition"],"c":null,"ms":8.78883,"ok":1}
+{"id":"ext_birkbeck-26646","s":["suspecian","suspicion","suspecting"],"c":null,"ms":8.42817,"ok":1}
+{"id":"ext_birkbeck-26653","s":["suspican","suspicion","suspicions"],"c":null,"ms":7.25275,"ok":1}
+{"id":"ext_birkbeck-26657","s":["suspicition","suspicion","suspicions"],"c":null,"ms":7.26304,"ok":1}
+{"id":"ext_birkbeck-26663","s":["suspishion","suspicion","suspicions"],"c":null,"ms":7.02304,"ok":1}
+{"id":"ext_birkbeck-26667","s":["suspistion","suspicion","suspicions"],"c":null,"ms":7.02333,"ok":1}
+{"id":"ext_birkbeck-26668","s":["suspition","suspicion","suspicions"],"c":null,"ms":7.52942,"ok":1}
+{"id":"ext_birkbeck-26675","s":["war","aware","swarm"],"c":"war","ms":5.00804,"ok":1}
+{"id":"ext_birkbeck-26758","s":["simpathectic","sympathetic","i pathetic"],"c":null,"ms":18.6905,"ok":1}
+{"id":"ext_birkbeck-26759","s":["simpathegic","i pathetic","sympathetic"],"c":null,"ms":16.2443,"ok":1}
+{"id":"ext_birkbeck-26760","s":["simpathetic","sympathetic","i pathetic"],"c":null,"ms":10.7929,"ok":1}
+{"id":"ext_birkbeck-26767","s":["simpithetic","i pathetic","is pathetic"],"c":null,"ms":16.6403,"ok":1}
+{"id":"ext_birkbeck-26779","s":["symathectic","sympathetic","sympathetically"],"c":null,"ms":8.98808,"ok":1}
+{"id":"ext_birkbeck-26781","s":["symathetice","sympathetic","sympathetically"],"c":null,"ms":7.71992,"ok":1}
+{"id":"ext_birkbeck-26788","s":["sympathectics","sympathetic","sympathetically"],"c":null,"ms":7.16046,"ok":1}
+{"id":"ext_birkbeck-26791","s":["sympathise","sympathic","sympathizers"],"c":"sympathise","ms":5.87229,"ok":1}
+{"id":"ext_birkbeck-26797","s":["sympethatic","sympathetic","sympathetically"],"c":null,"ms":7.47829,"ok":1}
+{"id":"ext_birkbeck-26803","s":["symphethetic","sympathetic","sympathetically"],"c":null,"ms":7.19038,"ok":1}
+{"id":"ext_birkbeck-26814","s":["sympthitic","sympathetic","sympathetically"],"c":null,"ms":5.73221,"ok":1}
+{"id":"ext_birkbeck-27038","s":["the","the three","the third"],"c":"the","ms":7.92629,"ok":1}
+{"id":"ext_birkbeck-27081","s":["teamerature","temperature","temperatures"],"c":null,"ms":10.3872,"ok":1}
+{"id":"ext_birkbeck-27211","s":["temerary","temporary","the ready"],"c":null,"ms":11.1596,"ok":1}
+{"id":"ext_birkbeck-27216","s":["temparory","temporary","the parrot"],"c":null,"ms":11.1532,"ok":1}
+{"id":"ext_birkbeck-27218","s":["tempenary","temperature","temperatures"],"c":null,"ms":15.0183,"ok":1}
+{"id":"ext_birkbeck-27221","s":["temperaory","temporary","temperature"],"c":null,"ms":8.42558,"ok":1}
+{"id":"ext_birkbeck-27222","s":["temperarey","temporary","temperate"],"c":null,"ms":8.0515,"ok":1}
+{"id":"ext_birkbeck-27223","s":["temperarly","temporarily","temporary"],"c":null,"ms":7.83417,"ok":1}
+{"id":"ext_birkbeck-27229","s":["temperory","temperature","temperatures"],"c":null,"ms":8.53821,"ok":1}
+{"id":"ext_birkbeck-27312","s":["the","these","this"],"c":"the","ms":5.40754,"ok":1}
+{"id":"ext_birkbeck-27326","s":["their","the first","thief"],"c":"their","ms":8.03567,"ok":1}
+{"id":"ext_birkbeck-27363","s":["there","third","thursday"],"c":"there","ms":5.02242,"ok":1}
+{"id":"ext_birkbeck-27436","s":["thouroghly","thoroughly","thought"],"c":null,"ms":7.521,"ok":1}
+{"id":"ext_birkbeck-27441","s":["throughely","thoroughly","through ely"],"c":null,"ms":8.51783,"ok":1}
+{"id":"ext_birkbeck-27443","s":["throughtly","thoroughly","through the"],"c":null,"ms":8.23933,"ok":1}
+{"id":"ext_birkbeck-27446","s":["through","throughout","througly"],"c":"through","ms":4.35929,"ok":1}
+{"id":"ext_birkbeck-27452","s":["these","those","the second"],"c":"these","ms":6.31288,"ok":1}
+{"id":"ext_birkbeck-27466","s":["though","thought","thoughts"],"c":"though","ms":6.16329,"ok":1}
+{"id":"ext_birkbeck-27472","s":["there","three","there's"],"c":"there","ms":5.69317,"ok":1}
+{"id":"ext_birkbeck-27480","s":["how","however","those"],"c":"how","ms":4.75933,"ok":1}
+{"id":"ext_birkbeck-27482","s":["them","thumb","thumbprint"],"c":"them","ms":5.65883,"ok":1}
+{"id":"ext_birkbeck-27524","s":["test","tostada","total"],"c":"test","ms":5.75217,"ok":1}
+{"id":"ext_birkbeck-27551","s":["tobogar","toboggan","tobogganing"],"c":null,"ms":9.55446,"ok":1}
+{"id":"ext_birkbeck-27557","s":["tobogurn","to turn","to tournament"],"c":null,"ms":13.2017,"ok":1}
+{"id":"ext_birkbeck-27573","s":["to to","tom told","tomorrow"],"c":"to to","ms":7.51417,"ok":1}
+{"id":"ext_birkbeck-27591","s":["teenage","toneage","teenagers"],"c":"teenage","ms":9.13683,"ok":1}
+{"id":"ext_birkbeck-27596","s":["tounage","tonnage","younger"],"c":null,"ms":9.51817,"ok":1}
+{"id":"ext_birkbeck-27603","s":["tunnadge","tonnage","under"],"c":null,"ms":9.58113,"ok":1}
+{"id":"ext_birkbeck-27638","s":["the","touchdown","touchdowns"],"c":"the","ms":5.69296,"ok":1}
+{"id":"ext_birkbeck-27660","s":["tornement","tournament","tournaments"],"c":null,"ms":10.3111,"ok":1}
+{"id":"ext_birkbeck-27661","s":["torniment","tournament","tournaments"],"c":null,"ms":9.38896,"ok":1}
+{"id":"ext_birkbeck-27664","s":["tounement","tournament","tournaments"],"c":null,"ms":10.778,"ok":1}
+{"id":"ext_birkbeck-27667","s":["tourement","tournament","tournaments"],"c":null,"ms":11.6119,"ok":1}
+{"id":"ext_birkbeck-27670","s":["touriment","tournament","tournaments"],"c":null,"ms":10.7806,"ok":1}
+{"id":"ext_birkbeck-27679","s":["tourneyment","tournament","tournaments"],"c":null,"ms":13.1098,"ok":1}
+{"id":"ext_birkbeck-27682","s":["tournmeant","tournament","tour meant"],"c":null,"ms":13.5001,"ok":1}
+{"id":"ext_birkbeck-27697","s":["turnement","tournament","tournaments"],"c":null,"ms":10.0529,"ok":1}
+{"id":"ext_birkbeck-27700","s":["turniment","tournament","tournaments"],"c":null,"ms":8.4535,"ok":1}
+{"id":"ext_birkbeck-27787","s":["tradgady","tragedy","tragedy's"],"c":null,"ms":7.99392,"ok":1}
+{"id":"ext_birkbeck-27789","s":["tradgety","target","targets"],"c":null,"ms":11.3468,"ok":1}
+{"id":"ext_birkbeck-27791","s":["tradgidy","tragedy","traditional"],"c":null,"ms":6.80633,"ok":1}
+{"id":"ext_birkbeck-27812","s":["tragedidy","tragedy","tragedies"],"c":null,"ms":6.36308,"ok":1}
+{"id":"ext_birkbeck-27813","s":["tragedity","tragedy","tragedies"],"c":null,"ms":6.14946,"ok":1}
+{"id":"ext_birkbeck-27816","s":["target","tragety","targets"],"c":"target","ms":6.07075,"ok":1}
+{"id":"ext_birkbeck-27822","s":["trajedy","tragedy","trade"],"c":null,"ms":6.65354,"ok":1}
+{"id":"ext_birkbeck-27825","s":["trdgedy","tragedy","trudged"],"c":null,"ms":6.1025,"ok":1}
+{"id":"ext_birkbeck-27854","s":["dransfered","transferred","transference"],"c":null,"ms":8.82658,"ok":1}
+{"id":"ext_birkbeck-27883","s":["treasure","treasury","treasurey"],"c":"treasure","ms":5.84575,"ok":1}
+{"id":"ext_birkbeck-27992","s":["grouse","trousers","trousseau"],"c":"grouse","ms":5.23925,"ok":1}
+{"id":"ext_birkbeck-27994","s":["trousos","trousseau","trousers"],"c":null,"ms":5.95421,"ok":1}
+{"id":"ext_birkbeck-27995","s":["trowsers","trousers","towers"],"c":null,"ms":7.39813,"ok":1}
+{"id":"ext_birkbeck-28051","s":["tired","turned","tiredness"],"c":"tired","ms":5.09254,"ok":1}
+{"id":"ext_birkbeck-28054","s":["turn","turned","turndown"],"c":"turn","ms":4.54113,"ok":1}
+{"id":"ext_birkbeck-28086","s":["to","type","typical"],"c":"to","ms":3.60396,"ok":1}
+{"id":"ext_birkbeck-28346","s":["unemploeyded","unemployed","unemployed eddie"],"c":null,"ms":8.01163,"ok":1}
+{"id":"ext_birkbeck-28362","s":["uninployed","unemployed","i played"],"c":null,"ms":8.619,"ok":1}
+{"id":"ext_birkbeck-28378","s":["i expected","unexpected","unexpectedly"],"c":"i expected","ms":6.43637,"ok":1}
+{"id":"ext_birkbeck-28383","s":["unexcepted","unexpected","unexpectedly"],"c":null,"ms":8.63492,"ok":1}
+{"id":"ext_birkbeck-28385","s":["unexcpeted","unexpected","unexpectedly"],"c":null,"ms":7.22325,"ok":1}
+{"id":"ext_birkbeck-28387","s":["unexpecked","unexpected","unexpectedly"],"c":null,"ms":6.57317,"ok":1}
+{"id":"ext_birkbeck-28391","s":["unexperted","unexpected","unexpectedly"],"c":null,"ms":6.94279,"ok":1}
+{"id":"ext_birkbeck-28393","s":["unexpickted","unexpected","unexpectedly"],"c":null,"ms":6.97187,"ok":1}
+{"id":"ext_birkbeck-28396","s":["unexsected","unexpected","unexpectedly"],"c":null,"ms":8.11254,"ok":1}
+{"id":"ext_birkbeck-28398","s":["unispected","unexpected","unexpectedly"],"c":null,"ms":7.40033,"ok":1}
+{"id":"ext_birkbeck-28399","s":["unxspected","unexpected","unexpectedly"],"c":null,"ms":7.67917,"ok":1}
+{"id":"ext_birkbeck-28456","s":["unfortunately","unfortunate","unfortenat"],"c":null,"ms":5.926,"ok":1}
+{"id":"ext_birkbeck-28460","s":["unfortionate","unfortunately","unfortunate"],"c":null,"ms":7.23875,"ok":1}
+{"id":"ext_birkbeck-28473","s":["unfortunitate","unfortunately","unfortunate"],"c":null,"ms":6.32146,"ok":1}
+{"id":"ext_birkbeck-28535","s":["uniforms","uniform","uniformed"],"c":"uniforms","ms":6.42713,"ok":1}
+{"id":"ext_birkbeck-28541","s":["unerversal","universal","universally"],"c":null,"ms":10.4859,"ok":1}
+{"id":"ext_birkbeck-28550","s":["unmistakeable","unmistakable","unmistakeably"],"c":null,"ms":7.73246,"ok":1}
+{"id":"ext_birkbeck-28555","s":["unnoticed","unnotie","unnoticeable"],"c":null,"ms":7.09846,"ok":1}
+{"id":"ext_birkbeck-28573","s":["unparelelled","unparalleled","unparalleled do"],"c":null,"ms":7.63567,"ok":1}
+{"id":"ext_birkbeck-28607","s":["untideness","untidiness","united see"],"c":null,"ms":11.4569,"ok":1}
+{"id":"ext_birkbeck-28618","s":["usually","unusually","unsually"],"c":"usually","ms":6.79587,"ok":1}
+{"id":"ext_birkbeck-28619","s":["usually","unsully","unsullied"],"c":"usually","ms":6.58392,"ok":1}
+{"id":"ext_birkbeck-28622","s":["unuasally","unusually","nasally"],"c":null,"ms":7.34592,"ok":1}
+{"id":"ext_birkbeck-28627","s":["unuasully","unusually","i usually"],"c":null,"ms":7.18112,"ok":1}
+{"id":"ext_birkbeck-28633","s":["unuserally","unusually","i usually"],"c":null,"ms":9.42354,"ok":1}
+{"id":"ext_birkbeck-28651","s":["ungertly","unearthly","underlying"],"c":null,"ms":8.70775,"ok":1}
+{"id":"ext_birkbeck-28681","s":["usurous","usurious","surrounding"],"c":null,"ms":6.56183,"ok":1}
+{"id":"ext_birkbeck-28691","s":["vacakencies","vacancies","vaccine's"],"c":null,"ms":10.6934,"ok":1}
+{"id":"ext_birkbeck-28694","s":["vacancieces","vacancies","vacancies see"],"c":null,"ms":9.13387,"ok":1}
+{"id":"ext_birkbeck-28696","s":["vacancises","vacancies","vacancies so"],"c":null,"ms":6.68863,"ok":1}
+{"id":"ext_birkbeck-28701","s":["vacanses","vacancies","vaccine's"],"c":null,"ms":8.25137,"ok":1}
+{"id":"ext_birkbeck-28705","s":["vacansises","vacancies","vacancies so"],"c":null,"ms":8.38217,"ok":1}
+{"id":"ext_birkbeck-28708","s":["vacantces","vacant see","vacancies"],"c":null,"ms":9.38746,"ok":1}
+{"id":"ext_birkbeck-28709","s":["vacantcies","vacancies","vacant is"],"c":null,"ms":9.3075,"ok":1}
+{"id":"ext_birkbeck-28715","s":["vacanties","vacancies","vacant is"],"c":null,"ms":8.98767,"ok":1}
+{"id":"ext_birkbeck-28717","s":["vacantises","vacancies","vacant uses"],"c":null,"ms":10.2537,"ok":1}
+{"id":"ext_birkbeck-28719","s":["vacantsies","vacancies","vacant siesta"],"c":null,"ms":9.13233,"ok":1}
+{"id":"ext_birkbeck-28727","s":["vaciancies","vacancies","vaccine's"],"c":null,"ms":8.51487,"ok":1}
+{"id":"ext_birkbeck-28729","s":["vaciencies","vacancies","vaccine is"],"c":null,"ms":10.1125,"ok":1}
+{"id":"ext_birkbeck-28734","s":["vacinices","vacancies","vaccine's"],"c":null,"ms":8.70425,"ok":1}
+{"id":"ext_birkbeck-28741","s":["vaconices","vacancies","vaccine's"],"c":null,"ms":8.64237,"ok":1}
+{"id":"ext_birkbeck-28742","s":["vacontcies","vacancies","a notices"],"c":null,"ms":11.3978,"ok":1}
+{"id":"ext_birkbeck-28745","s":["vagancies","agencies","vacancies"],"c":null,"ms":9.37171,"ok":1}
+{"id":"ext_birkbeck-28747","s":["vancancies","vacancies","can ancient"],"c":null,"ms":11.6151,"ok":1}
+{"id":"ext_birkbeck-28748","s":["vancencies","vacancies","van envies"],"c":null,"ms":11.535,"ok":1}
+{"id":"ext_birkbeck-28753","s":["vanencies","valencies","agencies"],"c":null,"ms":10.5157,"ok":1}
+{"id":"ext_birkbeck-28757","s":["vaansy","vacancy","any"],"c":null,"ms":7.24979,"ok":1}
+{"id":"ext_birkbeck-28758","s":["vacance","vacancies","vacancy"],"c":null,"ms":6.92046,"ok":1}
+{"id":"ext_birkbeck-28762","s":["vacancity","vacancy","vacancies"],"c":null,"ms":8.49413,"ok":1}
+{"id":"ext_birkbeck-28764","s":["vacaney","vacant","vaccine's"],"c":null,"ms":8.317,"ok":1}
+{"id":"ext_birkbeck-28766","s":["vacanse","vaccines","vacancies"],"c":null,"ms":8.09279,"ok":1}
+{"id":"ext_birkbeck-28767","s":["vacansey","vacancy","vaccines"],"c":null,"ms":8.58238,"ok":1}
+{"id":"ext_birkbeck-28774","s":["vacanticy","vacant you","vacancy"],"c":null,"ms":10.0121,"ok":1}
+{"id":"ext_birkbeck-28779","s":["vacanze","vaccine's","vacant"],"c":null,"ms":8.16754,"ok":1}
+{"id":"ext_birkbeck-28780","s":["vacatcy","vacation","vacant you"],"c":null,"ms":8.07054,"ok":1}
+{"id":"ext_birkbeck-28782","s":["vaccance","vacancies","vaccine's"],"c":null,"ms":8.80929,"ok":1}
+{"id":"ext_birkbeck-28787","s":["vaciency","vaccine you","vaccine your"],"c":null,"ms":8.25846,"ok":1}
+{"id":"ext_birkbeck-28789","s":["vackency","vacancy","bracken you"],"c":null,"ms":9.04004,"ok":1}
+{"id":"ext_birkbeck-28792","s":["vacuntcy","vacant you","vacancy"],"c":null,"ms":8.94238,"ok":1}
+{"id":"ext_birkbeck-28794","s":["vancancey","vacancy","cancan eyes"],"c":null,"ms":13.4159,"ok":1}
+{"id":"ext_birkbeck-28872","s":["gallery","valery","valley"],"c":"gallery","ms":6.52287,"ok":1}
+{"id":"ext_birkbeck-29056","s":["vilelence","violence","villeneuve"],"c":null,"ms":7.31221,"ok":1}
+{"id":"ext_birkbeck-29080","s":["colin","collins","violin"],"c":"colin","ms":4.68475,"ok":1}
+{"id":"ext_birkbeck-29164","s":["vesiable","visible","viable"],"c":null,"ms":7.3675,"ok":1}
+{"id":"ext_birkbeck-29169","s":["visibabe","visible","isabella"],"c":null,"ms":13.0226,"ok":1}
+{"id":"ext_birkbeck-29170","s":["visual","visible","visibility"],"c":"visual","ms":7.36821,"ok":1}
+{"id":"ext_birkbeck-29173","s":["visitable","visible","visits let"],"c":null,"ms":10.5592,"ok":1}
+{"id":"ext_birkbeck-29176","s":["visuable","visible","visual"],"c":null,"ms":7.23987,"ok":1}
+{"id":"ext_birkbeck-29186","s":["fisitied","visited","foisted"],"c":null,"ms":9.59354,"ok":1}
+{"id":"ext_birkbeck-29190","s":["vicitet","visited","visitations"],"c":null,"ms":8.36342,"ok":1}
+{"id":"ext_birkbeck-29200","s":["visetet","visited","cassette"],"c":null,"ms":7.89321,"ok":1}
+{"id":"ext_birkbeck-29203","s":["visiteted","visited","visited ted"],"c":null,"ms":8.48083,"ok":1}
+{"id":"ext_birkbeck-29207","s":["visorted","visited","sorted"],"c":null,"ms":8.60683,"ok":1}
+{"id":"ext_birkbeck-29217","s":["visteted","visited","vetted"],"c":null,"ms":8.63233,"ok":1}
+{"id":"ext_birkbeck-29223","s":["vistiten","visiting","visited"],"c":null,"ms":11.9473,"ok":1}
+{"id":"ext_birkbeck-29226","s":["viteted","vetted","fitted"],"c":null,"ms":7.43246,"ok":1}
+{"id":"ext_birkbeck-29412","s":["was","wasn't","want"],"c":"was","ms":5.51754,"ok":1}
+{"id":"ext_birkbeck-29526","s":["while","whiskey","whistle"],"c":"while","ms":4.81217,"ok":1}
+{"id":"ext_birkbeck-29549","s":["whisteing","whistling","whitening"],"c":null,"ms":8.76646,"ok":1}
+{"id":"ext_birkbeck-29551","s":["whisterling","whistling","who sterling"],"c":null,"ms":10.0956,"ok":1}
+{"id":"ext_birkbeck-29552","s":["whisthing","whistling","his thing"],"c":null,"ms":11.301,"ok":1}
+{"id":"ext_birkbeck-29595","s":["did","wide","widely"],"c":"did","ms":4.01475,"ok":1}
+{"id":"ext_birkbeck-29599","s":["wide","widow","widowed"],"c":"wide","ms":4.33662,"ok":1}
+{"id":"ext_birkbeck-29614","s":["writer","writers","wider"],"c":"writer","ms":5.01679,"ok":1}
+{"id":"ext_birkbeck-29623","s":["whishen","whichever","which"],"c":null,"ms":8.14025,"ok":1}
+{"id":"ext_birkbeck-29625","s":["whishies","which is","whiskies"],"c":null,"ms":9.00521,"ok":1}
+{"id":"ext_birkbeck-29626","s":["which is","whishis","which"],"c":null,"ms":7.07463,"ok":1}
+{"id":"ext_birkbeck-29761","s":["won","wonder","wonderful"],"c":"won","ms":5.53517,"ok":1}
+{"id":"ext_birkbeck-29799","s":["working","worrying","whoring"],"c":"working","ms":5.35513,"ok":1}
+{"id":"ext_birkbeck-29830","s":["first","rest","bristol"],"c":"first","ms":5.464,"ok":1}
+{"id":"ext_birkbeck-29858","s":["route","wrote","routes"],"c":"route","ms":4.84942,"ok":1}
+{"id":"ext_birkbeck-29876","s":["tell","yellow","yelling"],"c":"tell","ms":4.10037,"ok":1}
+{"id":"ext_birkbeck-29877","s":["hello","yellow","yellowstone"],"c":"hello","ms":5.06483,"ok":1}
+{"id":"ext_birkbeck-29890","s":["you","you're","your"],"c":"you","ms":4.54504,"ok":1}
+{"id":"ext_wikipedia-31328","s":["a sense","absence","absences"],"c":"a sense","ms":8.12592,"ok":1}
+{"id":"ext_wikipedia-31332","s":["about","abutts","butts"],"c":"about","ms":8.24608,"ok":1}
+{"id":"ext_wikipedia-31335","s":["ascension","accension","accession"],"c":"ascension","ms":7.87296,"ok":1}
+{"id":"ext_wikipedia-31339","s":["accomadated","accommodated","accommodate"],"c":null,"ms":8.4215,"ok":1}
+{"id":"ext_wikipedia-31341","s":["accomadates","accommodates","accommodate"],"c":null,"ms":8.39213,"ok":1}
+{"id":"ext_wikipedia-31371","s":["acquiantence","acquaintance","acquaintances"],"c":null,"ms":8.29283,"ok":1}
+{"id":"ext_wikipedia-31404","s":["admissable","admissible","disabled"],"c":null,"ms":8.46308,"ok":1}
+{"id":"ext_wikipedia-31473","s":["androgenous","androgynous","endogenous"],"c":null,"ms":10.6446,"ok":1}
+{"id":"ext_wikipedia-31474","s":["androgeny","androgynous","androgyny"],"c":null,"ms":8.99858,"ok":1}
+{"id":"ext_wikipedia-31487","s":["anonimity","anonymity","anonymity's"],"c":null,"ms":12.311,"ok":1}
+{"id":"ext_wikipedia-31559","s":["authobiographic","autobiographical","autobiographic"],"c":null,"ms":7.4695,"ok":1}
+{"id":"ext_wikipedia-31606","s":["beastiality","be actuality"],"c":null,"ms":7.07012,"ok":1}
+{"id":"ext_wikipedia-31622","s":["bring","burning","during"],"c":"bring","ms":6.01608,"ok":1}
+{"id":"ext_wikipedia-31642","s":["caperbility","capability","capability's"],"c":null,"ms":12.5637,"ok":1}
+{"id":"ext_wikipedia-31647","s":["cartilidge","cartilage","cartridge"],"c":null,"ms":9.58938,"ok":1}
+{"id":"ext_wikipedia-31651","s":["cassawory","cassowary","caseworker"],"c":null,"ms":8.84046,"ok":1}
+{"id":"ext_wikipedia-31816","s":["contemporaneus","contemporaneous","contemporaneously"],"c":null,"ms":6.6795,"ok":1}
+{"id":"ext_wikipedia-31840","s":["convertor","converters","converter"],"c":null,"ms":8.36375,"ok":1}
+{"id":"ext_wikipedia-31853","s":["corrispondants","correspondents","correspondent"],"c":null,"ms":8.74246,"ok":1}
+{"id":"ext_wikipedia-31879","s":["crucifiction","crucifixion","crucifixions"],"c":null,"ms":7.26063,"ok":1}
+{"id":"ext_wikipedia-31882","s":["cumulatative","cumulative","cumulatively"],"c":null,"ms":6.17633,"ok":1}
+{"id":"ext_wikipedia-31889","s":["decideable","decidable","decide let's"],"c":null,"ms":10.8313,"ok":1}
+{"id":"ext_wikipedia-31892","s":["ecidious","deciduous","seditious"],"c":null,"ms":6.69125,"ok":1}
+{"id":"ext_wikipedia-31894","s":["decyphered","deciphered","desperado"],"c":null,"ms":9.18187,"ok":1}
+{"id":"ext_wikipedia-31919","s":["defendant","defendants","descendants"],"c":"defendant","ms":7.02533,"ok":1}
+{"id":"ext_wikipedia-31962","s":["diphtongs","diphthongs","diphthong's"],"c":null,"ms":6.00196,"ok":1}
+{"id":"ext_wikipedia-31963","s":["dipthongs","diphthongs","diphthong's"],"c":null,"ms":6.95388,"ok":1}
+{"id":"ext_wikipedia-31989","s":["disparingly","sparingly","disparagingly"],"c":null,"ms":8.96387,"ok":1}
+{"id":"ext_wikipedia-32037","s":["affords","effords","efforts"],"c":"affords","ms":6.61921,"ok":1}
+{"id":"ext_wikipedia-32047","s":["elicided","elicited","eli died"],"c":null,"ms":8.49942,"ok":1}
+{"id":"ext_wikipedia-32061","s":["embezelled","embezzled","embezzler"],"c":null,"ms":8.87588,"ok":1}
+{"id":"ext_wikipedia-32084","s":["emphysyma","emphysema","empty and"],"c":null,"ms":7.72929,"ok":1}
+{"id":"ext_wikipedia-32125","s":["essencial","essentially","essential"],"c":null,"ms":9.53529,"ok":1}
+{"id":"ext_wikipedia-32127","s":["essesital","essentially","essential"],"c":null,"ms":8.62608,"ok":1}
+{"id":"ext_wikipedia-32132","s":["exerbate","exacerbate","exacerbated"],"c":null,"ms":7.61492,"ok":1}
+{"id":"ext_wikipedia-32183","s":["ficticious","fictitious","fictitiously"],"c":null,"ms":9.69125,"ok":1}
+{"id":"ext_wikipedia-32185","s":["file","field","fields"],"c":"file","ms":4.92608,"ok":1}
+{"id":"ext_wikipedia-32202","s":["forunner","corner","runner's"],"c":null,"ms":10.9216,"ok":1}
+{"id":"ext_wikipedia-32204","s":["for","formula","former"],"c":"for","ms":6.64504,"ok":1}
+{"id":"ext_wikipedia-32237","s":["govormental","governmental","government all"],"c":null,"ms":10.5584,"ok":1}
+{"id":"ext_wikipedia-32281","s":["he","heavy","have"],"c":"he","ms":5.30496,"ok":1}
+{"id":"ext_wikipedia-32289","s":["hydroponic","hydroponics","hydropobic"],"c":"hydroponic","ms":4.46863,"ok":1}
+{"id":"ext_wikipedia-32291","s":["hypocracy","hypocrisy","hypocritical"],"c":null,"ms":6.56825,"ok":1}
+{"id":"ext_wikipedia-32296","s":["iconclastic","iconoclastic","icon plastic"],"c":null,"ms":9.46271,"ok":1}
+{"id":"ext_wikipedia-32335","s":["impedence","impudence","impedance"],"c":null,"ms":9.43858,"ok":1}
+{"id":"ext_wikipedia-32339","s":["improvision","i provisions","i provision"],"c":null,"ms":7.59513,"ok":1}
+{"id":"ext_wikipedia-32373","s":["influented","influenced","influential"],"c":null,"ms":7.65838,"ok":1}
+{"id":"ext_wikipedia-32384","s":["instatance","instance","instances"],"c":null,"ms":12.8894,"ok":1}
+{"id":"ext_wikipedia-32395","s":["interchangably","interchangeably","interchangeable"],"c":null,"ms":8.28617,"ok":1}
+{"id":"ext_wikipedia-32429","s":["no","know","known"],"c":"no","ms":5.01383,"ok":1}
+{"id":"ext_wikipedia-32454","s":["levetates","levitated","levitates"],"c":null,"ms":8.09925,"ok":1}
+{"id":"ext_wikipedia-32469","s":["likelyhood","likelihood","likely hold"],"c":null,"ms":8.81917,"ok":1}
+{"id":"ext_wikipedia-32477","s":["lonelyness","loneliness","lonely essential"],"c":null,"ms":9.92096,"ok":1}
+{"id":"ext_wikipedia-32522","s":["metamorphysis","metamorphosis","metamorphism"],"c":null,"ms":9.16671,"ok":1}
+{"id":"ext_wikipedia-32530","s":["minister","ministry","ministers"],"c":"minister","ms":7.95862,"ok":1}
+{"id":"ext_wikipedia-32544","s":["monestaries","monasteries","monetarism"],"c":null,"ms":9.79071,"ok":1}
+{"id":"ext_wikipedia-32566","s":["mister","misery","mistery"],"c":"mister","ms":7.55429,"ok":1}
+{"id":"ext_wikipedia-32579","s":["neglible","negligible","english"],"c":null,"ms":6.58946,"ok":1}
+{"id":"ext_wikipedia-32580","s":["negligable","negligible","ineligible"],"c":null,"ms":5.72696,"ok":1}
+{"id":"ext_wikipedia-32581","s":["negociate","negotiate","negotiated"],"c":null,"ms":7.79354,"ok":1}
+{"id":"ext_wikipedia-32582","s":["negociation","negotiations","negotiation"],"c":null,"ms":8.10487,"ok":1}
+{"id":"ext_wikipedia-32599","s":["noticible","noticeable","notice let"],"c":null,"ms":9.91267,"ok":1}
+{"id":"ext_wikipedia-32610","s":["obstacles","obstacle","obstacal"],"c":null,"ms":7.96025,"ok":1}
+{"id":"ext_wikipedia-32655","s":["omniverously","omnivorously","omnivorous"],"c":null,"ms":9.71579,"ok":1}
+{"id":"ext_wikipedia-32659","s":["opthalmic","ophthalmic","ophthalmologist"],"c":null,"ms":5.74962,"ok":1}
+{"id":"ext_wikipedia-32684","s":["oximoron","oxymoron","oxymoron's"],"c":null,"ms":7.92346,"ok":1}
+{"id":"ext_wikipedia-32721","s":["peripathetic","peripatetic","peri pathetic"],"c":null,"ms":6.12183,"ok":1}
+{"id":"ext_wikipedia-32741","s":["phenomonenon","phenomenon","phenomenons"],"c":null,"ms":11.6953,"ok":1}
+{"id":"ext_wikipedia-32797","s":["practicioner","practitioners","practitioner"],"c":null,"ms":7.3755,"ok":1}
+{"id":"ext_wikipedia-32798","s":["practicioners","practitioners","practitioner's"],"c":null,"ms":6.27633,"ok":1}
+{"id":"ext_wikipedia-32834","s":["priveliged","privileged","privileges"],"c":null,"ms":8.38588,"ok":1}
+{"id":"ext_wikipedia-32843","s":["procedger","procedure","proceeded"],"c":null,"ms":9.91354,"ok":1}
+{"id":"ext_wikipedia-32869","s":["pronomial","pronominal","pro milan"],"c":null,"ms":7.27846,"ok":1}
+{"id":"ext_wikipedia-32880","s":["proprietor","proprietory","proprietary"],"c":"proprietor","ms":6.17554,"ok":1}
+{"id":"ext_wikipedia-32885","s":["protruberance","protuberance","protuberances"],"c":null,"ms":7.27738,"ok":1}
+{"id":"ext_wikipedia-32888","s":["pseudononymous","pseudonymous","pseudonyms"],"c":null,"ms":11.8665,"ok":1}
+{"id":"ext_wikipedia-33011","s":["retalitated","retaliated","retaliates"],"c":null,"ms":6.30617,"ok":1}
+{"id":"ext_wikipedia-33047","s":["school","scolded","scoliosis"],"c":"school","ms":6.09017,"ok":1}
+{"id":"ext_wikipedia-33070","s":["cheat","sheathe","cheating"],"c":"cheat","ms":6.71742,"ok":1}
+{"id":"ext_wikipedia-33075","s":["could","should","couldn't"],"c":"could","ms":6.79396,"ok":1}
+{"id":"ext_wikipedia-33089","s":["simple","simply","simpler"],"c":"simple","ms":8.34425,"ok":1}
+{"id":"ext_wikipedia-33116","s":["soverignity","sovereignty","sovereignty's"],"c":null,"ms":11.1085,"ok":1}
+{"id":"ext_wikipedia-33124","s":["spermatozoa","spermatozoan","spermatozoon"],"c":"spermatozoa","ms":8.10175,"ok":1}
+{"id":"ext_wikipedia-33169","s":["substract","subtraction","subtracting"],"c":null,"ms":6.65646,"ok":1}
+{"id":"ext_wikipedia-33214","s":["surprised","surpressed","suppressed"],"c":"surprised","ms":7.21779,"ok":1}
+{"id":"ext_wikipedia-33230","s":["surrepetitious","surreptitiously","surreptitious"],"c":null,"ms":7.91871,"ok":1}
+{"id":"ext_wikipedia-33231","s":["surreptious","surreptitiously","surreptitious"],"c":null,"ms":6.83946,"ok":1}
+{"id":"ext_wikipedia-33233","s":["surreptiously","surreptitiously","surreptitiously you"],"c":null,"ms":6.97571,"ok":1}
+{"id":"ext_wikipedia-33264","s":["taxanomic","taxonomic","taxonomist"],"c":null,"ms":9.08079,"ok":1}
+{"id":"ext_wikipedia-33265","s":["taxanomy","taxonomy","taxonomy's"],"c":null,"ms":8.69171,"ok":1}
+{"id":"ext_wikipedia-33295","s":["the","then","they"],"c":"the","ms":5.80596,"ok":1}
+{"id":"ext_wikipedia-33320","s":["there","three","there's"],"c":"there","ms":5.63354,"ok":1}
+{"id":"ext_wikipedia-33360","s":["turn","turnkey","trunk"],"c":"turn","ms":4.60729,"ok":1}
+{"id":"ext_wikipedia-33368","s":["unconvential","unconventional","unconventionality"],"c":null,"ms":7.45058,"ok":1}
+{"id":"ext_wikipedia-33386","s":["unsubstanciated","unsubstantiated","substantiated"],"c":null,"ms":7.49917,"ok":1}
+{"id":"ext_wikipedia-33397","s":["used","under","unused"],"c":"used","ms":6.46921,"ok":1}
+{"id":"ext_wikipedia-33422","s":["miranda","meranda","randall"],"c":"miranda","ms":7.01975,"ok":1}
+{"kind":"process","at":"end","peak_rss_bytes":69517312,"footprint_bytes":38208640,"heap_in_use_bytes":27557344,"heap_allocated_bytes":67108864}
+{"kind":"nss","model_steps":2}
+{"kind":"done","events":1766}

@@ -1,0 +1,401 @@
+--- /dev/null
++++ b/native/DecoderCore/include/BiKey.hpp
+@@ -0,0 +1,26 @@
++#pragma once
++#include "SpatialModel.hpp"
++#include "Ranking.hpp"
++#include "Glide.hpp"
++namespace kb {
++// Ouyang et al. (2017), section 3.1: a_b is b with a as left context.
++// Zero is the start-of-word context. C rejects inconsistent context labels.
++struct BiKey { std::uint8_t left, key; };
++std::optional<std::uint8_t> biKeyOutput(std::uint8_t state, BiKey label) noexcept;
++// Tied isotropic Gaussians: the papers do not supply learned pair-specific means.
++// Absolute Gaussian costs are used for both candidates AND the literal, with the
++// common normalizer omitted. No spelling-confusion cap or substitution bonus.
++double biKeyTapCost(BiKey, std::uint8_t typed, std::optional<TouchOffset>, double sigma) noexcept;
++double biKeyLiteralCost(std::string_view, std::span<const std::optional<TouchOffset>>, double sigma);
++// DP for recovery/dynamic candidates; same tap channel as the joint search.
++double biKeyWordCost(std::string_view candidate, std::string_view typed,
++    std::span<const std::optional<TouchOffset>>, double sigma, bool raw = false);
++class SearchGraph;
++// Single-word gesture C o L o G. Endpoint states and a_b transition states consume
++// samples; transition self-loops emit epsilon. LM lookahead participates in pruning.
++// Segment-distance geometry is an explicit reconstruction assumption, NOT a
++// recovered minimum-jerk model or Google's trained spatial model.
++std::vector<RankedRow> decodeBiKeyGesture(SearchGraph&, std::span<const Point>,
++    double sigma, double beam, std::size_t width, double channelWeight,
++    const std::function<bool()>& cancelled = {});
++}
+--- /dev/null
++++ b/native/DecoderCore/src/BiKey.cpp
+@@ -0,0 +1,105 @@
++#include "../include/BiKey.hpp"
++#include "../include/NeuralFst.hpp"
++#include <algorithm>
++#include <cmath>
++#include <limits>
++#include <stdexcept>
++namespace kb {
++namespace {
++constexpr double inf = std::numeric_limits<double>::infinity();
++double gaussian(GridPoint p, GridPoint mean, double sigma) {
++    auto x=p.x-mean.x, y=p.y-mean.y; return (x*x+y*y)/(2*sigma*sigma);
++}
++}
++std::optional<std::uint8_t> biKeyOutput(std::uint8_t state, BiKey label) noexcept {
++    if (state != label.left || !grid(label.key) || (label.left && !grid(label.left))) return {};
++    return label.key;
++}
++double biKeyTapCost(BiKey label, std::uint8_t typed, std::optional<TouchOffset> tap, double sigma) noexcept {
++    auto mean=grid(label.key), point=grid(typed);
++    if (!mean || !point) return label.key==typed ? 0 : 3;
++    if (!(sigma>0) || !std::isfinite(sigma)) return inf;
++    if (tap && std::isfinite(tap->dx) && std::isfinite(tap->dy)) {point->x+=tap->dx;point->y+=tap->dy;}
++    return gaussian(*point,*mean,sigma);
++}
++double biKeyLiteralCost(std::string_view word, std::span<const std::optional<TouchOffset>> taps, double sigma) {
++    double total=0;std::uint8_t left=0;
++    for(std::size_t j=0;j<word.size();++j){auto key=std::uint8_t(word[j]);total+=biKeyTapCost({left,key},key,taps.size()==word.size()?taps[j]:std::nullopt,sigma);left=key;}
++    return total;
++}
++double biKeyWordCost(std::string_view candidate,std::string_view typed,
++        std::span<const std::optional<TouchOffset>> taps,double sigma,bool raw) {
++    std::vector<double> before(typed.size()+1),previous(typed.size()+1),current(typed.size()+1);
++    for(std::size_t j=1;j<=typed.size();++j)previous[j]=previous[j-1]+insertionCost;
++    for(std::size_t i=1;i<=candidate.size();++i){
++        std::uint8_t key=std::uint8_t(candidate[i-1]),left=i>1?std::uint8_t(candidate[i-2]):0;
++        current[0]=previous[0]+(raw?deletionCost:deletionCostAt(key,left,0));
++        for(std::size_t j=1;j<=typed.size();++j){
++            std::uint8_t t=std::uint8_t(typed[j-1]),pt=j>1?std::uint8_t(typed[j-2]):0;
++            auto tap=taps.size()==typed.size()?taps[j-1]:std::nullopt;
++            current[j]=std::min({previous[j-1]+biKeyTapCost({std::uint8_t(left),key},t,tap,sigma),
++                previous[j]+(raw?deletionCost:deletionCostAt(key,left,t)),
++                current[j-1]+(raw?insertionCost:insertionCostAt(t,pt,key))});
++            if(i>1&&j>1&&candidate[i-1]==typed[j-2]&&candidate[i-2]==typed[j-1]) {
++                auto first=taps.size()==typed.size()?taps[j-2]:std::nullopt;
++                auto prior=i>2?std::uint8_t(candidate[i-3]):0;
++                current[j]=std::min(current[j],before[j-2]+transpositionCost+
++                    biKeyTapCost({std::uint8_t(left),key},std::uint8_t(typed[j-2]),first,sigma)+
++                    biKeyTapCost({std::uint8_t(prior),std::uint8_t(left)},t,tap,sigma));
++            }
++        }
++        before.swap(previous);previous.swap(current);
++    }
++    return previous.back();
++}
++std::vector<RankedRow> decodeBiKeyGesture(SearchGraph& graph,std::span<const Point> raw,
++        double sigma,double beam,std::size_t width,double channelWeight,const std::function<bool()>& cancel) {
++    if(raw.size()<2||!width||!(sigma>0)||!std::isfinite(sigma))return {};
++    for(auto p:raw)if(!std::isfinite(p.x)||!std::isfinite(p.y))return {};
++    auto points=resample(raw,0.5);const auto& lex=graph.lexicon();
++    struct Token {std::uint32_t node;bool moving;double cost,upper;};
++    std::vector<Token> active;
++    auto keyCost=[&](std::uint32_t node,Point p){auto g=grid(lex.nodes[node].label);return g?gaussian({p.x,p.y},*g,sigma):inf;};
++    auto segment=[&](std::uint32_t node,Point p,Point previous){
++        auto a=grid(lex.nodes[lex.parent[node]].label),b=grid(lex.nodes[node].label);if(!a||!b)return inf;
++        auto dx=b->x-a->x,dy=b->y-a->y,length=dx*dx+dy*dy;
++        if(length<1e-12)return keyCost(node,p);
++        auto progress=[&](Point q){return ((q.x-a->x)*dx+(q.y-a->y)*dy)/length;};
++        auto t=std::clamp(progress(p),0.0,1.0),back=std::max(0.0,progress(previous)-progress(p));
++        return gaussian({p.x,p.y},{a->x+t*dx,a->y+t*dy},sigma)+back*back*length/(2*sigma*sigma);
++    };
++    for(std::size_t frame=0;frame<points.size();++frame){
++        if(cancel&&cancel())return {};
++        auto p=points[frame];std::vector<Token> next;
++        auto add=[&](std::uint32_t node,bool moving,double cost){auto upper=graph.lookahead(0,node)-channelWeight*cost;if(std::isfinite(upper))next.push_back({node,moving,cost,upper});};
++        if(!frame){auto n=lex.nodes[0];for(auto c=n.firstChild;c<n.firstChild+n.childCount;++c)add(c,false,keyCost(c,p));}
++        else for(auto t:active){
++            // Endpoint b holds at b; transition a_b holds along the a-to-b segment.
++            add(t.node,t.moving,t.cost+(t.moving?segment(t.node,p,points[frame-1]):keyCost(t.node,p)));
++            if(t.moving)add(t.node,false,t.cost+keyCost(t.node,p));
++            // Leaving a_b emits b, then starts b_c. This permits the singleton b
++            // frame to be absent, as in Figure 1; no zero-input lexical chains.
++            auto n=lex.nodes[t.node];
++            for(auto c=n.firstChild;c<n.firstChild+n.childCount;++c){
++                if(lex.nodes[c].label==apostrophe)continue;
++                if(!biKeyOutput(n.label,{n.label,lex.nodes[c].label}))continue;
++                add(c,true,t.cost+segment(c,p,points[frame-1]));
++                add(c,false,t.cost+keyCost(c,p));
++            }
++        }
++        // Recombine equivalent C o L states before the global beam limit.
++        std::sort(next.begin(),next.end(),[](auto a,auto b){return std::tie(a.node,a.moving,a.cost)<std::tie(b.node,b.moving,b.cost);});
++        next.erase(std::unique(next.begin(),next.end(),[](auto a,auto b){return a.node==b.node&&a.moving==b.moving;}),next.end());
++        std::sort(next.begin(),next.end(),[](auto a,auto b){return a.upper==b.upper?std::tie(a.node,a.moving)<std::tie(b.node,b.moving):a.upper>b.upper;});
++        if(!next.empty()){auto floor=next.front().upper-beam;std::erase_if(next,[&](auto t){return t.upper<floor;});}
++        if(next.size()>width)next.resize(width);active=std::move(next);
++    }
++    std::vector<RankedRow> out;
++    for(auto t:active){if(t.moving)continue;auto word=lex.nodes[t.node].wordID;if(!word||lex.packed.blocked(std::uint32_t(*word)))continue;
++        std::string text(lex.packed.word(*word));auto prior=graph.wordScore(0,std::uint32_t(*word));
++        out.push_back({{text,t.cost,0},text,0,prior,prior-channelWeight*t.cost,{}});
++    }
++    std::sort(out.begin(),out.end(),[](const auto&a,const auto&b){return a.score==b.score?a.key<b.key:a.score>b.score;});
++    return out;
++}
++}
+--- a/native/DecoderCore/include/Engine.hpp
++++ b/native/DecoderCore/include/Engine.hpp
+@@ -104,6 +104,10 @@
+     // NeuralFst::Options::exact: exact vocabulary scores and <unk> shared outside the
+     // vocabulary. false reproduces the published graph (Codex's paper replica).
+     bool nssExact = true;
++    // Experimental, opt-in reconstruction. Never changes the default decoder.
++    bool nssBiKey = false;
++    // G-only scoring: published graph, no extra frequency or n-gram mixture.
++    bool nssPaperScoring = false;
+     // NeuralFst::Options::unigramFloor (with nssExact): vocabulary words keep the
+     // published fallback path as a floor.
+     bool nssUnigramFloor = false;
+--- a/native/DecoderCore/include/NeuralFst.hpp
++++ b/native/DecoderCore/include/NeuralFst.hpp
+@@ -178,7 +178,7 @@
+     // apostrophe skips); see EngineOptions::raw.
+     // touchSigma > 0: taps scored by touchSubstitutionCost with this spread (not raw).
+     // channelWeight: the channel cost's weight against log P in every score and bound.
+-    struct Options { double beam = 16; std::size_t width = 512; bool raw = false; double touchSigma = 0; double channelWeight = kb::channelWeight; };
++    struct Options { double beam = 16; std::size_t width = 512; bool raw = false; double touchSigma = 0; double channelWeight = kb::channelWeight; bool biKey = false; };
+     explicit NeuralFstSearch(SearchGraph& graph) : graph_(graph) {}
+     NeuralFstSearch(SearchGraph& graph, Options options) : graph_(graph), options_(options) {}
+     std::vector<RankedRow> decode(std::string_view typed, std::span<const std::optional<TouchOffset>> taps,
+@@ -208,7 +208,7 @@
+     double bound(const Token&) const;
+     double deletion(std::uint8_t letter, std::uint8_t previous, std::uint8_t typedLetter) const;
+     double insertion(std::uint8_t typedLetter, std::uint8_t previous, std::uint8_t candidateLetter) const;
+-    double substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first) const;
++    double substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first, std::uint8_t previous = 0) const;
+     std::vector<Token> prune(std::vector<Token>, bool deletions, std::uint8_t typedLetter);
+     std::vector<End> endings(std::span<const Token>) const;
+     void advance(std::uint8_t letter, std::optional<TouchOffset> tap);
+--- a/native/DecoderCore/src/NeuralFst.cpp
++++ b/native/DecoderCore/src/NeuralFst.cpp
+@@ -1,4 +1,5 @@
+ #include "../include/NeuralFst.hpp"
++#include "../include/BiKey.hpp"
+ #include <algorithm>
+ #include <cmath>
+ #include <limits>
+@@ -340,7 +341,8 @@
+ double NeuralFstSearch::insertion(std::uint8_t typedLetter, std::uint8_t previous, std::uint8_t candidateLetter) const {
+     return options_.raw ? insertionCost : insertionCostAt(typedLetter, previous, candidateLetter);
+ }
+-double NeuralFstSearch::substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first) const {
++double NeuralFstSearch::substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first, std::uint8_t previous) const {
++    if (options_.biKey) return biKeyTapCost({previous, intended}, typed, tap, options_.touchSigma);
+     if (options_.raw) return geometricSubstitutionCost(intended, typed, tap);
+     if (tap && options_.touchSigma > 0) return touchSubstitutionCost(intended, typed, *tap, options_.touchSigma, first);
+     return substitutionCost(intended, typed, tap, first);
+@@ -415,7 +417,7 @@
+     for (const auto& t : beam_) {
+         if (t.pending) {
+             auto done = t; done.pending = 0;
+-            done.cost += substitution(t.pending, letter, tap, false); next.push_back(std::move(done)); continue;
++            done.cost += substitution(t.pending, letter, tap, false, lex.nodes[lex.parent[lex.parent[t.node]]].label); next.push_back(std::move(done)); continue;
+         }
+         auto extra = t;
+         extra.cost += insertion(letter, typed_.empty() ? 0 : std::uint8_t(typed_.back()), lex.nodes[t.node].label);
+@@ -428,12 +430,13 @@
+         for (auto child = n.firstChild; child < n.firstChild + n.childCount; ++child) {
+             const auto c = lex.nodes[child];
+             auto sub = t; sub.node = child; sub.boundary = false;
+-            sub.cost += substitution(c.label, letter, tap, typed_.empty()); next.push_back(std::move(sub));
++            sub.cost += substitution(c.label, letter, tap, typed_.empty(), n.label); next.push_back(std::move(sub));
+             // Two-label channel arc for adjacent transposition. The pending input is
+             // consumed on the next frame, so no unfinished transposition can emit a word.
+             for (auto grand = c.firstChild; grand < c.firstChild + c.childCount; ++grand) if (lex.nodes[grand].label == letter && c.label != letter) {
+                 auto swap = t; swap.node = grand; swap.pending = c.label; swap.boundary = false;
+-                swap.cost += transpositionCost; next.push_back(std::move(swap));
++                swap.cost += transpositionCost;
++                if (options_.biKey) swap.cost += substitution(letter, letter, tap, false, c.label); next.push_back(std::move(swap));
+             }
+         }
+     }
+--- a/native/DecoderCore/src/Engine.cpp
++++ b/native/DecoderCore/src/Engine.cpp
+@@ -1,4 +1,5 @@
+ #include "../include/Engine.hpp"
++#include "../include/BiKey.hpp"
+ #include <algorithm>
+ #include <chrono>
+ #include <cmath>
+@@ -204,6 +205,13 @@
+         std::vector<Point> points;
+         for (auto point : path) points.push_back(toGrid(point, layout));
+         auto stop = [&] { return token && token->cancelled(); };
++        if (engine_->options_.nssBiKey) {
++            auto result = decodeBiKeyGesture(*neuralGraph_, points, nssTouchSigma, nssBeam, std::size_t(nssWidth), nssChannelWeight, stop);
++            std::erase_if(result, [&](const auto& row) { return view.lexicon.isBlocked(row.key); });
++            for (auto& row : result) { row.safety = view.penalty(row.key); row.score -= row.safety; }
++            std::sort(result.begin(),result.end(),[](const auto&a,const auto&b){return a.score==b.score?a.key<b.key:a.score>b.score;});
++            return stop() ? std::vector<RankedRow>{} : result;
++        }
+         auto rows = decodeGlide(points, *engine_->packed_, 512, 4, 0, 0, 1.3, 8, stop,
+             [&](std::size_t node) { return neuralGraph_->lookahead(0, std::uint32_t(node)); });
+         for (const auto& word : dynamic) if (!view.lexicon.isBlocked(word))
+@@ -301,7 +309,7 @@
+     if (newField) neuralGraph_->resetContext();
+     const bool edited = !input.normalized.starts_with(neuralTyped_);
+     neuralGraph_->update(input.context, newWord || edited);
+-    if (!neuralSearch_) neuralSearch_ = std::make_unique<NeuralFstSearch>(*neuralGraph_, NeuralFstSearch::Options{nssBeam, std::size_t(nssWidth), false, nssTouchSigma, nssChannelWeight});
++    if (!neuralSearch_) neuralSearch_ = std::make_unique<NeuralFstSearch>(*neuralGraph_, NeuralFstSearch::Options{nssBeam, std::size_t(nssWidth), false, nssTouchSigma, nssChannelWeight, engine_->options_.nssBiKey});
+     if (newWord || neuralIdentity_.layoutRevision != input.identity.layoutRevision) neuralSearch_->reset();
+     neuralIdentity_ = input.identity; neuralIdentityReady_ = true; neuralTyped_ = input.normalized;
+     if (cancelled()) { out.status = EngineStatus::cancelled; return out; }
+@@ -321,7 +329,7 @@
+     std::erase_if(correctionRows, [&](const auto& row) { return view.lexicon.isBlocked(row.key); });
+     std::unordered_map<std::string, double> costs;
+     // The frequency prior ranks corrections; next-word predictions keep the model's order.
+-    auto frequency = [&](const std::string& word) { return typed.empty() ? 0 : nssFrequencyWeight * view.lexicon.logFrequency(word).value_or(0); };
++    auto frequency = [&](const std::string& word) { return typed.empty() || engine_->options_.nssPaperScoring ? 0 : nssFrequencyWeight * view.lexicon.logFrequency(word).value_or(0); };
+     auto personalize = [&](auto& row) {
+         row.safety = view.penalty(row.key);
+         row.language += LanguageModel::personalBoost(row.key, input.context, counts(view), view.lexicon) + frequency(row.key);
+@@ -405,7 +413,16 @@
+             }
+         }
+     }
+-    if (nssNgramWeight > 0 && !typed.empty()) {
++    if (engine_->options_.nssBiKey && !typed.empty()) {
++        for (auto* rows : {&ranked, &correctionRows}) for (auto& row : *rows) {
++            if (row.key.find(' ') != std::string::npos) continue; // joint search owns split costs
++            row.channel.cost = row.key == typed ? biKeyLiteralCost(typed, input.taps, nssTouchSigma)
++                : biKeyWordCost(row.key, typed, input.taps, nssTouchSigma);
++            costs[row.key] = row.channel.cost;
++            row.score = row.language - nssChannelWeight * row.channel.cost - (row.key == typed ? 0 : row.safety);
++        }
++    }
++    if (!engine_->options_.nssPaperScoring && nssNgramWeight > 0 && !typed.empty()) {
+         // Rescore the candidates with the n-gram mixed in: its unigram statistics separate a
+         // common word from a rare one a cheaper edit away (abot: about, not abbot).
+         std::unordered_map<std::string, double> mixed;
+@@ -489,7 +506,7 @@
+     if (newField) graph->resetContext();
+     graph->update(input.context, newWord || !input.normalized.starts_with(neuralTyped_));
+     if (!rawSearch_ || rawGraph_ != graph) {
+-        rawSearch_ = std::make_unique<NeuralFstSearch>(*graph, NeuralFstSearch::Options{16, 512, true}); rawGraph_ = graph;
++        rawSearch_ = std::make_unique<NeuralFstSearch>(*graph, NeuralFstSearch::Options{16, 512, true, engine_->options_.nssBiKey ? nssTouchSigma : 0.0, kb::channelWeight, engine_->options_.nssBiKey}); rawGraph_ = graph;
+     }
+     if (newWord || neuralIdentity_.layoutRevision != input.identity.layoutRevision) rawSearch_->reset();
+     neuralIdentity_ = input.identity; neuralIdentityReady_ = true; neuralTyped_ = input.normalized;
+@@ -519,7 +536,8 @@
+         std::vector<std::string> text{typed};
+         literal = engine_->language_->scores(text, {}, none, view.lexicon)[0];
+     }
+-    const RankedRow typedRow{{typed, 0, 0}, typed, 0, literal, literal, {}};
++    const auto literalCost = engine_->options_.nssBiKey ? biKeyLiteralCost(typed, input.taps, nssTouchSigma) : 0.0;
++    const RankedRow typedRow{{typed, literalCost, 0}, typed, 0, literal, literal - kb::channelWeight * literalCost, {}};
+     std::erase_if(ranked, [&](const auto& row) { return row.key == typed; });
+     std::erase_if(complete, [&](const auto& row) { return row.key == typed; });
+     auto best = std::max_element(complete.begin(), complete.end(), [](const auto& a, const auto& b) { return a.score == b.score ? a.key > b.key : a.score < b.score; });
+--- /dev/null
++++ b/native/tests/BiKeyTests.cpp
+@@ -0,0 +1,52 @@
++#include "../DecoderCore/include/BiKey.hpp"
++#include "../DecoderCore/include/Engine.hpp"
++#include "MiniJson.hpp"
++#include <cassert>
++#include <chrono>
++#include <cmath>
++#include <cstring>
++#include <fstream>
++#include <iostream>
++#include <sstream>
++using namespace kb;
++static std::string read(const char* p){std::ifstream f(p,std::ios::binary);assert(f);std::stringstream s;s<<f.rdbuf();return s.str();}
++static std::vector<std::byte> bytes(const char*p){auto s=read(p);std::vector<std::byte>b(s.size());std::memcpy(b.data(),s.data(),s.size());return b;}
++int main(int argc,char**argv){
++ assert(argc==5);
++ assert(biKeyOutput('a',{'a','b'})==std::optional<std::uint8_t>('b'));
++ assert(!biKeyOutput('c',{'a','b'}));assert(!biKeyOutput('a',{'a',0}));
++ assert(biKeyOutput(0,{0,'a'}));assert(biKeyOutput('a',{'a','a'}));
++ assert(biKeyTapCost({'a','b'},'b',TouchOffset{0,0},.7)==0);
++ assert(std::abs(biKeyTapCost({'a','b'},'b',TouchOffset{.4,.3},.7)-.25/.98)<1e-10);
++ assert(!std::isfinite(biKeyTapCost({'a','b'},'b',{},0)));
++ std::vector<std::optional<TouchOffset>> taps(3,TouchOffset{.2,.1});
++ assert(std::abs(biKeyLiteralCost("cat",taps,.7)-3*.05/.98)<1e-10);
++ assert(std::abs(biKeyWordCost("cat","cat",taps,.7)-biKeyLiteralCost("cat",taps,.7))<1e-10);
++ assert(biKeyWordCost("cat","cta",{},.7)<=transpositionCost+1e-10);
++ auto pack=bytes(argv[2]),modelBytes=bytes(argv[1]);auto lex=std::make_shared<PackedLexicon>(pack);auto model=NeuralWordModel::load(modelBytes);
++ auto indexed=std::make_shared<NeuralLexicon>(*lex);NeuralFst graph(model,indexed);graph.update(std::vector<std::string>{"i","say"});
++ NeuralFstSearch::Options opt{16,512,false,.7,4,true};NeuralFstSearch incremental(graph,opt);
++ std::vector<RankedRow> old;
++ for(auto p:{"h","he","hel","hell","hello"})old=incremental.decode(p,{});
++ graph.update(std::vector<std::string>{"i","say"},true);NeuralFstSearch fresh(graph,opt);auto now=fresh.decode("hello",{});
++ assert(old.size()==now.size());for(std::size_t i=0;i<now.size();++i){assert(old[i].key==now[i].key);assert(std::abs(old[i].score-now[i].score)<1e-8);}
++ assert(fresh.decode("hello",{},[]{return true;}).empty());assert(fresh.decode("é",{}).empty());
++ assert(decodeBiKeyGesture(graph,std::vector<Point>{{0,0},{NAN,0}},.7,16,512,4).empty());
++ assert(decodeBiKeyGesture(graph,std::vector<Point>{{0,0},{1,0}},.7,16,512,4,[]{return true;}).empty());
++ // All fixture gesture arms use the same lexicon, neural checkpoint and context.
++ int mode=std::stoi(argv[4]);EngineOptions options;options.nssBiKey=(mode&1);options.nssPaperScoring=(mode&2);options.nssExact=!(mode&2);
++ auto engine=std::make_shared<Engine>(lex,options,nullptr,model);auto state=engine->createState();auto session=engine->createSession();
++ GlideLayout layout{{},1,1};for(auto row:{"qwertyuiop","asdfghjkl","zxcvbnm"})for(unsigned char c:std::string_view(row)){auto g=grid(c);layout.centers.push_back({c,{g->x,g->y}});}
++ auto fixtures=json::parse(read(argv[3]));
++ for(auto& f:fixtures.array()){
++  std::vector<std::string> ctx;for(auto& c:f["context"].array())ctx.push_back(c.text());
++  std::vector<Point> points;for(auto& p:f["points"].array())points.push_back({p.array()[0].number(),p.array()[1].number()});
++  session->beginGlide(ctx);auto start=std::chrono::steady_clock::now();auto rows=session->updateGlide(points,layout,state->view(),{});
++  auto ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count();
++  int rank=-1;for(std::size_t i=0;i<rows.size();++i)if(rows[i].key==f["word"].text())rank=int(i);
++  std::cout<<f["id"].text()<<'\t'<<f["word"].text()<<'\t'<<f["noise"].number()<<'\t'<<rank<<'\t'<<ms;
++  for(std::size_t i=0;i<std::min<std::size_t>(3,rows.size());++i)std::cout<<'\t'<<rows[i].key;
++  std::cout<<'\n';
++ }
++ std::cerr<<"Bi-key consistency, Gaussian/literal parity, DP, incremental tap replay, malformed input and cancellation passed\n";
++}
+--- a/native/CMakeLists.txt
++++ b/native/CMakeLists.txt
+@@ -3,6 +3,7 @@
+ 
+ # Platform-neutral algorithms only. Foundation/JNI/model APIs belong in adapters.
+ add_library(DecoderCore STATIC
++    DecoderCore/src/BiKey.cpp
+     DecoderCore/src/Personalization.cpp
+     DecoderCore/src/EngineWire.cpp
+     DecoderCore/src/Engine.cpp
+@@ -39,6 +40,12 @@
+     add_test(NAME neural-search COMMAND neural-search-tests)
+     add_executable(neural-search-tests tests/NeuralSearchTests.cpp)
+     target_link_libraries(neural-search-tests PRIVATE DecoderCore)
++    add_executable(bikey-tests tests/BiKeyTests.cpp)
++    target_link_libraries(bikey-tests PRIVATE DecoderCore)
++    add_test(NAME bikey COMMAND bikey-tests
++        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm"
++        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin"
++        "${CMAKE_CURRENT_SOURCE_DIR}/../tools/evaluation/fixtures/shared-engine/glides.json" 3)
+     add_executable(nss-fst-tests tests/NeuralFstTests.cpp)
+     target_link_libraries(nss-fst-tests PRIVATE DecoderCore)
+     add_test(NAME nss-fst COMMAND nss-fst-tests
+@@ -75,6 +82,7 @@
+         target_compile_options(raw-decoder-tests PRIVATE -UNDEBUG)
+         target_compile_options(nss-word-model-tests PRIVATE -UNDEBUG)
+         target_compile_options(nss-fst-tests PRIVATE -UNDEBUG)
++        target_compile_options(bikey-tests PRIVATE -UNDEBUG)
+     endif()
+     add_test(NAME decoder-core-parity COMMAND decoder-core-tests
+         "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+--- a/tools/evaluation/autocorrect/IOSBench.cpp
++++ b/tools/evaluation/autocorrect/IOSBench.cpp
+@@ -162,6 +162,9 @@
+     // KB_POLICY="oov,realWord,closeRescueMargin,closeRescueGap,minimumCloseGap,closeRescueMaxCost"
+     // overrides the correction gate (Swift CorrectionPolicy.nativeValues order), for gate sweeps.
+     EngineOptions options;
++    options.nssBiKey = std::getenv("KB_BIKEY") && std::string(std::getenv("KB_BIKEY")) == "1";
++    options.nssPaperScoring = std::getenv("KB_PAPER_G") && std::string(std::getenv("KB_PAPER_G")) == "1";
++    if (options.nssPaperScoring) options.nssExact = false;
+     if (const char* text = std::getenv("KB_POLICY")) {
+         double v[6]; if (std::sscanf(text, "%lf,%lf,%lf,%lf,%lf,%lf", v, v + 1, v + 2, v + 3, v + 4, v + 5) != 6) return 2;
+         options.correction = {v[0], v[1], v[2], v[3], v[4], v[5]};
+--- a/native/tests/run.sh
++++ b/native/tests/run.sh
+@@ -49,3 +49,10 @@
+   "$repo_root/native/DecoderCore/src/"*.cpp \
+   "$repo_root/native/tests/RawDecoderTests.cpp" -o "$work_dir/raw-decoder-tests"
+ "$work_dir/raw-decoder-tests" "$repo_root/keyboard/nss-english.nsslm" "$repo_root/keyboard/langdata.bin"
++
++"${CXX:-clang++}" -std=c++20 -Wall -Wextra -Werror -g \
++  -fsanitize=address,undefined -fno-omit-frame-pointer \
++  "$repo_root/native/DecoderCore/src/"*.cpp \
++  "$repo_root/native/tests/BiKeyTests.cpp" -o "$work_dir/bikey-tests"
++"$work_dir/bikey-tests" "$repo_root/keyboard/nss-english.nsslm" "$repo_root/keyboard/langdata.bin" \
++  "$repo_root/tools/evaluation/fixtures/shared-engine/glides.json" 3

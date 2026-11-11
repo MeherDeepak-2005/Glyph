@@ -1,0 +1,13 @@
+{
+  "cases": 3238,
+  "documents": {
+    "tatoeba": 512,
+    "wikitext": 140
+  },
+  "split": "test (not used for unigram selection)",
+  "case_sha256": "eeb1493a5f085793e8e3139c07d9ab78b369e620a19dde757b6fdabade6298d7",
+  "target_injected": false,
+  "synthetic_errors": true,
+  "fresh_blind_neural_test": false,
+  "limitations": "Existing CIFG training and prior corpus research exposure prevent a blind neural evaluation claim."
+}

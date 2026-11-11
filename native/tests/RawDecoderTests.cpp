@@ -224,6 +224,35 @@ int main(int argc, char** argv) {
         assert(predicted.suggestions.size() == 3);
     }
     }
+
+    // Strict NSS cannot be redirected to a n-gram tier or unknown-literal scorer.
+    // Deliberately contradictory options are normalized by the engine.
+    {
+        EngineOptions strict; strict.nssOnly = true; strict.raw = false;
+        strict.nssExact = false; strict.nssTypedUnknown = false;
+        auto engine = std::make_shared<Engine>(packed, strict, nullptr, model);
+        auto state = engine->createState();
+        DecodeInput in; in.modelTier = "ngram"; in.word = in.normalized = "zzqxxy";
+        in.context = {"can", "you"}; in.identity.fieldRevision = 1;
+        assert(engine->createSession()->decode(in, state->view()).status == EngineStatus::unsupportedModel);
+        in.modelTier = "nss";
+        auto missing = std::make_shared<Engine>(packed, strict);
+        assert(missing->createSession()->decode(in, state->view()).status == EngineStatus::unsupportedModel);
+        auto decoded = engine->createSession()->decode(in, state->view());
+        assert(decoded.status == EngineStatus::ok);
+        exact.update(in.context, true);
+        const auto typed = std::find_if(decoded.candidates.begin(), decoded.candidates.end(),
+            [&](const auto& c) { return c.ranked.key == in.normalized; });
+        assert(typed != decoded.candidates.end());
+        assert(std::abs(typed->ranked.language - exact.typedUnknown()) < 1e-8);
+        assert(engine->createSession()->nextWords(in.context, state->view(), 3).empty());
+        in.word = in.normalized = "";
+        auto predicted = engine->createSession()->decode(in, state->view());
+        const auto expected = exact.best(0, 3);
+        assert(predicted.suggestions.size() == 3);
+        for (std::size_t i = 0; i < 3; ++i)
+            assert(predicted.suggestions[i] == packed->word(expected[i].first));
+    }
     std::cout << "Raw decoding: n-gram graph matches LanguageModel on " << checked << " scores; NSS exact scores match the model on "
               << exactChecked << " (" << belowThreshold << " vocabulary scores below e^-15); lookahead bounds, best(), argmax commit passed\n";
 }

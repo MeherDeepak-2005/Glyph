@@ -609,6 +609,9 @@ def main():
     args = parser.parse_args()
     if not args.output.parent.is_dir():
         parser.error(f"output folder does not exist: {args.output.parent}")
+    if not (args.legacy_ngrams or args.baseline or args.without_corev4):
+        from vocabulary.build_modern import export_legacy
+        export_legacy(check=True)
     vocab = merge_contractions(build_vocab())
     if not (args.legacy_ngrams or args.baseline or args.without_corev4):
         # Count over the FINAL vocabulary so every shipped form can carry context.
@@ -620,6 +623,8 @@ def main():
         bi, tri, totals = merge_contexts(ids, bi, tri, contexts, totals)
         write_bin(vocab, bi, tri, starters, output=args.output, context_totals=totals,
                   version=6, max_bytes=LARGE_LANGDATA_CAP)
+        from vocabulary.build_modern import build as modern_build
+        modern_build(args.output, args.output)
         return
     contexts = None
     if not args.baseline:

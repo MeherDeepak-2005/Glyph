@@ -2764,7 +2764,9 @@
   "project_inputs": [
     {
       "path": "tools/vocabulary/curated_terms.tsv",
-      "sha256": "3b203d351f28498737948a3240f1fced6befd79841bb5aee0231031f51f9d010"
+      "sha256": "1a2978db3f7dc55c0b0fd930167c6c86ca8507e1e2ff25304e1791098906c519",
+      "previous_sha256": "3b203d351f28498737948a3240f1fced6befd79841bb5aee0231031f51f9d010",
+      "transformation": "Sorted compatibility export from modern_catalog.json; historical spellings, registers and priors unchanged."
     },
     {
       "path": "tools/vocabulary/curated_contexts.jsonl",

@@ -29,6 +29,14 @@ endif()
 option(KB_BUILD_TESTS "Build portable decoder tests" ON)
 if(KB_BUILD_TESTS)
     enable_testing()
+    add_executable(modern-vocabulary-tests tests/ModernVocabularyTests.cpp)
+    target_link_libraries(modern-vocabulary-tests PRIVATE DecoderCore)
+    target_compile_options(modern-vocabulary-tests PRIVATE -UNDEBUG)
+    add_test(NAME modern-vocabulary COMMAND modern-vocabulary-tests
+        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.kbmodern"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/safety.kbguard")
     add_executable(shared-engine-tests tests/EngineTests.cpp)
     target_link_libraries(shared-engine-tests PRIVATE DecoderCore)
     add_test(NAME shared-engine COMMAND shared-engine-tests "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin"

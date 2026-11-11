@@ -23,9 +23,11 @@ INTERNAL_GRU_ENABLED = NO
 // selects the shared C++ engine's "nss" tier from the first word. KB_NSS_RAW runs it as the
 // official configuration: the word model alone (no correction rules, no n-gram mixing),
 // exact scores with the published unigram fallback kept as a floor (KBDecoderBridge.mm).
-// Set NSS_ENABLED = NO in Secrets.xcconfig for an n-gram-only comparison build.
+// Missing NSS resources preserve input; there is no automatic n-gram fallback.
+// N-gram comparisons use the standalone benchmark, not the production singleton.
 NSS_MODEL = $(SRCROOT)/keyboard/nss-english.nsslm
 NSS_ENABLED = YES
+NSS_DICTIONARY_DIR = $(SRCROOT)/tools/data/nss/unigram-v1
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) KB_NSS_RAW=1
 
 #include? "Secrets.xcconfig"

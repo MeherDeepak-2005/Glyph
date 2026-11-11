@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "active research; no demonstrated improvement yet",
+  "screen": {
+    "original_words_per_arm": 10000000,
+    "seed": 731,
+    "models": [
+      "word-reference",
+      "word-cifg",
+      "word-lstm",
+      "word-gru",
+      "unigram-lstm",
+      "unigram-gru",
+      "unigram-transformer",
+      "bpe-lstm",
+      "bpe-gru",
+      "bpe-transformer"
+    ],
+    "equal_compute_seconds": 60,
+    "unique_sentences_required": true,
+    "selection_split": "validation only"
+  },
+  "full": {
+    "finalists": 2,
+    "seeds": [
+      731,
+      732,
+      733
+    ],
+    "original_words_per_seed": 130000000,
+    "selection_metric": "real decoder correction quality under clean-word guardrails; never cross-tokenizer perplexity",
+    "all_screened_models_need_comparable_decoder_evaluation": true,
+    "requires_new_modern_corpus": true
+  },
+  "promotion": {
+    "requires_fresh_blind_modern_test": true,
+    "final_test_attempts_max": 1,
+    "minimum_clean_test_cases": 10000,
+    "commit_accuracy_delta_ci_lower_gt": 0,
+    "clean_false_correction_delta_ci_upper_max": 0.0005,
+    "top3_delta_ci_lower_min": -0.005,
+    "max_device_p50_ratio": 1.1,
+    "max_device_p95_ratio": 1.1,
+    "max_device_memory_ratio": 1.1,
+    "max_resource_size_ratio": 1.05,
+    "physical_device_trials_min": 3,
+    "subword_native_tokenizer_scoring_search_parity_required": true
+  },
+  "cloud": {
+    "authorized": false,
+    "provider": null,
+    "spending_limit": null,
+    "spent": 0
+  },
+  "forbidden_claims": [
+    "scratch 250k vs pretrained 130M implies an architecture winner",
+    "best step zero means adaptation improved",
+    "target-injected ranking is end-to-end decoding",
+    "Python timing is iPhone latency",
+    "editorial modern-word checklist is independent validation",
+    "weighted mixture estimates are raw frequency counts"
+  ]
+}

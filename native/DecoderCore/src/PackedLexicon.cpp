@@ -558,3 +558,105 @@ std::vector<TrigramContext> PackedLexicon::trigramContexts() const {
     return out;
 }
 } // namespace kb
+
+#include "../include/DictionaryDigest.hpp"
+#include <set>
+#include <tuple>
+namespace kb {
+bool PackedLexicon::installModern(std::span<const std::byte> data) const {
+    if (modern_) return false; // immutable after publication
+    if (data.size()<88 || data.size()>1'000'000) return false;
+    auto u=[&](std::size_t at) {
+        std::uint32_t v=0;for(unsigned j=0;j<4;++j)v|=std::uint32_t(std::to_integer<unsigned char>(data[at+j]))<<(8*j);return v;
+    };
+    constexpr std::string_view magic="KBMODERN";
+    for(std::size_t i=0;i<8;++i)if(data[i]!=std::byte(magic[i]))return false;
+    const auto np=u(16),nc=u(20);
+    if(u(8)!=1 || u(12)!=words_ || np>10000 || nc>10000 || data.size()!=88+8ull*np+16ull*nc)return false;
+    const auto checksum=dictionarySHA256(data.first(data.size()-32));
+    if(!std::equal(checksum.begin(),checksum.end(),data.end()-32))return false;
+    const auto digest=dictionarySHA256(bytes_);
+    if(!std::equal(digest.begin(),digest.end(),data.begin()+24))return false;
+    auto candidate=std::make_shared<ModernVocabulary>();
+    for(std::size_t i=0;i<np;++i) {
+        auto at=56+8*i;ModernVocabulary::Policy p{u(at),u(at+4)};
+        if(p.word>=words_ || !p.flags || (p.flags&~7u) || ((p.flags&1)&&!(p.flags&2)) ||
+            (!candidate->policies.empty()&&p.word<=candidate->policies.back().word))return false;
+        candidate->policies.push_back(p);
+    }
+    std::set<std::tuple<std::uint32_t,std::uint32_t,std::uint32_t>> keys;
+    for(std::size_t i=0;i<nc;++i) {
+        auto at=56+8*np+16*i;ModernVocabulary::Context c{u(at),u(at+4),u(at+8),u(at+12)};
+        if((c.first!=UINT32_MAX&&c.first>=words_)||c.last>=words_||c.word>=words_||c.priority<1||c.priority>4||
+            !keys.emplace(c.first,c.last,c.word).second)return false;
+        if(c.first==UINT32_MAX&&(word(c.last)=="no"||word(c.last)=="brain"||word(c.last)=="rage"))return false;
+        candidate->contexts.push_back(c);
+    }
+    modern_=std::move(candidate);
+    return true;
+}
+std::uint32_t PackedLexicon::modernFlags(std::string_view text) const {
+    if(!modern_)return 0;
+    auto id=wordID(text);if(!id)return 0;
+    auto it=std::lower_bound(modern_->policies.begin(),modern_->policies.end(),std::uint32_t(*id),
+        [](const auto& p,auto wanted){return p.word<wanted;});
+    return it!=modern_->policies.end()&&it->word==std::uint32_t(*id)?it->flags:0;
+}
+bool PackedLexicon::allowsCorrection(std::string_view text) const {
+    // A split phrase must not sneak a suggestion-only token into an automatic commit.
+    while(!text.empty()) {
+        auto end=text.find(' ');
+        if(modernFlags(text.substr(0,end))&2)return false;
+        if(end==text.npos)break;
+        text.remove_prefix(end+1);
+    }
+    return true;
+}
+std::vector<std::string> PackedLexicon::modernSuggestions(std::string_view typed,
+        std::span<const std::string> context, std::span<const std::string> existing) const {
+    if(!modern_ || (typed.empty()&&context.empty()))return {existing.begin(),existing.end()};
+    struct Display {std::string word;double score;};
+    std::vector<Display> rows;
+    auto add=[&](std::string_view text,double score) {
+        auto id=wordID(text);
+        if(text!=typed&&id&&blocked(*id))return;
+        auto found=std::find_if(rows.begin(),rows.end(),[&](const auto& r){return r.word==text;});
+        if(found==rows.end())rows.push_back({std::string(text),score});else found->score=std::max(found->score,score);
+    };
+    for(std::size_t i=0;i<existing.size();++i)add(existing[i],3.0-double(i));
+    // Editorial priorities are bounded display scores, not language probabilities.
+    // The top baseline suggestion remains competitive; longer contexts break ties.
+    std::vector<std::pair<std::uint32_t,double>> matches;
+    if(!context.empty()) {
+        auto last=wordID(context.back());
+        auto first=context.size()>1?wordID(context[context.size()-2]):std::nullopt;
+        for(const auto& c:modern_->contexts)if(last&&c.last==std::uint32_t(*last)&&
+                (c.first==UINT32_MAX||(first&&c.first==std::uint32_t(*first)))) {
+            auto text=word(c.word);
+            if(!blocked(c.word)&&(typed.empty()||text.starts_with(typed)))
+                matches.emplace_back(c.word,std::min(4.0,double(c.priority))+(c.first==UINT32_MAX?0:0.25));
+        }
+        std::sort(matches.begin(),matches.end(),[&](const auto& a,const auto& b) {
+            return a.second==b.second?word(a.first)<word(b.first):a.second>b.second;
+        });
+        if(matches.size()>8)matches.resize(8);
+        for(auto [id,score]:matches)add(word(id),score);
+    }
+    // Only explicit suggestions for a meaningful prefix, never starter suggestions.
+    // Bounded catalog scan (60 entries in v1), no full-dictionary traversal.
+    if(typed.size()>=3) {
+        std::vector<Display> completions;
+        for(const auto& p:modern_->policies)if((p.flags&4)&&!blocked(p.word)) {
+            auto text=word(p.word);
+            if(text.size()>typed.size()&&text.starts_with(typed))
+                completions.push_back({std::string(text),2.25+0.5*double(typed.size())/double(text.size())});
+        }
+        std::sort(completions.begin(),completions.end(),[](const auto& a,const auto& b){return a.score==b.score?a.word<b.word:a.score>b.score;});
+        if(completions.size()>8)completions.resize(8);
+        for(const auto& c:completions)add(c.word,c.score);
+    }
+    std::stable_sort(rows.begin(),rows.end(),[](const auto& a,const auto& b){return a.score>b.score;});
+    std::vector<std::string> out;for(const auto& row:rows){if(out.size()==3)break;out.push_back(row.word);}
+    return out;
+}
+} // namespace kb

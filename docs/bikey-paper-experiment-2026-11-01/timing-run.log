@@ -1,0 +1,16 @@
+tap timing 0 current
+tap timing 1 paper_g
+tap timing 2 bikey
+tap timing 3 bikey_paper_g
+tap timing 4 bikey_paper_g
+tap timing 5 bikey
+tap timing 6 paper_g
+tap timing 7 current
+Bi-key consistency, Gaussian/literal parity, DP, incremental tap replay, malformed input and cancellation passed
+gesture timing 0 current
+Bi-key consistency, Gaussian/literal parity, DP, incremental tap replay, malformed input and cancellation passed
+gesture timing 1 bikey_paper_g
+Bi-key consistency, Gaussian/literal parity, DP, incremental tap replay, malformed input and cancellation passed
+gesture timing 2 bikey_paper_g
+Bi-key consistency, Gaussian/literal parity, DP, incremental tap replay, malformed input and cancellation passed
+gesture timing 3 current

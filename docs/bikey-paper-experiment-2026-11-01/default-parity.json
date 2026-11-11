@@ -1,0 +1,5 @@
+{
+  "cases": 158,
+  "identical": true,
+  "scope": "All non-timing output fields, frozen original source vs experimental binary with flags disabled."
+}

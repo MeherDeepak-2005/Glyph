@@ -1,0 +1,17 @@
+{
+  "case_sha256": "f5f878fd2ca42ecbbcaba362d1e5cfcda09135dcde41cbf2b9a91fe6ff64ef44",
+  "metadata_sha256": "f693643f41f758aef3510ad2e65b82faccf346208e07b14a162659a316f022d0",
+  "documents_per_source": {
+    "soda": 512,
+    "tatoeba": 512,
+    "wikitext": 149
+  },
+  "requested_cap_per_source": 512,
+  "unequal_source_counts_require_macro_domain_reporting": true,
+  "cases": 4642,
+  "corpus_sha256": "86c91b3012724b3bd646341f66114d839498808dc77c0ce0962469e7631f3c17",
+  "split": "validation documents only",
+  "synthetic_errors_and_taps": true,
+  "target_injected": false,
+  "fresh_blind_final_test": false
+}

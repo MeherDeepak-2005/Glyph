@@ -301,3 +301,7 @@ Copyright (c) 2010–2025, Susumu Yata. All rights reserved.
 The complete license and disclaimer are retained in
 [native/experimental/marisa/vendor/COPYING.md](native/experimental/marisa/vendor/COPYING.md).
 This dependency is not linked into the shipping iOS or Android targets.
+
+Modern English vocabulary (9 November 2026): project-authored spellings, behavioral permissions and examples. Corroboration links in tools/vocabulary/modern_catalog.json identify usage evidence; no third-party definitions or example sentences are reproduced. Existing dictionary data licenses continue to apply.
+
+NSS unigram dictionary: tools/data/nss/unigram-v1 is a derived ESDB/FrequencyWords/Tatoeba/WikiText lexicon. Per-source observed counts and estimated mixture weights are separate. See tools/data/nss/unigram-v1/NOTICE.txt and manifest.json for exact source revisions and transformations. The extension installs this dictionary as langdata.bin without bi/trigram tables.

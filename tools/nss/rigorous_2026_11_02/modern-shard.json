@@ -1,0 +1,12 @@
+{
+  "repository": "HuggingFaceFW/fineweb",
+  "revision": "9bb295ddab0e05d785b879661af7260fed5140fc",
+  "crawl": "CC-MAIN-2025-26",
+  "path": "data/CC-MAIN-2025-26/000_00000.parquet",
+  "sha256": "65279189b14e4798f02c21f45e05c9a525cfd13b9b53a5e7304ef446cd14138c",
+  "size_display": "2.15 GB",
+  "source_page": "https://huggingface.co/datasets/HuggingFaceFW/fineweb/blob/9bb295ddab0e05d785b879661af7260fed5140fc/data/CC-MAIN-2025-26/000_00000.parquet",
+  "download": "https://huggingface.co/datasets/HuggingFaceFW/fineweb/resolve/9bb295ddab0e05d785b879661af7260fed5140fc/data/CC-MAIN-2025-26/000_00000.parquet?download=true",
+  "license": "ODC-By 1.0 database; source content rights separate",
+  "status": "awaiting manual download; not ingested"
+}

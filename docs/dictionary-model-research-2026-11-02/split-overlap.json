@@ -1,0 +1,18 @@
+{
+  "sample_train_sentences": 104941,
+  "sample_eval_overlaps": {
+    "valid": {
+      "soda": 0,
+      "tatoeba": 0,
+      "wikitext": 0
+    },
+    "test": {
+      "soda": 0,
+      "tatoeba": 0,
+      "wikitext": 0,
+      "masc": 0
+    }
+  },
+  "all_masc_overlap": 0,
+  "overlap_examples": []
+}

@@ -19,6 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 // Retains this exact immutable NSData object; C++ borrows its bytes without a copy.
 - (nullable instancetype)initWithBacking:(NSObject *)backing error:(NSError **)error;
 - (instancetype)init NS_UNAVAILABLE;
+- (BOOL)installModernData:(NSData *)data;
+- (NSUInteger)modernFlagsForWord:(NSString *)word;
+- (BOOL)allowsModernCorrection:(NSString *)word;
+- (NSArray<NSString *> *)modernSuggestionsForTyped:(NSString *)typed context:(NSArray<NSString *> *)context existing:(NSArray<NSString *> *)existing;
 @property(nonatomic, readonly) NSUInteger formatVersion;
 @property(nonatomic, readonly) NSUInteger wordCount;
 @property(nonatomic, readonly) const void *backingAddress;

@@ -1,0 +1,72 @@
+{
+  "n": 708,
+  "core_target_in_normalized_top3": 228,
+  "nss_target_in_normalized_top3": 613,
+  "examples": [
+    {
+      "id": "realword-39043",
+      "context": "",
+      "typed": "mg",
+      "target": "my",
+      "core_correction": null,
+      "core_suggestions": [
+        "mg",
+        "mg's",
+        "gm"
+      ],
+      "nss_correction": "my"
+    },
+    {
+      "id": "realword-39065",
+      "context": "my watch fell",
+      "typed": "un",
+      "target": "in",
+      "core_correction": null,
+      "core_suggestions": [
+        "un",
+        "under",
+        "united"
+      ],
+      "nss_correction": "in"
+    },
+    {
+      "id": "realword-39149",
+      "context": "never too rich",
+      "typed": "ad",
+      "target": "and",
+      "core_correction": null,
+      "core_suggestions": [
+        "ad",
+        "add",
+        "addition"
+      ],
+      "nss_correction": "and"
+    },
+    {
+      "id": "realword-39404",
+      "context": "time to",
+      "typed": "ho",
+      "target": "go",
+      "core_correction": null,
+      "core_suggestions": [
+        "ho",
+        "how",
+        "hope"
+      ],
+      "nss_correction": "go"
+    },
+    {
+      "id": "realword-39413",
+      "context": "time to go",
+      "typed": "hopping",
+      "target": "shopping",
+      "core_correction": null,
+      "core_suggestions": [
+        "hopping",
+        "hoping",
+        "shopping"
+      ],
+      "nss_correction": "shopping"
+    }
+  ]
+}

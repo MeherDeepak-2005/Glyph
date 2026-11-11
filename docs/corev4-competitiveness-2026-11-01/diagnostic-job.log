@@ -1,0 +1,2 @@
+Diagnostic build complete; replaying 1,766 Core-only severe fixes
+{"source_commit": "995be5caa37cc7ec207bdd9bf2e6cec1916f90cf", "cases": 1766, "corrections_and_suggestions_match_saved_NSS": true, "production_sources_modified": false, "binary_sha256": "80926d80f5d79dda9820b24328847b646954c0da2c26e3c4547d4f4283dc3d84"}

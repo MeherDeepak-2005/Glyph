@@ -1,0 +1,147 @@
+{
+  "sources": [
+    {
+      "label": "core_edit_threshold",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/include/common/atxcoredefs.h",
+      "line": 214,
+      "sha256": "e8b27e9917562e8744cc81cf5a61f432f8a8ec25f7377c1c2069377e554fe391"
+    },
+    {
+      "label": "core_error_type_weights",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/include/coreengine/atxerrorcorrectiontype.h",
+      "line": 42,
+      "sha256": "4efb17fcea4f0550fd6324144d4f3519f179bcb1d01c354b1551903848041449"
+    },
+    {
+      "label": "core_error_type_ranking",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/coreengine/ATXWordAssociationAlgorithm.cpp",
+      "line": 14710,
+      "sha256": "58107e95da671c4010e286df023b9f42ea855af0a3a96be5d23dbcb683770941"
+    },
+    {
+      "label": "core_repeated_slip_rule",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/coreengine/ATXErrorCorrectionType.cpp",
+      "line": 816,
+      "sha256": "30e2e060f9006c6a0ff57589232b75cb8c75eaeafcadf7ff008da6a7d1eefe44"
+    },
+    {
+      "label": "core_phonetic_asset_loader",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/language/atxnuanceitem_l.cpp",
+      "line": 227,
+      "sha256": "7c6fb5b7f7de9e6f3507b137043253c3a59c84720dd2da9a956d4bbbdf27981a"
+    },
+    {
+      "label": "core_prefix_dp_cache",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/coreengine/atxdunloplevenschtein.cpp",
+      "line": 760,
+      "sha256": "9df8cdc818f5c79f0dfaf7aa06b780fe59f017d4855fb688d0ac5cc8d19452d2"
+    },
+    {
+      "label": "core_dictionary_range_search",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/coreengine/NGraphHdlr.cpp",
+      "line": 964,
+      "sha256": "09a9795c89f8fd13dba202416699f5c5824b829f48938b95bb22fbddb93c6ad5"
+    },
+    {
+      "label": "core_typing_input",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/include/textinterface/adaptextextinterface.h",
+      "line": 132,
+      "sha256": "4750544317039212fcd88c74b32dc420c1a826a137cebc35d91c686127c32095"
+    },
+    {
+      "label": "core_glide_coordinates",
+      "path": "/Users/meher/Downloads/CoreV4/v2core/core/include/common/atxtypes.h",
+      "line": 355,
+      "sha256": "dc4669bf6bcd063ee457f590c137eb08cd955020563fb27baca63d14878dc04b"
+    },
+    {
+      "label": "nss_policy",
+      "path": "/Users/meher/Downloads/iOSKeyboard/native/DecoderCore/src/Ranking.cpp",
+      "line": 106,
+      "sha256": "4e9c025c2b43e223dc8dd80b63525b1325f37eb9c860cce428b8855f6f765afb"
+    },
+    {
+      "label": "nss_config",
+      "path": "/Users/meher/Downloads/iOSKeyboard/native/DecoderCore/include/Engine.hpp",
+      "line": 68,
+      "sha256": "da844163cad00649dc6966e26a7d4cfd4f96720dd111da90d36e34c0ee932756"
+    },
+    {
+      "label": "external_corpus_filters",
+      "path": "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/make_external.py",
+      "line": 2,
+      "sha256": "1b9ed697e36ff0ddce56049bdceea7d3c41230cc85c9a0a6f80348ef8cbccfdc"
+    }
+  ],
+  "phonetic_profile": {
+    "path": "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/bin/corev4-profile/Dictionaries/default.abn",
+    "version": 2,
+    "phonetic_rules_minimum_format": 3,
+    "sha256": "485a44abe16d5b524b6dcb3f336fee4bbc9c7162ba40e98341588e0772e655eb"
+  },
+  "split_errors": {
+    "ext_birkbeck": {
+      "core_only": 1669,
+      "wrong_commits": 273,
+      "wrong_multiword_commits": 7,
+      "wrong_split_examples": [
+        {
+          "id": "ext_birkbeck-00112",
+          "typed": "absense",
+          "target": "absence",
+          "nss": "a sense"
+        },
+        {
+          "id": "ext_birkbeck-15736",
+          "typed": "ismus",
+          "target": "isthmus",
+          "nss": "is us"
+        },
+        {
+          "id": "ext_birkbeck-23659",
+          "typed": "scand",
+          "target": "scandal",
+          "nss": "s and"
+        },
+        {
+          "id": "ext_birkbeck-23940",
+          "typed": "shemses",
+          "target": "schemes",
+          "nss": "she sees"
+        },
+        {
+          "id": "ext_birkbeck-24739",
+          "typed": "somwhat",
+          "target": "somewhat",
+          "nss": "so what"
+        },
+        {
+          "id": "ext_birkbeck-27573",
+          "typed": "tomto",
+          "target": "tomato",
+          "nss": "to to"
+        },
+        {
+          "id": "ext_birkbeck-28378",
+          "typed": "inexpected",
+          "target": "unexpected",
+          "nss": "i expected"
+        }
+      ]
+    },
+    "ext_wikipedia": {
+      "core_only": 97,
+      "wrong_commits": 25,
+      "wrong_multiword_commits": 1,
+      "wrong_split_examples": [
+        {
+          "id": "ext_wikipedia-31328",
+          "typed": "absense",
+          "target": "absence",
+          "nss": "a sense"
+        }
+      ]
+    }
+  },
+  "scope": "Read-only source analysis and isolated diagnostic instrumentation. No new correction rule, tuning or production behavior changes."
+}

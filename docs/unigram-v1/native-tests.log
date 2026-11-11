@@ -1,0 +1,29 @@
+Test project /private/tmp/keyboard-unigram-v1-native
+      Start  1: modern-vocabulary
+ 1/12 Test  #1: modern-vocabulary ................   Passed    3.27 sec
+      Start  2: shared-engine
+ 2/12 Test  #2: shared-engine ....................   Passed    0.96 sec
+      Start  3: candidate-generation
+ 3/12 Test  #3: candidate-generation .............   Passed    0.01 sec
+      Start  4: neural-search
+ 4/12 Test  #4: neural-search ....................   Passed    0.00 sec
+      Start  5: nss-fst
+ 5/12 Test  #5: nss-fst ..........................   Passed    0.26 sec
+      Start  6: nss-fst-trained
+ 6/12 Test  #6: nss-fst-trained ..................   Passed    0.42 sec
+      Start  7: nss-expanded-model-reference
+ 7/12 Test  #7: nss-expanded-model-reference .....   Passed    0.23 sec
+      Start  8: nss-word-model-cifg-tied
+ 8/12 Test  #8: nss-word-model-cifg-tied .........   Passed    0.15 sec
+      Start  9: nss-word-model-lstm-untied
+ 9/12 Test  #9: nss-word-model-lstm-untied .......   Passed    0.14 sec
+      Start 10: nss-word-model-gru-projected
+10/12 Test #10: nss-word-model-gru-projected .....   Passed    0.15 sec
+      Start 11: raw-decoder
+11/12 Test #11: raw-decoder ......................   Passed    2.13 sec
+      Start 12: decoder-core-parity
+12/12 Test #12: decoder-core-parity ..............   Passed    0.17 sec
+
+100% tests passed out of 12
+
+Total Test time (real) =   7.90 sec

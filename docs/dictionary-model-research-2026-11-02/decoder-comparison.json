@@ -1,0 +1,235 @@
+{
+  "warning": "Deterministic held-out screening subset; previously inspected repository benchmark, not a new blind user test.",
+  "sets": {
+    "apos": {
+      "n": 36,
+      "baseline_correct": 36,
+      "candidate_correct": 36,
+      "wins": 0,
+      "losses": 0,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 36,
+      "candidate_top3": 36
+    },
+    "clean": {
+      "n": 200,
+      "baseline_correct": 198,
+      "candidate_correct": 199,
+      "wins": 1,
+      "losses": 0,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 198,
+      "candidate_top3": 199
+    },
+    "ecps": {
+      "n": 200,
+      "baseline_correct": 186,
+      "candidate_correct": 184,
+      "wins": 1,
+      "losses": 3,
+      "mcnemar_exact_two_sided": 0.625,
+      "baseline_top3": 191,
+      "candidate_top3": 190
+    },
+    "ecps_ok": {
+      "n": 200,
+      "baseline_correct": 200,
+      "candidate_correct": 199,
+      "wins": 0,
+      "losses": 1,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 200,
+      "candidate_top3": 199
+    },
+    "hard": {
+      "n": 42,
+      "baseline_correct": 36,
+      "candidate_correct": 36,
+      "wins": 1,
+      "losses": 1,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 36,
+      "candidate_top3": 36
+    },
+    "nw": {
+      "n": 200,
+      "metric": "next-word top3",
+      "baseline_top3": 40,
+      "candidate_top3": 40
+    },
+    "realword": {
+      "n": 200,
+      "baseline_correct": 91,
+      "candidate_correct": 90,
+      "wins": 2,
+      "losses": 3,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 115,
+      "candidate_top3": 113
+    },
+    "syn": {
+      "n": 200,
+      "baseline_correct": 169,
+      "candidate_correct": 170,
+      "wins": 1,
+      "losses": 0,
+      "mcnemar_exact_two_sided": 1.0,
+      "baseline_top3": 183,
+      "candidate_top3": 183
+    }
+  },
+  "changes": [
+    {
+      "id": "clean-43387",
+      "set": "clean",
+      "typed": "non",
+      "target": "non",
+      "baseline": "no",
+      "candidate": null
+    },
+    {
+      "id": "ecps-21991",
+      "set": "ecps",
+      "typed": "kis",
+      "target": "kiss",
+      "baseline": "kiss",
+      "candidate": "is"
+    },
+    {
+      "id": "ecps-30524",
+      "set": "ecps",
+      "typed": "slimey",
+      "target": "slimy",
+      "baseline": "slime",
+      "candidate": "slimy"
+    },
+    {
+      "id": "ecps-01399",
+      "set": "ecps",
+      "typed": "agnst",
+      "target": "against",
+      "baseline": "against",
+      "candidate": "angst"
+    },
+    {
+      "id": "ecps-02745",
+      "set": "ecps",
+      "typed": "Anywayz",
+      "target": "anyway",
+      "baseline": "anyway",
+      "candidate": "anyways"
+    },
+    {
+      "id": "ecps_ok-06834",
+      "set": "ecps_ok",
+      "typed": "boy",
+      "target": "boy",
+      "baseline": null,
+      "candidate": "by"
+    },
+    {
+      "id": "hard-58973",
+      "set": "hard",
+      "typed": "Aarav",
+      "target": "aarav",
+      "baseline": "arab",
+      "candidate": "arav"
+    },
+    {
+      "id": "hard-59054",
+      "set": "hard",
+      "typed": "eta",
+      "target": "eta",
+      "baseline": null,
+      "candidate": "eat"
+    },
+    {
+      "id": "hard-58977",
+      "set": "hard",
+      "typed": "Oluwaseun",
+      "target": "oluwaseun",
+      "baseline": "olsen",
+      "candidate": null
+    },
+    {
+      "id": "realword-56476",
+      "set": "realword",
+      "typed": "noting",
+      "target": "nothing",
+      "baseline": "nothing",
+      "candidate": null
+    },
+    {
+      "id": "realword-39355",
+      "set": "realword",
+      "typed": "bet",
+      "target": "best",
+      "baseline": null,
+      "candidate": "best"
+    },
+    {
+      "id": "realword-51537",
+      "set": "realword",
+      "typed": "line",
+      "target": "like",
+      "baseline": "like",
+      "candidate": null
+    },
+    {
+      "id": "realword-40217",
+      "set": "realword",
+      "typed": "des",
+      "target": "ides",
+      "baseline": "does",
+      "candidate": null
+    },
+    {
+      "id": "realword-43043",
+      "set": "realword",
+      "typed": "exchanger",
+      "target": "exchange",
+      "baseline": "exchange",
+      "candidate": null
+    },
+    {
+      "id": "realword-44678",
+      "set": "realword",
+      "typed": "ears",
+      "target": "wears",
+      "baseline": null,
+      "candidate": "wears"
+    },
+    {
+      "id": "realword-49192",
+      "set": "realword",
+      "typed": "hack",
+      "target": "shack",
+      "baseline": null,
+      "candidate": "back"
+    },
+    {
+      "id": "syn-52747",
+      "set": "syn",
+      "typed": "rors",
+      "target": "ropes",
+      "baseline": "roars",
+      "candidate": "roots"
+    },
+    {
+      "id": "syn-54136",
+      "set": "syn",
+      "typed": "ter",
+      "target": "their",
+      "baseline": "tear",
+      "candidate": "term"
+    },
+    {
+      "id": "syn-46481",
+      "set": "syn",
+      "typed": "subdivjsiosn",
+      "target": "subdivisions",
+      "baseline": null,
+      "candidate": "subdivisions"
+    }
+  ]
+}

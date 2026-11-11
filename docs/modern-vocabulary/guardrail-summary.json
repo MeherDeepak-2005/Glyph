@@ -1,0 +1,100 @@
+{
+  "cases": {
+    "ecps": {
+      "n": 19614,
+      "baseline": 17834,
+      "candidate": 17831
+    },
+    "ecps_ok": {
+      "n": 19423,
+      "baseline": 19335,
+      "candidate": 19335
+    },
+    "clean": {
+      "n": 2713,
+      "baseline": 2701,
+      "candidate": 2701
+    },
+    "nw": {
+      "n": 2713,
+      "baseline": 701,
+      "candidate": 700
+    },
+    "syn": {
+      "n": 12755,
+      "baseline": 11452,
+      "candidate": 11452
+    },
+    "realword": {
+      "n": 1669,
+      "baseline": 708,
+      "candidate": 708
+    },
+    "apos": {
+      "n": 80,
+      "baseline": 78,
+      "candidate": 78
+    },
+    "hard": {
+      "n": 95,
+      "baseline": 76,
+      "candidate": 76
+    }
+  },
+  "contraction-cases": {
+    "contraction": {
+      "n": 7008,
+      "baseline": 5302,
+      "candidate": 5302
+    },
+    "contraction_plain": {
+      "n": 2704,
+      "baseline": 2342,
+      "candidate": 2342
+    }
+  },
+  "ext-cases": {
+    "ext_birkbeck": {
+      "n": 29903,
+      "baseline": 12335,
+      "candidate": 12336
+    },
+    "ext_holbrook": {
+      "n": 896,
+      "baseline": 427,
+      "candidate": 427
+    },
+    "ext_aspell": {
+      "n": 466,
+      "baseline": 277,
+      "candidate": 277
+    },
+    "ext_wikipedia": {
+      "n": 2238,
+      "baseline": 1812,
+      "candidate": 1812
+    }
+  },
+  "keep-cases": {
+    "keep_name": {
+      "n": 278,
+      "baseline": 76,
+      "candidate": 76
+    },
+    "keep_name_ctx": {
+      "n": 278,
+      "baseline": 73,
+      "candidate": 73
+    },
+    "keep_word": {
+      "n": 3000,
+      "baseline": 1851,
+      "candidate": 1851
+    },
+    "keep_slang": {
+      "n": 22,
+      "baseline": 1,
+      "candidate": 1
+    }
+  }
+}

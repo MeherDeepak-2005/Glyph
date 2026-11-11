@@ -1,0 +1,163 @@
+{"kind":"startup","engine":"ioskeyboard","tier":"nss","words":114283,"startup_ms":40.037}
+{"kind":"process","at":"after_startup","peak_rss_bytes":39223296,"footprint_bytes":25822208,"heap_in_use_bytes":18353728,"heap_allocated_bytes":41943040}
+{"id":"ecps-00000","s":["abandon","abandoned","abandonment"],"c":"abandon","ms":23.2363,"ok":1}
+{"id":"ecps_ok-00001","s":["abandon","abandoned","abandonment"],"c":null,"ms":12.6898,"ok":1}
+{"id":"ecps-00022","s":["abilities","ability","abilites"],"c":"abilities","ms":12.0548,"ok":1}
+{"id":"ecps_ok-00023","s":["abilities","abilities so","abilities should"],"c":null,"ms":8.83137,"ok":1}
+{"id":"ecps-00024","s":["abilities","ability","abilites"],"c":"abilities","ms":12.902,"ok":1}
+{"id":"ecps_ok-00025","s":["abilities","abilities she","abilities such"],"c":null,"ms":10.147,"ok":1}
+{"id":"ecps-00026","s":["ability","abilities","stability"],"c":"ability","ms":15.9437,"ok":1}
+{"id":"ecps_ok-00027","s":["ability","abilities","stability"],"c":null,"ms":12.1453,"ok":1}
+{"id":"ecps-00028","s":["ability","abililty","abilities"],"c":"ability","ms":13.4006,"ok":1}
+{"id":"ecps_ok-00029","s":["ability","abilities","ability to"],"c":null,"ms":9.05479,"ok":1}
+{"id":"ecps-00030","s":["ability","abilty","bailey"],"c":"ability","ms":13.2609,"ok":1}
+{"id":"ecps_ok-00031","s":["ability","abilities","ability's"],"c":null,"ms":10.4955,"ok":1}
+{"id":"ecps-00032","s":["ability","a little","a litter"],"c":"ability","ms":13.1417,"ok":1}
+{"id":"ecps_ok-00033","s":["ability","agility","abilities"],"c":null,"ms":10.4574,"ok":1}
+{"id":"ecps-00034","s":["ability","a little","abilities"],"c":"ability","ms":13.7024,"ok":1}
+{"id":"ecps_ok-00035","s":["ability","abilities","stability"],"c":null,"ms":9.39513,"ok":1}
+{"id":"ecps-00036","s":["ability","a little","abilty"],"c":"ability","ms":11.8467,"ok":1}
+{"id":"ecps_ok-00037","s":["ability","abilities","stability"],"c":null,"ms":8.52463,"ok":1}
+{"id":"ecps-00038","s":["ability","abilities","abilty"],"c":"ability","ms":10.9761,"ok":1}
+{"id":"ecps_ok-00039","s":["ability","abilities","liability"],"c":null,"ms":8.41896,"ok":1}
+{"id":"clean-39037","s":["my","myself","you"],"c":null,"ms":7.23767,"ok":1}
+{"id":"nw-39038","r0":-1,"kf":1,"len":2,"s0":["i","the","he"],"ms0":0.103083,"msk":[2.74992],"ok":1}
+{"id":"syn-39039","s":["my","you","you're"],"c":"my","ms":5.16838,"ok":1}
+{"id":"syn-39040","s":["my","my grandfather","my grandmother"],"c":"my","ms":5.13012,"ok":1}
+{"id":"syn-39041","s":["my","you","you're"],"c":"my","ms":3.16196,"ok":1}
+{"id":"syn-39042","s":["my","myself","maybe"],"c":"my","ms":6.74154,"ok":1}
+{"id":"realword-39043","s":["my","the","mgm"],"c":"my","ms":5.05333,"ok":1}
+{"id":"clean-39060","s":["in","into","inside"],"c":null,"ms":4.39133,"ok":1}
+{"id":"nw-39061","r0":0,"kf":0,"len":2,"s0":["in","out","off"],"ms0":0.068959,"msk":[1.74063],"ok":1}
+{"id":"syn-39062","s":["in","into","inside"],"c":"in","ms":2.21946,"ok":1}
+{"id":"syn-39063","s":["in","into","inside"],"c":"in","ms":3.20479,"ok":1}
+{"id":"syn-39064","s":["in","into","inside"],"c":"in","ms":3.49392,"ok":1}
+{"id":"realword-39065","s":["in","under","until"],"c":"in","ms":3.61792,"ok":1}
+{"id":"clean-39073","s":["water","waters","water's"],"c":null,"ms":9.61533,"ok":1}
+{"id":"nw-39074","r0":-1,"kf":1,"len":5,"s0":["mood","snow","rain"],"ms0":0.09475,"msk":[2.67579],"ok":1}
+{"id":"syn-39075","s":["water","waters","water's"],"c":"water","ms":5.83967,"ok":1}
+{"id":"syn-39076","s":["water","waters","warehouse"],"c":"water","ms":5.89429,"ok":1}
+{"id":"syn-39077","s":["water","waters","weather"],"c":"water","ms":7.42596,"ok":1}
+{"id":"clean-39089","s":["winds","wind","windows"],"c":null,"ms":10.5891,"ok":1}
+{"id":"nw-39090","r0":-1,"kf":3,"len":4,"s0":["with","winds","in"],"ms0":0.107125,"msk":[2.678,2.26288,1.82187],"ok":1}
+{"id":"realword-39096","s":["in","winds","wind"],"c":"in","ms":6.12237,"ok":1}
+{"id":"clean-39097","s":["from","forms","form"],"c":null,"ms":10.2209,"ok":1}
+{"id":"nw-39098","r0":-1,"kf":2,"len":4,"s0":["shear","gusts","winds"],"ms0":0.10575,"msk":[3.11721,1.80513],"ok":1}
+{"id":"realword-39104","s":["forms","form","formations"],"c":null,"ms":9.50054,"ok":1}
+{"id":"clean-39129","s":["to","too","took"],"c":null,"ms":9.44521,"ok":1}
+{"id":"nw-39130","r0":-1,"kf":3,"len":3,"s0":["do","let","to"],"ms0":0.113708,"msk":[2.67413,2.3565],"ok":1}
+{"id":"realword-39135","s":["to","told","touch"],"c":null,"ms":4.42338,"ok":1}
+{"id":"clean-39143","s":["and","andy","a doctor"],"c":null,"ms":9.87317,"ok":1}
+{"id":"nw-39144","r0":2,"kf":0,"len":3,"s0":["to","in","and"],"ms0":0.103834,"msk":[2.69104],"ok":1}
+{"id":"realword-39149","s":["and","as","adults"],"c":"and","ms":5.35942,"ok":1}
+{"id":"clean-39158","s":["to","too","took"],"c":null,"ms":8.41621,"ok":1}
+{"id":"nw-39159","r0":-1,"kf":2,"len":3,"s0":["to","a","even"],"ms0":0.114625,"msk":[2.39617,1.87392],"ok":1}
+{"id":"realword-39164","s":["to","too","told"],"c":null,"ms":3.63783,"ok":1}
+{"id":"clean-39218","s":["rings","ring","brings"],"c":null,"ms":12.5622,"ok":1}
+{"id":"nw-39219","r0":-1,"kf":4,"len":5,"s0":["way","sun","moon"],"ms0":0.114416,"msk":[3.09029,1.73821,2.428,2.15967],"ok":1}
+{"id":"realword-39226","s":["ring","ringing","rings"],"c":null,"ms":7.82108,"ok":1}
+{"id":"clean-39233","s":["saturn","saturday","saturn's"],"c":null,"ms":10.0534,"ok":1}
+{"id":"nw-39234","r0":-1,"kf":5,"len":6,"s0":["the","a","my"],"ms0":0.083292,"msk":[2.63479,1.83375,2.2365,0.816333,0.329083],"ok":1}
+{"id":"realword-39255","s":["and","an","analysis"],"c":null,"ms":7.93,"ok":1}
+{"id":"realword-39279","s":["had","hard","hadn't"],"c":null,"ms":10.3522,"ok":1}
+{"id":"apos-58887","s":["don't","do they","do the"],"c":"don't","ms":10.8497,"ok":1}
+{"id":"apos-58888","s":["don't","do the","don"],"c":"don't","ms":7.47225,"ok":1}
+{"id":"apos-58889","s":["can't","santiago","canterbury"],"c":"can't","ms":10.3075,"ok":1}
+{"id":"apos-58890","s":["can't","can","canteen"],"c":"can't","ms":8.06558,"ok":1}
+{"id":"apos-58891","s":["won't","want","wanted"],"c":"won't","ms":10.8012,"ok":1}
+{"id":"apos-58892","s":["won't","want","wanted"],"c":"won't","ms":7.09746,"ok":1}
+{"id":"apos-58893","s":["isn't","is there","instead"],"c":"isn't","ms":11.3239,"ok":1}
+{"id":"apos-58894","s":["isn't","is the","is to"],"c":"isn't","ms":8.74179,"ok":1}
+{"id":"apos-58895","s":["it's","its","it"],"c":null,"ms":8.41163,"ok":1}
+{"id":"apos-58896","s":["it's","its","it"],"c":"it's","ms":5.69058,"ok":1}
+{"id":"hard-58967","s":["pray","pirates","Priya"],"c":null,"ms":9.76658,"ok":1}
+{"id":"hard-58968","s":["department","deepfake","Deepak"],"c":null,"ms":10.2501,"ok":1}
+{"id":"hard-58969","s":["me here","me her","meher"],"c":null,"ms":8.41088,"ok":1}
+{"id":"hard-58970","s":["siobhan","so hand","so hands"],"c":null,"ms":10.7328,"ok":1}
+{"id":"hard-58971","s":["nguyen","nugent","guys"],"c":null,"ms":7.46742,"ok":1}
+{"id":"hard-58972","s":["krzysztof","crystal","krystal"],"c":null,"ms":16.5975,"ok":1}
+{"id":"hard-58973","s":["are","arabic","arriving"],"c":"are","ms":9.53213,"ok":1}
+{"id":"hard-58974","s":["course","saoirse","source"],"c":"course","ms":11.4151,"ok":1}
+{"id":"hard-58975","s":["joaquin","joaquin no","joaquin not"],"c":null,"ms":8.05617,"ok":1}
+{"id":"hard-58976","s":["xiomara","comparable","comparative"],"c":null,"ms":11.4012,"ok":1}
+{"id":"ext_birkbeck-00002","s":["american","americans","ameracan"],"c":"american","ms":11.8583,"ok":1}
+{"id":"ext_birkbeck-00003","s":["april","airlines","airline"],"c":"april","ms":7.86512,"ok":1}
+{"id":"ext_birkbeck-00004","s":["austrian","austrians","australian"],"c":"austrian","ms":8.80342,"ok":1}
+{"id":"ext_birkbeck-00005","s":["botuania","botanical","botanist"],"c":null,"ms":16.0174,"ok":1}
+{"id":"ext_birkbeck-00006","s":["cambridge","cambrige","cambridge's"],"c":"cambridge","ms":9.19258,"ok":1}
+{"id":"ext_birkbeck-00009","s":["christian","christianity","christians"],"c":"christian","ms":11.6397,"ok":1}
+{"id":"ext_birkbeck-00010","s":["christmas","chris asked","chris as"],"c":"christmas","ms":12.4277,"ok":1}
+{"id":"ext_birkbeck-00011","s":["christmas","christ is","christ isn't"],"c":"christmas","ms":13.3884,"ok":1}
+{"id":"ext_birkbeck-00012","s":["christmas","cristmus","christ us"],"c":"christmas","ms":11.3852,"ok":1}
+{"id":"ext_birkbeck-00013","s":["christmas","christmases","christmastime"],"c":"christmas","ms":10.0273,"ok":1}
+{"id":"ext_holbrook-29903","s":["after","artair","atari"],"c":"after","ms":12.004,"ok":1}
+{"id":"ext_holbrook-29905","s":["april","airlines","airline"],"c":"april","ms":7.82983,"ok":1}
+{"id":"ext_holbrook-29909","s":["bank","bangladesh","bangkok"],"c":"bank","ms":11.0473,"ok":1}
+{"id":"ext_holbrook-29911","s":["bicycle","bicycles","bicyle"],"c":"bicycle","ms":8.74508,"ok":1}
+{"id":"ext_holbrook-29912","s":["bo's","boston","boss"],"c":"bo's","ms":5.59842,"ok":1}
+{"id":"ext_holbrook-29914","s":["chester","cheers","cheering"],"c":"chester","ms":10.8327,"ok":1}
+{"id":"ext_holbrook-29916","s":["doctor","doctors","do terms"],"c":"doctor","ms":8.44037,"ok":1}
+{"id":"ext_holbrook-29917","s":["ed","edward","she"],"c":"ed","ms":6.73333,"ok":1}
+{"id":"ext_holbrook-29918","s":["he'd","he","her"],"c":"he'd","ms":6.45425,"ok":1}
+{"id":"ext_holbrook-29920","s":["factor","factory","facttoer"],"c":"factor","ms":12.9574,"ok":1}
+{"id":"ext_aspell-30799","s":["nevada","evade","never"],"c":"nevada","ms":9.37692,"ok":1}
+{"id":"ext_aspell-30800","s":["ability","abilitey","abilities"],"c":"ability","ms":9.99713,"ok":1}
+{"id":"ext_aspell-30806","s":["acquaintance","aquantance","acquaintances"],"c":"acquaintance","ms":12.6091,"ok":1}
+{"id":"ext_aspell-30807","s":["require","requires","required"],"c":"require","ms":8.49504,"ok":1}
+{"id":"ext_aspell-30810","s":["alcohol","alcoholic","alcoholism"],"c":"alcohol","ms":11.9265,"ok":1}
+{"id":"ext_aspell-30812","s":["alive","allieve","believe"],"c":"alive","ms":12.9878,"ok":1}
+{"id":"ext_aspell-30815","s":["amourfous","amorous","a our cousin"],"c":null,"ms":14.9144,"ok":1}
+{"id":"ext_aspell-30823","s":["appresteate","appreciate","appreciated"],"c":null,"ms":19.2423,"ok":1}
+{"id":"ext_aspell-30825","s":["archetype","archeype","archetypes"],"c":"archetype","ms":12.1182,"ok":1}
+{"id":"ext_aspell-30828","s":["arctic","article","articles"],"c":"arctic","ms":10.2259,"ok":1}
+{"id":"ext_wikipedia-31266","s":["brazilian","brazilians","brasillian"],"c":"brazilian","ms":9.12946,"ok":1}
+{"id":"ext_wikipedia-31267","s":["britain","britain's","brittany"],"c":"britain","ms":7.57933,"ok":1}
+{"id":"ext_wikipedia-31268","s":["british","britishers","britisher"],"c":"british","ms":9.48663,"ok":1}
+{"id":"ext_wikipedia-31269","s":["caesar","caesars","caesarean"],"c":"caesar","ms":8.7245,"ok":1}
+{"id":"ext_wikipedia-31270","s":["cambridge","cambrige","cambridge's"],"c":"cambridge","ms":8.95321,"ok":1}
+{"id":"ext_wikipedia-31271","s":["caribbean","carribean","caribbean's"],"c":"caribbean","ms":12.1719,"ok":1}
+{"id":"ext_wikipedia-31272","s":["champagne","champagnes","champange"],"c":"champagne","ms":9.21246,"ok":1}
+{"id":"ext_wikipedia-31274","s":["else","elsewhere","else's"],"c":"else","ms":7.32671,"ok":1}
+{"id":"ext_wikipedia-31275","s":["english","englishman","enlisted"],"c":"english","ms":9.14612,"ok":1}
+{"id":"ext_wikipedia-31276","s":["european","europeans","europian"],"c":"european","ms":7.35983,"ok":1}
+{"id":"keep_name-00003-0","s":["andres","andries","a direct"],"c":"andres","ms":13.9738,"ok":1}
+{"id":"keep_name-00003-1","s":["andries","a friend","a director"],"c":null,"ms":15.1203,"ok":1}
+{"id":"keep_name-00004-0","s":["and","an ardent","a narrow"],"c":"and","ms":19.0389,"ok":1}
+{"id":"keep_name-00004-1","s":["an ardent","annard","an artist"],"c":null,"ms":15.4853,"ok":1}
+{"id":"keep_name-00005-0","s":["antonella","a to ella","nato ella"],"c":null,"ms":25.3741,"ok":1}
+{"id":"keep_name-00005-1","s":["antonella","a to ella","anyone last"],"c":null,"ms":22.612,"ok":1}
+{"id":"keep_name-00008-0","s":["blame","blayne","blaine"],"c":"blame","ms":12.581,"ok":1}
+{"id":"keep_name-00008-1","s":["blame","blayne","blamed"],"c":"blame","ms":10.7266,"ok":1}
+{"id":"keep_name-00011-0","s":["carissa","caricature","carriage"],"c":"carissa","ms":14.7357,"ok":1}
+{"id":"keep_name-00011-1","s":["carissa","carisa","caricature"],"c":"carissa","ms":10.5777,"ok":1}
+{"id":"keep_name-00012-0","s":["carsten","arsenal","cars tend"],"c":null,"ms":18.0177,"ok":1}
+{"id":"keep_name-00012-1","s":["carsten","kirsten","arsenal"],"c":null,"ms":12.3313,"ok":1}
+{"id":"keep_name-00015-0","s":["christofer","christopher","christ offered"],"c":null,"ms":21.5759,"ok":1}
+{"id":"keep_name-00015-1","s":["christofer","christ offer","christopher"],"c":null,"ms":16.3117,"ok":1}
+{"id":"keep_name-00017-0","s":["chris","crisis","cristina"],"c":"chris","ms":11.0534,"ok":1}
+{"id":"keep_name-00017-1","s":["chris","crisis","crisps"],"c":"chris","ms":7.67342,"ok":1}
+{"id":"keep_name-00018-0","s":["christi","cristina","christian"],"c":"christi","ms":12.0737,"ok":1}
+{"id":"keep_name-00018-1","s":["kristi","christians","cristina"],"c":"kristi","ms":8.66283,"ok":1}
+{"id":"keep_name-00020-0","s":["damon","damned","a one"],"c":"damon","ms":12.7842,"ok":1}
+{"id":"keep_name-00020-1","s":["someone","damone","damned"],"c":"someone","ms":12.8938,"ok":1}
+{"id":"keep_word-00000","s":["physicalistic","physical instinct","physical stick"],"c":null,"ms":20.9492,"ok":1}
+{"id":"keep_word-00001","s":["proteanwise","protein wise","protein wiser"],"c":null,"ms":18.2104,"ok":1}
+{"id":"keep_word-00003","s":["ivorine","i orientation","i oriental"],"c":null,"ms":10.3777,"ok":1}
+{"id":"keep_word-00004","s":["styphnic","symphonic","typically"],"c":null,"ms":15.513,"ok":1}
+{"id":"keep_word-00008","s":["semitubular","semi tubular","see tubular"],"c":null,"ms":22.056,"ok":1}
+{"id":"keep_word-00010","s":["unentrapped","one trapped","u entrapped"],"c":null,"ms":13.824,"ok":1}
+{"id":"keep_word-00011","s":["hepatophlebotomy","people too you","people to you"],"c":null,"ms":25.1977,"ok":1}
+{"id":"keep_word-00013","s":["dihydroxy","hydroxide","did hydroxyl"],"c":null,"ms":14.8747,"ok":1}
+{"id":"keep_word-00014","s":["lymphad","lymphatic","lymphoma"],"c":null,"ms":8.51696,"ok":1}
+{"id":"keep_word-00015","s":["diameter","dimeter","dieter"],"c":"diameter","ms":10.0585,"ok":1}
+{"id":"keep_slang-00000","s":["we","we're","we've"],"c":"we","ms":4.83233,"ok":1}
+{"id":"keep_slang-00001","s":["k","know","karl"],"c":"k","ms":4.366,"ok":1}
+{"id":"keep_slang-00002","s":["gen","no","he"],"c":"gen","ms":4.10175,"ok":1}
+{"id":"keep_slang-00005","s":["i","in","it"],"c":"i","ms":3.86617,"ok":1}
+{"id":"keep_slang-00007","s":["he","everyone","even"],"c":"he","ms":4.11846,"ok":1}
+{"id":"keep_slang-00009","s":["with","is there","is that"],"c":"with","ms":8.36746,"ok":1}
+{"id":"keep_slang-00011","s":["brush","bruno","bruce"],"c":"brush","ms":6.01942,"ok":1}
+{"id":"keep_slang-00015","s":["youtube","youtube radio","youtuber"],"c":"youtube","ms":8.45775,"ok":1}
+{"kind":"process","at":"end","peak_rss_bytes":50544640,"footprint_bytes":32883712,"heap_in_use_bytes":23212848,"heap_allocated_bytes":50331648}
+{"kind":"nss","model_steps":105}
+{"kind":"done","events":158}

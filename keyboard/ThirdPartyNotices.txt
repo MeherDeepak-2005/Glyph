@@ -285,3 +285,7 @@ binary dictionaries/context files are preserved separately under
 CoreV4 capitalization/display metadata and context scales are not transferred
 to KBLM. This import does not assign the CoreV4 material the licenses of the
 separate ESDB, FrequencyWords, Tatoeba, WordNet or MASC sources listed above.
+
+Modern English vocabulary (9 November 2026): project-authored spellings, behavioral permissions and examples. Corroboration links in tools/vocabulary/modern_catalog.json identify usage evidence; no third-party definitions or example sentences are reproduced. Existing dictionary data licenses continue to apply.
+
+NSS unigram dictionary: tools/data/nss/unigram-v1 is a derived ESDB/FrequencyWords/Tatoeba/WikiText lexicon. Per-source observed counts and estimated mixture weights are separate. See tools/data/nss/unigram-v1/NOTICE.txt and manifest.json for exact source revisions and transformations. The extension installs this dictionary as langdata.bin without bi/trigram tables.

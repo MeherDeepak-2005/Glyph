@@ -1,0 +1,1682 @@
+{
+  "schema_version": 1,
+  "device": "cpu",
+  "torch": "2.11.0",
+  "seed": 731,
+  "threads": 2,
+  "train_sequence_sha256": "db39a642e951dbe9f3213d70f89b92431941a3720d96976ef88cbafae53f78bf",
+  "equal_budget_original_words": 250005,
+  "evaluation_warning": "Small CPU screening, not convergence or a blind keyboard benchmark. Token perplexities across tokenizers are not comparable; subword NLL scores the deterministic segmentation path, not a marginal over segmentations. Word OOV scores use normalized empirical lexicon tails; unrepresented strings share a finite unknown bucket.",
+  "sentencepiece_sha256": "3631899b930bee58b44c3932604af6fa6e42a48ed45128a13c5c30425a230aad",
+  "audit_sha256": "dc9b47cc70816ddc7adad6db2736d15c37cd04bdaf030b4cc77c1c1f1e8123de",
+  "models": {
+    "baseline-generic": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 670,
+        "proj": 96,
+        "cifg": true,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 3362638,
+      "tokenization": "word",
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 4.975673308626961,
+          "token_ppl": 97.6920847726821,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.1491672700941347,
+          "word_oov": 15,
+          "seconds": 0.17447704100050032
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 4.784676323673322,
+          "token_ppl": 68.1542301082779,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2020316027088036,
+          "word_oov": 14,
+          "seconds": 0.11187491700184182
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 6.149641057635115,
+          "token_ppl": 320.29770426005615,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.18101933216168717,
+          "word_oov": 113,
+          "seconds": 0.19323633300155052
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 6.978673453116339,
+          "token_ppl": 496.13030363215404,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.10918918918918918,
+          "word_oov": 40,
+          "seconds": 0.12525920799816959
+        }
+      },
+      "checkpoint_sha256": "00322aef5145e5a89e329350399dc40017d8b17621b8ab3d700ce6c7825dc64c",
+      "new_training": false
+    },
+    "baseline-chat": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 670,
+        "proj": 96,
+        "cifg": true,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 3362638,
+      "tokenization": "word",
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 3.8070882609460868,
+          "token_ppl": 33.3059356268063,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2824040550325851,
+          "word_oov": 15,
+          "seconds": 0.15645058399968548
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 4.8757202282957195,
+          "token_ppl": 73.85517520626014,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2178329571106095,
+          "word_oov": 14,
+          "seconds": 0.11279300000023795
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 6.471487350990198,
+          "token_ppl": 433.1955160584548,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.1675454012888108,
+          "word_oov": 113,
+          "seconds": 0.1897408330005419
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 7.081854048870063,
+          "token_ppl": 543.814131327494,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.11351351351351352,
+          "word_oov": 40,
+          "seconds": 0.12329404199772398
+        }
+      },
+      "checkpoint_sha256": "00d054aca26a32c986d54cc17a2d58f0692ea7e7a7d069d2d3abd6f419cabc08",
+      "new_training": false
+    },
+    "word-cifg": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 64,
+        "hidden": 256,
+        "proj": 64,
+        "cifg": true,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 2065716,
+      "tokenization": "word",
+      "training_original_words": 250005,
+      "training_pieces_including_specials": 298359,
+      "seconds": 53.886234998703,
+      "best_step": 1512,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1417,
+          "nll_per_original_word_including_eos": 6.747359739791277,
+          "token_ppl": 481.04129946529156,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 12,
+          "seconds": 0.12213466599860112
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1008,
+          "nll_per_original_word_including_eos": 7.580536137659653,
+          "token_ppl": 794.8006745384426,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 17,
+          "seconds": 0.08934975000011036
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 1916,
+          "nll_per_original_word_including_eos": 8.563720570125376,
+          "token_ppl": 3063.6755639115854,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 99,
+          "seconds": 0.15806966699892655
+        }
+      },
+      "history": [
+        {
+          "step": 504,
+          "score": 6.941523850631206,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.797437509027373,
+              "token_ppl": 201.63839507033228,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.11595330739299611,
+              "word_oov": 12,
+              "seconds": 0.12122441599785816
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.826928396312349,
+              "token_ppl": 409.19786858313284,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.07233065442020666,
+              "word_oov": 17,
+              "seconds": 0.08883708299981663
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 8.200205646553894,
+              "token_ppl": 2179.0032565121364,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.047731290512669416,
+              "word_oov": 99,
+              "seconds": 0.15649820900216582
+            }
+          }
+        },
+        {
+          "step": 1008,
+          "score": 6.678950104052073,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.458979897072802,
+              "token_ppl": 147.9213870944821,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.1245136186770428,
+              "word_oov": 12,
+              "seconds": 0.12135570800091955
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.526471979812841,
+              "token_ppl": 314.03706798081873,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.09299655568312284,
+              "word_oov": 17,
+              "seconds": 0.08937983299983898
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 8.051398435270574,
+              "token_ppl": 1895.3058165356033,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.06717737183264584,
+              "word_oov": 99,
+              "seconds": 0.15820158299902687
+            }
+          }
+        },
+        {
+          "step": 1512,
+          "score": 6.529508289719086,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.247381622094788,
+              "token_ppl": 121.87575103556968,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.14941634241245136,
+              "word_oov": 12,
+              "seconds": 0.12161425000158488
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.401221412625781,
+              "token_ppl": 281.22955131955945,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.1044776119402985,
+              "word_oov": 17,
+              "seconds": 0.08628237500306568
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 7.9399218344366895,
+              "token_ppl": 1707.252645584234,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.07660577489687684,
+              "word_oov": 99,
+              "seconds": 0.15861887500068406
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 5.38922319391601,
+          "token_ppl": 142.97011265554605,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.12454742939898625,
+          "word_oov": 15,
+          "seconds": 0.12653320800018264
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 6.134252826845303,
+          "token_ppl": 224.20841058333204,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.11950394588500564,
+          "word_oov": 13,
+          "seconds": 0.09017033400232322
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 7.836850169935138,
+          "token_ppl": 1559.4625960413146,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.08072009291521487,
+          "word_oov": 98,
+          "seconds": 0.15953474999696482
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 7.799466155862671,
+          "token_ppl": 1029.524565197192,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.0744336569579288,
+          "word_oov": 38,
+          "seconds": 0.09875466599987703
+        }
+      },
+      "streaming_max_abs_drift": 4.76837158203125e-7,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/word-cifg.best.pt",
+      "checkpoint_sha256": "8e27855203bc324fbf0fd1885d134af593b8dba0ff4cf49c8a19a24717a54e3a",
+      "production_ready": false
+    },
+    "word-gru": {
+      "arch": {
+        "arch": "gru",
+        "embed": 64,
+        "hidden": 256,
+        "proj": 64,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 2213940,
+      "tokenization": "word",
+      "training_original_words": 250005,
+      "training_pieces_including_specials": 298359,
+      "seconds": 60.400399923324585,
+      "best_step": 1512,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1417,
+          "nll_per_original_word_including_eos": 6.747197857803998,
+          "token_ppl": 480.970027482327,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 12,
+          "seconds": 0.12368404199878569
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1008,
+          "nll_per_original_word_including_eos": 7.580272476781978,
+          "token_ppl": 794.616085495656,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 17,
+          "seconds": 0.08961033299783594
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 1916,
+          "nll_per_original_word_including_eos": 8.563466064398675,
+          "token_ppl": 3062.9447625358002,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0,
+          "word_oov": 99,
+          "seconds": 0.1578397089979262
+        }
+      },
+      "history": [
+        {
+          "step": 504,
+          "score": 6.818003668799193,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.61787654991801,
+              "token_ppl": 171.07829243506035,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.12295719844357976,
+              "word_oov": 12,
+              "seconds": 0.11932633299875306
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.683417491914298,
+              "token_ppl": 360.60116893420434,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.08610792192881746,
+              "word_oov": 17,
+              "seconds": 0.08823295800175401
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 8.152716964565274,
+              "token_ppl": 2084.1333459539655,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.06364172068355922,
+              "word_oov": 99,
+              "seconds": 0.15560137499778648
+            }
+          }
+        },
+        {
+          "step": 1008,
+          "score": 6.607900947845746,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.365571284536962,
+              "token_ppl": 135.79993676847639,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.1330739299610895,
+              "word_oov": 12,
+              "seconds": 0.13089570800002548
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.446853611749955,
+              "token_ppl": 292.765234065561,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.09414466130884042,
+              "word_oov": 17,
+              "seconds": 0.09840141699896776
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 8.01127794725032,
+              "token_ppl": 1825.351340193817,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.07365939893930465,
+              "word_oov": 99,
+              "seconds": 0.16688575000080164
+            }
+          }
+        },
+        {
+          "step": 1512,
+          "score": 6.478305931193742,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 5.177997755291287,
+              "token_ppl": 114.37631993528986,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.16031128404669262,
+              "word_oov": 12,
+              "seconds": 0.12377741599993897
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 6.320151947469707,
+              "token_ppl": 261.84504725327054,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.1113662456946039,
+              "word_oov": 17,
+              "seconds": 0.08902433299954282
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 7.936768090820234,
+              "token_ppl": 1702.213078521053,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.0713022981732469,
+              "word_oov": 99,
+              "seconds": 0.16060791700147092
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 5.340052992223675,
+          "token_ppl": 136.64106233535358,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.13540912382331644,
+          "word_oov": 15,
+          "seconds": 0.12769720799769857
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 6.091198797168654,
+          "token_ppl": 215.8507451091951,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.11950394588500564,
+          "word_oov": 13,
+          "seconds": 0.09122449999995297
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 7.7970320077506425,
+          "token_ppl": 1502.283207425895,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.08246225319396051,
+          "word_oov": 98,
+          "seconds": 0.1591591670003254
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 7.760123147139387,
+          "token_ppl": 994.1227393381671,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.07766990291262135,
+          "word_oov": 38,
+          "seconds": 0.09945766600139905
+        }
+      },
+      "streaming_max_abs_drift": 0.0000011920928955078125,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/word-gru.best.pt",
+      "checkpoint_sha256": "b5e053919d664eef014bc53538b6d7d302db8293702b407164eaca8f2708ee7b",
+      "production_ready": false
+    },
+    "sp-lstm": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 256,
+        "proj": 96,
+        "cifg": false,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 804208,
+      "tokenization": "sp",
+      "training_original_words": 250005,
+      "training_pieces_including_specials": 361377,
+      "seconds": 33.597322940826416,
+      "best_step": 1512,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1680,
+          "nll_per_original_word_including_eos": 7.552568257728171,
+          "token_ppl": 340.6183076709344,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.04898533399682492
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1228,
+          "nll_per_original_word_including_eos": 8.588698516020903,
+          "token_ppl": 498.05977479626097,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.038372625000192784
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 2625,
+          "nll_per_original_word_including_eos": 10.346342974622425,
+          "token_ppl": 1186.6260732255992,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.06702874999973574
+        }
+      },
+      "history": [
+        {
+          "step": 504,
+          "score": 7.6066876223150715,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.923167985314668,
+              "token_ppl": 96.81739828409731,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04640566699890769
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 7.254856659485413,
+              "token_ppl": 189.84026186969191,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.03597295799772837
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.642038222145132,
+              "token_ppl": 732.8864090264641,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.06403637500261539
+            }
+          }
+        },
+        {
+          "step": 1008,
+          "score": 7.291510508789134,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.629102720144444,
+              "token_ppl": 77.1538381071906,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04887454099662136
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.936497765618402,
+              "token_ppl": 150.80220361480266,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.03674712499923771
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.308931040604556,
+              "token_ppl": 583.5218873606603,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.06564070799868205
+            }
+          }
+        },
+        {
+          "step": 1512,
+          "score": 7.099020142678218,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.4267963065306954,
+              "token_ppl": 65.99744030901314,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04837862500062329
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.776353853242892,
+              "token_ppl": 134.31189576060848,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.038265499999397434
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.093910268261066,
+              "token_ppl": 503.6929201047113,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.06778845799999544
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1758,
+          "nll_per_original_word_including_eos": 5.48129543533981,
+          "token_ppl": 77.6809479479977,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.049207749998458894
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1204,
+          "nll_per_original_word_including_eos": 6.376036105685764,
+          "token_ppl": 117.46494470214382,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.0372622089998913
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 2630,
+          "nll_per_original_word_including_eos": 8.877009666359031,
+          "token_ppl": 465.45978437933195,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.06791308300307719
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1389,
+          "nll_per_original_word_including_eos": 8.499444801449158,
+          "token_ppl": 366.8458940685337,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.04738554199866485
+        }
+      },
+      "streaming_max_abs_drift": 2.384185791015625e-7,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/sp-lstm.best.pt",
+      "checkpoint_sha256": "5b8cb1121b89b546d8e59ef530f225c2f9a21bf03fafb8bf8c1278cdd075afb4",
+      "production_ready": false
+    },
+    "sp-gru": {
+      "arch": {
+        "arch": "gru",
+        "embed": 96,
+        "hidden": 256,
+        "proj": 96,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 878448,
+      "tokenization": "sp",
+      "training_original_words": 250005,
+      "training_pieces_including_specials": 361377,
+      "seconds": 31.194023847579956,
+      "best_step": 1512,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1680,
+          "nll_per_original_word_including_eos": 7.552649716367699,
+          "token_ppl": 340.63972915177345,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.0433814580028411
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1228,
+          "nll_per_original_word_including_eos": 8.589039570576436,
+          "token_ppl": 498.18262431993264,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.03340708399991854
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 2625,
+          "nll_per_original_word_including_eos": 10.346668812639198,
+          "token_ppl": 1186.8906435170081,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.05981204199997592
+        }
+      },
+      "history": [
+        {
+          "step": 504,
+          "score": 7.529359457207684,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.835938911761517,
+              "token_ppl": 90.51212239091255,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04160158399827196
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 7.195120321737753,
+              "token_ppl": 181.81433530599023,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.03242383399992832
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.557019138123781,
+              "token_ppl": 691.471181625495,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.058347624999441905
+            }
+          }
+        },
+        {
+          "step": 1008,
+          "score": 7.2347163253674465,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.526177352634686,
+              "token_ppl": 71.26037993849222,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04249308400176233
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.902576274699993,
+              "token_ppl": 147.148093895856,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.03451941700041061
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.275395348767661,
+              "token_ppl": 570.2855273188468,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.05857666699739639
+            }
+          }
+        },
+        {
+          "step": 1512,
+          "score": 7.051337484884762,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.339263610133963,
+              "token_ppl": 61.684866934744576,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.045391749998088926
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.7273429664405615,
+              "token_ppl": 129.63509970901399,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.03599641700202483
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.08740587807976,
+              "token_ppl": 501.456345150409,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.0632471249991795
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1758,
+          "nll_per_original_word_including_eos": 5.4257853598171115,
+          "token_ppl": 74.33116812350764,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.042839417001232505
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1204,
+          "nll_per_original_word_including_eos": 6.29487786187066,
+          "token_ppl": 110.55061659252955,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.03390758299792651
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 2630,
+          "nll_per_original_word_including_eos": 8.852771733881353,
+          "token_ppl": 457.7177293997433,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.06186508300015703
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1389,
+          "nll_per_original_word_including_eos": 8.42418453236318,
+          "token_ppl": 348.1575825393652,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.04271745900041424
+        }
+      },
+      "streaming_max_abs_drift": 0.0000011920928955078125,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/sp-gru.best.pt",
+      "checkpoint_sha256": "329cc5d204cb0a3e10ac335a6e169bc51d7079135896103239f89db1be1949cb",
+      "production_ready": false
+    },
+    "sp-transformer": {
+      "arch": {
+        "arch": "transformer",
+        "embed": 96,
+        "dim": 128,
+        "layers": 2,
+        "heads": 4,
+        "ffn": 256,
+        "window": 96,
+        "tied": true
+      },
+      "parameters": 934896,
+      "tokenization": "sp",
+      "training_original_words": 250005,
+      "training_pieces_including_specials": 361377,
+      "seconds": 29.477893829345703,
+      "best_step": 1512,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1680,
+          "nll_per_original_word_including_eos": 7.643581134499084,
+          "token_ppl": 365.412417203231,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.059832791001099395
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1228,
+          "nll_per_original_word_including_eos": 8.667105391218856,
+          "token_ppl": 527.1147310286958,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.04443404199992074
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 2625,
+          "nll_per_original_word_including_eos": 10.452314822870267,
+          "token_ppl": 1275.8581065427825,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.07251087500117137
+        }
+      },
+      "history": [
+        {
+          "step": 504,
+          "score": 7.605604814194625,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.93550301627554,
+              "token_ppl": 97.74378830213875,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.0502985000020999
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 7.272826873504363,
+              "token_ppl": 192.32328635370396,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04137849999824539
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.608484552803974,
+              "token_ppl": 716.2531182891447,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.06898012500096229
+            }
+          }
+        },
+        {
+          "step": 1008,
+          "score": 7.295741841744367,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.589632691653214,
+              "token_ppl": 74.8382804242973,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.0531728749992908
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.939253935942778,
+              "token_ppl": 151.1030613616715,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04247041700000409
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.358338897637111,
+              "token_ppl": 603.5846807252987,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.06844445800015819
+            }
+          }
+        },
+        {
+          "step": 1512,
+          "score": 7.146597123079783,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1680,
+              "nll_per_original_word_including_eos": 5.429258606851147,
+              "token_ppl": 66.12301775910568,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.07155083299949183
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1228,
+              "nll_per_original_word_including_eos": 6.808317648397909,
+              "token_ppl": 137.45252160770866,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.04960824999943725
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 2625,
+              "nll_per_original_word_including_eos": 9.202215113990292,
+              "token_ppl": 542.434825487988,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": null,
+              "word_oov": null,
+              "seconds": 0.08028633300273214
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1758,
+          "nll_per_original_word_including_eos": 5.537916035911757,
+          "token_ppl": 81.25330933857062,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.05570729200189817
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1204,
+          "nll_per_original_word_including_eos": 6.359979553222656,
+          "token_ppl": 116.06350982607356,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.044264749998546904
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 2630,
+          "nll_per_original_word_including_eos": 8.988226452502575,
+          "token_ppl": 502.69790751418185,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.07232641600057832
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1389,
+          "nll_per_original_word_including_eos": 8.51719806256072,
+          "token_ppl": 371.39858232509465,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": null,
+          "word_oov": null,
+          "seconds": 0.050230749999172986
+        }
+      },
+      "streaming_max_abs_drift": 0.000001430511474609375,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/sp-transformer.best.pt",
+      "checkpoint_sha256": "1dfe548d17f0609d6b5c4483dc21a7803ad225721119c088591024b0e9991b88",
+      "production_ready": false
+    },
+    "warm-chat": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 670,
+        "proj": 96,
+        "cifg": true,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 3362638,
+      "tokenization": "word",
+      "training_original_words": 500012,
+      "training_pieces_including_specials": 596664,
+      "seconds": 163.8924160003662,
+      "best_step": 0,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1417,
+          "nll_per_original_word_including_eos": 3.603351641550744,
+          "token_ppl": 27.06383573875752,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.30116731517509726,
+          "word_oov": 12,
+          "seconds": 0.14795654099725652
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1008,
+          "nll_per_original_word_including_eos": 5.009219925512447,
+          "token_ppl": 82.50708926175155,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.20436280137772675,
+          "word_oov": 17,
+          "seconds": 0.11221324999860371
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 1916,
+          "nll_per_original_word_including_eos": 6.557815350790298,
+          "token_ppl": 467.3583118446325,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.15615792575132587,
+          "word_oov": 99,
+          "seconds": 0.19722229100079858
+        }
+      },
+      "history": [
+        {
+          "step": 1007,
+          "score": 5.076086454570539,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.6209244489156966,
+              "token_ppl": 27.50266748619113,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.2988326848249027,
+              "word_oov": 12,
+              "seconds": 0.14491362500120886
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.021279317668275,
+              "token_ppl": 83.38829654548515,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.19862227324913892,
+              "word_oov": 17,
+              "seconds": 0.11436854199928348
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.586055597127645,
+              "token_ppl": 479.89521244966926,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.15321154979375368,
+              "word_oov": 99,
+              "seconds": 0.19440299999769195
+            }
+          }
+        },
+        {
+          "step": 2014,
+          "score": 5.08758425279328,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.6269839646400848,
+              "token_ppl": 27.65563097981971,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.29961089494163423,
+              "word_oov": 12,
+              "seconds": 0.14824012499957462
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.020201339207636,
+              "token_ppl": 83.30914463133618,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.20321469575200918,
+              "word_oov": 17,
+              "seconds": 0.10789854099857621
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.61556745453212,
+              "token_ppl": 493.3561308858764,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.154979375368297,
+              "word_oov": 99,
+              "seconds": 0.18444454200289329
+            }
+          }
+        },
+        {
+          "step": 3021,
+          "score": 5.0937547860947365,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.63655399008191,
+              "token_ppl": 27.898946771605797,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.30038910505836575,
+              "word_oov": 12,
+              "seconds": 0.1616741660000116
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.01480206481117,
+              "token_ppl": 82.91382529631612,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.20436280137772675,
+              "word_oov": 17,
+              "seconds": 0.1274276660005853
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.6299083033911295,
+              "token_ppl": 500.03293331669283,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.15556865055981142,
+              "word_oov": 99,
+              "seconds": 0.21584312499908265
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 3.805985581429441,
+          "token_ppl": 33.272134070969045,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2824040550325851,
+          "word_oov": 15,
+          "seconds": 0.17642145799982245
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 4.8626905811584535,
+          "token_ppl": 73.01094316739952,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.21871476888387825,
+          "word_oov": 13,
+          "seconds": 0.12891895799839403
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 6.469633259038411,
+          "token_ppl": 432.4426681867133,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.16608594657375145,
+          "word_oov": 98,
+          "seconds": 0.21104816699880757
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 7.07874898961429,
+          "token_ppl": 542.3143829132764,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.11326860841423948,
+          "word_oov": 38,
+          "seconds": 0.15903341699959128
+        }
+      },
+      "streaming_max_abs_drift": 0.0000019073486328125,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs/warm-chat.best.pt",
+      "checkpoint_sha256": "d3edca1297800b58516dc00f1ed717eb53708ae445cfda9644545ae9dafa16c6",
+      "production_ready": false
+    },
+    "warm-chat-control": {
+      "arch": {
+        "arch": "lstm",
+        "embed": 96,
+        "hidden": 670,
+        "proj": 96,
+        "cifg": true,
+        "layers": 1,
+        "tied": true
+      },
+      "parameters": 3362638,
+      "tokenization": "word",
+      "training_original_words": 500012,
+      "training_pieces_including_specials": 596664,
+      "seconds": 156.78521609306335,
+      "best_step": 0,
+      "initial_validation": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1297,
+          "tokens_including_eos": 1417,
+          "nll_per_original_word_including_eos": 3.6029685143431895,
+          "token_ppl": 27.05434661039268,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.30187207488299533,
+          "word_oov": 15,
+          "seconds": 0.16212216599888052
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 888,
+          "tokens_including_eos": 1008,
+          "nll_per_original_word_including_eos": 5.014960662286694,
+          "token_ppl": 82.92541056193481,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.20436280137772675,
+          "word_oov": 17,
+          "seconds": 0.11869491600009496
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1796,
+          "tokens_including_eos": 1916,
+          "nll_per_original_word_including_eos": 6.569154806012606,
+          "token_ppl": 472.35247984657985,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.15845697329376854,
+          "word_oov": 111,
+          "seconds": 0.2055857500017737
+        }
+      },
+      "history": [
+        {
+          "step": 1007,
+          "score": 5.081649188840982,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.621320825829733,
+              "token_ppl": 27.512647521586736,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.29875195007800315,
+              "word_oov": 15,
+              "seconds": 0.14514479200079222
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.027257493572326,
+              "token_ppl": 83.82861849075998,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.19862227324913892,
+              "word_oov": 17,
+              "seconds": 0.10731599999780883
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.596369247120885,
+              "token_ppl": 484.5571949591272,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.1543026706231454,
+              "word_oov": 111,
+              "seconds": 0.18298341700210585
+            }
+          }
+        },
+        {
+          "step": 2014,
+          "score": 5.093456755526557,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.627683117340792,
+              "token_ppl": 27.673334706927594,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.2995319812792512,
+              "word_oov": 15,
+              "seconds": 0.146541125002841
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.027101297184287,
+              "token_ppl": 83.81708433398882,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.20321469575200918,
+              "word_oov": 17,
+              "seconds": 0.1082453750022978
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.625585852054592,
+              "token_ppl": 498.01103168271976,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.15608308605341245,
+              "word_oov": 111,
+              "seconds": 0.18431312499888008
+            }
+          }
+        },
+        {
+          "step": 3021,
+          "score": 5.099798385200886,
+          "valid": {
+            "soda": {
+              "sentences": 120,
+              "original_words": 1297,
+              "tokens_including_eos": 1417,
+              "nll_per_original_word_including_eos": 3.6373693542848216,
+              "token_ppl": 27.919775926276657,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.2995319812792512,
+              "word_oov": 15,
+              "seconds": 0.15293350000138162
+            },
+            "tatoeba": {
+              "sentences": 120,
+              "original_words": 888,
+              "tokens_including_eos": 1008,
+              "nll_per_original_word_including_eos": 5.022972385710558,
+              "token_ppl": 83.51276401668292,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.20551090700344432,
+              "word_oov": 17,
+              "seconds": 0.11241620899818372
+            },
+            "wikitext": {
+              "sentences": 120,
+              "original_words": 1796,
+              "tokens_including_eos": 1916,
+              "nll_per_original_word_including_eos": 6.639053415607279,
+              "token_ppl": 504.33781547105207,
+              "token_ppl_comparable_only_with_same_tokenizer": true,
+              "word_known_top1": 0.15786350148367953,
+              "word_oov": 111,
+              "seconds": 0.1921401670006162
+            }
+          }
+        }
+      ],
+      "test": {
+        "soda": {
+          "sentences": 120,
+          "original_words": 1396,
+          "tokens_including_eos": 1516,
+          "nll_per_original_word_including_eos": 3.8070882609460868,
+          "token_ppl": 33.3059356268063,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2824040550325851,
+          "word_oov": 15,
+          "seconds": 0.155824625002424
+        },
+        "tatoeba": {
+          "sentences": 120,
+          "original_words": 900,
+          "tokens_including_eos": 1020,
+          "nll_per_original_word_including_eos": 4.8757202282957195,
+          "token_ppl": 73.85517520626014,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.2178329571106095,
+          "word_oov": 14,
+          "seconds": 0.11061725000035949
+        },
+        "wikitext": {
+          "sentences": 120,
+          "original_words": 1820,
+          "tokens_including_eos": 1940,
+          "nll_per_original_word_including_eos": 6.471487350990198,
+          "token_ppl": 433.1955160584548,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.1675454012888108,
+          "word_oov": 113,
+          "seconds": 0.18953954199969303
+        },
+        "masc": {
+          "sentences": 120,
+          "original_words": 965,
+          "tokens_including_eos": 1085,
+          "nll_per_original_word_including_eos": 7.081854048870063,
+          "token_ppl": 543.814131327494,
+          "token_ppl_comparable_only_with_same_tokenizer": true,
+          "word_known_top1": 0.11351351351351352,
+          "word_oov": 40,
+          "seconds": 0.12335612500100979
+        }
+      },
+      "streaming_max_abs_drift": 0.0000019073486328125,
+      "checkpoint": "tools/.cache/dictionary-research-2026-11-02/runs-control/warm-chat-control.best.pt",
+      "checkpoint_sha256": "028cb2197beeae572b063bea937b35984c543763c001c793b7e90478cf8c0fd6",
+      "production_ready": false
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "recorded_at": "2026-11-02T06:16:00.434Z",
+  "files": [
+    {
+      "path": "tools/nss/rigorous_2026_11_02/README.md",
+      "bytes": 8173,
+      "sha256": "1d087ddf514c69dbc18ea1f5a24f065f1366df8d2d5f77127c2216626c82d1b9"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/adaptation.py",
+      "bytes": 2052,
+      "sha256": "e7511847485bc294786ccc1eab8eb9e2aca6e4c68a38d454980242fee591857b"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/corpus.py",
+      "bytes": 8287,
+      "sha256": "a0c5f4f569c00818bfaa1c704df92052a442f7f1a2d1f432de25816b0902c653"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/decoder.py",
+      "bytes": 8984,
+      "sha256": "701fa6d2c6f83b733ec5175dc412262ddc7642943f658ab319e536d6b0bfdc00"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/dictionary.py",
+      "bytes": 6972,
+      "sha256": "7db6456c97fd32cda87efe91e96d86330bf3dd0b2c4c17eb9eeebc60bea8762b"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/environment.json",
+      "bytes": 197,
+      "sha256": "764eac858a309df58d46a7a27e9ecef55ceeb189d1142b4be65abc04f19a28d4"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/export_word.py",
+      "bytes": 2885,
+      "sha256": "18e86dbaef02de78736d19e94dc40a0fe3e2c16670047952b8498be8e3593f7b"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/full_runs.py",
+      "bytes": 3006,
+      "sha256": "cfe86d344ee7dca4e4569468471006f778faf3c69e60f89c8a43b0315c81616a"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/import_modern.py",
+      "bytes": 1860,
+      "sha256": "3fd85f9e1bc0d6498b76c13253d12811e9a605dc16334c22ba89933d13c99a2e"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/large_data.py",
+      "bytes": 7193,
+      "sha256": "425aec1dc8eac9887777c18279a2de39b29479033ae88053607aaf706e3cd444"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/legacy_full.py",
+      "bytes": 3174,
+      "sha256": "fe613209622816d1c471700d354c29e12859070a5510461c1f13fef08df8f1df"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/modern-shard.json",
+      "bytes": 747,
+      "sha256": "517fa4c3d09638063481c74fb6d5968682dcd6c76494ac56db0a1e8d5f7299e6"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/names.py",
+      "bytes": 2208,
+      "sha256": "fe168152d46e911d523030618b42a9a9e5c14b66ca7d7109aa5b057cc43ad1a4"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/paired_pack.py",
+      "bytes": 1924,
+      "sha256": "e598beca81536cc948fe7fb9f7c63a2906b632ccd1219e0eab32afae0b7204e9"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/protocol.json",
+      "bytes": 1862,
+      "sha256": "8d2d077a02646592f6768b1ff42be5d4ab01840e94e40d1677512da95ac23444"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/readiness.py",
+      "bytes": 6900,
+      "sha256": "9e5f5bf1e5978c54443b1ee09cde6057e3cde4e9c4fad9696c65132bcc26ec42"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/run_screen.py",
+      "bytes": 2203,
+      "sha256": "d22b5ce5dfcc301284f1aae692974eaef8159c70ce398558872b5bce9ee5522f"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/test_pipeline.py",
+      "bytes": 5132,
+      "sha256": "6247a627b41dd8434d73b39a27e860edc24742f66e630a7bc9e63e55c24698e9"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/train.py",
+      "bytes": 15412,
+      "sha256": "3c2b1fb002529eca0b72cd87d2cfc75921ca3a09a8061c0ae634f721a75d0f46"
+    },
+    {
+      "path": "tools/nss/rigorous_2026_11_02/validate_native.py",
+      "bytes": 3227,
+      "sha256": "5552ad6caf25d2d43d811d648e85875d672879756ee1da3b0562b5800aa493c4"
+    }
+  ],
+  "production_pack_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "production_model_sha256": "ef8b999732e6afbc07b69b06feaf3a8170adb90f89923496d32ae8075ea3a9e2",
+  "production_artifacts_match_frozen_baseline": true
+}

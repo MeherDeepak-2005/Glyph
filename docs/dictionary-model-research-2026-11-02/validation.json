@@ -1,0 +1,16 @@
+{
+  "30000": {
+    "unique_words": 30000,
+    "all_in_candidate_pack": true,
+    "sha256": "04d6fa02c2898c52270970119614eee0ad08d495ef4b6537989706b1af34b5b7"
+  },
+  "60000": {
+    "unique_words": 60000,
+    "all_in_candidate_pack": true,
+    "sha256": "adcf6693f38e616b94dd91d29ad05636efa41136af684755fcbf4c5a0ba6758a"
+  },
+  "unigram_rows": 112323,
+  "source_count_column_sums": "PASS",
+  "production_pack_unchanged": true,
+  "production_vocab_unchanged": true
+}

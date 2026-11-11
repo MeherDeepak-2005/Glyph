@@ -1,0 +1,6 @@
+{
+  "targets": 200,
+  "gestures": 600,
+  "selection": "200 held ECPS correct targets, in iOS lexicon, 3..14 lowercase ASCII letters, excluding the 20 original fixture words; lowest SHA-256 target hashes.",
+  "generation": "12 samples per adjacent-key segment, 5-sample corner smoothing, AR(1) spatial noise coefficient .85 with Gaussian innovations .5268*sigma; sigma 0/.15/.30. Deterministic per target+noise SHA seed. Context empty. Not real swipe data; no parameter tuning."
+}

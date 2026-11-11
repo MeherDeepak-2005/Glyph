@@ -8,6 +8,7 @@ nonisolated final class LangData {
 	// Default production reader validates/shared-maps through Objective-C++.
 	// The separate comparison flag opts into auditing, not native production.
 	let nativeComparison: KBPackedLexicon?
+    let modernPolicyReader: KBPackedLexicon?
 	private let compareNativeReads: Bool
 	let backend: DecoderCoreBackend
 	let formatVersion: Int
@@ -70,6 +71,11 @@ nonisolated final class LangData {
 		guard blobBase <= d.count else { return nil }
 		data = d
 		nativeComparison = comparison
+        let policyReader = comparison ?? (try? KBPackedLexicon(backing: d as NSData))
+        if let sidecar = try? Data(contentsOf: url.deletingPathExtension().appendingPathExtension("kbmodern")) {
+            _ = policyReader?.installModernData(sidecar)
+        }
+        modernPolicyReader = policyReader
 	}
 
 

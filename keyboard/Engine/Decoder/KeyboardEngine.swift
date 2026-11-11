@@ -209,19 +209,21 @@ final class KeyboardEngine {
 	/// data and personalization should be loaded exactly once per extension process.
 	///
 	/// English decodes with the bundled word-level neural search space (tools/nss); a build
-	/// without the model (NSS_ENABLED=NO) keeps the n-gram decoder. Internal GRU builds
+	/// with a missing model preserves typed input. Internal GRU builds
 	/// (`INTERNAL_GRU`) install the GRU search space instead.
 	static let shared: KeyboardEngine = {
 		#if INTERNAL_GRU
 		return KeyboardEngine(searchPrior: GRULanguagePrior.bundled())
 		#else
-		return KeyboardEngine(neuralWordModelURL: Bundle.main.url(forResource: "nss-english", withExtension: "nsslm"))
+		return KeyboardEngine(neuralWordModelURL: Bundle.main.url(forResource: "nss-english", withExtension: "nsslm")
+            ?? Bundle.main.bundleURL.appendingPathComponent("nss-english.nsslm"))
 		#endif
 	}()
 
 	/// The word-level neural search space model (tools/nss), mapped on `queue` at startup.
-	/// Nil (no bundled model) keeps the n-gram tier.
+	/// Configured NSS stays selected after a load failure; typed text is preserved.
 	private let neuralWordModelURL: URL?
+    var requiresNeuralSearchSpace: Bool { neuralWordModelURL != nil }
 	var neuralWordModel: KBNeuralWordModel?
 	private let neuralTierLock = NSLock()
 	private var neuralTierReady = false
@@ -317,14 +319,12 @@ final class KeyboardEngine {
 	/// Called by the controller only when a new word session begins. English sessions take
 	/// the "nss" tier whenever a model is bundled, including the words typed while the
 	/// engine is still starting: every decode queues behind initialization on `queue`, so
-	/// it runs once the model is mapped. Only a model that fails to load downgrades those
-	/// first sessions (their results are dropped as a tier mismatch); later sessions then
-	/// see the engine without NSS and take n-gram.
+	/// it runs once the model is mapped. Failed NSS resources preserve literal input;
+	/// they never silently select the n-gram scorer.
 	func preferredModelTier(for languageMode: KBLanguageMode) -> DecodeModelTier {
 		guard languageMode == .english else { return .ngram }
 		if neuralSearchSpaceReady { return .neuralSearchSpace }
-		if neuralWordModelURL != nil, candidateBackend == .cpp,
-		   initializationGroup.wait(timeout: .now()) == .timedOut { return .neuralSearchSpace }
+		if neuralWordModelURL != nil, candidateBackend == .cpp { return .neuralSearchSpace }
 		guard let searchPrior else { return .ngram }
 		searchPrior.prepareForSelection()
 		return searchPrior.isReady ? searchPrior.modelTier : .ngram

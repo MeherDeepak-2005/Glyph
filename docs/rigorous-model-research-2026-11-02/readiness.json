@@ -1,0 +1,115 @@
+{
+  "promotion_allowed": false,
+  "checks": {
+    "document_split_corpus_complete": true,
+    "exact_source_counts": true,
+    "modern_download_verified": false,
+    "modern_data_in_training": false,
+    "screen_plan_unique_10m": true,
+    "30k_45k_60k_vocabularies_valid": true,
+    "name_capitalization_review_available": true,
+    "all_screen_models_trained_10m": false,
+    "matched_cpu_compute_snapshots_complete": false,
+    "natural_validation_cases": true,
+    "shipped_baseline_reproduced": true,
+    "all_architectures_real_decoder_evaluated": false,
+    "subword_tokenizer_scoring_search_native_parity": false,
+    "two_finalists_three_seeds_baseline_exposure": false,
+    "fresh_final_split_certified": false,
+    "final_test_once": false,
+    "final_quality_passed": false,
+    "physical_iphone_budgets_passed": false
+  },
+  "pending": [
+    "modern_download_verified",
+    "modern_data_in_training",
+    "all_screen_models_trained_10m",
+    "matched_cpu_compute_snapshots_complete",
+    "all_architectures_real_decoder_evaluated",
+    "subword_tokenizer_scoring_search_native_parity",
+    "two_finalists_three_seeds_baseline_exposure",
+    "fresh_final_split_certified",
+    "final_test_once",
+    "final_quality_passed",
+    "physical_iphone_budgets_passed"
+  ],
+  "details": {
+    "training_counts": {
+      "words": 185845175,
+      "word_types": 581470,
+      "by_source": {
+        "soda": 94826492,
+        "tatoeba": 12144835,
+        "wikitext": 78873848
+      }
+    },
+    "vocabulary_validation": {
+      "30000": {
+        "words": 30000,
+        "weights": {
+          "soda": 0.3125,
+          "tatoeba": 0.1875,
+          "wikitext": 0.375,
+          "subtitle": 0.12500000000000003
+        },
+        "validation_coverage": {
+          "soda": 0.9916875880723691,
+          "tatoeba": 0.9824112419152203,
+          "wikitext": 0.9441940871548888
+        },
+        "sha256": "3741675619515c465a24248494c43bf64a844351623038cf483ae5a88a6e70a5",
+        "added": 4565,
+        "removed": 4565
+      },
+      "45000": {
+        "words": 45000,
+        "weights": {
+          "soda": 0.5172413793103448,
+          "tatoeba": 0.2068965517241379,
+          "wikitext": 0.2068965517241379,
+          "subtitle": 0.06896551724137931
+        },
+        "validation_coverage": {
+          "soda": 0.9962633019647225,
+          "tatoeba": 0.9878708916910955,
+          "wikitext": 0.9554958092735735
+        },
+        "sha256": "1bf69059896b1fc4cd6c333af6b1bcdabffd8b08dd29bbdaef53a564d543acdf",
+        "added": 15578,
+        "removed": 578
+      },
+      "60000": {
+        "words": 60000,
+        "weights": {
+          "soda": 0.3125,
+          "tatoeba": 0.1875,
+          "wikitext": 0.375,
+          "subtitle": 0.12500000000000003
+        },
+        "validation_coverage": {
+          "soda": 0.9965078799462253,
+          "tatoeba": 0.9898407085136414,
+          "wikitext": 0.9632483985620156
+        },
+        "sha256": "6eed33eea71a606e0379815aa41b5cbcd5e8c76d5f964d9d08ec986f6a8202eb",
+        "added": 30002,
+        "removed": 2
+      }
+    },
+    "screen_models": {},
+    "screen_models_pending": [
+      "word-reference",
+      "word-cifg",
+      "word-lstm",
+      "word-gru",
+      "unigram-lstm",
+      "unigram-gru",
+      "unigram-transformer",
+      "bpe-lstm",
+      "bpe-gru",
+      "bpe-transformer"
+    ]
+  },
+  "cloud_spend": 0,
+  "meaning": "A checkpoint selected after step zero proves validation loss decreased; only the decoder/final-test/device gates support a product-improvement claim."
+}

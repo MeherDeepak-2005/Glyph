@@ -1,0 +1,11 @@
+{
+  "acceptance": "Keep production defaults unless a candidate improves at least one primary correction rate by >=0.5 percentage points, has no statistically significant primary accuracy or guardrail regression, and passes the existing sequential latency guardrail (p95 <= baseline*1.10, allowing <=.05 ms noise). Held split is not used to tune the spatial assumptions or acceptance policy.",
+  "primary": [
+    "ECPS real misspellings fixed",
+    "Synthetic typos fixed",
+    "ext_birkbeck fixed",
+    "ext_wikipedia fixed",
+    "GUARD real-word errors fixed"
+  ],
+  "required": "Complete matched 46,479 cases, same model/lexicon/simulated taps; count new fixes and lost fixes separately; sanitizer correctness tests; unmodified-default parity; fixed-prefix sequential timing."
+}

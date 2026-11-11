@@ -1,3 +1,25 @@
+# Production English: CIFG NSS + unigram
+
+The extension now packages the **187,462-form unigram dictionary** from
+tools/data/nss/unigram-v1. It includes **73,174 additions**, all generated in
+[ADDED_WORDS.txt](../data/nss/unigram-v1/ADDED_WORDS.txt).
+Build with `python3 -B tools/vocabulary/build_unigram.py`.
+See [frequency evidence, neural-only integration and results](../../docs/unigram-v1/README.md).
+The sections below document earlier reference packs; tools/build_language_data.py
+continues to reproduce those historical n-gram packs.
+
+# Historical modern vocabulary layer
+
+The historical KBLM v6 pack contains **114,288** forms. The canonical editorial inputs are
+`modern_catalog.json` (400 reviewed entries) and `modern_contexts.json` (50 original
+contexts). Legacy supplemental/curated TSVs are generated compatibility exports.
+The standard builder includes a hash-bound `langdata.kbmodern` sidecar (60 word
+policies). See [current behavior, validation and maintenance](../../docs/modern-vocabulary/README.md).
+
+The sections below describe the historical expansion stages. Their v5 capacity and
+size limits apply only to the explicit legacy options; the current large-ngram pack
+uses the 32 MB dictionary budget.
+
 # English vocabulary expansion
 
 This offline pipeline extends `keyboard/langdata.bin`; the iOS engine reads the same

@@ -1,24 +1,33 @@
 #!/bin/sh
 set -eu
 
-# Word-level neural search space LM (tools/nss), bundled in every build unless
-# NSS_ENABLED=NO (Config/Extension.xcconfig). KeyboardEngine.shared maps it at startup
-# and selects the shared engine's "nss" tier for English word sessions.
+# Production English is CIFG NSS + unigram only. Research n-gram runs use the host
+# benchmark; missing inputs must fail the build instead of shipping a fallback.
 resources="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 if [ "${NSS_ENABLED:-YES}" != "YES" ]; then
-    # An ordinary build may reuse a directory from an earlier internal build.
-    rm -f "${resources}/nss-english.nsslm"
-    echo "note: NSS word model not enabled (NSS_ENABLED=NO)"
-    exit 0
+    echo "error: NSS is required for the English extension"
+    exit 1
 fi
-
 model="${NSS_MODEL:-}"
+dictionary_dir="${NSS_DICTIONARY_DIR:-${SRCROOT}/tools/data/nss/unigram-v1}"
 if [ -z "$model" ] || [ ! -f "$model" ]; then
-    echo "warning: NSS_MODEL does not name an .nsslm file; the keyboard falls back to n-gram"
-    exit 0
+    echo "error: NSS_MODEL must name the paired CIFG model"
+    exit 1
 fi
-
+if [ ! -f "${dictionary_dir}/bundle.sha256" ] || [ ! -f "${dictionary_dir}/model.sha256" ]; then
+    echo "error: missing generated unigram checksums; run tools/vocabulary/build_unigram.py"
+    exit 1
+fi
+(cd "$dictionary_dir" && /usr/bin/shasum -a 256 -c bundle.sha256)
+expected_model=$(cat "${dictionary_dir}/model.sha256")
+actual_model=$(/usr/bin/shasum -a 256 "$model" | /usr/bin/awk '{print $1}')
+if [ "$actual_model" != "$expected_model" ]; then
+    echo "error: CIFG model does not match the unigram build manifest"
+    exit 1
+fi
 mkdir -p "$resources"
-# cp writes the declared output in place; ditto stages a temp file the script sandbox denies.
+# These are declared Xcode outputs, with no duplicate Copy Resources owner.
 cp -f "$model" "${resources}/nss-english.nsslm"
-echo "note: installed the NSS word model ($(wc -c < "$model" | tr -d ' ') bytes)"
+cp -f "${dictionary_dir}/english-unigram.bin" "${resources}/langdata.bin"
+cp -f "${dictionary_dir}/english-unigram.kbmodern" "${resources}/langdata.kbmodern"
+echo "note: installed paired CIFG model, unigram dictionary, and preservation policy"

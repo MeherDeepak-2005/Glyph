@@ -3,6 +3,7 @@
 import hashlib
 import json
 import plistlib
+import struct
 import subprocess
 import sys
 import tempfile
@@ -13,6 +14,18 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from verify_release_artifacts import is_neural_artifact
+
+
+def write_modern_metadata(root: Path) -> None:
+    pack_path = root / "langdata.bin"
+    pack = pack_path.read_bytes()
+    if len(pack) < 12:
+        pack = struct.pack("<4sII", b"KBLM", 6, 1)
+        pack_path.write_bytes(pack)
+    header = struct.pack("<8s4I32s", b"KBMODERN", 1,
+                         struct.unpack_from("<I", pack, 8)[0], 0, 0,
+                         hashlib.sha256(pack).digest())
+    (root / "langdata.kbmodern").write_bytes(header + hashlib.sha256(header).digest())
 
 
 class ReleaseArtifactVerifierTests(unittest.TestCase):
@@ -42,6 +55,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             write("demo_keyboard", b"binary")
             write("emoji.bin", b"emoji")
             write("langdata.bin", b"english")
+            write_modern_metadata(root)
             write("safety.kbguard", b"safety")
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")
@@ -68,6 +82,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             # Full-vocabulary budgets are explicit; legacy gates stay enforced.
             with (root / "langdata.bin").open("wb") as handle:
                 handle.truncate(11_000_001)
+            write_modern_metadata(root)
             base = [sys.executable, str(script), str(root), "--output", str(output)]
             legacy = subprocess.run(base, capture_output=True, text=True)
             self.assertNotEqual(legacy.returncode, 0)
@@ -76,10 +91,12 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             self.assertEqual(json.loads(output.read_text())["gateBytes"], 24_000_000)
             with (root / "langdata.bin").open("wb") as handle:
                 handle.truncate(20_000_001)
+            write_modern_metadata(root)
             too_big = subprocess.run(base + ["--corev4"], capture_output=True, text=True)
             self.assertNotEqual(too_big.returncode, 0)
             self.assertIn("langdata.bin exceeds 20,000,000 bytes", too_big.stderr)
             (root / "langdata.bin").write_bytes(b"english")
+            write_modern_metadata(root)
 
             (root / "tenglish_lexicon.bin").unlink()
             invalid = subprocess.run(
@@ -102,6 +119,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             write("demo_keyboard", b"binary")
             write("emoji.bin", b"emoji")
             write("langdata.bin", b"english")
+            write_modern_metadata(root)
             write("safety.kbguard", b"safety")
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")
@@ -137,6 +155,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             write("demo_keyboard", b"binary")
             write("emoji.bin", b"emoji")
             write("langdata.bin", b"english")
+            write_modern_metadata(root)
             write("safety.kbguard", b"safety")
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")

@@ -1,0 +1,126 @@
+{
+  "core_configuration": "US engus, medium, learning off, characters only; saved executable, not rebuilt",
+  "nss_configuration": "saved taps-final-nss-english: installed nss-english model, product rules, new touch cost, simulated taps",
+  "files": {
+    "Context/engus_0.atc": "d6ed23d6cae7b03fcb3f02ddf127f05bc0c3d671e897453197c5f719eac5a318",
+    "Context/engus_1.atc": "78acea0eb9b9d5996627255ddedf6bac7be783d473d71f37295278ad5a33e8b2",
+    "Context/engus_2.atc": "b46dd351110980c152a36e3822ef0d5ab1f0443acc4f39c24a2a55f53803fdb8",
+    "Default_Profile.ata": "89455dbf7c7c91abe17cc1a1cef8040a504d0a1a2395529419c363f4df798c74",
+    "Dictionaries/default.abn": "485a44abe16d5b524b6dcb3f336fee4bbc9c7162ba40e98341588e0772e655eb",
+    "Dictionaries/engus.atd": "2d3216fb3c77422ac1300a9b22ba107bf38a0e5872af4fea9e6456225f1a81ef",
+    "KPTUnicodeData.bin": "b04b9031fd933881af9dc4edc455f6ed9cef51900ed2554581d47fd32b0568a1",
+    "Lang/engus.atm": "9e8be767401b5705518d171d7eed272fd0e0e3a95f616ab64cd166f132f5b59f",
+    "appmapping.txt": "3b2793ae4ceb3074abe7599a77ade0ccaa6d73418ed9d01dc2cc13f76be80148",
+    "atxspchr.txt": "6268b6c0925edf42be4649e9a7da913d1dc7a9540797fa0bbb028da489c87ee1",
+    "language.bin": "64ced96c066c9310c39757830d5f73592e8b836e03345c6cec1ad78a475727f6",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/cases.tsv": "8ae9f394b3e83dfb2ee8e30d9a94d8d7ccee95d6a2daa7a0a0672d870707e664",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/cases.taps.tsv": "e34f13288532f6ca0a0e47ffd67526d0a3189e5dfe7bdd525fc54217737ba9da",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/cases-meta.json": "171b2cf838fc233b7aea06dea76f1236a8e34caca2e2849b207943680c906323",
+    "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.jsonl": "be16924bdc51ef51782f1ff9bf0203cdfdf6089436e022fd4b1957e23e17867f",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/results/taps-final-nss-english.jsonl": "a85d507e438249c23877fa7120ab66de0ab6bbe88f61313cd8f7d808af4974f6",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/ext-cases.tsv": "c7c0787c207b9dbca8b99b548c6e09132440cf094d293ce48b3c8e902798fe3e",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/ext-cases.taps.tsv": "c648e551e667f094aa3d0d033c327e2a1fbc78125088350937a13de4b16f41c4",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/ext-cases-meta.json": "3208b8c7347a9d725b9a4dcbc80839a39bde7def6b29c17dfcd0060880107b91",
+    "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.ext.jsonl": "18955267160260512a148390c4bbacee2b2c0b940b24f9baf35ac9b2bf62e3b6",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/results/taps-final-nss-english.ext.jsonl": "e513f40b6698cd0561181a7531a43a99bc194437b48d0d2e69f3c9140e597d61",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/keep-cases.tsv": "190895959e9a763c7967cc76a66366fe4d4b5f1b0c18885dd8b4be2690ee1de6",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/keep-cases.taps.tsv": "4d25d20c8fabcae6ff5b324175c0873df36864177d1ee77baa60756f157ec2e3",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/keep-cases-meta.json": "0d27568fc1a99f2a306a0fe60e5f136c642d0f926c9c0f7c0bca5561ef5e9ccd",
+    "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.keep.jsonl": "98aba7d7f1ee142b18f8475a122632e3785c3207d9ca64e762046cdc5d98daa2",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/results/taps-final-nss-english.keep.jsonl": "821a51d24dd982839f8b80e8b1c49174a1d9b03ba84e0c6bb790eb48ecbc5d31",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/bin/corev4-bench": "374021829953aef5df7aa9dbaa09283087eb697ee379091c50e92ba78a3c9930",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/CoreBench.cpp": "973a244d0c36bdc039d8f0765e41b4e5628bdbe31aa4760ce830cb81e339c96b",
+    "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/evaluate.py": "446e49cff8e0eec730ad9ff8c382a6d9a2ebf5b581b7bc468865f21781f3cae8",
+    "/Users/meher/Downloads/iOSKeyboard/keyboard/nss-english.nsslm": "ef8b999732e6afbc07b69b06feaf3a8170adb90f89923496d32ae8075ea3a9e2",
+    "/Users/meher/Downloads/iOSKeyboard/keyboard/langdata.bin": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+    "/Users/meher/Downloads/iOSKeyboard/keyboard/safety.kbguard": "e49f5383ee1b14575cfcfe8e015d2e6760e8959c4a9f9bcea4f43f85e5b9c937"
+  },
+  "commands": [
+    [
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/bin/corev4-bench",
+      "/var/folders/4q/71d4fdg557dd6y6hlb87ljtc0000gn/T/corev4-nss-touch-h26zj71d/profile",
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/cases.tsv",
+      "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.jsonl",
+      "engus",
+      "medium"
+    ],
+    [
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/bin/corev4-bench",
+      "/var/folders/4q/71d4fdg557dd6y6hlb87ljtc0000gn/T/corev4-nss-touch-h26zj71d/profile",
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/ext-cases.tsv",
+      "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.ext.jsonl",
+      "engus",
+      "medium"
+    ],
+    [
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/bin/corev4-bench",
+      "/var/folders/4q/71d4fdg557dd6y6hlb87ljtc0000gn/T/corev4-nss-touch-h26zj71d/profile",
+      "/Users/meher/Downloads/iOSKeyboard/tools/evaluation/autocorrect/corpus/keep-cases.tsv",
+      "/Users/meher/Downloads/iOSKeyboard/docs/corev4-vs-nss-touch-2026-11-01/corev4.keep.jsonl",
+      "engus",
+      "medium"
+    ]
+  ],
+  "validation": {
+    "cases": {
+      "cases": 59062,
+      "all_statuses_ok": true,
+      "same_ids_in_order": true,
+      "tap_text_identical": true
+    },
+    "ext-cases": {
+      "cases": 33503,
+      "all_statuses_ok": true,
+      "same_ids_in_order": true,
+      "tap_text_identical": true
+    },
+    "keep-cases": {
+      "cases": 3578,
+      "all_statuses_ok": true,
+      "same_ids_in_order": true,
+      "tap_text_identical": true
+    },
+    "saved_binary_matches_27_oct_build_manifest": true,
+    "main_replay_matches_prior_core_results": {
+      "cases": 59062,
+      "changed_corrections": 0,
+      "changed_suggestions": 0
+    },
+    "core_original_asset_checks": [
+      {
+        "file": "Dictionaries/engus.atd",
+        "matchesOriginal": true
+      },
+      {
+        "file": "Context/engus_0.atc",
+        "matchesOriginal": true
+      },
+      {
+        "file": "Context/engus_1.atc",
+        "matchesOriginal": true
+      },
+      {
+        "file": "Context/engus_2.atc",
+        "matchesOriginal": true
+      },
+      {
+        "file": "Lang/engus.atm",
+        "matchesOriginal": true
+      }
+    ],
+    "recorded_core_source_checks": [
+      {
+        "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/coreengine/atxdunloplevenschtein.cpp",
+        "shaMatchesRecord": true
+      },
+      {
+        "path": "/Users/meher/Downloads/CoreV4/v2core/core/source/common/keymapparser.cpp",
+        "shaMatchesRecord": true
+      },
+      {
+        "path": "/Users/meher/Downloads/CoreV4/v2core/core/include/coreengine/atxdunloplevenschtein.h",
+        "shaMatchesRecord": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+diff --git a/keyboard/Engine/SpatialModel.swift b/keyboard/Engine/SpatialModel.swift
+index 6fc8396..3f2722c 100644
+--- a/keyboard/Engine/SpatialModel.swift
++++ b/keyboard/Engine/SpatialModel.swift
+@@ -98,6 +98,9 @@ nonisolated enum KB {
+ 	/// Floor for pressing a different key than the intended one; equals native
+ 	/// `substitutionBase` (fitted on tools/evaluation/autocorrect, 27 Oct 2026).
+ 	static let substitutionBase = 0.6
++	/// Touch spread in key widths for a tap measured against the key it landed on; equals native
++	/// `touchSigma` (0: the tap is measured from the intended key's centre).
++	static let touchSigma = 0.7
+ 	static let apostrophe = UInt8(ascii: "'")
+ 	/// Skipping an apostrophe the candidate has but the typed string omitted costs a
+ 	/// fraction of a real deletion: people drop apostrophes constantly (whats, dont,
+@@ -155,10 +158,11 @@ nonisolated enum KB {
+ 		guard let a = letter.asciiValue else { return nil }
+ 		return pos[a]
+ 	}
+-	/// Continuous variant: distance from the intended key's center to the actual
+-	/// landing point. Parity with the discrete table when the tap is dead-center
+-	/// (cost → 0 for the pressed key); the substitutionBase cross-key floor still separates
+-	/// neighbors so a centered tap never reads as ambiguous.
++	/// Continuous variant; native `substitutionCost` with a tap. A finite tap is measured against
++	/// the key it landed on (native `touchSubstitutionCost` at `touchSigma`): the pressed key costs
++	/// 0 however far off-centre, another key (d(intended)² − d(pressed)²) / 2σ² plus the
++	/// substitutionBase floor, so a centered tap never reads as ambiguous. With `touchSigma` 0 or a
++	/// non-finite tap, the distance from the intended key's center to the landing point.
+ 	static func subCost(_ intended: UInt8, typed: UInt8, tap: KeyTap?, typedFirst: Bool = false) -> Double {
+ 		subCost(intended, typed: typed, tap: tap, vowelCost: typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost)
+ 	}
+@@ -166,6 +170,11 @@ nonisolated enum KB {
+ 		guard let tap, let a = pos[intended], let t = pos[typed] else { return subCost(intended, typed, vowelCost: vowelCost) }
+ 		let px = t.0 + tap.dx, py = t.1 + tap.dy
+ 		let d2 = (a.0 - px) * (a.0 - px) + (a.1 - py) * (a.1 - py)
++		if touchSigma > 0, tap.dx.isFinite, tap.dy.isFinite {
++			if intended == typed { return 0 }
++			let spatial = max(0, d2 - (tap.dx * tap.dx + tap.dy * tap.dy)) / (2 * touchSigma * touchSigma) + substitutionBase
++			return min(3.0, spatial, spellingSubstitution(intended, typed, vowelCost: vowelCost))
++		}
+ 		let base = d2 / (2 * sigma * sigma)
+ 		return intended == typed ? min(3.0, base)
+ 			: min(3.0, base + substitutionBase, spellingSubstitution(intended, typed, vowelCost: vowelCost))
+diff --git a/native/DecoderCore/include/SpatialModel.hpp b/native/DecoderCore/include/SpatialModel.hpp
+index 66f81ea..3def3de 100644
+--- a/native/DecoderCore/include/SpatialModel.hpp
++++ b/native/DecoderCore/include/SpatialModel.hpp
+@@ -31,6 +31,14 @@ KB_TUNABLE(adjacentFirstLetterPenalty, 1.0);
+ KB_TUNABLE(otherFirstLetterPenalty, 2.0);
+ // Substitution: squared key distance / 2 + substitutionBase for a different key.
+ KB_TUNABLE(substitutionBase, 0.6);
++// Touch spread in key widths for a tap: substitutionCost scores a tap against the key it landed
++// on (touchSubstitutionCost at this spread), so an off-centre tap on the typed key costs nothing.
++// 0 measures the tap from the intended key's centre, as before 1 Nov 2026: every letter of a
++// candidate paid for an off-centre tap and the typed text did not, so typos were left alone.
++// 0.7 (1 Nov, tune half with make_taps.py's taps): ECPS fixed 88.1% -> 91.8%, the most real
++// misspellings of the spreads whose guardrails are no worse than without taps; 0.5 and 0.6 fixed
++// fewer real-word errors than without taps, 0.85 and 1.0 fewer ECPS and Birkbeck misspellings.
++KB_TUNABLE(touchSigma, 0.7);
+ // Spelling confusions (vowel for vowel: speach -> speech; c/k, c/s, s/z), whatever the key distance.
+ KB_TUNABLE(vowelSubstitutionCost, 1.5);
+ // Vowel for vowel at the typed first letter (emminent -> imminent). The retained search does not
+@@ -59,7 +67,8 @@ inline double insertionCostAt(std::uint8_t typedLetter, std::uint8_t previous, s
+ }
+ std::optional<GridPoint> grid(std::uint8_t letter) noexcept;
+ // typedFirst: the typed letter is the word's first, where vowel for vowel costs
+-// firstVowelSubstitutionCost instead.
++// firstVowelSubstitutionCost instead. A finite tap is scored as touchSubstitutionCost at
++// touchSigma; with touchSigma 0, or a non-finite tap, from the intended key's centre.
+ double substitutionCost(std::uint8_t intended, std::uint8_t typed,
+                         std::optional<TouchOffset> tap = {}, bool typedFirst = false) noexcept;
+ // A tap scored against the key it landed on: (d(intended)^2 - d(typed)^2) / (2 sigma^2), plus
+diff --git a/native/DecoderCore/src/SpatialModel.cpp b/native/DecoderCore/src/SpatialModel.cpp
+index 227f824..c90b948 100644
+--- a/native/DecoderCore/src/SpatialModel.cpp
++++ b/native/DecoderCore/src/SpatialModel.cpp
+@@ -1,6 +1,7 @@
+ #include "../include/SpatialModel.hpp"
+ #include <algorithm>
+ #include <array>
++#include <cmath>
+ #include <string_view>
+ namespace kb {
+ // Key centres in key widths: rows offset 0, 0.5 and 1.5. Built once; looked up per trie node.
+@@ -35,7 +36,17 @@ static double spellingSubstitution(std::uint8_t intended, std::uint8_t typed, do
+     if (pair('c', 'k') || pair('c', 's') || pair('s', 'z')) return soundAlikeSubstitutionCost;
+     return 3.0;
+ }
++static double touch(std::uint8_t intended, std::uint8_t typed, TouchOffset tap, double sigma, double vowelCost) noexcept {
++    if (intended == typed) return 0;
++    auto a = grid(intended), t = grid(typed);
++    if (!a || !t) return 3.0;
++    const auto px = t->x + tap.dx, py = t->y + tap.dy;
++    const auto toIntended = (a->x - px) * (a->x - px) + (a->y - py) * (a->y - py), toTyped = tap.dx * tap.dx + tap.dy * tap.dy;
++    const auto spatial = std::max(0.0, toIntended - toTyped) / (2 * sigma * sigma) + substitutionBase;
++    return std::min({3.0, spatial, spellingSubstitution(intended, typed, vowelCost)});
++}
+ static double substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, double vowelCost) noexcept {
++    if (tap && touchSigma > 0 && std::isfinite(tap->dx) && std::isfinite(tap->dy)) return touch(intended, typed, *tap, touchSigma, vowelCost);
+     auto a = grid(intended), t = grid(typed);
+     if (!tap || !a || !t) {
+         if (intended == typed) return 0;
+@@ -55,13 +66,7 @@ double substitutionCost(std::uint8_t intended, std::uint8_t typed, std::optional
+     return substitution(intended, typed, tap, typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost);
+ }
+ double touchSubstitutionCost(std::uint8_t intended, std::uint8_t typed, TouchOffset tap, double sigma, bool typedFirst) noexcept {
+-    if (intended == typed) return 0;
+-    auto a = grid(intended), t = grid(typed);
+-    if (!a || !t) return 3.0;
+-    const auto px = t->x + tap.dx, py = t->y + tap.dy;
+-    const auto toIntended = (a->x - px) * (a->x - px) + (a->y - py) * (a->y - py), toTyped = tap.dx * tap.dx + tap.dy * tap.dy;
+-    const auto spatial = std::max(0.0, toIntended - toTyped) / (2 * sigma * sigma) + substitutionBase;
+-    return std::min({3.0, spatial, spellingSubstitution(intended, typed, typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost)});
++    return touch(intended, typed, tap, sigma, typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost);
+ }
+ double geometricSubstitutionCost(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap) noexcept {
+     auto a = grid(intended), t = grid(typed);

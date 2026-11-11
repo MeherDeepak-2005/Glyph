@@ -1,0 +1,225 @@
+{
+  "limitations": "Project-authored synthetic cases. Phrase contexts overlap the editorial table; results establish regressions, not independent messaging accuracy.",
+  "tiers": {
+    "ngram": {
+      "development": {
+        "baseline": {
+          "preservation": {
+            "cases": 108,
+            "successes": 96
+          },
+          "completion": {
+            "cases": 92,
+            "successes": 79
+          },
+          "prediction": {
+            "cases": 92,
+            "successes": 0
+          },
+          "regional": {
+            "cases": 105,
+            "successes": 103
+          },
+          "ordinary": {
+            "cases": 115,
+            "successes": 114
+          },
+          "controls": {
+            "cases": 4,
+            "successes": 4
+          }
+        },
+        "candidate": {
+          "preservation": {
+            "cases": 108,
+            "successes": 108
+          },
+          "completion": {
+            "cases": 92,
+            "successes": 83
+          },
+          "prediction": {
+            "cases": 92,
+            "successes": 92
+          },
+          "regional": {
+            "cases": 105,
+            "successes": 103
+          },
+          "ordinary": {
+            "cases": 115,
+            "successes": 114
+          },
+          "controls": {
+            "cases": 4,
+            "successes": 4
+          }
+        }
+      },
+      "held": {
+        "baseline": {
+          "preservation": {
+            "cases": 132,
+            "successes": 112
+          },
+          "completion": {
+            "cases": 108,
+            "successes": 76
+          },
+          "prediction": {
+            "cases": 108,
+            "successes": 8
+          },
+          "regional": {
+            "cases": 95,
+            "successes": 95
+          },
+          "ordinary": {
+            "cases": 85,
+            "successes": 80
+          },
+          "controls": {
+            "cases": 3,
+            "successes": 3
+          }
+        },
+        "candidate": {
+          "preservation": {
+            "cases": 132,
+            "successes": 132
+          },
+          "completion": {
+            "cases": 108,
+            "successes": 93
+          },
+          "prediction": {
+            "cases": 108,
+            "successes": 108
+          },
+          "regional": {
+            "cases": 95,
+            "successes": 95
+          },
+          "ordinary": {
+            "cases": 85,
+            "successes": 80
+          },
+          "controls": {
+            "cases": 3,
+            "successes": 3
+          }
+        }
+      }
+    },
+    "nss": {
+      "development": {
+        "baseline": {
+          "preservation": {
+            "cases": 108,
+            "successes": 96
+          },
+          "completion": {
+            "cases": 92,
+            "successes": 48
+          },
+          "prediction": {
+            "cases": 92,
+            "successes": 0
+          },
+          "regional": {
+            "cases": 105,
+            "successes": 102
+          },
+          "ordinary": {
+            "cases": 115,
+            "successes": 112
+          },
+          "controls": {
+            "cases": 4,
+            "successes": 3
+          }
+        },
+        "candidate": {
+          "preservation": {
+            "cases": 108,
+            "successes": 108
+          },
+          "completion": {
+            "cases": 92,
+            "successes": 63
+          },
+          "prediction": {
+            "cases": 92,
+            "successes": 92
+          },
+          "regional": {
+            "cases": 105,
+            "successes": 102
+          },
+          "ordinary": {
+            "cases": 115,
+            "successes": 112
+          },
+          "controls": {
+            "cases": 4,
+            "successes": 3
+          }
+        }
+      },
+      "held": {
+        "baseline": {
+          "preservation": {
+            "cases": 132,
+            "successes": 121
+          },
+          "completion": {
+            "cases": 108,
+            "successes": 57
+          },
+          "prediction": {
+            "cases": 108,
+            "successes": 4
+          },
+          "regional": {
+            "cases": 95,
+            "successes": 95
+          },
+          "ordinary": {
+            "cases": 85,
+            "successes": 83
+          },
+          "controls": {
+            "cases": 3,
+            "successes": 3
+          }
+        },
+        "candidate": {
+          "preservation": {
+            "cases": 132,
+            "successes": 132
+          },
+          "completion": {
+            "cases": 108,
+            "successes": 76
+          },
+          "prediction": {
+            "cases": 108,
+            "successes": 108
+          },
+          "regional": {
+            "cases": 95,
+            "successes": 95
+          },
+          "ordinary": {
+            "cases": 85,
+            "successes": 83
+          },
+          "controls": {
+            "cases": 3,
+            "successes": 3
+          }
+        }
+      }
+    }
+  }
+}

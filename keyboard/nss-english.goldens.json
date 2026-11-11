@@ -1,8 +1,8 @@
 {
  "unk_lexicon_share": 0.3166785501996787,
  "unk_log_center": -3.596767246110534,
- "oov_mass": 7137356.0,
- "oov_words": 82311,
+ "oov_mass": 7139861,
+ "oov_words": 82316,
  "tolerance": 0.002,
  "cases": [
   {

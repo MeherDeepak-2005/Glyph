@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "words": 114288,
+  "added": [
+    "brainrot",
+    "jugaad",
+    "pookie",
+    "ragebait",
+    "skibidi"
+  ],
+  "catalog_entries": 400,
+  "policy_entries": 60,
+  "contexts": 50,
+  "pack_bytes": 28312209,
+  "sidecar_bytes": 1368,
+  "pack_sha256": "a549a5306501c80fc317cb2a855b95428996ad1c4a24b759cbecfcbe3a979d93",
+  "sidecar_sha256": "b9c381a1eef4a9924bf919de557299ed2a231653085055a590fcb76ccb98f30d",
+  "baseline_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "growth_bytes": 1667,
+  "catalog_sha256": "043d80a0055b8efa743a327909c9457fe661edec3113035963c65ba0b1f6cbbe",
+  "contexts_sha256": "47469fbced0d2d1ae1caf3ada2b6ffab1ab5e313a674e1eea9008e21a2d33275"
+}

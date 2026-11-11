@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import plistlib
+import struct
 from pathlib import Path
 
 LANGDATA_CAP = 11_000_000
@@ -21,7 +22,7 @@ NEURAL_RESOURCE_NAMES = {
     "spm.model", "spm.vocab", "sentencepiece.model", "pytorch_model.bin",
 }
 REQUIRED_RELEASE_RESOURCES = {
-    "emoji.bin", "langdata.bin", "safety.kbguard",
+    "emoji.bin", "langdata.bin", "langdata.kbmodern", "safety.kbguard",
     "telugu_layout.kbpack", "telugu_langdata.bin",
     "tenglish_lexicon.bin", "telugu_pack_manifest.json",
 }
@@ -89,6 +90,18 @@ def main() -> None:
         record = by_name.get(name)
         if record is not None and record["bytes"] > byte_cap:
             failures.append(f"{name} exceeds {byte_cap:,} bytes")
+
+    modern = args.appex / "langdata.kbmodern"
+    if modern.exists() and (args.appex / "langdata.bin").exists():
+        blob = modern.read_bytes()
+        if len(blob) < 88:
+            failures.append("truncated modern vocabulary metadata")
+        else:
+            magic, version, words, policies, contexts, digest = struct.unpack_from("<8s4I32s", blob)
+            pack = (args.appex / "langdata.bin").read_bytes()
+            if magic != b"KBMODERN" or version != 1 or len(blob) != 88 + 8*policies + 16*contexts \
+                    or blob[-32:] != hashlib.sha256(blob[:-32]).digest() or digest != hashlib.sha256(pack).digest() or words != struct.unpack_from("<I", pack, 8)[0]:
+                failures.append("modern vocabulary/dictionary mismatch")
 
     pack_record = by_name.get("telugu_pack_manifest.json")
     if pack_record is not None:

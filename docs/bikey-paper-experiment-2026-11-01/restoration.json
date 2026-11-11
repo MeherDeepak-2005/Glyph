@@ -1,0 +1,8 @@
+{
+  "productionDiffIdenticalToStart": true,
+  "patchAppliesCleanly": true,
+  "originalDiffSha256": "540ba3657fcabec814be3ea85d86fa8353da59ea72ae51deff94011856c75e05",
+  "finalDiffSha256": "540ba3657fcabec814be3ea85d86fa8353da59ea72ae51deff94011856c75e05",
+  "stagedDiff": "",
+  "committed": false
+}

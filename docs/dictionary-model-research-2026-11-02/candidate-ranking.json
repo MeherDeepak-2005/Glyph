@@ -1,0 +1,484 @@
+{
+  "warning": "Fixed-candidate language-ranking diagnostic shared across word/subword models.\nThe target is explicitly injected. This is NOT end-to-end decoder/beam recall.\n",
+  "cases": 160,
+  "case_sha256": "d2d9ade5d185c1e1816aa0724689505bb1a0115d5df7baf92a8b9e2d049e698d",
+  "models": {
+    "baseline-generic": {
+      "sets": {
+        "all": {
+          "correct": 88,
+          "total": 160,
+          "reciprocal_rank": 105.09623885071407,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.55,
+          "mrr": 0.656851492816963
+        },
+        "soda": {
+          "correct": 22,
+          "total": 40,
+          "reciprocal_rank": 26.35299261205701,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.55,
+          "mrr": 0.6588248153014253
+        },
+        "tatoeba": {
+          "correct": 28,
+          "total": 40,
+          "reciprocal_rank": 31.955555555555556,
+          "oov_targets": 0,
+          "oov_correct": 0,
+          "accuracy": 0.7,
+          "mrr": 0.7988888888888889
+        },
+        "wikitext": {
+          "correct": 21,
+          "total": 40,
+          "reciprocal_rank": 25.241883649340746,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.525,
+          "mrr": 0.6310470912335187
+        },
+        "masc": {
+          "correct": 17,
+          "total": 40,
+          "reciprocal_rank": 21.545807033760756,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.425,
+          "mrr": 0.5386451758440189
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 1.0836460005521076,
+        "p95": 1.6312693498548467
+      }
+    },
+    "baseline-chat": {
+      "sets": {
+        "all": {
+          "correct": 87,
+          "total": 160,
+          "reciprocal_rank": 105.06801160611136,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.54375,
+          "mrr": 0.656675072538196
+        },
+        "soda": {
+          "correct": 24,
+          "total": 40,
+          "reciprocal_rank": 28.556344230482164,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.6,
+          "mrr": 0.7139086057620541
+        },
+        "tatoeba": {
+          "correct": 25,
+          "total": 40,
+          "reciprocal_rank": 29.437301587301587,
+          "oov_targets": 0,
+          "oov_correct": 0,
+          "accuracy": 0.625,
+          "mrr": 0.7359325396825397
+        },
+        "wikitext": {
+          "correct": 21,
+          "total": 40,
+          "reciprocal_rank": 25.647611065498996,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.525,
+          "mrr": 0.6411902766374749
+        },
+        "masc": {
+          "correct": 17,
+          "total": 40,
+          "reciprocal_rank": 21.42675472282858,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.425,
+          "mrr": 0.5356688680707145
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 1.081000000340282,
+        "p95": 1.6817919993627581
+      }
+    },
+    "word-cifg": {
+      "sets": {
+        "all": {
+          "correct": 52,
+          "total": 160,
+          "reciprocal_rank": 74.65262734778584,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.325,
+          "mrr": 0.4665789209236615
+        },
+        "soda": {
+          "correct": 16,
+          "total": 40,
+          "reciprocal_rank": 21.449809845951147,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.4,
+          "mrr": 0.5362452461487787
+        },
+        "tatoeba": {
+          "correct": 18,
+          "total": 40,
+          "reciprocal_rank": 23.247422430510664,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.45,
+          "mrr": 0.5811855607627666
+        },
+        "wikitext": {
+          "correct": 8,
+          "total": 40,
+          "reciprocal_rank": 13.64804871790379,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.2,
+          "mrr": 0.3412012179475948
+        },
+        "masc": {
+          "correct": 10,
+          "total": 40,
+          "reciprocal_rank": 16.307346353420208,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.25,
+          "mrr": 0.40768365883550517
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 0.7567909997305833,
+        "p95": 1.087939899116463
+      }
+    },
+    "word-gru": {
+      "sets": {
+        "all": {
+          "correct": 58,
+          "total": 160,
+          "reciprocal_rank": 76.85875292351815,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.3625,
+          "mrr": 0.48036720577198844
+        },
+        "soda": {
+          "correct": 19,
+          "total": 40,
+          "reciprocal_rank": 23.203321378278474,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.475,
+          "mrr": 0.5800830344569619
+        },
+        "tatoeba": {
+          "correct": 19,
+          "total": 40,
+          "reciprocal_rank": 23.87544261294261,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.475,
+          "mrr": 0.5968860653235653
+        },
+        "wikitext": {
+          "correct": 9,
+          "total": 40,
+          "reciprocal_rank": 13.69146075698495,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.225,
+          "mrr": 0.34228651892462375
+        },
+        "masc": {
+          "correct": 11,
+          "total": 40,
+          "reciprocal_rank": 16.0885281753121,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.275,
+          "mrr": 0.4022132043828025
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 0.7275000007211929,
+        "p95": 1.2015045023872508
+      }
+    },
+    "sp-lstm": {
+      "sets": {
+        "all": {
+          "correct": 62,
+          "total": 160,
+          "reciprocal_rank": 80.1939812526894,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.3875,
+          "mrr": 0.5012123828293087
+        },
+        "soda": {
+          "correct": 20,
+          "total": 40,
+          "reciprocal_rank": 24.52956208296145,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.5,
+          "mrr": 0.6132390520740363
+        },
+        "tatoeba": {
+          "correct": 19,
+          "total": 40,
+          "reciprocal_rank": 23.45316576698156,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.475,
+          "mrr": 0.586329144174539
+        },
+        "wikitext": {
+          "correct": 11,
+          "total": 40,
+          "reciprocal_rank": 15.193220519179597,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.275,
+          "mrr": 0.37983051297948994
+        },
+        "masc": {
+          "correct": 12,
+          "total": 40,
+          "reciprocal_rank": 17.018032883566814,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.3,
+          "mrr": 0.42545082208917034
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 27.77100000093924,
+        "p95": 34.224745201026955
+      }
+    },
+    "sp-gru": {
+      "sets": {
+        "all": {
+          "correct": 57,
+          "total": 160,
+          "reciprocal_rank": 78.76212463516401,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.35625,
+          "mrr": 0.49226327896977506
+        },
+        "soda": {
+          "correct": 18,
+          "total": 40,
+          "reciprocal_rank": 23.318901282409342,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.45,
+          "mrr": 0.5829725320602336
+        },
+        "tatoeba": {
+          "correct": 19,
+          "total": 40,
+          "reciprocal_rank": 24.094414381914376,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.475,
+          "mrr": 0.6023603595478594
+        },
+        "wikitext": {
+          "correct": 9,
+          "total": 40,
+          "reciprocal_rank": 14.54742415292618,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.225,
+          "mrr": 0.3636856038231545
+        },
+        "masc": {
+          "correct": 11,
+          "total": 40,
+          "reciprocal_rank": 16.801384817914055,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.275,
+          "mrr": 0.4200346204478514
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 27.58535400062101,
+        "p95": 33.41801664737431
+      }
+    },
+    "sp-transformer": {
+      "sets": {
+        "all": {
+          "correct": 59,
+          "total": 160,
+          "reciprocal_rank": 79.08681906742117,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.36875,
+          "mrr": 0.49429261917138234
+        },
+        "soda": {
+          "correct": 19,
+          "total": 40,
+          "reciprocal_rank": 24.085748324256386,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.475,
+          "mrr": 0.6021437081064096
+        },
+        "tatoeba": {
+          "correct": 18,
+          "total": 40,
+          "reciprocal_rank": 23.692135686893753,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.45,
+          "mrr": 0.5923033921723438
+        },
+        "wikitext": {
+          "correct": 12,
+          "total": 40,
+          "reciprocal_rank": 15.510902352192918,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.3,
+          "mrr": 0.387772558804823
+        },
+        "masc": {
+          "correct": 10,
+          "total": 40,
+          "reciprocal_rank": 15.798032704078066,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.25,
+          "mrr": 0.39495081760195166
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 30.65293749932607,
+        "p95": 36.55375894777534
+      }
+    },
+    "warm-chat": {
+      "sets": {
+        "all": {
+          "correct": 87,
+          "total": 160,
+          "reciprocal_rank": 105.07637948524535,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.54375,
+          "mrr": 0.6567273717827835
+        },
+        "soda": {
+          "correct": 24,
+          "total": 40,
+          "reciprocal_rank": 28.556344230482164,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.6,
+          "mrr": 0.7139086057620541
+        },
+        "tatoeba": {
+          "correct": 25,
+          "total": 40,
+          "reciprocal_rank": 29.44563492063492,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.625,
+          "mrr": 0.7361408730158729
+        },
+        "wikitext": {
+          "correct": 21,
+          "total": 40,
+          "reciprocal_rank": 25.647543861197917,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.525,
+          "mrr": 0.641188596529948
+        },
+        "masc": {
+          "correct": 17,
+          "total": 40,
+          "reciprocal_rank": 21.42685647293033,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.425,
+          "mrr": 0.5356714118232582
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 1.1290625006949995,
+        "p95": 1.5478357003303242
+      }
+    },
+    "warm-chat-control": {
+      "sets": {
+        "all": {
+          "correct": 87,
+          "total": 160,
+          "reciprocal_rank": 105.06801160611136,
+          "oov_targets": 5,
+          "oov_correct": 0,
+          "accuracy": 0.54375,
+          "mrr": 0.656675072538196
+        },
+        "soda": {
+          "correct": 24,
+          "total": 40,
+          "reciprocal_rank": 28.556344230482164,
+          "oov_targets": 1,
+          "oov_correct": 0,
+          "accuracy": 0.6,
+          "mrr": 0.7139086057620541
+        },
+        "tatoeba": {
+          "correct": 25,
+          "total": 40,
+          "reciprocal_rank": 29.437301587301587,
+          "oov_targets": 0,
+          "oov_correct": 0,
+          "accuracy": 0.625,
+          "mrr": 0.7359325396825397
+        },
+        "wikitext": {
+          "correct": 21,
+          "total": 40,
+          "reciprocal_rank": 25.647611065498996,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.525,
+          "mrr": 0.6411902766374749
+        },
+        "masc": {
+          "correct": 17,
+          "total": 40,
+          "reciprocal_rank": 21.42675472282858,
+          "oov_targets": 2,
+          "oov_correct": 0,
+          "accuracy": 0.425,
+          "mrr": 0.5356688680707145
+        }
+      },
+      "cpu_candidate_batch_ms": {
+        "p50": 0.7684164975216845,
+        "p95": 1.0627163499520975
+      }
+    }
+  }
+}

@@ -159,7 +159,7 @@ extension KeyboardEngine {
         // These calibrated margins were measured with the n-gram prior only.
         let policy = scored.contains { $0.neuralLogProbability != nil }
             ? CorrectionPolicy.baseline : correctionPolicy
-		guard !isKept(lw), !aimedAtBlocked else { return CorrectionDecision(word: nil, margin: 0) }
+		guard !isKept(lw), !aimedAtBlocked, !lexicon.preservesModern(lw) else { return CorrectionDecision(word: nil, margin: 0) }
 
 		guard let typed = scored.first(where: { $0.word == lw }) else {
 			return CorrectionDecision(word: nil, margin: 0)
@@ -175,7 +175,7 @@ extension KeyboardEngine {
 			return rawScore(candidate, channel: channel) - channel * ((cost ?? candidate.spatialCost) - candidate.spatialCost)
 		}
 		var eligible = scored.filter {
-			$0.word != lw && correctionCosts[$0.word] != nil
+			$0.word != lw && correctionCosts[$0.word] != nil && lexicon.allowsModernCorrection($0.word)
 		}
 		// The real-word gate only weighs slips (cost ≤ realWordMaxCost); as native.
 		if realWord { eligible.removeAll { correctionCosts[$0.word]! > realWordMaxCost } }

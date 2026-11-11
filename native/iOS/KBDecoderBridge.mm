@@ -98,6 +98,19 @@ static NSString *KBString(std::string_view text) {
     }
     return self;
 }
+- (BOOL)installModernData:(NSData *)data {
+    return _reader->installModern({static_cast<const std::byte *>(data.bytes),data.length});
+}
+- (NSUInteger)modernFlagsForWord:(NSString *)word { return _reader->modernFlags(KBText(word)); }
+- (BOOL)allowsModernCorrection:(NSString *)word { return _reader->allowsCorrection(KBText(word)); }
+- (NSArray<NSString *> *)modernSuggestionsForTyped:(NSString *)typed context:(NSArray<NSString *> *)context existing:(NSArray<NSString *> *)existing {
+    std::vector<std::string> ctx, old;
+    for(NSString *s in context)ctx.push_back(KBText(s));
+    for(NSString *s in existing)old.push_back(KBText(s));
+    NSMutableArray *out=[NSMutableArray array];
+    for(const auto& s:_reader->modernSuggestions(KBText(typed),ctx,old))[out addObject:KBString(s)];
+    return out;
+}
 - (NSArray<NSNumber *> *)textMetadataIDs {
     NSMutableArray *out = [NSMutableArray array]; for (auto id : _reader->textMetadataIDs()) [out addObject:@(id)]; return out;
 }
@@ -1197,7 +1210,7 @@ NSDictionary *KBWordScores(const std::vector<kb::NeuralWord>& rows) {NSMutableDi
         // The extension's official NSS configuration (KB_NSS_RAW=1, Config/Extension.xcconfig):
         // the language models without the correction rules (EngineOptions::raw),
         // NeuralFst exact scores with the published fallback kept as a floor.
-        options.raw = true; options.nssExact = true; options.nssUnigramFloor = true;
+        options.nssOnly = true; options.nssUnigramFloor = true;
 #endif
         // The neural model keeps its own mapping alive (KBNeuralWordModel's owner).
         _engine = std::make_shared<kb::Engine>(packed, options, [model nativeModel], neural ? [neural nativeModel] : nullptr);

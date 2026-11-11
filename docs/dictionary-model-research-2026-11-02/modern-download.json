@@ -1,0 +1,9 @@
+{
+  "repository": "HuggingFaceFW/fineweb",
+  "crawl": "CC-MAIN-2025-26",
+  "dataset_card": "https://huggingface.co/datasets/HuggingFaceFW/fineweb",
+  "license": "ODC-By 1.0 dataset license; underlying web-content rights require separate release review",
+  "purpose": "Offline frequency/model research. Not a keyboard runtime download.",
+  "status": "blocked",
+  "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+}

@@ -96,3 +96,14 @@ android/local.properties
 # NSS word LM workspace: tokenized corpora and training runs (tools/nss/README.md)
 tools/nss/data/
 tools/nss/runs/
+
+# Generated training arrays and duplicate team-report exports.
+tools/nss/data-v2/*.npy
+/team-report-2026-11-02/
+
+# Machine-specific agent hook configuration.
+.codex/hooks.json
+
+# Paired NSS unigram dictionaries and their source notices are build inputs.
+!tools/data/nss/unigram-v1/*.bin
+!tools/data/nss/unigram-v1/*.txt

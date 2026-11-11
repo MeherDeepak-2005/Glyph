@@ -1,0 +1,28 @@
+{
+  "source_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "sha256": "7b97efd17ab2c50663b26075ca87dc64a9626adea72d92b834b767204d84488d",
+  "status": "research candidate; not installed",
+  "words": 114296,
+  "added": [
+    "airbnb",
+    "anthropic",
+    "gaslighting",
+    "gpus",
+    "kombucha",
+    "lyft",
+    "matcha",
+    "reddit",
+    "smartwatch",
+    "snapchat",
+    "tiktok",
+    "uber",
+    "venmo"
+  ],
+  "bytes": 28312535,
+  "unigram_mass_before": 705253822,
+  "unigram_mass_after": 705265073,
+  "weight_semantics": "pooled_ppm * scale, rounded, floor 1; estimates, not observed counts",
+  "ppm_scale": 715.7242789718475,
+  "contexts_and_starters": "all logical counts and denominators preserved exactly; numeric IDs rebuilt",
+  "parity": "PASS"
+}

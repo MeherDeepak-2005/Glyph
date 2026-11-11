@@ -130,12 +130,13 @@ CorrectionResult correction(const GenerationLexicon& lexicon, std::span<const Ra
         const std::unordered_map<std::string, double>& costs, std::string_view typed, std::size_t length,
         std::span<const std::uint8_t> letterFlags, std::span<const std::string> context, bool kept, const std::unordered_set<std::string>& loose,
         const std::unordered_set<std::string>& broad, const CorrectionPolicy& suppliedPolicy, double nonWordChannel) {
-    if (kept) return {};
+    if (kept || (lexicon.packed && lexicon.packed->preserves(typed))) return {};
     auto literal = std::find_if(rows.begin(), rows.end(), [&](const auto& r) { return r.channel.word == typed; });
     if (literal == rows.end()) return {};
     auto policy = std::any_of(rows.begin(), rows.end(), [](const auto& r) { return r.neural.has_value(); }) ? CorrectionPolicy{} : suppliedPolicy;
     std::vector<const RankedRow*> eligible;
-    for (const auto& r : rows) if (r.channel.word != typed && costs.contains(r.channel.word)) eligible.push_back(&r);
+    for (const auto& r : rows) if (r.channel.word != typed && costs.contains(r.channel.word) &&
+        (!lexicon.packed || lexicon.packed->allowsCorrection(r.channel.word))) eligible.push_back(&r);
     const RankedRow* best = nullptr;
     double channel = lexicon.contains(typed) ? realWordChannelWeight : nonWordChannel;
     // A non-word is judged against each candidate's correction cost: the same word as a

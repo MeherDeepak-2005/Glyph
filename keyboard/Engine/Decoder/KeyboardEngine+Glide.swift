@@ -164,6 +164,7 @@ extension KeyboardEngine {
                 return GlideUpdate(sessionID: session.id, revision: session.revision, prediction: prediction)
             } catch { session.invalid = true; return nil }
         }
+        if requiresNeuralSearchSpace { session.invalid = true; return nil }
         if candidateBackend == .cpp {
             let native = session.native
             guard native.consume(GlideBuffers.points(path), keys: GlideBuffers.keys(layout), centers: GlideBuffers.points(layout.centers.map(\.point)),
@@ -377,6 +378,7 @@ extension KeyboardEngine {
 	}
 
     private func scoreGlideCandidates(_ candidates: [(word: String, cost: Double)], glide: ProcessedGlide, context: [String]) -> [(word: String, s: Double)] {
+        if requiresNeuralSearchSpace { return [] } // NSS uses the shared streaming graph.
 #if DEBUG || KB_REFERENCE_DECODER_YES
         if candidateBackend == .swiftReference { return scoreGlideCandidatesReference(candidates, glide: glide, context: context) }
 #endif
@@ -418,6 +420,7 @@ extension KeyboardEngine {
 	/// Keeping candidate generation, recovery, gating, and ranking here prevents the preview
 	/// from promising a word that a different release-time decoder would immediately replace.
     private func decodeGlide(_ glide: ProcessedGlide, lang: LangData, context: [String], shouldCancel: (() -> Bool)? = nil) -> GlideDecodeResult? {
+        if requiresNeuralSearchSpace { return nil } // Never fall back from NSS to the legacy scorer.
 #if DEBUG || KB_REFERENCE_DECODER_YES
         if candidateBackend == .swiftReference { return decodeGlideReference(glide, lang: lang, context: context, shouldCancel: shouldCancel) }
 #endif

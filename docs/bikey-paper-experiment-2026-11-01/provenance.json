@@ -1,0 +1,35 @@
+{
+  "head": "995be5caa37cc7ec207bdd9bf2e6cec1916f90cf",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)",
+  "flags": [
+    "-std=c++20",
+    "-Os",
+    "-DNDEBUG"
+  ],
+  "model_sha256": "ef8b999732e6afbc07b69b06feaf3a8170adb90f89923496d32ae8075ea3a9e2",
+  "lexicon_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "held_sha256": "7d4cf41f861fc235f2d7500471ee5f413065196a466dd9cc8502123fe1528974",
+  "tests": {
+    "bikey_sanitizers": true,
+    "graph": {
+      "pid": 4294,
+      "exit": 0,
+      "signal": null
+    },
+    "engine": {
+      "pid": 4295,
+      "exit": 0,
+      "signal": null
+    }
+  },
+  "flagsOffParity": {
+    "cases": 158,
+    "identical": true,
+    "scope": "All non-timing output fields, frozen original source vs experimental binary with flags disabled."
+  },
+  "production_source_changed": false,
+  "sourceHashes": "ef92459bae7a075600cd53a92ef1a75638298cf037f46df5b5df4684f93f0789",
+  "binarySha256": "abebad17615c7e98f5401939fbcf0bb84f424052d54ee8ad323993b71a2dfe6f",
+  "baselineBinarySha256": "40fd02ca41f156a1947857703f5a82b358def16c2949a459f4a6262e0d49ef1b",
+  "allJobsComplete": true
+}

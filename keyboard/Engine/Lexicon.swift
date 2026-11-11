@@ -116,6 +116,19 @@ final class Lexicon {
 		(safety?.action(for: word) ?? .allow) == .allow
 	}
 
+    func preservesModern(_ word: String) -> Bool {
+        lock.lock(); let reader = langData?.modernPolicyReader; lock.unlock()
+        return ((reader?.modernFlags(forWord: word) ?? 0) & 1) != 0
+    }
+    func allowsModernCorrection(_ word: String) -> Bool {
+        lock.lock(); let reader = langData?.modernPolicyReader; lock.unlock()
+        return reader?.allowsModernCorrection(word) ?? true
+    }
+    func modernSuggestions(typed: String, context: [String], existing: [String]) -> [String] {
+        lock.lock(); let reader = langData?.modernPolicyReader; lock.unlock()
+        return (reader?.modernSuggestions(forTyped: typed, context: context, existing: existing) ?? existing)
+            .filter { $0 == typed || !isProfane($0) }
+    }
 	func contains(_ lw: String) -> Bool {
 		lock.lock(); defer { lock.unlock() }
 		return (staticTrie && langData?.trieContains(lw) == true)

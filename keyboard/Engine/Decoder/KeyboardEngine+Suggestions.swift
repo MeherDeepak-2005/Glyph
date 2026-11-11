@@ -441,7 +441,27 @@ extension KeyboardEngine {
 			}
 			let publishEnglish: ([String], [DecodeCandidateEvidence], String?, Double,
 				DecodeModelTier) -> Void = { suggestions, evidence, decision, confidence, tier in
-				let priors = self.contextualCharPriors(evidence: evidence, prefix: lw,
+				// The native shared engine already applies this layer. Reference/legacy paths
+                // use the same immutable metadata without applying the display boost twice.
+                var suggestions = suggestions
+                var decision = decision
+                var confidence = confidence
+                if self.candidateBackend != .cpp || tier == .neuralGRU || self.sharedEngine == nil {
+                    let protected = self.lexicon.preservesModern(lw)
+                    if protected || (decision.map { !self.lexicon.allowsModernCorrection($0) } ?? false) {
+                        decision = nil; confidence = 0
+                    }
+                    suggestions = self.lexicon.modernSuggestions(typed: lw, context: context.map { $0.lowercased() }, existing: suggestions)
+                    if let decision {
+                        suggestions.removeAll { $0 == decision }; suggestions.insert(decision, at: 0)
+                    } else if protected || self.isKept(lw) {
+                        suggestions.removeAll { $0.lowercased() == lw }; suggestions.insert(currentWord, at: 0)
+                    } else if !lw.isEmpty && !suggestions.contains(where: { $0.lowercased() == lw }) {
+                        if suggestions.count >= 3 { suggestions[2] = currentWord } else { suggestions.append(currentWord) }
+                    }
+                    suggestions = Array(suggestions.prefix(3))
+                }
+                let priors = self.contextualCharPriors(evidence: evidence, prefix: lw,
 					base: self.lexicon.nextCharPriors(prefix: lw))
 				guard self.isLatest(gen) else { return }
 				let snapshot = DecodeSnapshot(request: request, suggestions: suggestions,
@@ -458,8 +478,7 @@ extension KeyboardEngine {
                request.requestedModelTier == .ngram || request.requestedModelTier == .neuralSearchSpace,
                let engine = self.sharedEngine {
                 let view = self.lexicon.nativeGenerationView()
-                let tier: DecodeModelTier = request.requestedModelTier == .neuralSearchSpace
-                    && engine.supportsNeuralSearchSpace ? .neuralSearchSpace : .ngram
+                let tier = request.requestedModelTier
                 let identity = [request.fieldRevision, request.documentRevision, request.wordSessionID,
                     request.generation, request.layoutRevision, self.lexicon.vocabularyRevision, KBPersonalData.currentEpoch]
                 // Grapheme boundaries as UTF-8 byte offsets, and a letter flag per byte: one pass,
@@ -497,6 +516,11 @@ extension KeyboardEngine {
                     publishEnglish(result.suggestions, evidence, decision.word, decision.margin, tier)
                     return
                 } catch { KBDiagnostics.recorder.storageFailure(operation: "native-decode") }
+            }
+            if request.requestedModelTier == .neuralSearchSpace {
+                // A failed neural resource/decode must not invoke an n-gram scorer.
+                publishEnglish(currentWord.isEmpty ? [] : [currentWord], [], nil, 0, .neuralSearchSpace)
+                return
             }
 
 			if currentWord.isEmpty {

@@ -108,3 +108,17 @@ held half.
   more changed on the should-not-change sets.
 - Worse than 27 Oct: Birkbeck fixed 41.3 -> 40.2% (top 3 55.0 -> 59.7%), synthetic left uncorrected
   0.9 -> 1.6%: the conservative gate leaves more typos as typed.
+
+## Modern vocabulary regressions
+
+Run `python3 -B tools/evaluation/autocorrect/make_modern.py` to regenerate 1,047
+original synthetic cases in `docs/modern-vocabulary/`. Target/context groups determine
+development/held assignment before evaluation. Run IOSBench against baseline and
+candidate packs, saving baseline-ngram.jsonl, candidate-ngram.jsonl and the matching
+NSS runs there; `score_modern.py` reports per-split results. The harness loads a
+matching optional .kbmodern sidecar beside its pack. Phrase fixtures exercise the
+authored table and do not establish independent conversational accuracy.
+
+## CIFG with unigram only
+
+Use KB_NSS_ONLY=1 with KB_NSS pointing to the CIFG model. The engine rejects an n-gram tier and disables phrase/prefix editorial boosts; unknown literals score through the neural graph. KB_NSS_FLOOR=1 matches the extension. tools/vocabulary/evaluate_unigram.py generates and replays paired held-out cases against the old and new unigram-only packs. See docs/unigram-v1/README.md.

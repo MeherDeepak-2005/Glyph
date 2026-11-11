@@ -152,6 +152,12 @@ int main(int argc, char** argv) {
     void* data = mmap(nullptr, std::size_t(st.st_size), PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
     if (data == MAP_FAILED) { std::cerr << "cannot map " << argv[1] << "\n"; return 3; }
     auto reader = std::shared_ptr<const PackedLexicon>(new PackedLexicon({static_cast<const std::byte*>(data), std::size_t(st.st_size)}));
+    // Optional, hash-bound metadata beside the selected pack. Baseline runs omit it.
+    std::string modernPath(argv[1]); auto dot=modernPath.find_last_of('.');
+    modernPath=modernPath.substr(0,dot)+".kbmodern";
+    auto modern=slurp(modernPath);
+    if(!modern.empty()&&!reader->installModern({reinterpret_cast<const std::byte*>(modern.data()),modern.size()}))
+        std::cerr<<"Ignoring incompatible modern vocabulary metadata\n";
     std::vector<PackedLexicon::TextMetadata> metadata;
     for (auto id : reader->textMetadataIDs()) {
         auto text = reader->word(id); auto marks = boundaries(text);
@@ -181,6 +187,7 @@ int main(int argc, char** argv) {
     // outside the lexicon scored from the model's P(<unk>) (EngineOptions).
     if (const char* alpha = std::getenv("KB_NSS_ALPHA")) options.nssUnknownExponent = std::atof(alpha);
     if (std::getenv("KB_NSS_TYPED") && std::string(std::getenv("KB_NSS_TYPED")) == "1") options.nssTypedUnknown = true;
+    options.nssOnly = std::getenv("KB_NSS_ONLY") && std::string(std::getenv("KB_NSS_ONLY")) == "1";
     double phase[2][4] = {};
     if (const char* text = std::getenv("KB_STATECAP")) options.stateCap = std::size_t(std::atol(text));   // retained-search seed cap
     std::shared_ptr<const NeuralWordModel> neural;

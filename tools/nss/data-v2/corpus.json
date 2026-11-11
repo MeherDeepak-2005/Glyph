@@ -1,0 +1,162 @@
+{
+  "sources": {
+    "tatoeba": {
+      "inputs": [
+        {
+          "path": "tatoeba-eng-2026-10-20.tsv.bz2",
+          "sha256": "bb3dcc28a8984a26dc466ee14eb53c4210b0dd9bb111b9d686d1efc83ecf091c"
+        }
+      ],
+      "splits": {
+        "train": {
+          "sentences": 1711243,
+          "words": 12618611,
+          "unk": 402545,
+          "unk_lexicon": 106431,
+          "stock_names": 137298,
+          "tokens": 16041097,
+          "unk_rate": 0.031900896223839535,
+          "unk_lexicon_share": 0.2643952849991926
+        },
+        "valid": {
+          "sentences": 8774,
+          "words": 64712,
+          "unk": 2024,
+          "unk_lexicon": 532,
+          "stock_names": 703,
+          "tokens": 82260,
+          "unk_rate": 0.03127704289776239,
+          "unk_lexicon_share": 0.2628458498023715
+        },
+        "test": {
+          "sentences": 8651,
+          "words": 64926,
+          "unk": 2104,
+          "unk_lexicon": 574,
+          "stock_names": 682,
+          "tokens": 82228,
+          "unk_rate": 0.03240612389489573,
+          "unk_lexicon_share": 0.27281368821292773
+        }
+      }
+    },
+    "wikitext": {
+      "inputs": [
+        {
+          "path": "wikitext-103-raw-train-00000-of-00002.parquet",
+          "sha256": "74da360f23826045b3e6ac6375411fdb15f003030aa74f2596ed08b857cb9212"
+        },
+        {
+          "path": "wikitext-103-raw-train-00001-of-00002.parquet",
+          "sha256": "ba090ac30dbf5461e8dcbdd1a1b8e6f3cf9c2c756d64f0c1220450acd514f720"
+        }
+      ],
+      "splits": {
+        "train": {
+          "sentences": 4032168,
+          "words": 81316141,
+          "unk": 5208119,
+          "unk_lexicon": 2388425,
+          "stock_names": 0,
+          "tokens": 89380477,
+          "unk_rate": 0.06404778849502954,
+          "unk_lexicon_share": 0.45859647216202243
+        },
+        "valid": {
+          "sentences": 19770,
+          "words": 394080,
+          "unk": 26098,
+          "unk_lexicon": 12316,
+          "stock_names": 0,
+          "tokens": 433620,
+          "unk_rate": 0.06622513195290296,
+          "unk_lexicon_share": 0.47191355659437506
+        },
+        "test": {
+          "sentences": 20718,
+          "words": 421600,
+          "unk": 28868,
+          "unk_lexicon": 12932,
+          "stock_names": 0,
+          "tokens": 463036,
+          "unk_rate": 0.06847248576850094,
+          "unk_lexicon_share": 0.4479700706664819
+        }
+      }
+    },
+    "soda": {
+      "inputs": [
+        {
+          "path": "train-0.parquet",
+          "sha256": "06b88a34de6da8d5a236e1b5cb2bf7c3b91734edb198dccbe6d1b7a1843d53ed"
+        },
+        {
+          "path": "train-1.parquet",
+          "sha256": "26818a58dc632b096d25c55df392fe8c24f33125c9027b066d814e03cb6d773c"
+        },
+        {
+          "path": "train-2.parquet",
+          "sha256": "73bcb57a01306eadeb44015594dc221466b0344852ad0d271221b5a32ba04005"
+        }
+      ],
+      "splits": {
+        "train": {
+          "sentences": 18896758,
+          "words": 145075791,
+          "unk": 1172479,
+          "unk_lexicon": 362510,
+          "stock_names": 0,
+          "tokens": 182869307,
+          "unk_rate": 0.008081837720257544,
+          "unk_lexicon_share": 0.30918250987864176
+        },
+        "valid": {
+          "sentences": 95380,
+          "words": 733715,
+          "unk": 5687,
+          "unk_lexicon": 1822,
+          "stock_names": 0,
+          "tokens": 924475,
+          "unk_rate": 0.007750965974526894,
+          "unk_lexicon_share": 0.3203798136099877
+        },
+        "test": {
+          "sentences": 95050,
+          "words": 730914,
+          "unk": 5797,
+          "unk_lexicon": 1830,
+          "stock_names": 0,
+          "tokens": 921014,
+          "unk_rate": 0.007931165636449706,
+          "unk_lexicon_share": 0.31568052440917715
+        }
+      }
+    },
+    "masc": {
+      "inputs": [
+        {
+          "path": "english-masc-heldout-v1.json.bz2",
+          "sha256": "bd9129ca750c658969e02c9612fa4686e7ce8aba1e25f0604c94859dd3dab775"
+        }
+      ],
+      "splits": {
+        "test": {
+          "sentences": 7078,
+          "words": 65244,
+          "unk": 2699,
+          "unk_lexicon": 1318,
+          "tokens": 81723,
+          "unk_rate": 0.04136778860891423,
+          "unk_lexicon_share": 0.4883290107447203
+        }
+      }
+    }
+  },
+  "schema_version": 1,
+  "vocabulary": "tools/data/nss/english-nss-vocab-30k.tsv",
+  "vocabulary_sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+  "langdata_sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
+  "split_policy": "sha256(document key) mod 200: 0 valid, 1 test, else train",
+  "stock_names": "tatoeba tom/mary -> <unk> unless sha256(key|sentence|position) mod 10 == 0",
+  "stock_name_sentences_kept": 0.25
+}

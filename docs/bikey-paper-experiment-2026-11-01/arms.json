@@ -1,0 +1,19 @@
+{
+  "arms": {
+    "current": {},
+    "paper_g": {
+      "KB_PAPER_G": "1"
+    },
+    "bikey": {
+      "KB_BIKEY": "1"
+    },
+    "bikey_paper_g": {
+      "KB_BIKEY": "1",
+      "KB_PAPER_G": "1"
+    }
+  },
+  "total": 46479,
+  "model": "/Users/meher/Downloads/iOSKeyboard/keyboard/nss-english.nsslm",
+  "spatialAssumption": "Tied key-centered Gaussians, sigma=.7 key widths; gesture line-segment distance with backwards-progress penalty, resampled every .5 key widths. These are reconstruction choices, not published trained parameters.",
+  "scope": "Full existing held target split; hard and apostrophe guard cases kept whole. No tuning or neural retraining. All arms same native working-tree snapshot and model."
+}
