@@ -9,10 +9,10 @@ Arms (decoder, model):
   after-paper  the working tree with KB_NSS_PAPER=1 (same graph)   keyboard/nss-english.nsslm
   after        the working tree, default options                   keyboard/nss-english.nsslm
   after-generic, after-chat   the working tree                     artifacts/generic-final, --chat
-  ngram        the working tree's n-gram tier                       -
 BASELINE and PAPER are built with PAPER's harness plus fixed-prefix replay: the working
-tree's harness sets EngineOptions fields that those trees do not have. Every arm runs
-twice, in order and then reversed, to reduce order effects.
+tree's harness sets EngineOptions fields that those trees do not have. They read their own
+commit's keyboard/langdata.bin (KBLM v6, the same words and frequencies as today's v7).
+Every arm runs twice, in order and then reversed, to reduce order effects.
 
 Sample: every 50th 'ac' row and every 5th 'nw' row of corpus/cases.tsv, in order.
 Reported per arm: a typed word decoded in a fresh word session ('ac' ms), next-word
@@ -53,6 +53,8 @@ def build_commit(commit, binary):
         path.parent.mkdir(parents=True)
         path.write_text(harness)
         build(source, binary)
+    pack = subprocess.run(['git', 'show', f'{commit}:keyboard/langdata.bin'], check=True, cwd=ROOT, capture_output=True).stdout
+    binary.with_name(binary.name + '.langdata.bin').write_bytes(pack)
 
 
 def quantiles(values):
@@ -71,6 +73,8 @@ def main():
     build_commit(BASELINE, binaries['before'])
     build_commit(PAPER, binaries['paper'])
     build(ROOT, binaries['after'])
+    packs = {name: binary.with_name(binary.name + '.langdata.bin') for name, binary in binaries.items()}
+    packs['after'] = ROOT/'keyboard/langdata.bin'
     lines = (BENCH/'corpus/cases.tsv').read_text().splitlines()
     keep = set([l for l in lines if l.split('\t')[1] == 'ac'][::50] + [l for l in lines if l.split('\t')[1] == 'nw'][::5])
     sample = args.out/'latency.tsv'
@@ -81,18 +85,17 @@ def main():
             ('after-paper', 'after', english, {'KB_NSS_PAPER': '1'}),
             ('after', 'after', english, {}),
             ('after-generic', 'after', ARTIFACTS/'generic-final.nsslm', {}),
-            ('after-chat', 'after', args.chat, {}),
-            ('ngram', 'after', None, {})]
+            ('after-chat', 'after', args.chat, {})]
     for name, _, model, _ in arms:
-        if model and not model.exists():
+        if not model.exists():
             print(f'skipping {name}: no {model}', flush=True)
-    arms = [arm for arm in arms if not arm[2] or arm[2].exists()]
+    arms = [arm for arm in arms if arm[2].exists()]
     runs, rows = [], {}
     for index, (name, decoder, model, extra) in enumerate(arms + arms[::-1]):
         path = args.out/f'latency-{index:02d}-{name}.jsonl'
         env = {k: v for k, v in os.environ.items() if not k.startswith('KB_')}
-        env.update(extra, KB_FULL_PREFIXES='1', **({'KB_NSS': str(model)} if model else {}))
-        subprocess.run([str(binaries[decoder]), str(ROOT/'keyboard/langdata.bin'), str(ROOT/'keyboard/safety.kbguard'),
+        env.update(extra, KB_FULL_PREFIXES='1', KB_NSS=str(model))
+        subprocess.run([str(binaries[decoder]), str(packs[decoder]), str(ROOT/'keyboard/safety.kbguard'),
                         str(sample), str(path)], env=env, check=True)
         records = [json.loads(line) for line in path.read_text().splitlines()]
         assert records[-1].get('kind') == 'done'
@@ -134,8 +137,8 @@ def main():
               'scope': 'Desktop host with nothing else running; no physical-device latency claim. Two runs per arm, '
                        'in order then reversed. All sampled next-word prefixes replayed regardless of suggestion rank.',
               'compiler': subprocess.check_output(['clang++', '--version'], text=True).splitlines()[0],
-              'arms': [{'name': n, 'decoder': d, 'model': str(m.relative_to(ROOT) if m.is_relative_to(ROOT) else m) if m else None, 'env': e} for n, d, m, e in arms],
-              'models_sha256': {n: hashlib.sha256(m.read_bytes()).hexdigest() for n, _, m, _ in arms if m},
+              'arms': [{'name': n, 'decoder': d, 'model': str(m.relative_to(ROOT) if m.is_relative_to(ROOT) else m), 'env': e} for n, d, m, e in arms],
+              'models_sha256': {n: hashlib.sha256(m.read_bytes()).hexdigest() for n, _, m, _ in arms},
               'summary': summary, 'runs': runs}
     (args.out/'latency.json').write_text(json.dumps(report, indent=2)+'\n')
     for name, s in summary.items():

@@ -5,7 +5,7 @@ compete with each other; accuracy runs reuse tune.evaluate's cache.
 
   latency_tradeoff.py BIN '{"deletionCost": 1.1}' '{"deletionCost": 1.6}' ...
 """
-import concurrent.futures as cf, json, os, subprocess, sys
+import concurrent.futures as cf, json, subprocess, sys
 import evaluate as ev, tune
 
 def keystrokes(binary, setting):
@@ -13,7 +13,7 @@ def keystrokes(binary, setting):
     out.parent.mkdir(exist_ok=True)
     keyboard = ev.REPO/'keyboard'
     subprocess.run([str(ev.BIN/binary), str(keyboard/'langdata.bin'), str(keyboard/'safety.kbguard'), str(ev.CORPUS/'keystrokes.tsv'), str(out)],
-                   env=dict(os.environ, **{f'KB_{k}': str(v) for k, v in setting.items()}), check=True, stderr=subprocess.DEVNULL)
+                   env=ev.bench_env(**{f'KB_{k}': str(v) for k, v in setting.items()}), check=True, stderr=subprocess.DEVNULL)
     short, long = [], []
     for r in map(json.loads, open(out)):
         for k, ms in enumerate(r.get('msk', []), 1): (short if k <= 4 else long).append(ms)

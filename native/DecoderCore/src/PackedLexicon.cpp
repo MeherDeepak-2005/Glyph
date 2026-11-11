@@ -1,29 +1,17 @@
 #include "../include/PackedLexicon.hpp"
-#include "../include/CandidateGeneration.hpp"   // MutableTrie for the blocked-word trie
-#include "../include/IncrementalSearch.hpp"
 #include <algorithm>
-#include <queue>
 #include <array>
 #include <cmath>
-#include <unordered_map>
 #include <limits>
 #include <utility>
 #include <stdexcept>
 
 namespace kb {
-std::vector<std::int32_t> PackedLexicon::textMetadataIDs() const {
-    std::vector<std::int32_t> out;
-    for (std::uint32_t id = 0; id < words_; ++id) {
-        auto text = word(id);
-        if (std::any_of(text.begin(), text.end(), [](unsigned char c) { return c < 32 || c >= 127; })) out.push_back(std::int32_t(id));
-    }
-    return out;
+namespace {
+constexpr std::uint32_t magic = 0x4B424C4D, none = 0xffffffff;
+void require(bool condition, const char* reason) {
+    if (!condition) throw std::invalid_argument(reason);
 }
-void PackedLexicon::installTextMetadata(std::span<const TextMetadata> values) const {
-    std::call_once(metadataOnce_, [&] { for (const auto& value : values) {
-        if (value.id < 0 || std::uint32_t(value.id) >= words_) throw std::invalid_argument("invalid text metadata ID");
-        textMetadata_.emplace(value.id, value);
-    }});
 }
 void PackedLexicon::installBlocked(std::span<const std::string> terms) const {
     std::call_once(blockedOnce_, [&] {
@@ -33,47 +21,16 @@ void PackedLexicon::installBlocked(std::span<const std::string> terms) const {
             auto& slot = bits[std::uint32_t(*id) >> 6]; auto mask = std::uint64_t(1) << (std::uint32_t(*id) & 63);
             if (!(slot & mask)) { slot |= mask; ++count; }
         }
-        auto trie = std::make_shared<MutableTrie>();
-        for (std::uint32_t id = 0; id < words_; ++id) if (bits[id >> 6] >> (id & 63) & 1) trie->insert(word(id), frequency(id), std::int32_t(id));
-        blocked_ = std::move(bits); blockedCount_ = count; blockedTrie_ = std::move(trie);
+        blocked_ = std::move(bits); blockedCount_ = count;
     });
-}
-std::size_t PackedLexicon::characterCount(std::string_view text) const {
-    if (auto id = wordID(text)) if (auto found = textMetadata_.find(*id); found != textMetadata_.end()) return found->second.characters;
-    return text.size();
-}
-void PackedLexicon::warmAnchors() const {
-    std::call_once(anchorsOnce_, [&] {
-        if (!nodes_) return;
-        for (std::uint32_t id = 0; id < words_; ++id) {
-            auto text = word(id); if (text.size() < 2) continue;
-            std::optional<std::uint8_t> first, last;
-            bool ascii = std::all_of(text.begin(), text.end(), [](unsigned char c) { return c >= 32 && c < 127; });
-            if (ascii) { first = std::uint8_t(text.front()); last = std::uint8_t(text.back()); }
-            else if (auto found = textMetadata_.find(std::int32_t(id)); found != textMetadata_.end() && found->second.characters >= 2) {
-                first = found->second.first; last = found->second.last;
-            }
-            if (first && last) anchors_[std::uint16_t(*first) << 8 | *last].push_back(std::int32_t(id));
-        }
-        for (auto& [key, ids] : anchors_) { (void)key; std::stable_sort(ids.begin(), ids.end(), [&](auto a, auto b) { return frequency(a) > frequency(b); }); }
-    });
-}
-std::vector<std::string> PackedLexicon::anchorWords(std::span<const std::uint8_t> first, std::span<const std::uint8_t> last, std::size_t cap) const {
-    warmAnchors(); std::vector<std::string> out; std::unordered_map<std::int32_t, bool> seen;
-    for (auto a : first) for (auto b : last) if (auto found = anchors_.find(std::uint16_t(a) << 8 | b); found != anchors_.end()) {
-        for (std::size_t i = 0; i < std::min(cap, found->second.size()); ++i) {
-            auto id = found->second[i]; if (!blocked(std::uint32_t(id)) && seen.emplace(id, true).second) out.emplace_back(word(id));
-        }
-    }
-    return out;
 }
 PackedLexicon::TrieNodeRecord PackedLexicon::trieRecord(std::size_t node) const {
     if (node >= nodes_) throw std::out_of_range("invalid trie node");
     auto offset = trie_ + nodeSize_ * node;
-    auto id = version_ == 5 ? std::uint32_t(u16(offset + 6)) : u32(offset + 6);
+    auto id = u32(offset + 6);
     return {std::to_integer<std::uint8_t>(bytes_[offset]), u32(offset + 2),
-        std::to_integer<std::uint8_t>(bytes_[offset + 1]), u32(offset + (version_ == 5 ? 8 : 10)),
-        id == (version_ == 5 ? 0xffffu : 0xffffffffu) ? std::nullopt : std::optional<std::int32_t>(id)};
+        std::to_integer<std::uint8_t>(bytes_[offset + 1]), u32(offset + 10),
+        id == none ? std::nullopt : std::optional<std::int32_t>(id)};
 }
 std::optional<std::size_t> PackedLexicon::trieNode(std::string_view prefix) const {
     if (!nodes_) return {};
@@ -92,73 +49,9 @@ std::optional<std::size_t> PackedLexicon::trieNode(std::string_view prefix) cons
 }
 std::optional<std::int32_t> PackedLexicon::wordID(std::string_view spelling) const {
     auto at = trieNode(spelling); if (!at) return {};
-    auto id = version_ == 5 ? std::uint32_t(u16(trie_ + nodeSize_ * *at + 6)) : u32(trie_ + nodeSize_ * *at + 6);
-    if (id == (version_ == 5 ? 0xffffu : 0xffffffffu)) return {};
+    auto id = u32(trie_ + nodeSize_ * *at + 6);
+    if (id == none) return {};
     return static_cast<std::int32_t>(id);
-}
-std::vector<ChannelCandidate> PackedLexicon::completions(std::string_view prefix, std::size_t limit) const {
-    auto start = trieNode(prefix); if (!start || !limit) return {};
-    struct Entry { std::uint32_t priority; std::size_t node; std::int32_t wordID; };
-    std::vector<Entry> heap;
-    auto maxFrequency = [&](std::size_t at) { return u32(trie_ + nodeSize_ * at + (version_ == 5 ? 8 : 10)); };
-    // Deliberately use the reference's heap comparisons. std::priority_queue has
-    // different equal-priority behavior and changes tied completion ordering.
-    auto push = [&](Entry e) {
-        heap.push_back(e); auto c = heap.size() - 1;
-        while (c > 0) {
-            auto p = (c - 1) >> 1;
-            if (heap[p].priority >= heap[c].priority) break;
-            std::swap(heap[p], heap[c]); c = p;
-        }
-    };
-    auto pop = [&] {
-        auto top = heap.front(), last = heap.back(); heap.pop_back();
-        if (!heap.empty()) {
-            heap[0] = last; std::size_t p = 0;
-            while (true) {
-                auto l = 2 * p + 1, r = l + 1, m = p;
-                if (l < heap.size() && heap[l].priority > heap[m].priority) m = l;
-                if (r < heap.size() && heap[r].priority > heap[m].priority) m = r;
-                if (m == p) break;
-                std::swap(heap[p], heap[m]); p = m;
-            }
-        }
-        return top;
-    };
-    std::vector<ChannelCandidate> out;
-    push({maxFrequency(*start), *start, -1});
-    while (!heap.empty() && out.size() < limit) {
-        auto e = pop();
-        if (e.node == SIZE_MAX) {
-            // The typed text itself is never censored: a blocked word completes only to itself.
-            if (!blocked(std::uint32_t(e.wordID)) || word(e.wordID) == prefix)
-                out.push_back({std::string(word(e.wordID)), 0, std::log(double(std::max(frequency(e.wordID), 1u)) + 1)});
-            continue;
-        }
-        auto offset = trie_ + nodeSize_ * e.node;
-        auto id = version_ == 5 ? std::uint32_t(u16(offset + 6)) : u32(offset + 6);
-        if (id != (version_ == 5 ? 0xffffu : 0xffffffffu)) push({frequency(id), SIZE_MAX, std::int32_t(id)});
-        auto first = u32(offset + 2); auto count = std::to_integer<std::uint8_t>(bytes_[offset + 1]);
-        for (std::size_t i = first; i < std::size_t(first) + count; ++i) push({maxFrequency(i), i, -1});
-    }
-    return out;
-}
-namespace {
-constexpr std::uint32_t empty32 = 0xffffffff;
-constexpr std::uint32_t empty16 = 0xffff;
-void require(bool condition, const char* reason) {
-    if (!condition) throw std::invalid_argument(reason);
-}
-std::uint64_t mix64(std::uint64_t value) {
-    value ^= value >> 30; value *= 0xBF58476D1CE4E5B9ULL;
-    value ^= value >> 27; value *= 0x94D049BB133111EBULL;
-    return value ^ (value >> 31);
-}
-}
-std::uint16_t PackedLexicon::u16(std::size_t offset) const {
-    require(offset <= bytes_.size() && bytes_.size() - offset >= 2, "truncated UInt16");
-    return std::to_integer<std::uint16_t>(bytes_[offset]) |
-           (std::to_integer<std::uint16_t>(bytes_[offset + 1]) << 8);
 }
 std::uint32_t PackedLexicon::u32(std::size_t offset) const {
     require(offset <= bytes_.size() && bytes_.size() - offset >= 4, "truncated UInt32");
@@ -167,45 +60,24 @@ std::uint32_t PackedLexicon::u32(std::size_t offset) const {
            (std::to_integer<std::uint32_t>(bytes_[offset + 2]) << 16) |
            (std::to_integer<std::uint32_t>(bytes_[offset + 3]) << 24);
 }
-std::uint32_t PackedLexicon::idAt(std::size_t offset) const {
-    return version_ == 5 ? u16(offset) : u32(offset);
-}
 PackedLexicon::PackedLexicon(std::span<const std::byte> bytes) : bytes_(bytes) {
-    require(bytes.size() >= 28, "truncated header");
-    require(u32(0) == 0x4B424C4D, "invalid KBLM magic");
-    version_ = u32(4);
-    require(version_ >= 2 && version_ <= 6, "unsupported KBLM version");
-    const std::size_t header = version_ >= 4 ? 36 : version_ >= 3 ? 32 : 28;
-    require(bytes.size() >= header, "truncated versioned header");
-    words_ = u32(8); biBuckets_ = u32(12); biEntries_ = u32(16);
-    triBuckets_ = u32(20); triEntries_ = u32(24);
-    nodes_ = version_ >= 3 ? u32(28) : 0;
-    starters_ = version_ >= 4 ? u32(32) : 0;
+    require(bytes.size() >= headerSize_, "truncated header");
+    require(u32(0) == magic, "invalid KBLM magic");
+    require(u32(4) == formatVersion, "unsupported KBLM version");
+    words_ = u32(8); nodes_ = u32(12);
     require(words_ <= static_cast<std::uint32_t>(INT32_MAX), "word IDs exceed Int32");
-    require(version_ != 5 || words_ < empty16, "v5 word IDs exceed UInt16");
-    nodeSize_ = version_ == 5 ? 12 : 14;
-    entrySize_ = starterSize_ = version_ == 5 ? 6 : 8;
     // Add each section only after checked multiplication/subtraction. Corrupt counts
     // must not wrap offsets, even on a platform with a smaller size_t.
-    std::size_t cursor = header;
+    std::size_t cursor = headerSize_;
     auto section = [&](std::size_t width, std::size_t count) {
         require(count <= (bytes.size() - cursor) / width, "section exceeds backing");
         auto start = cursor; cursor += width * count; return start;
     };
     frequencies_ = section(4, words_);
     offsets_ = section(4, std::size_t(words_) + 1);
-    biHash_ = section(version_ == 5 ? 12 : 16, biBuckets_);
-    biData_ = section(entrySize_, biEntries_);
-    triHash_ = section(version_ == 5 ? 12 : 20, triBuckets_);
-    triData_ = section(entrySize_, triEntries_);
     trie_ = section(nodeSize_, nodes_);
-    starterData_ = section(starterSize_, starters_);
     blob_ = cursor;
     validate();
-}
-void PackedLexicon::validateRange(Range range, std::uint32_t count) const {
-    require(range.start <= count && range.count <= count - range.start,
-            "continuation range exceeds section");
 }
 void PackedLexicon::validate() {
     std::uint32_t previous = 0;
@@ -214,57 +86,13 @@ void PackedLexicon::validate() {
         require(end >= previous && end <= bytes_.size() - blob_, "invalid word offsets");
         previous = end;
     }
-    // Continuation IDs are checked in readRange as rows are read. Scanning all of them
-    // here faulted in nearly the whole mapped pack before the first keystroke.
-    for (std::size_t i = 0; i < starters_; ++i)
-        require(idAt(starterData_ + starterSize_ * i) < words_, "invalid starter ID");
-    if (version_ < 5) {
-        for (auto count : {biBuckets_, triBuckets_})
-            require(count == 0 || (count & (count - 1)) == 0, "hash table size is not a power of two");
-    }
-    std::uint32_t lastKey = 0;
-    for (std::size_t i = 0; i < biBuckets_; ++i) {
-        auto base = biHash_ + (version_ == 5 ? 12 : 16) * i;
-        auto key = idAt(base);
-        if (version_ < 5 && key == empty32) continue;
-        require(key < words_, "invalid bigram context ID");
-        if (version_ >= 5) {
-            require(i == 0 || key > lastKey, "unsorted/duplicate bigram contexts");
-            lastKey = key;
-        }
-        validateRange({u32(base + 4), u32(base + 8), version_ == 5 ? u16(base + 2) : u32(base + 12)}, biEntries_);
-    }
-    lastKey = 0;
-    std::uint64_t lastWideKey = 0;
-    for (std::size_t i = 0; i < triBuckets_; ++i) {
-        auto base = triHash_ + (version_ == 5 ? 12 : 20) * i;
-        auto key = u32(base);
-        if (version_ < 5 && key == empty32) continue;
-        if (version_ == 5) {
-            require((key >> 16) < words_ && (key & empty16) < words_, "invalid trigram context ID");
-            require(i == 0 || key > lastKey, "unsorted/duplicate trigram contexts");
-            lastKey = key;
-            auto start = u32(base + 8);
-            auto end = i + 1 < triBuckets_ ? u32(base + 20) : triEntries_;
-            require(end >= start, "reversed trigram range");
-            validateRange({u32(base + 4), start, end - start}, triEntries_);
-        } else {
-            require(key < words_ && u32(base + 4) < words_, "invalid trigram context ID");
-            if (version_ == 6) {
-                const auto wideKey = (std::uint64_t(key) << 32) | u32(base + 4);
-                require(i == 0 || wideKey > lastWideKey, "unsorted/duplicate trigram contexts");
-                lastWideKey = wideKey;
-            }
-            validateRange({u32(base + 8), u32(base + 12), u32(base + 16)}, triEntries_);
-        }
-    }
     for (std::size_t i = 0; i < nodes_; ++i) {
         auto base = trie_ + nodeSize_ * i;
         auto count = std::to_integer<unsigned>(bytes_[base + 1]);
-        auto first = u32(base + 2), id = idAt(base + 6);
+        auto first = u32(base + 2), id = u32(base + 6);
         require(first <= nodes_ && count <= nodes_ - first, "invalid trie child range");
         require(count == 0 || first > i, "trie children must follow parent");
-        require(id == (version_ == 5 ? empty16 : empty32) || id < words_, "invalid trie terminal ID");
+        require(id == none || id < words_, "invalid trie terminal ID");
     }
 }
 std::uint32_t PackedLexicon::frequency(std::uint32_t id) const {
@@ -276,86 +104,11 @@ std::string_view PackedLexicon::word(std::uint32_t id) const {
     auto start = u32(offsets_ + 4 * id), end = u32(offsets_ + 4 * (std::size_t(id) + 1));
     return {reinterpret_cast<const char*>(bytes_.data() + blob_ + start), end - start};
 }
-std::shared_ptr<const IncrementalSeedSet> PackedLexicon::incrementalSeeds(
-    std::uint8_t typedFirst, std::optional<TouchOffset> firstTap, std::size_t stateCap, std::span<const WordFrequencyBoost> boosts, std::uint8_t typedSecond, double maxCost) const {
-    if (!nodes_ || typedFirst < 'a' || typedFirst > 'z') return {};
-    std::array<bool, 256> allowed{};
-    auto first = u32(trie_ + 2);
-    auto count = std::to_integer<unsigned>(bytes_[trie_ + 1]);
-    // A word with another first letter is reachable within maxCost only through a
-    // direct first-letter substitution (other paths also pay a deletion or insertion), at its
-    // own 5+ letter penalty: neighbouring keys pay less than distant ones.
-    for (std::size_t i = first; i < std::size_t(first) + count; ++i) {
-        auto label = std::to_integer<std::uint8_t>(bytes_[trie_ + nodeSize_ * i]);
-        if (label == typedFirst || (typedSecond && label == typedSecond) ||
-                seedFirstLetterCost(label, typedFirst, firstTap) <= maxCost)
-            allowed[label] = true;
-    }
-    std::unordered_map<std::string_view, std::uint32_t> boostView;
-    for (const auto& boost : boosts) {
-        if (!boostView.emplace(boost.word, boost.count).second)
-            throw std::invalid_argument("duplicate personalization boost");
-    }
-    std::call_once(seedIndexOnce_, [&] {
-        for (std::uint32_t id = 0; id < words_; ++id) {
-            auto spelling = word(id);
-            if (spelling.empty()) { emptySeedWord_ = true; continue; }
-            seedIDs_[static_cast<unsigned char>(spelling.front())].push_back(id);
-        }
-    });
-    if (emptySeedWord_) return {};
-    std::size_t selected = 0;
-    for (std::size_t label = 0; label < allowed.size(); ++label) if (allowed[label]) {
-        const auto count = seedIDs_[label].size();
-        if (count > stateCap - std::min(stateCap, selected)) return {};
-        selected += count;
-    }
-    BorrowedSeedViews seeds; seeds.entries.reserve(selected);
-    using Cursor = std::pair<std::uint32_t, std::uint16_t>;
-    std::priority_queue<Cursor, std::vector<Cursor>, std::greater<Cursor>> pending;
-    std::array<std::size_t, 256> positions{};
-    for (std::size_t label = 0; label < allowed.size(); ++label)
-        if (allowed[label] && !seedIDs_[label].empty()) pending.emplace(seedIDs_[label][0], std::uint16_t(label));
-    while (!pending.empty()) {
-        const auto [id, label] = pending.top(); pending.pop();
-        if (++positions[label] < seedIDs_[label].size()) pending.emplace(seedIDs_[label][positions[label]], label);
-        if (blocked(id)) continue;
-        auto spelling = word(id);
-        double logFrequency = std::log(double(std::max(frequency(id), 1u)) + 1);
-        if (auto boost = boostView.find(spelling); boost != boostView.end())
-            logFrequency = std::log(std::exp(logFrequency) + double(boost->second));
-        seeds.entries.push_back({spelling, spelling, logFrequency});
-    }
-    return std::make_shared<const IncrementalSeedSet>(std::move(seeds));
-}
 std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, double maxCost,
-        std::span<const std::optional<TouchOffset>> taps,
-        std::optional<std::span<const WordFunding>> funding,
-        const std::function<bool()>& shouldCancel, bool missingFirstOnly, std::span<const std::uint8_t> roots) const {
+        std::span<const std::optional<TouchOffset>> taps, const std::function<bool()>& shouldCancel) const {
     if (!nodes_ || typed.empty()) return {};
     if (!std::isfinite(maxCost) || maxCost < 0) throw std::invalid_argument("invalid search radius");
-    struct Prior { std::vector<std::pair<std::uint8_t, std::size_t>> children; double bonus = 0, terminal = 0; };
-    std::vector<Prior> priors(1);
-    if (funding) for (const auto& entry : *funding) {
-        if (!std::isfinite(entry.bonus) || entry.bonus <= 0 || entry.bonus > 1.6)
-            throw std::invalid_argument("invalid search funding");
-        std::size_t node = 0;
-        for (unsigned char byte : entry.word) {
-            std::size_t next = SIZE_MAX;
-            for (const auto& child : priors[node].children) if (child.first == byte) { next = child.second; break; }
-            if (next == SIZE_MAX) {
-                next = priors.size(); priors[node].children.emplace_back(byte, next); priors.emplace_back();
-            }
-            priors[next].bonus = std::max(priors[next].bonus, entry.bonus); node = next;
-        }
-        priors[node].terminal = std::max(priors[node].terminal, entry.bonus);
-    }
-    auto priorChild = [&](std::size_t node, std::uint8_t byte) {
-        if (node != SIZE_MAX) for (const auto& child : priors[node].children)
-            if (child.first == byte) return child.second;
-        return SIZE_MAX;
-    };
-    const auto extra = (maxCost + (funding ? 1.6 : 0)) / std::min(deletionCost, doubledDeletionCost);
+    const auto extra = maxCost / std::min(deletionCost, doubledDeletionCost);
     if (extra >= double(std::numeric_limits<std::size_t>::max() / 2))
         throw std::length_error("search depth overflow");
     const auto allowance = static_cast<std::size_t>(extra) + 2;
@@ -374,19 +127,18 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
     auto byteAt = [&](std::size_t node, std::size_t offset) {
         return std::to_integer<std::uint8_t>(bytes_[trie_ + nodeSize_ * node + offset]);
     };
-    // The full search leaves dropped-first-letter candidates (bove -> above) to the
-    // missingFirstOnly pass: admitting that shape here would lower the root bound of every
-    // first letter and open most of the trie on each keystroke.
     const auto typedFirst = std::uint8_t(typed.front()), typedSecondLetter = n > 1 ? std::uint8_t(typed[1]) : std::uint8_t(0);
+    // A dropped first letter (bove -> above) gets no first-letter discount: admitting that
+    // shape would lower the root bound of every first letter and open most of the trie.
     auto penaltyOf = [&](std::uint8_t candidateFirst, std::uint8_t candidateSecond) {
-        if (!missingFirstOnly && candidateSecond == typedFirst && !(typedSecondLetter && candidateFirst == typedSecondLetter))
+        if (candidateSecond == typedFirst && !(typedSecondLetter && candidateFirst == typedSecondLetter))
             candidateSecond = 0;
         return firstLetterPenalty(n, candidateFirst, typedFirst, typedSecondLetter, candidateSecond);
     };
     // parentMin is the previous DP row's minimum: a transposition reaches back to it,
     // so a branch may only be pruned when min(rowMin, parentMin + transposition) is over budget.
     auto visit = [&](auto&& self, std::size_t node, std::uint8_t letter, std::uint8_t previousLetter,
-                     std::size_t depth, double firstPenalty, std::size_t prior, double parentMin) -> void {
+                     std::size_t depth, double firstPenalty, double parentMin) -> void {
         if (cancelled || depth > maxDepth) return;
         const double rootPenalty = firstPenalty;   // best case below the root; exact from depth 2
         ++visits;
@@ -412,149 +164,28 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
             dp[base + column] = value; if (value < rowMin) rowMin = value;
         }
         auto offset = trie_ + nodeSize_ * node;
-        std::uint32_t id = version_ == 5 ? u16(offset + 6) : u32(offset + 6);
-        if (version_ == 5 && id == empty16) id = empty32;
-        const double bonus = prior != SIZE_MAX ? priors[prior].bonus : 0;
-        const double terminal = prior != SIZE_MAX ? priors[prior].terminal : 0;
+        const std::uint32_t id = u32(offset + 6);
         // The root penalty assumed the best case for the candidate's second letter; settle it.
-        const auto typedSecond = n > 1 ? std::uint8_t(typed[1]) : std::uint8_t(0);
-        if (depth == 1) firstPenalty = std::max(firstPenalty, firstLetterPenalty(n, letter, std::uint8_t(typed.front()), typedSecond));
+        if (depth == 1) firstPenalty = std::max(firstPenalty, firstLetterPenalty(n, letter, typedFirst, typedSecondLetter));
         if (depth == 2) firstPenalty = penaltyOf(previousLetter, letter);
         const double finalCost = dp[base + n] + firstPenalty;
-        if (id != empty32 && !blocked(id) && finalCost - terminal <= maxCost) hits.emplace_back(id, finalCost);
+        if (id != none && !blocked(id) && finalCost <= maxCost) hits.emplace_back(id, finalCost);
         const double bound = depth == 1 ? rootPenalty : firstPenalty;
-        if (std::min(rowMin, parentMin + transpositionCost) + bound - bonus <= maxCost) {
+        if (std::min(rowMin, parentMin + transpositionCost) + bound <= maxCost) {
             const auto first = u32(offset + 2); const auto count = byteAt(node, 1);
-            for (std::size_t child = first; child < std::size_t(first) + count; ++child) {
-                const auto childByte = byteAt(child, 0);
-                if (missingFirstOnly && depth == 1 && childByte != std::uint8_t(typed.front())) continue;
-                self(self, child, childByte, letter, depth + 1, bound, priorChild(prior, childByte), rowMin);
-            }
+            for (std::size_t child = first; child < std::size_t(first) + count; ++child)
+                self(self, child, byteAt(child, 0), letter, depth + 1, bound, rowMin);
         }
     };
     const auto first = u32(trie_ + 2); const auto count = byteAt(0, 1);
     for (std::size_t node = first; node < std::size_t(first) + count; ++node) {
         const auto letter = byteAt(node, 0);
-        // A candidate starting with the typed second letter then the first is a swap (avlot ->
-        // valor), which the full search already emits.
-        if (missingFirstOnly && (letter == typedFirst || (typedSecondLetter && letter == typedSecondLetter))) continue;
-        if (!roots.empty() && std::find(roots.begin(), roots.end(), letter) == roots.end()) continue;
-        visit(visit, node, letter, 0, 1, penaltyOf(letter, typedFirst),
-              priorChild(0, letter), 0.0);
+        visit(visit, node, letter, 0, 1, penaltyOf(letter, typedFirst), 0.0);
     }
     if (cancelled) return {};
     std::vector<ChannelCandidate> result; result.reserve(hits.size());
     for (const auto& [id, cost] : hits)
         result.push_back({std::string(word(id)), cost, std::log(double(std::max(frequency(id), 1u)) + 1)});
     return result;
-}
-
-std::vector<std::int32_t> PackedLexicon::starterIDs(std::size_t limit) const {
-    std::vector<std::int32_t> out;
-    for (std::size_t i = 0; i < std::min<std::size_t>(limit, starters_); ++i)
-        out.push_back(static_cast<std::int32_t>(idAt(starterData_ + starterSize_ * i)));
-    return out;
-}
-std::optional<PackedLexicon::Range> PackedLexicon::bigramRange(std::int32_t context) const {
-    if (context < 0 || static_cast<std::uint32_t>(context) >= words_ || biBuckets_ == 0) return {};
-    auto key = static_cast<std::uint32_t>(context);
-    if (version_ >= 5) {
-        const std::size_t width = version_ == 5 ? 12 : 16;
-        std::size_t lower = 0, upper = biBuckets_;
-        while (lower < upper) {
-            auto mid = lower + (upper - lower) / 2;
-            if (idAt(biHash_ + width * mid) < key) lower = mid + 1; else upper = mid;
-        }
-        if (lower == biBuckets_) return {};
-        auto base = biHash_ + width * lower;
-        if (idAt(base) != key) return {};
-        return Range{u32(base + 4), u32(base + 8), version_ == 5 ? u16(base + 2) : u32(base + 12)};
-    }
-    auto mask = biBuckets_ - 1;
-    auto bucket = mix64(key) & mask;
-    for (std::uint32_t probes = 0; probes < biBuckets_; ++probes) {
-        auto base = biHash_ + 16 * bucket;
-        auto slot = u32(base);
-        if (slot == empty32) return {};
-        if (slot == key) return Range{u32(base + 4), u32(base + 8), u32(base + 12)};
-        bucket = (bucket + 1) & mask;
-    }
-    return {};
-}
-std::optional<PackedLexicon::Range> PackedLexicon::trigramRange(std::int32_t first, std::int32_t second) const {
-    if (first < 0 || second < 0 || static_cast<std::uint32_t>(first) >= words_ ||
-        static_cast<std::uint32_t>(second) >= words_ || triBuckets_ == 0) return {};
-    if (version_ == 6) {
-        const auto key = (std::uint64_t(first) << 32) | std::uint32_t(second);
-        std::size_t lower = 0, upper = triBuckets_;
-        while (lower < upper) {
-            auto mid = lower + (upper - lower) / 2, base = triHash_ + 20 * mid;
-            const auto slot = (std::uint64_t(u32(base)) << 32) | u32(base + 4);
-            if (slot < key) lower = mid + 1; else upper = mid;
-        }
-        if (lower == triBuckets_) return {};
-        auto base = triHash_ + 20 * lower;
-        if (u32(base) != std::uint32_t(first) || u32(base + 4) != std::uint32_t(second)) return {};
-        return Range{u32(base + 8), u32(base + 12), u32(base + 16)};
-    }
-    if (version_ == 5) {
-        auto key = (static_cast<std::uint32_t>(first) << 16) | static_cast<std::uint32_t>(second);
-        std::size_t lower = 0, upper = triBuckets_;
-        while (lower < upper) {
-            auto mid = lower + (upper - lower) / 2;
-            if (u32(triHash_ + 12 * mid) < key) lower = mid + 1; else upper = mid;
-        }
-        if (lower == triBuckets_) return {};
-        auto base = triHash_ + 12 * lower;
-        if (u32(base) != key) return {};
-        auto start = u32(base + 8);
-        auto end = lower + 1 < triBuckets_ ? u32(base + 20) : triEntries_;
-        return Range{u32(base + 4), start, end - start};
-    }
-    auto key = (std::uint64_t(static_cast<std::uint32_t>(first)) << 32) | static_cast<std::uint32_t>(second);
-    auto mask = triBuckets_ - 1;
-    auto bucket = mix64(key) & mask;
-    for (std::uint32_t probes = 0; probes < triBuckets_; ++probes) {
-        auto base = triHash_ + 20 * bucket;
-        auto slot = u32(base);
-        if (slot == empty32) return {};
-        if (slot == static_cast<std::uint32_t>(first) && u32(base + 4) == static_cast<std::uint32_t>(second))
-            return Range{u32(base + 8), u32(base + 12), u32(base + 16)};
-        bucket = (bucket + 1) & mask;
-    }
-    return {};
-}
-Continuations PackedLexicon::readRange(std::size_t base, Range range, std::size_t limit) const {
-    Continuations out{range.total, {}};
-    auto count = std::min<std::size_t>(range.count, limit);
-    out.entries.reserve(count);
-    for (std::size_t i = range.start; i < std::size_t(range.start) + count; ++i) {
-        auto offset = base + entrySize_ * i;
-        auto id = idAt(offset);
-        require(id < words_, "invalid continuation ID");
-        out.entries.push_back({static_cast<std::int32_t>(id), u32(offset + (version_ == 5 ? 2 : 4))});
-    }
-    return out;
-}
-std::optional<Continuations> PackedLexicon::bigrams(std::int32_t context, std::size_t limit) const {
-    auto range = bigramRange(context);
-    if (!range) return {};
-    return readRange(biData_, *range, limit);
-}
-std::optional<Continuations> PackedLexicon::trigrams(std::int32_t first, std::int32_t second, std::size_t limit) const {
-    auto range = trigramRange(first, second);
-    if (!range) return {};
-    return readRange(triData_, *range, limit);
-}
-std::vector<TrigramContext> PackedLexicon::trigramContexts() const {
-    std::vector<TrigramContext> out;
-    for (std::size_t i = 0; i < triBuckets_; ++i) {
-        auto base = triHash_ + (version_ == 5 ? 12 : 20) * i;
-        auto key = u32(base);
-        if (version_ < 5 && key == empty32) continue;
-        out.push_back(version_ == 5 ? TrigramContext{static_cast<std::int32_t>(key >> 16), static_cast<std::int32_t>(key & empty16)}
-                                  : TrigramContext{static_cast<std::int32_t>(key), static_cast<std::int32_t>(u32(base + 4))});
-    }
-    return out;
 }
 } // namespace kb

@@ -96,7 +96,7 @@ extension KeyboardViewController {
 		// handleInsert — so it is not re-counted as a tap here, which is exactly what drops
 		// keystrokes-per-character below 1.0.
 		recordCommitMetrics(word, autocorrected: false, source: "glide-unverified")
-		learnCommittedWord(context: context ?? contextWords(ctx, max: 8), word: word)
+		learnCommittedWord(word)
 		lastCorrection = Correction(original: "", corrected: display, trailing: " ", fromAutocorrect: false, recordedWordSessionID: wordSessionID)
 		advanceWordSession()
 		mode = .glided(display)

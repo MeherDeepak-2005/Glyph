@@ -3,14 +3,18 @@
 
   evaluate.py build [--bin NAME] [--tuning]
                                        compile ios-bench (or bin/NAME) from the current native/ tree
-  evaluate.py run NAME [--diag] [--quick] [--taps]
+  evaluate.py run NAME [--quick] [--taps]
                                        run it over corpus/ -> results/NAME.jsonl; --quick runs
                                        only the tune half, without prediction or external sets
   evaluate.py score NAME [--vs REF] [--split held|tune|all] [--json OUT]
-  evaluate.py golden [--write]         regenerate the shared-engine decode goldens; print every
-                                       visible change (correction or suggestions); --write saves them
+  evaluate.py golden [--write]         regenerate the shared-engine decode and Glide goldens; print
+                                       every visible change (correction or suggestions); --write
+                                       saves them
   evaluate.py core                     build CoreV4's harness and run it on corpus/ext-cases.tsv
                                        (the main corpus reuses CoreV4's stored 27 Oct results)
+
+The benchmark decodes with the NSS word model in KB_NSS (default keyboard/nss-english.nsslm);
+IOSBench.cpp lists the KB_NSS_* variants it reads.
 
 Scoring (same rules as the 27 Oct comparison):
   committed word = the engine's correction, else the typed text;
@@ -30,25 +34,37 @@ REPO = HERE.parents[2]
 CORPUS = HERE/'corpus'
 RESULTS = HERE/'results'
 BIN = HERE/'bin'
+NSS = REPO/'keyboard/nss-english.nsslm'
 COREV4 = pathlib.Path(os.environ.get('COREV4', '/Users/meherdeepak/Downloads/CoreV4'))
 CORE_RESULTS = pathlib.Path(os.environ.get('COREV4_RESULTS',
     COREV4/'analysis/autocorrect-comparison-2026-10-27/results/core-us74-medium.fwd.jsonl'))
 
 
-def build(binary='ios-bench', tuning=False):
+def core_sources():
+    """The DecoderCore library's sources, as native/CMakeLists.txt lists them."""
     cmake = (REPO/'native/CMakeLists.txt').read_text()
     start = cmake.index('add_library(DecoderCore STATIC')
-    sources = [str(REPO/'native'/l.strip()) for l in cmake[start:cmake.index(')', start)].splitlines()[1:] if l.strip().endswith('.cpp')]
+    return [str(REPO/'native'/l.strip()) for l in cmake[start:cmake.index(')', start)].splitlines()[1:] if l.strip().endswith('.cpp')]
+
+
+def bench_env(**extra):
+    """The environment for a benchmark run: the word model from KB_NSS, else the shipped one."""
+    env = dict(os.environ, **extra)
+    env.setdefault('KB_NSS', str(NSS))
+    return env
+
+
+def build(binary='ios-bench', tuning=False):
     BIN.mkdir(exist_ok=True)
     subprocess.run(['xcrun', 'clang++', '-std=c++20', '-Os', '-DNDEBUG', *(['-DKB_TUNING'] if tuning else []), '-I', str(REPO/'native/DecoderCore/include'),
-                    str(HERE/'IOSBench.cpp'), *sources, '-o', str(BIN/binary)], check=True)
+                    str(HERE/'IOSBench.cpp'), *core_sources(), '-o', str(BIN/binary)], check=True)
     print(BIN/binary)
 
 
-def run(name, diag, quick, binary='ios-bench', taps=False):
+def run(name, quick, binary='ios-bench', taps=False):
     RESULTS.mkdir(exist_ok=True)
-    env = dict(os.environ, KB_DIAG='1' if diag else '0')
-    out = RESULTS/f'{name}{".diag" if diag else ""}.jsonl'
+    env = bench_env()
+    out = RESULTS/f'{name}.jsonl'
     keyboard = REPO/'keyboard'
     corpora = sorted(CORPUS.glob('*cases.taps.tsv' if taps else '*cases.tsv'))
     if quick:
@@ -65,31 +81,31 @@ def run(name, diag, quick, binary='ios-bench', taps=False):
 
 
 def golden(write):
-    """GenGolden.cpp decodes fixtures/shared-engine/corpus.json like EngineTests' replay."""
+    """GenGolden.cpp decodes fixtures/shared-engine/corpus.json and glides.json like EngineTests' replay."""
     fixtures = REPO/'tools/evaluation/fixtures/shared-engine'
-    cmake = (REPO/'native/CMakeLists.txt').read_text()
-    start = cmake.index('add_library(DecoderCore STATIC')
-    sources = [str(REPO/'native'/l.strip()) for l in cmake[start:cmake.index(')', start)].splitlines()[1:] if l.strip().endswith('.cpp')]
     BIN.mkdir(exist_ok=True)
     subprocess.run(['xcrun', 'clang++', '-std=c++20', '-O1', '-I', str(REPO/'native/DecoderCore/include'), '-I', str(REPO/'native/tests'),
-                    str(HERE/'GenGolden.cpp'), *sources, '-o', str(BIN/'gengolden')], check=True)
-    lines = subprocess.run([str(BIN/'gengolden'), str(REPO/'keyboard/langdata.bin'), str(REPO), str(fixtures)],
-                           check=True, capture_output=True, text=True).stdout.splitlines()
+                    str(HERE/'GenGolden.cpp'), *core_sources(), '-o', str(BIN/'gengolden')], check=True)
     def fix(x):   # JSONSerialization writes 2.0 as 2
         if isinstance(x, float) and x.is_integer(): return int(x)
         if isinstance(x, list): return [fix(v) for v in x]
         if isinstance(x, dict): return {k: fix(v) for k, v in x.items()}
         return x
-    new = [fix(json.loads(l)) for l in lines]
-    old = json.loads((fixtures/'golden-corpus.json').read_text())
-    corpus = {c['id']: c for c in json.loads((fixtures/'corpus.json').read_text())}
-    changed = [(o, n) for o, n in zip(old, new) if o != n]
-    visible = [(o, n) for o, n in changed if (o['correction'], o['suggestions']) != (n['correction'], n['suggestions'])]
-    print(f'{len(changed)} of {len(new)} goldens differ; {len(visible)} visibly')
-    for o, n in visible:
-        c = corpus.get(o['id'], {})
-        print(f"  {o['id']} {c.get('typed')!r} ctx={c.get('context')}: {o['correction']} {o['suggestions']} -> {n['correction']} {n['suggestions']}")
-    if write: (fixtures/'golden-corpus.json').write_text(json.dumps(new, sort_keys=True, indent=1) + '\n')
+    for mode, inputs, goldens in (('decode', 'corpus.json', 'golden-corpus.json'), ('glide', 'glides.json', 'golden-glide.json')):
+        lines = subprocess.run([str(BIN/'gengolden'), str(REPO/'keyboard/langdata.bin'), str(NSS), str(REPO), str(fixtures), mode],
+                               check=True, capture_output=True, text=True).stdout.splitlines()
+        new = [fix(json.loads(l)) for l in lines]
+        old = json.loads((fixtures/goldens).read_text())
+        cases = {c['id']: c for c in json.loads((fixtures/inputs).read_text())}
+        shown = lambda g: (g.get('correction'), g['suggestions'])
+        changed = [(o, n) for o, n in zip(old, new) if o != n]
+        visible = [(o, n) for o, n in changed if shown(o) != shown(n)]
+        if len(old) != len(new): print(f'{goldens}: {len(old)} goldens, {len(new)} cases')
+        print(f'{goldens}: {len(changed)} of {len(new)} goldens differ; {len(visible)} visibly')
+        for o, n in visible:
+            c = cases.get(o['id'], {})
+            print(f"  {o['id']} {c.get('typed', c.get('word'))!r} ctx={c.get('context')}: {o.get('correction')} {o['suggestions']} -> {n.get('correction')} {n['suggestions']}")
+        if write: (fixtures/goldens).write_text(json.dumps(new, sort_keys=True, indent=1) + '\n')
 
 
 def core():
@@ -178,7 +194,6 @@ def metrics(meta):
         # make_keep.py: text the user meant that is not in the iOS vocabulary.
         'GUARD unknown names changed': (by.get('keep_name', []) + by.get('keep_name_ctx', []), changed, False, True),
         'GUARD unknown slang changed': (by.get('keep_slang', []), changed, False, True),
-        'GUARD Tenglish words changed': (by.get('keep_tenglish', []), changed, False, True),
         'GUARD rare dictionary words changed': (by.get('keep_word', []), changed, False, True),
         'GUARD correct plurals stripped': (pick(lambda m: m['set'] in ('clean', 'ecps_ok') and m['target'].endswith('s') and len(m['target']) > 3),
                                            lambda r, m: commit(r, m) == m['target'][:-1], False, True),
@@ -246,12 +261,12 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     b = sub.add_parser('build'); b.add_argument('--bin', default='ios-bench'); b.add_argument('--tuning', action='store_true', help='read KB_<constant> overrides from the environment'); sub.add_parser('core'); g = sub.add_parser('golden'); g.add_argument('--write', action='store_true')
-    r = sub.add_parser('run'); r.add_argument('name'); r.add_argument('--diag', action='store_true'); r.add_argument('--quick', action='store_true'); r.add_argument('--bin', default='ios-bench'); r.add_argument('--taps', action='store_true', help='use make_taps.py simulated touches')
+    r = sub.add_parser('run'); r.add_argument('name'); r.add_argument('--quick', action='store_true'); r.add_argument('--bin', default='ios-bench'); r.add_argument('--taps', action='store_true', help='use make_taps.py simulated touches')
     s = sub.add_parser('score'); s.add_argument('name'); s.add_argument('--vs', default='baseline')
     s.add_argument('--split', choices=('held', 'tune', 'all'), default='held'); s.add_argument('--json')
     a = ap.parse_args()
     if a.cmd == 'build': build(a.bin, a.tuning)
     elif a.cmd == 'core': core()
     elif a.cmd == 'golden': golden(a.write)
-    elif a.cmd == "run": run(a.name, a.diag, a.quick, a.bin, a.taps)
+    elif a.cmd == "run": run(a.name, a.quick, a.bin, a.taps)
     else: sys.exit(score(a.name, a.vs, a.split, a.json))

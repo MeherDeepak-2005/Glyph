@@ -79,7 +79,6 @@ extension KeyboardViewController {
         beginKeyboardEdit(reconcileFirst: !isLetter)
         if isLetter { expectedLetterInsertion = ch }
         defer { endKeyboardEdit() }
-		lastTeluguKeyContext = nil
 		if ch.count == 1, let c = ch.first, isWordChar(c) {
 			let wasInsideWord = !currentWordBuffer.isEmpty
 			// Hot path: the host edit is the first meaningful operation. Everything
@@ -101,8 +100,7 @@ extension KeyboardViewController {
 			DispatchQueue.main.async { [weak self] in
 				guard let self else { return }
 				self.noteTap(atUptime: keyTime) // counted off the host path — never before the insert
-				if let acceptedCorrection, acceptedCorrection.fromAutocorrect,
-				   self.activeLanguageMode == .english {
+				if let acceptedCorrection, acceptedCorrection.fromAutocorrect {
 					self.engine.correctionStood(acceptedCorrection.original)
 				}
 				if unresolvedGlide { self.engine.glideUnverified() }
@@ -148,10 +146,9 @@ extension KeyboardViewController {
 			// the original) registers a rejection synchronously (dontCorrect → stateLock), so
 			// the very commit that completes the revert is already exempt from re-correction.
 			let typedWord = currentWordBuffer
-			let decodeContext = currentDecodeSnapshot?.request.context ?? currentContextBuffer
 			resolveManualFix(typedWord)
 			var correction = applyAutocorrectIfNeeded()
-			if correction == nil, activeLanguageMode == .english, permitsLearning {
+			if correction == nil, permitsLearning {
 				engine.learnTouchProfile(word: typedWord, taps: wordTaps)
 			}
 			let committedWord = correction?.corrected ?? typedWord
@@ -160,7 +157,7 @@ extension KeyboardViewController {
 			// persisted personal model. (Stats ride the same gate: password words
 			// shouldn't count toward streaks either.)
 			if !committedWord.isEmpty, !isSecureField {
-				learnCommittedWord(context: decodeContext, word: committedWord)
+				learnCommittedWord(committedWord)
 				KBStats.noteCommitted(glided: false)
 			}
 			// Punctuation right after an auto-inserted space: delete the space first
@@ -189,67 +186,12 @@ extension KeyboardViewController {
 		scheduleSuggestions()
 	}
 
-	func handleKeyOutput(_ output: KeyOutput, tap: KeyTap?) {
-		if case .text(let text) = output {
-			handleInsert(text, tap: tap)
-			return
-		}
-        beginKeyboardEdit()
-        defer { endKeyboardEdit() }
-		guard activeLanguageMode == .telugu, !isSecureField else { return }
-		noteTap()          // Telugu composition key (.text keys are counted inside handleInsert)
-		resolveCorrectionAsAccepted()
-		resolveGlideUnverified()
-		let before = textDocumentProxy.documentContextBeforeInput ?? ""
-		let edit = TeluguComposer.edit(for: output, contextBeforeInput: before)
-		guard edit.deleteBackwardCount > 0 || !edit.insertion.isEmpty else { return }
-		for _ in 0..<edit.deleteBackwardCount { textDocumentProxy.deleteBackward() }
-		if !edit.insertion.isEmpty { insertIntoHost(edit.insertion) }
-		noteProxyEdit()
-		lastTeluguKeyContext = before
-		lastCorrection = nil
-		wordTaps.removeAll(keepingCapacity: true)
-		currentWordBuffer = trailingWord(applying: edit, to: before)
-		updateAutoShift()
-		scheduleSuggestions()
-	}
-
-	func trailingWord(applying edit: TeluguHostEdit, to context: String) -> String {
-		var simulated = context
-		for _ in 0..<edit.deleteBackwardCount where !simulated.isEmpty { simulated.removeLast() }
-		simulated.append(contentsOf: edit.insertion)
-		return trailingWord(simulated)
-	}
-
 	/// Long-press alternatives replace the base glyph that was already inserted on
 	/// touch-down. Keep the host edit first, then revise local touch/decode identity.
 	func handleReplaceLastInput(base: String, with replacement: String) {
         beginKeyboardEdit()
         defer { endKeyboardEdit() }
 		guard !replacement.isEmpty else { return }
-		if activeLanguageMode == .telugu, let originalContext = lastTeluguKeyContext {
-			let normalizedBase = TeluguComposer.normalized(base)
-			let normalizedReplacement = TeluguComposer.normalized(replacement)
-			let baseScalars = Array(normalizedBase.unicodeScalars)
-			let replacementScalars = Array(normalizedReplacement.unicodeScalars)
-			if replacementScalars.starts(with: baseScalars) {
-				let suffix = replacementScalars.dropFirst(baseScalars.count)
-					.map(String.init).joined()
-				if !suffix.isEmpty { insertIntoHost(suffix) }
-			} else {
-				// Pack-defined replacements that are not base+suffix are restricted to
-				// standalone keys (for example Latin/Telugu digits).
-				textDocumentProxy.deleteBackward()
-				insertIntoHost(normalizedReplacement)
-			}
-			noteProxyEdit()
-			currentWordBuffer = trailingWord(originalContext + normalizedReplacement)
-			wordTaps.removeAll(keepingCapacity: true)
-			lastCorrection = nil
-			updateAutoShift()
-			scheduleSuggestions()
-			return
-		}
 		// Another key may have landed while this one was held: replace only the held key's
 		// own output, never whatever character now ends the text.
 		guard replaceHostSuffix(base, with: replacement) else {
@@ -320,16 +262,15 @@ extension KeyboardViewController {
 		resolveCorrectionAsAccepted()
 		resolveGlideUnverified()
 		let typedWord = currentWordBuffer
-		let decodeContext = currentDecodeSnapshot?.request.context ?? currentContextBuffer
 		resolveManualFix(typedWord)
 		var correction = applyAutocorrectIfNeeded()
-		if correction == nil, activeLanguageMode == .english, permitsLearning {
+		if correction == nil, permitsLearning {
 			engine.learnTouchProfile(word: typedWord, taps: wordTaps)
 		}
 		let committedWord = correction?.corrected ?? typedWord
 		recordCommitMetrics(committedWord, autocorrected: correction != nil)
 		if !committedWord.isEmpty, !isSecureField {
-			learnCommittedWord(context: decodeContext, word: committedWord)
+			learnCommittedWord(committedWord)
 			KBStats.noteCommitted(glided: false)
 		}
 		insertIntoHost("\n")

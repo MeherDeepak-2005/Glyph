@@ -1,13 +1,19 @@
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
 
-MODULE_PATH = Path(__file__).with_name("build_language_data.py")
-SPEC = importlib.util.spec_from_file_location("build_language_data", MODULE_PATH)
-LANGUAGE_DATA = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
-SPEC.loader.exec_module(LANGUAGE_DATA)
+def load(name: str):
+    spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(f"{name}.py"))
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+LANGUAGE_DATA = load("build_language_data")
+Pack = load("verify_language_data").Pack
 
 
 class EnglishVocabularySourceTests(unittest.TestCase):
@@ -28,6 +34,38 @@ class EnglishVocabularySourceTests(unittest.TestCase):
         self.assertGreaterEqual(len(vocab), 60_000)
         for word, _ in vocab:
             self.assertTrue(word in tiers or word in supplemental, word)
+
+
+class PackLayoutTests(unittest.TestCase):
+    def test_v7_round_trip(self):
+        vocab = [("the", 100), ("then", 40), ("they", 40), ("a", 7)]
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "pack.bin"
+            LANGUAGE_DATA.write_bin(vocab, output=path)
+            pack = Pack(path)
+        self.assertEqual((pack.version, pack.words), (7, len(vocab)))
+        words, frequencies = pack.vocabulary()
+        self.assertEqual([word.decode() for word in words], [word for word, _ in vocab])
+        self.assertEqual(list(frequencies), [frequency for _, frequency in vocab])
+        trie = pack.trie()
+
+        def node(word):
+            index = 0
+            for byte in word.encode():
+                _, count, first, _, _ = trie[index]
+                index = next(child for child in range(first, first + count) if trie[child][0] == byte)
+            return trie[index]
+
+        for word_id, (word, _) in enumerate(vocab):
+            self.assertEqual(node(word)[3], word_id)
+        self.assertEqual(node("th")[3], LANGUAGE_DATA.EMPTY)
+        self.assertEqual(node("th")[4], 100)        # subtree maximum frequency
+        self.assertEqual(node("then")[4], 40)
+
+    def test_committed_pack_is_v7(self):
+        pack = Pack(LANGUAGE_DATA.OUT)
+        self.assertEqual(pack.version, 7)
+        self.assertGreater(pack.words, 100_000)
 
 
 if __name__ == "__main__":

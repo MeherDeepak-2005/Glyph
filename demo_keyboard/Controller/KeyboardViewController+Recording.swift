@@ -104,8 +104,8 @@ extension KeyboardViewController {
                       neuralLogProbability: finite($0.neuralLogProbability),
                       typedWordMargin: finite($0.typedWordMargin), source: $0.source.rawValue)
             },
-            model: snapshot?.modelTier.rawValue ?? "not-decoded", requestedModel: wordSessionModelTier.rawValue,
-            language: activeLanguageMode.rawValue,
+            model: snapshot == nil ? "not-decoded" : "nss", requestedModel: "nss",
+            language: "english",
             build: (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "unknown"))
     }
 }

@@ -25,14 +25,14 @@ enum KeyboardTypography {
 	// MARK: Keys (fixed)
 
 	/// A one-character key legend. Lowercase letters are drawn larger so their x-height
-	/// matches stock; `scale` shrinks the legend for the compact multi-row Telugu deck.
-	static func keyCharacter(lowercase: Bool, scale: CGFloat = 1) -> UIFont {
-		system((lowercase ? 25.3 : 23) * scale, .regular, bolder: .medium)
+	/// matches stock.
+	static func keyCharacter(lowercase: Bool) -> UIFont {
+		system(lowercase ? 25.3 : 23, .regular, bolder: .medium)
 	}
 
 	/// A word on a key: 123, ABC, #+=, return labels such as "send".
-	static func keyWord(scale: CGFloat = 1) -> UIFont {
-		system(16 * scale, .medium, bolder: .semibold)
+	static func keyWord() -> UIFont {
+		system(16, .medium, bolder: .semibold)
 	}
 
 	/// The press balloon above a key, sized to the balloon's head.

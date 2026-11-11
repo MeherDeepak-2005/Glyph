@@ -51,7 +51,6 @@ Config/Klipy.xcconfig
 
 ## --- Language-data build cache (tools/build_language_data.py) ---
 tools/.cache
-tools/lm/data/
 # Python caching
 __pycache__/
 *.pyc
@@ -61,8 +60,6 @@ __pycache__/
 *.bin
 !keyboard/emoji.bin
 !keyboard/langdata.bin
-!keyboard/telugu_langdata.bin
-!keyboard/tenglish_lexicon.bin
 *.kbguard
 !keyboard/safety.kbguard
 *.mlpackage/
@@ -77,11 +74,6 @@ graphify-out/
 !keyboard/ThirdPartyNotices.txt
 !tools/data/google_profanity_en.txt
 !tools/data/google_profanity_shidouuu_en.txt
-
-# Android integration build/cache files; keep SDK paths machine-local.
-android/.gradle/
-android/**/build/
-android/local.properties
 
 # Reproducible imported vocabulary and integration report.
 !tools/data/corev4/**/*.txt

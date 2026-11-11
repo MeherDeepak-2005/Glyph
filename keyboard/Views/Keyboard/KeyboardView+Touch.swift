@@ -639,12 +639,6 @@ extension KeyboardView {
 		var isGlide = false
 	}
 
-	/// Telugu legends are drawn smaller and the rows shorter: the script's glyphs read
-	/// large and the deck carries ~5 glyph rows, so at Latin size it towers over stock.
-	static let teluguGlyphScale: CGFloat = 0.6
-	static let teluguRowHeightScale: CGFloat = 0.78
-
-
 	/// Extra height for browsing overlays, without changing key geometry. The GIF and
 	/// sticker grid gets ~2.5 GIF rows / 3 sticker rows instead of a cramped 1.5.
 	static let mediaExpansion: CGFloat = 88

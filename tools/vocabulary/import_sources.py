@@ -3,13 +3,14 @@
 
 This is the offline admission step, not a runtime loader. Baseline frequencies are
 untouched; new terms receive conservative priors. MASC is split by document family
-before selecting words/counts, and single-occurrence corpus n-grams are not shipped.
+before selecting words; its training-split counts are admission evidence only, and its
+held-out split is kept for evaluation.
 """
 from __future__ import annotations
 
 import argparse
 import bz2
-from collections import Counter, defaultdict
+from collections import Counter
 import gzip
 import hashlib
 import json
@@ -30,12 +31,10 @@ sys.path.insert(0, str(ROOT / "tools"))
 import build_language_data as builder
 from fetch_sources import SOURCES, digest, verified
 
-MASC_MIN_COUNT = 5  # Fits the complete 14 MB iPhone extension budget, not just the pack cap.
 DIALECTS = {"A": "en-US", "B": "en-GB-ise", "Z": "en-GB-ize", "C": "en-CA", "D": "en-AU"}
 RAW_TOKEN = re.compile(r"\w+(?:'\w+)*", re.UNICODE)
 SENTENCE_BREAK = re.compile(r"[.!?]+(?:[\"'’”)]*)\s+|\r?\n+")
 CURATED = Path(__file__).with_name("curated_terms.tsv")
-CONTEXTS = Path(__file__).with_name("curated_contexts.jsonl")
 
 
 def normalized(word: str) -> str:
@@ -222,34 +221,6 @@ def select_entries(catalog, base, frequency, corpus_counts, document_counts, lim
     return candidates[:limit], len(candidates)
 
 
-def count_contexts(sentences, vocabulary):
-    counts = {2: Counter(), 3: Counter()}
-    for sentence in sentences:
-        tokens = [word if word in vocabulary else None for word in sentence]
-        for n in (2, 3):
-            for index in range(len(tokens) - n + 1):
-                key = tuple(tokens[index:index+n])
-                if all(word is not None for word in key):
-                    counts[n][key] += 1
-    return counts
-
-
-def context_groups(counts, minimum, maximum):
-    # Retain true per-context totals even when some successors are not serialized.
-    selected = sorted((key, count) for key, count in counts.items() if count >= minimum)
-    selected.sort(key=lambda item: (-item[1], item[0]))
-    kept = selected[:maximum]
-    totals = Counter()
-    for key, count in counts.items():
-        totals[key[:-1]] += count
-    groups = defaultdict(list)
-    for key, count in kept:
-        groups[key[:-1]].append([key[-1], count])
-    return [{"context": list(key), "total": totals[key],
-             "entries": sorted(groups[key], key=lambda item: (-item[1], item[0]))}
-            for key in sorted(groups)]
-
-
 def write_json_bz2(path: Path, value) -> dict:
     payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode() + b"\n"
     path.write_bytes(bz2.compress(payload, compresslevel=9))
@@ -267,8 +238,6 @@ def prepare(cache: Path, output: Path, limit: int):
     # is currently installed. It never uses a previously expanded pack as input.
     base_vocab = builder.merge_contractions(builder.build_vocab())
     base = dict(base_vocab)
-    if len(base) + limit > builder.EMPTY16 - 1:
-        raise ValueError("requested vocabulary expansion exceeds v5 ID capacity")
     catalog = {}
     esdb_stats = import_esdb(paths["esdb"], catalog)
     wordnet_count = import_wordnet(paths["wordnet"], catalog)
@@ -295,21 +264,10 @@ def prepare(cache: Path, output: Path, limit: int):
         doc_manifest.append({"document": name, "genre": genre, "family": document_family(name),
                              "split": split, "sentences": len(admitted)})
     selected, eligible_count = select_entries(catalog, base, frequency, train_counts, doc_counts, limit)
-    vocab = set(base) | {entry["word"] for entry in selected}
-    masc = count_contexts((row["tokens"] for row in train), vocab)
-    authored = [json.loads(line) for line in CONTEXTS.read_text().splitlines() if line.strip()]
-    owned = count_contexts((tokenize(row["text"]) for row in authored), vocab)
-    context_snapshot = {"schema_version": 1, "sources": {
-        "masc": {"min_count": MASC_MIN_COUNT, "bigrams": context_groups(masc[2], MASC_MIN_COUNT, 25_000),
-                 "trigrams": context_groups(masc[3], MASC_MIN_COUNT, 20_000)},
-        "project": {"kind": "authored_example_priors_not_observed_corpus_frequencies",
-                    "bigrams": context_groups(owned[2], 1, 1000),
-                    "trigrams": context_groups(owned[3], 1, 1000)}}}
     output.mkdir(parents=True, exist_ok=True)
     artifacts = {
         "vocabulary": write_json_bz2(output / "english-expansion-v1.json.bz2",
             {"schema_version": 1, "baseline_words": len(base), "entries": selected}),
-        "contexts": write_json_bz2(output / "english-contexts-v1.json.bz2", context_snapshot),
         "heldout": write_json_bz2(output / "english-masc-heldout-v1.json.bz2",
             {"schema_version": 1, "split_policy": "SHA256(document_family) mod 5 == 0",
              "limitation": "Document-family split; author identities are unavailable in this text-only archive.",
@@ -324,7 +282,7 @@ def prepare(cache: Path, output: Path, limit: int):
             "alternative_masc_document_count": 3},
         "sources": {name: source | {"release_eligible": True} for name, source in SOURCES.items()},
         "project_inputs": [{"path": str(path.relative_to(ROOT)), "sha256": digest(path)}
-                           for path in [CURATED, CONTEXTS]],
+                           for path in [CURATED]],
         "artifacts": artifacts,
         "source_statistics": {"esdb_exports": esdb_stats, "wordnet_eligible_entries": wordnet_count,
             "masc_documents": len(documents), "train_sentences": len(train), "test_sentences": len(heldout),

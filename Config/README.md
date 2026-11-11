@@ -41,41 +41,21 @@ Release verification fails when media is enabled without both a non-empty key an
 the approved filter flag. Emoji remains local, and typing performs no KLIPY network
 request; GIF and Sticker traffic starts only after an explicit search.
 
-## Internal Neural Model
-
-The decoder's only neural model is the GRU neural search space: it generates
-hypotheses inside the trie search and scores them, with no separate rescoring
-model. `INTERNAL_GRU_MODEL_PACKAGE`, `INTERNAL_GRU_TOKENIZER_MODEL` and the optional
-`INTERNAL_GRU_SCORE_PACKAGE` are read only when `INTERNAL_GRU_ENABLED=YES`; ordinary
-Debug and Release builds do not read, compile, or bundle those paths. The Xcode
-build phase compiles the Core ML package and creates the compact tokenizer artifact
-(`tools/lm/export_tokenizer.py`) without requiring a globally installed
-`sentencepiece` Python module.
-
-For optimized physical-device profiling, explicitly opt in with both the build
-setting and Swift compilation condition:
-
-```sh
-xcodebuild -scheme keyboard -configuration Release -sdk iphoneos \
-  -destination 'generic/platform=iOS' INTERNAL_GRU_ENABLED=YES \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS=INTERNAL_GRU \
-  ENABLE_USER_SCRIPT_SANDBOXING=NO build
-```
+## Language model
 
 The word-level NSS model (`tools/nss`, an `.nsslm` file run by the shared C++ engine,
-not Core ML) is the English decoder in every build. `Extension.xcconfig` sets
-`NSS_ENABLED = YES`, `NSS_MODEL = keyboard/nss-english.nsslm` and `KB_NSS_RAW=1` (the
-official raw configuration), and `KeyboardEngine.shared` maps the model and selects
-the `nss` tier from the first word. To build n-gram-only, or to try another export,
-override them in `Secrets.xcconfig` or on the command line:
+not Core ML) is the English decoder and its only language model. `Extension.xcconfig`
+sets `NSS_ENABLED = YES` and `NSS_MODEL = keyboard/nss-english.nsslm`; the build phase
+(`tools/nss/install_nss.sh`) bundles it and `KeyboardEngine.shared` maps it at launch.
+To try another export, override `NSS_MODEL` in `Secrets.xcconfig` or on the command line:
 
 ```sh
 xcodebuild -scheme keyboard -configuration Release -sdk iphoneos \
-  -destination 'generic/platform=iOS' NSS_ENABLED=NO build
+  -destination 'generic/platform=iOS' NSS_MODEL=$PWD/tools/nss/artifacts/chat-final.nsslm build
 ```
 
-Audit a shipping extension with `tools/verify_release_artifacts.py --allow-neural`;
-without the flag the verifier applies the n-gram-only 14 MB/no-neural gate.
+Audit a shipping extension with `tools/verify_release_artifacts.py --allow-neural`
+(the extension bundles the NSS model).
 
 ## Debug builds
 

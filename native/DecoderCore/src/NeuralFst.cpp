@@ -11,8 +11,7 @@ bool letters(std::string_view word) {
     return !word.empty() && std::all_of(word.begin(), word.end(), [](char c) { return (c >= 'a' && c <= 'z') || c == '\''; });
 }
 }
-NeuralLexicon::NeuralLexicon(const PackedLexicon& lex)
-    : packed(lex), trie_(lex.trieData()), nodeSize_(lex.trieNodeSize()), wideIDs_(lex.version() != 5) {
+NeuralLexicon::NeuralLexicon(const PackedLexicon& lex) : packed(lex), trie_(lex.trieData()) {
     terminal.assign(lex.wordCount(), UINT32_MAX);
     parent.assign(std::max<std::size_t>(lex.trieNodeCount(), 1), 0);
     // Packed trie children are contiguous and strictly follow their parent. This one checked
@@ -243,130 +242,12 @@ double NeuralFst::typedUnknown() const {
     return double(expansions_[index].epsilon) + std::log(1 - double(model_->unknownLexiconShare())) + std::log(half / tables_->outsideMass);
 }
 
-NgramFst::NgramFst(const PackedLexicon& packed, std::shared_ptr<const NeuralLexicon> lex)
-    : packed_(packed), lexicon_(std::move(lex)), scratch_(lexicon_->nodeCount(), negInf) {
-    // LanguageModel's Witten–Bell unigram: (frequency + 1) / (sum of frequencies + word count).
-    double total = double(packed_.wordCount());
-    for (std::uint32_t id = 0; id < packed_.wordCount(); ++id) total += double(packed_.frequency(id));
-    unigramShift_ = std::log(lexicon_->mass / total);
-    resetContext();
-}
-void NgramFst::resetContext() {
-    states_.clear(); index_.clear(); context_.clear();
-    states_.resize(2); states_[1].ready = true;   // 1: the context-free unigram state
-    ++revision_;
-}
-void NgramFst::update(std::span<const std::string> context, bool newWord) {
-    std::vector<std::int32_t> ids;
-    const auto n = context.size();
-    // As LanguageModel::scores: the last two words, by their exact stored spelling.
-    auto id = [&](std::size_t back) -> std::int32_t { auto found = packed_.wordID(context[n - back]); return found ? *found : -1; };
-    const std::int32_t second = n ? id(1) : -1, first = n >= 2 && second >= 0 ? id(2) : -1;
-    ids = {first, second};
-    if (ids == context_ && !newWord) return;
-    // A new word keeps the root's prepared distribution; only multiword states are dropped.
-    states_.resize(2); index_.clear();
-    if (ids != context_) { states_[0] = History{}; states_[0].first = first; states_[0].second = second; context_ = ids; }
-    ++revision_;
-}
-std::uint32_t NgramFst::stateFor(std::int32_t first, std::int32_t second) const {
-    const auto key = (std::uint64_t(std::uint32_t(first)) << 32) | std::uint32_t(second);
-    if (auto found = index_.find(key); found != index_.end()) return found->second;
-    const auto state = std::uint32_t(states_.size());
-    states_.emplace_back();
-    states_.back().first = first; states_.back().second = second;
-    index_.emplace(key, state);
-    return state;
-}
-const NgramFst::History& NgramFst::prepared(std::uint32_t state) const {
-    auto& h = states_.at(state);
-    if (h.ready) return h;
-    // LanguageModel::prepare / languageScores, Witten–Bell with the sparse-context floor 8:
-    // P = weight * count / n + (n - weight * retained) / n * P_lower, weight = n/(n+t) * n/(n+8).
-    struct Row { std::unordered_map<std::uint32_t, double> scaled; double backoff = 1; };
-    auto row = [](const std::optional<Continuations>& r) {
-        Row out;
-        if (!r || !r->total || r->entries.empty()) return out;
-        const double n = r->total, t = double(r->entries.size());
-        double retained = 0;
-        for (const auto& e : r->entries) retained += e.count;
-        const double weight = n / (n + t) * n / (n + 8);
-        out.backoff = (n - weight * std::min(retained, n)) / n;
-        for (const auto& e : r->entries) out.scaled[std::uint32_t(e.word)] += weight * double(e.count) / n;
-        return out;
-    };
-    const auto bi = h.second >= 0 ? row(packed_.bigrams(h.second)) : Row{};
-    const auto tri = h.first >= 0 && h.second >= 0 ? row(packed_.trigrams(h.first, h.second)) : Row{};
-    h.backoff = std::log(bi.backoff * tri.backoff);
-    auto probability = [&](std::uint32_t word) {
-        double p = std::exp(double(lexicon_->unigram[word]) + unigramShift_);
-        if (auto f = bi.scaled.find(word); f != bi.scaled.end()) p = f->second + bi.backoff * p; else p *= bi.backoff;
-        if (auto f = tri.scaled.find(word); f != tri.scaled.end()) p = f->second + tri.backoff * p; else p *= tri.backoff;
-        return float(std::log(std::max(p, std::numeric_limits<double>::denorm_min())));
-    };
-    for (const auto* r : {&bi, &tri}) for (const auto& [word, scaled] : r->scaled) {
-        (void)scaled;
-        if (word < lexicon_->unigram.size() && std::isfinite(lexicon_->unigram[word]) && !h.successors.contains(word))
-            h.successors.emplace(word, probability(word));
-    }
-    h.ranked.assign(h.successors.begin(), h.successors.end());
-    std::sort(h.ranked.begin(), h.ranked.end(), [](const auto& a, const auto& b) { return a.second == b.second ? a.first < b.first : a.second > b.second; });
-    h.lookahead.build(*lexicon_, h.ranked, scratch_);
-    h.ready = true;
-    return h;
-}
-std::vector<SearchGraph::Transition> NgramFst::transitions(std::uint32_t state, std::uint32_t word) const {
-    if (!expanded(state)) return {{1, lexicon_->unigram[word] + unigramShift_}};
-    const auto& h = prepared(state);
-    const auto found = h.successors.find(word);
-    const double score = found != h.successors.end() ? found->second : h.backoff + lexicon_->unigram[word] + unigramShift_;
-    const auto second = h.second;
-    return {{stateFor(second, std::int32_t(word)), score}};
-}
-double NgramFst::wordScore(std::uint32_t state, std::uint32_t word) const {
-    if (!expanded(state)) return lexicon_->unigram[word] + unigramShift_;
-    const auto& h = prepared(state);
-    const auto found = h.successors.find(word);
-    return found != h.successors.end() ? found->second : h.backoff + lexicon_->unigram[word] + unigramShift_;
-}
-double NgramFst::lookahead(std::uint32_t state, std::uint32_t node) const {
-    if (!expanded(state)) return lexicon_->lookahead[node] + unigramShift_;
-    const auto& h = prepared(state);
-    return std::max(h.backoff + unigramShift_ + lexicon_->lookahead[node], double(h.lookahead.at(node)));
-}
-std::vector<std::pair<std::uint32_t, double>> NgramFst::best(std::uint32_t state, std::size_t count) const {
-    if (!expanded(state)) state = 1;
-    const auto& h = prepared(state);
-    std::vector<std::pair<std::uint32_t, double>> out;
-    for (std::size_t i = 0; i < h.ranked.size() && i < count; ++i) out.emplace_back(h.ranked[i].first, h.ranked[i].second);
-    std::size_t added = 0;
-    for (auto word : lexicon_->topUnigrams) {
-        if (added == count) break;
-        if (h.successors.contains(word)) continue;
-        out.emplace_back(word, h.backoff + lexicon_->unigram[word] + unigramShift_); ++added;
-    }
-    auto order = [](const auto& a, const auto& b) { return a.second == b.second ? a.first < b.first : a.second > b.second; };
-    std::sort(out.begin(), out.end(), order);
-    if (out.size() > count) out.resize(count);
-    return out;
-}
-
 double NeuralFstSearch::bound(const Token& t) const {
     return t.language + graph_.lookahead(t.state, t.node) - options_.channelWeight * t.cost;
 }
-double NeuralFstSearch::deletion(std::uint8_t letter, std::uint8_t previous, std::uint8_t typedLetter) const {
-    return options_.raw ? deletionCost : deletionCostAt(letter, previous, typedLetter);
-}
-double NeuralFstSearch::insertion(std::uint8_t typedLetter, std::uint8_t previous, std::uint8_t candidateLetter) const {
-    return options_.raw ? insertionCost : insertionCostAt(typedLetter, previous, candidateLetter);
-}
-double NeuralFstSearch::substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first) const {
-    if (options_.raw) return geometricSubstitutionCost(intended, typed, tap);
-    if (tap && options_.touchSigma > 0) return touchSubstitutionCost(intended, typed, *tap, options_.touchSigma, first);
-    return substitutionCost(intended, typed, tap, first);
-}
+
 void NeuralFstSearch::reset() { beam_.clear(); complete_.clear(); completeRows_.clear(); typed_.clear(); taps_.clear(); revision_ = graph_.revision(); }
-std::vector<NeuralFstSearch::Token> NeuralFstSearch::prune(std::vector<Token> input, bool deletions, std::uint8_t typedLetter) {
+std::vector<NeuralFstSearch::Token> NeuralFstSearch::prune(std::vector<Token> input, bool deletions) {
     auto order = [&](const Token& a, const Token& b) {
         auto x = a.upper, y = b.upper;
         if (x != y) return x < y;
@@ -411,7 +292,7 @@ std::vector<NeuralFstSearch::Token> NeuralFstSearch::prune(std::vector<Token> in
         const auto node = lex.node(t.node);
         for (auto child = node.firstChild; child < node.firstChild + node.childCount; ++child) {
             auto next = t; next.node = child; next.boundary = false;
-            next.cost += deletion(lex.node(child).label, node.label, typedLetter);
+            next.cost += deletionCost;
             next.upper = bound(next);
             if (next.upper >= floor) queue.push(std::move(next));
         }
@@ -435,10 +316,10 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
     for (const auto& t : beam_) {
         if (t.pending) {
             auto done = t; done.pending = 0;
-            done.cost += substitution(t.pending, letter, tap, false); next.push_back(std::move(done)); continue;
+            done.cost += geometricSubstitutionCost(t.pending, letter, tap); next.push_back(std::move(done)); continue;
         }
         auto extra = t;
-        extra.cost += insertion(letter, typed_.empty() ? 0 : std::uint8_t(typed_.back()), lex.node(t.node).label);
+        extra.cost += insertionCost;
         next.push_back(std::move(extra));
         // A space key replaced by c/v/b/n/m consumes a touch without a lexicon letter.
         if (t.boundary && std::string_view("cvbnm").find(char(letter)) != std::string_view::npos) {
@@ -448,7 +329,7 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
         for (auto child = n.firstChild; child < n.firstChild + n.childCount; ++child) {
             const auto c = lex.node(child);
             auto sub = t; sub.node = child; sub.boundary = false;
-            sub.cost += substitution(c.label, letter, tap, typed_.empty()); next.push_back(std::move(sub));
+            sub.cost += geometricSubstitutionCost(c.label, letter, tap); next.push_back(std::move(sub));
             // Two-label channel arc for adjacent transposition. The pending input is
             // consumed on the next frame, so no unfinished transposition can emit a word.
             for (auto grand = c.firstChild; grand < c.firstChild + c.childCount; ++grand) if (lex.node(grand).label == letter && c.label != letter) {
@@ -457,7 +338,7 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
             }
         }
     }
-    beam_ = prune(std::move(next), true, letter);
+    beam_ = prune(std::move(next), true);
     auto ends = endings(beam_);
     std::stable_sort(ends.begin(), ends.end(), [this](const End& a, const End& b) {
         auto x = a.language - options_.channelWeight * a.token.cost, y = b.language - options_.channelWeight * b.token.cost;
@@ -477,7 +358,7 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
         root.prefix += std::string(lex.packed.word(e.word)) + ' '; root.cost += 1.1; root.boundary = true;
         beam_.push_back(std::move(root));
     }
-    beam_ = prune(std::move(beam_), false, letter);
+    beam_ = prune(std::move(beam_), false);
 }
 std::vector<RankedRow> NeuralFstSearch::decode(std::string_view typed, std::span<const std::optional<TouchOffset>> taps,
                                             const std::function<bool()>& cancelled) {
@@ -487,7 +368,7 @@ std::vector<RankedRow> NeuralFstSearch::decode(std::string_view typed, std::span
         auto a = taps.size() == typed.size() ? taps[k] : std::nullopt, b = taps_[k];
         if (a.has_value() != b.has_value() || (a && (a->dx != b->dx || a->dy != b->dy))) { reuse = false; break; }
     }
-    if (!reuse || beam_.empty()) { reset(); beam_ = prune({Token{}}, true, 0); }
+    if (!reuse || beam_.empty()) { reset(); beam_ = prune({Token{}}, true); }
     for (std::size_t k = typed_.size(); k < typed.size(); ++k) {
         if (cancelled && cancelled()) { reset(); return {}; }
         const auto tap = taps.size() == typed.size() ? taps[k] : std::nullopt;

@@ -25,11 +25,7 @@ extension KeyboardView {
 			let values = key.alternatives
 			key.setAlternatives(values) { [weak self, weak key] value in
 				guard let self else { return }
-				if self.languageMode == .telugu {
-					self.routeOutput(self.teluguOutput(for: value), nil)
-				} else {
-					self.routeInsert(value, nil)
-				}
+				self.routeInsert(value, nil)
 				if key?.letterBase != nil, self.shift == .on { self.applyShiftState(.off) }
 			}
 		}
@@ -96,22 +92,6 @@ extension KeyboardView {
 			self?.routeInsert(text, nil)
 		}
 	}
-	private func scriptSpec(_ descriptor: KeyboardKeyDescriptor) -> KeySpec {
-		KeySpec(label: descriptor.label,
-			accessibilityLabel: descriptor.accessibilityLabel,
-			width: .unit,
-			popup: true,
-			committedText: descriptor.output.literal,
-			alternatives: descriptor.alternatives,
-			glyphScale: Self.teluguGlyphScale) { [weak self] in
-				self?.routeOutput(descriptor.output, nil)
-			}
-	}
-
-	private func teluguOutput(for value: String) -> KeyOutput {
-		TeluguComposer.output(forLiteral: value)
-	}
-
 	private func keyWidth(_ width: LayoutKey.Width?, default fallback: KeyWidth = .unit) -> KeyWidth {
 		switch width {
 		case .unit?: return .unit
@@ -137,18 +117,10 @@ extension KeyboardView {
 
 	private func specs() -> [[KeySpec]] {
 		switch page {
-		case .letters, .alternateLetters:
-			if languageMode == .telugu { return teluguLetterSpecs() }
+		case .letters:
 			return pageSpecs(latinLayout.letters)
 		case .numbers:
 			if inputKind.usesDedicatedNumberPad { return pageSpecs(latinLayout.numberPad) }
-			if languageMode == .telugu, let digits = languageLayout.numbers.rows.first {
-				// Telugu digits over the Latin punctuation rows, with the Telugu locale's currency.
-				var rows = pageSpecs(latinLayout.numbers,
-					currencyLocale: TeluguLanguagePack.shared.metadata?.locale)
-				rows[0] = digits.map(scriptSpec)
-				return rows
-			}
 			return pageSpecs(latinLayout.numbers)
 		case .symbols:
 			return pageSpecs(latinLayout.symbols)
@@ -158,8 +130,8 @@ extension KeyboardView {
 	}
 
 	/// A layout page's rows, then its bottom row (the number pad has none).
-	private func pageSpecs(_ layoutPage: LayoutPage, currencyLocale: String? = nil) -> [[KeySpec]] {
-		let currency = LatinLayoutPack.currencySymbol(for: currencyLocale ?? latinLayout.locale)
+	private func pageSpecs(_ layoutPage: LayoutPage) -> [[KeySpec]] {
+		let currency = LatinLayoutPack.currencySymbol(for: latinLayout.locale)
 		func specs(_ row: [LayoutKey]) -> [KeySpec] {
 			row.flatMap { key -> [KeySpec] in
 				switch key {
@@ -262,38 +234,5 @@ extension KeyboardView {
 			}
 			self.applyShiftState(next)                              // in place — no rebuild
 		}
-	}
-
-	/// Telugu glyph rows come from the Telugu pack; its bottom row is the Latin letters
-	/// page's, without per-field keys, and the Telugu pack's extra keys before return.
-	private func teluguLetterSpecs() -> [[KeySpec]] {
-		let selected = page == .alternateLetters
-			? (languageLayout.alternate ?? languageLayout.primary)
-			: languageLayout.primary
-		let characterRows = selected.rows
-		guard (3...6).contains(characterRows.count) else { return [] }
-		var result = characterRows.map { $0.map(scriptSpec) }
-		if languageLayout.alternate != nil {
-			let alternateVisible = page == .alternateLetters
-			let toggle = KeySpec(symbol: alternateVisible ? "shift.fill" : "shift",
-				accessibilityLabel: "Shift", role: .special, width: .modifier,
-				isShift: true) { [weak self] in
-					guard let self else { return }
-					self.page = alternateVisible ? .letters : .alternateLetters
-					self.reload()
-				}
-			result[result.count - 1].insert(toggle, at: 0)
-		}
-		result[result.count - 1].append(deleteKeySpec())
-		let bottomKeys = (latinLayout.letters.bottomRow ?? []).filter { $0 != .control(.fieldExtras,
-			width: nil, target: nil, label: nil) }
-		var bottom = pageSpecs(LayoutPage(rows: [], bottomRow: bottomKeys,
-			longPressVariants: true)).last ?? []
-		let extras = languageLayout.bottomKeys.map(scriptSpec)
-		if let returnIndex = bottom.lastIndex(where: { $0.role == .accent }) {
-			bottom.insert(contentsOf: extras, at: returnIndex)
-		}
-		result.append(bottom)
-		return result
 	}
 }

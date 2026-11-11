@@ -49,24 +49,9 @@ extension KeyboardViewController {
 		fieldInputKind = kind
 		layoutRevision &+= 1
 		keyboard?.setInputKind(kind)
-		keyboard?.glideEnabled = activeLanguageMode == .english
 		return true
 	}
 
-
-	/// Preserve the durable preference while resolving a safe mode for this extension
-	/// session. This may hash language resources, so callers are deliberately limited to
-	/// lifecycle/configuration callbacks rather than key handlers.
-	@discardableResult
-	func refreshConfiguredLanguageMode() -> Bool {
-		let preferred = KBSettings.preferredLanguageMode
-		let available = preferred.isRuntimeAvailable
-		let changed = preferred != configuredLanguageMode
-			|| available != configuredLanguageModeAvailable
-		configuredLanguageMode = preferred
-		configuredLanguageModeAvailable = available
-		return changed
-	}
 
 	/// Map the host text field's Return key style to a label. nil → plain newline glyph.
 	private func actionTitle(for type: UIReturnKeyType) -> String? {
@@ -171,9 +156,7 @@ extension KeyboardViewController {
 			layoutRevision: layoutRevision,
 			currentWord: currentWord,
 			context: context,
-			taps: activeLanguageMode == .english ? taps : nil,
-			languageMode: activeLanguageMode,
-			requestedModelTier: wordSessionModelTier)
+			taps: taps)
 	}
 
 	func setSuggestionBar(_ suggestions: [String], typedPrefix: String? = nil,

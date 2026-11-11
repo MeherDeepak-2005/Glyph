@@ -6,10 +6,11 @@ epsilon arc weighted P(<unk>|context) into a unigram state over the whole lexico
     P(w | context) = P(<unk> | context) * P(w | <unk>)                    for w not in V
     P(w | <unk>)   = pi * u(w) / sum(u(w') for emittable lexicon w' not in V)
 
-u(w) is the production n-gram unigram mass (pack frequency + 1; 0.5 for a word with no
-pack entry, as the n-gram scorer does), and pi is the share of <unk> training tokens
-that are emittable lexicon words. The remaining 1 - pi belongs to text the lexicon
-cannot emit (names, foreign words), which the keyboard leaves as typed.
+u(w) is the dictionary's unigram mass (pack frequency + 1; 0.5 for a word with no pack
+entry, as the engine's UnigramModel counts text outside the dictionary), and pi is the
+share of <unk> training tokens that are emittable lexicon words. The remaining 1 - pi
+belongs to text the lexicon cannot emit (names, foreign words), which the keyboard
+leaves as typed.
 """
 
 from __future__ import annotations
@@ -29,22 +30,14 @@ UNKNOWN_MASS = 0.5
 
 
 def read_pack(path: Path) -> tuple[list[str], list[int]]:
-    """Stored forms and unigram frequencies of a KBLM v4-v6 pack."""
+    """Stored forms and unigram frequencies of a KBLM v7 pack (tools/build_language_data.py)."""
     data = Path(path).read_bytes()
-    magic, version, count = struct.unpack_from("<3I", data, 0)
-    if magic != MAGIC or version not in (4, 5, 6):
-        raise ValueError(f"{path}: expected langdata v4-v6")
-    _, _, _, bi_contexts, bi_entries, tri_contexts, tri_entries, trie_nodes, starters = \
-        struct.unpack_from("<9I", data, 0)
-    compact = version == 5
-    freq_base = 36
+    magic, version, count, trie_nodes = struct.unpack_from("<4I", data, 0)
+    if magic != MAGIC or version != 7:
+        raise ValueError(f"{path}: expected langdata v7")
+    freq_base = 16
     offsets_base = freq_base + 4 * count
-    bi_base = offsets_base + 4 * (count + 1)
-    entry = 6 if compact else 8
-    bi_entries_base = bi_base + (12 if compact else 16) * bi_contexts
-    tri_base = bi_entries_base + entry * bi_entries
-    trie_base = tri_base + (12 if compact else 20) * tri_contexts + entry * tri_entries
-    blob = trie_base + (12 if compact else 14) * trie_nodes + (6 if compact else 8) * starters
+    blob = offsets_base + 4 * (count + 1) + 14 * trie_nodes
     frequencies = struct.unpack_from(f"<{count}I", data, freq_base)
     offsets = struct.unpack_from(f"<{count + 1}I", data, offsets_base)
     words = [data[blob + offsets[i]:blob + offsets[i + 1]].decode("utf-8") for i in range(count)]

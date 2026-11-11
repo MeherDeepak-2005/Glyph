@@ -97,8 +97,6 @@ def main():
     words = [word.decode("utf-8") for word in raw_words]
     ids = {word: i for i, word in enumerate(words)}
     assert len(ids) == pack.words
-    bigrams = pack.bigrams()
-    incoming = {wid for _, entries in bigrams.values() for wid, _ in entries}
     esdb = builder.load_esdb_tiers()
     counts = Counter()
     sentences = 0
@@ -115,32 +113,16 @@ def main():
             wid = ids.get(key)
             rows.append({"form": form, "lookup_key": key, "present": wid is not None,
                 "frequency": frequencies[wid] if wid is not None else None,
-                "outgoing_bigram": wid in bigrams if wid is not None else False,
-                "incoming_bigram": wid in incoming if wid is not None else False,
                 "esdb_tier": esdb.get(key),
                 "passes_ascii_word_pattern": bool(builder.WORD.fullmatch(key)),
                 "intentional_builder_exclusion": key in builder.EXCLUDE or
                     (len(key) == 1 and key not in {"a", "i"})})
         categories[category] = {"count": len(rows),
             "present": sum(row["present"] for row in rows),
-            "missing": sum(not row["present"] for row in rows),
-            "present_without_outgoing_bigram": sum(row["present"] and
-                not row["outgoing_bigram"] for row in rows), "probes": rows}
+            "missing": sum(not row["present"] for row in rows), "probes": rows}
     missing_esdb = set(esdb) - ids.keys()
-    bigram_pairs = {(a, b) for a, (_, entries) in bigrams.items() for b, _ in entries}
-    trigram_triples = {(*pack.context_pair(key), c)
-        for key, (_, entries) in pack.trigrams().items() for c, _ in entries}
-    phrase_rows = []
-    for phrase in PHRASES:
-        tokens = phrase.split()
-        token_ids = [ids.get(word) for word in tokens]
-        pairs = [tuple(token_ids[i:i+2]) for i in range(len(tokens)-1)]
-        triples = [tuple(token_ids[i:i+3]) for i in range(len(tokens)-2)]
-        phrase_rows.append({"phrase": phrase, "all_words_present": all(w is not None for w in token_ids),
-            "observed_adjacent_bigrams": sum(p in bigram_pairs for p in pairs),
-            "possible_adjacent_bigrams": len(pairs),
-            "observed_adjacent_trigrams": sum(t in trigram_triples for t in triples),
-            "possible_adjacent_trigrams": len(triples)})
+    phrase_rows = [{"phrase": phrase, "all_words_present": all(word in ids for word in phrase.split())}
+                   for phrase in PHRASES]
     result = {
         "schema_version": 1, "audit_date": "2026-10-06",
         "scope": "checked-out bundled artifact; not verified App Store binary",
@@ -151,16 +133,8 @@ def main():
         "probe_limitations": "Hand-selected diagnostic probes, partly motivated by known gaps; not a representative random sample. Categories may overlap. Phrase component probes do not test phrase prediction.",
         "artifact": {"path": str(pack_path.relative_to(ROOT)),
             "sha256": hashlib.sha256(pack.data).hexdigest(), "bytes": len(pack.data),
-            "version": pack.version, "words": pack.words,
-            "bigram_contexts": pack.bi_contexts, "bigram_entries": pack.bi_entries,
-            "trigram_contexts": pack.tri_contexts, "trigram_entries": pack.tri_entries,
-            "trie_nodes": pack.trie_nodes, "sentence_starters": pack.starters,
-            "without_outgoing_bigram": pack.words - len(bigrams),
-            "without_incoming_bigram": pack.words - len(incoming),
-            "without_any_bigram_role": sum(i not in bigrams and i not in incoming
-                for i in range(pack.words)),
-            "word_id_capacity": 0x7fffffff if pack.version == 6 else 65534,
-            "v5_builder_max_words": 65534, "v5_remaining_slots": max(0, 65534-pack.words)},
+            "version": pack.version, "words": pack.words, "trie_nodes": pack.trie_nodes,
+            "word_id_capacity": 0x7fffffff},
         "esdb": {"total": len(esdb), "overlap": len(set(esdb) & ids.keys()),
             "missing_total": len(missing_esdb),
             "missing_by_tier": dict(sorted(Counter(esdb[word] for word in missing_esdb).items())),
@@ -175,7 +149,7 @@ def main():
             "note": "In-sample coverage on the pack's own Tatoeba training source, using the builder's tokenization and 128-token sentence limit; not held-out recall."},
         "unique_probe_keys": len({r["lookup_key"] for c in categories.values() for r in c["probes"]}),
         "categories": categories,
-        "phrase_probes": {"note": "Observed adjacent n-gram records only; absence permits backoff and does not prove prediction failure; a phrase's presence does not establish tone awareness.", "rows": phrase_rows},
+        "phrase_probes": {"note": "Component-word membership only; it does not test phrase prediction or establish tone awareness.", "rows": phrase_rows},
     }
     print(json.dumps(result, indent=2, ensure_ascii=False))
 

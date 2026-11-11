@@ -38,8 +38,7 @@ struct ThemeStudioView: View {
 				KeyboardAppearancePreview(
 					accent: accent,
 					customTheme: previewCustomTheme,
-					dark: previewIsDark,
-					languageMode: store.languageMode
+					dark: previewIsDark
 				)
 				.aspectRatio(390.0 / 242.0, contentMode: .fit)
 				.listRowInsets(EdgeInsets())
@@ -253,15 +252,13 @@ private struct KeyboardAppearancePreview: UIViewRepresentable {
 	let accent: KBAccent
 	let customTheme: KBCustomTheme?
 	let dark: Bool
-	let languageMode: KBLanguageMode
 
 	func makeUIView(context: Context) -> KeyboardAppearancePreviewHost {
 		KeyboardAppearancePreviewHost()
 	}
 
 	func updateUIView(_ host: KeyboardAppearancePreviewHost, context: Context) {
-		host.update(accent: accent, customTheme: customTheme, dark: dark,
-			languageMode: languageMode)
+		host.update(accent: accent, customTheme: customTheme, dark: dark)
 	}
 }
 
@@ -270,7 +267,6 @@ private final class KeyboardAppearancePreviewHost: UIView {
 		let accentID: String
 		let customTheme: KBCustomTheme?
 		let dark: Bool
-		let languageMode: KBLanguageMode
 	}
 
 	private let referenceWidth: CGFloat = 390
@@ -288,18 +284,15 @@ private final class KeyboardAppearancePreviewHost: UIView {
 
 	required init?(coder: NSCoder) { fatalError() }
 
-	func update(accent: KBAccent, customTheme: KBCustomTheme?, dark: Bool,
-		languageMode: KBLanguageMode) {
-		let next = Configuration(accentID: accent.id, customTheme: customTheme,
-			dark: dark, languageMode: languageMode)
+	func update(accent: KBAccent, customTheme: KBCustomTheme?, dark: Bool) {
+		let next = Configuration(accentID: accent.id, customTheme: customTheme, dark: dark)
 		guard next != configuration else { return }
 		configuration = next
 
 		keyboard?.removeFromSuperview()
 		let theme = KeyboardTheme.preview(dark: dark, accent: accent,
 			customTheme: customTheme)
-		let keyboard = KeyboardView(theme: theme, showsGlobe: false,
-			languageMode: languageMode)
+		let keyboard = KeyboardView(theme: theme, showsGlobe: false)
 		keyboard.setSuggestions(["might", "this", "type"], highlightPrimary: true)
 		keyboard.setActionTitle("Done")
 		keyboard.isUserInteractionEnabled = false

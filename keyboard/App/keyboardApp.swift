@@ -11,10 +11,6 @@ import SwiftUI
 struct keyboardApp: App {
 	init() {
 		#if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-keyboard-runtime-url") {
-            // A deterministic URL-field fixture, independent of onboarding/menu UI.
-            KBSettings.preferredLanguageMode = .english
-        }
 		if ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {
 			KBSettings.hasUsedKeyboard = true
 		}

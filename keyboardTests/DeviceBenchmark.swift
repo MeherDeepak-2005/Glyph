@@ -5,9 +5,11 @@ import XCTest
 private func kbIOSBench(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>) -> Int32
 
 /// Runs the autocorrect benchmark (tools/evaluation/autocorrect) on the device.
-/// tools/evaluation/autocorrect/device_bench.sh pushes langdata.bin, safety.kbguard and the corpora
-/// into Documents/bench/in, runs this test, and pulls Documents/bench/out back for evaluate.py score.
-/// Skipped when nothing was pushed.
+/// tools/evaluation/autocorrect/device_bench.sh pushes langdata.bin, safety.kbguard,
+/// nss-english.nsslm and the corpora into Documents/bench/in, runs this test, and pulls
+/// Documents/bench/out back for evaluate.py score. IOSBench decodes with the NSS model named by
+/// KB_NSS: the pushed one, else the one the installed keyboard extension ships. Skipped when
+/// nothing was pushed.
 final class DeviceBenchmark: XCTestCase {
 	@MainActor func testReplayPushedCorpora() throws {
 		let root = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -17,6 +19,12 @@ final class DeviceBenchmark: XCTestCase {
 		let corpora = names.filter { $0.hasSuffix(".tsv") }.sorted()
 		try XCTSkipIf(corpora.isEmpty, "no corpora in \(input.path)")
 		try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+		let pushedModel = input.appendingPathComponent("nss-english.nsslm")
+		let model = FileManager.default.fileExists(atPath: pushedModel.path) ? pushedModel
+			: try XCTUnwrap(Bundle.main.builtInPlugInsURL?
+				.appendingPathComponent("demo_keyboard.appex/nss-english.nsslm"))
+		XCTAssertTrue(FileManager.default.fileExists(atPath: model.path), "no NSS model at \(model.path)")
+		setenv("KB_NSS", model.path, 1)
 		// A locked phone asks the host app to exit mid-replay (0x8BADF00D after 5 s).
 		UIApplication.shared.isIdleTimerDisabled = true
 		defer { UIApplication.shared.isIdleTimerDisabled = false }

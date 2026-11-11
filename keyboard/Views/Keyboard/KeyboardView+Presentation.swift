@@ -36,7 +36,7 @@ extension KeyboardView {
 	/// Ignored during emoji search: the query is case-insensitive and the host
 	/// document context that drives auto-shift is irrelevant to it.
 	func setAutoShift(_ on: Bool) {
-		guard languageMode != .telugu, shift != .locked, !isEmojiSearching else { return }
+		guard shift != .locked, !isEmojiSearching else { return }
 		applyShiftState(on ? .on : .off)
 	}
 

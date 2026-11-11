@@ -9,7 +9,7 @@ import json
 import plistlib
 from pathlib import Path
 
-LANGDATA_CAP = 11_000_000
+LANGDATA_CAP = 8_000_000  # tools/build_language_data.py LANGDATA_CAP
 NO_NEURAL_EXTENSION_CAP = 14_000_000
 NEURAL_EXTENSION_CAP = 25_000_000
 NEURAL_CONTAINER_SUFFIXES = (
@@ -20,16 +20,12 @@ NEURAL_RESOURCE_NAMES = {
     "tokenizer.bin", "tokenizer.json", "tokenizer.model",
     "spm.model", "spm.vocab", "sentencepiece.model", "pytorch_model.bin",
 }
+# The English keyboard's resources. nss-english.nsslm is its only language model, a neural
+# artifact, so a release audit passes --allow-neural.
 REQUIRED_RELEASE_RESOURCES = {
-    "emoji.bin", "langdata.bin", "safety.kbguard",
-    "telugu_layout.kbpack", "telugu_langdata.bin",
-    "tenglish_lexicon.bin", "telugu_pack_manifest.json",
+    "emoji.bin", "english_layout.kbpack", "langdata.bin", "nss-english.nsslm", "safety.kbguard",
 }
-RESOURCE_CAPS = {
-    "langdata.bin": LANGDATA_CAP,
-    "telugu_langdata.bin": 2_500_000,
-    "tenglish_lexicon.bin": 1_250_000,
-}
+RESOURCE_CAPS = {"langdata.bin": LANGDATA_CAP}
 
 
 def sha256(path: Path) -> str:
@@ -57,8 +53,6 @@ def main() -> None:
     parser.add_argument("appex", type=Path)
     parser.add_argument("--output", type=Path, default=Path("BuildArtifactManifest.json"))
     parser.add_argument("--allow-neural", action="store_true")
-    parser.add_argument("--corev4", action="store_true", help="use explicit full-vocabulary budgets: 20 MB language pack, 24 MB non-neural extension")
-    parser.add_argument("--large-ngrams", action="store_true", help="full vocabulary with Tatoeba+WikiText n-grams: 32 MB language pack, 38 MB non-neural extension")
     args = parser.parse_args()
     if not args.appex.is_dir():
         raise SystemExit(f"extension bundle not found: {args.appex}")
@@ -73,47 +67,14 @@ def main() -> None:
     by_name = {Path(record["path"]).name: record for record in records}
     neural = [record for record in records if is_neural_artifact(record["path"])]
     cap = NEURAL_EXTENSION_CAP if args.allow_neural else NO_NEURAL_EXTENSION_CAP
-    if args.corev4 and not args.allow_neural:
-        cap = 24_000_000
-    if args.large_ngrams and not args.allow_neural:
-        cap = 38_000_000
     failures = []
     for name in sorted(REQUIRED_RELEASE_RESOURCES - set(by_name)):
         failures.append(f"{name} is missing")
-    resource_caps = dict(RESOURCE_CAPS)
-    if args.corev4:
-        resource_caps["langdata.bin"] = 20_000_000
-    if args.large_ngrams:
-        resource_caps["langdata.bin"] = 32_000_000
-    for name, byte_cap in resource_caps.items():
+    for name, byte_cap in RESOURCE_CAPS.items():
         record = by_name.get(name)
         if record is not None and record["bytes"] > byte_cap:
             failures.append(f"{name} exceeds {byte_cap:,} bytes")
 
-    pack_record = by_name.get("telugu_pack_manifest.json")
-    if pack_record is not None:
-        try:
-            pack = json.loads((args.appex / pack_record["path"]).read_text(encoding="utf-8"))
-            for artifact_name in ("layout", "language_model", "transliteration_lexicon"):
-                expected = pack["artifacts"][artifact_name]
-                bundled = by_name.get(Path(expected["path"]).name)
-                if bundled is None:
-                    failures.append(f"Telugu manifest artifact is missing: {expected['path']}")
-                elif bundled["bytes"] != expected["bytes"] \
-                        or bundled["sha256"] != expected["sha256"]:
-                    failures.append(f"Telugu manifest mismatch: {expected['path']}")
-            provenance = pack.get("provenance")
-            if not isinstance(provenance, list) or not provenance:
-                failures.append("Telugu manifest has no source provenance")
-            else:
-                for source in provenance:
-                    name = str(source.get("name") or "unnamed source")
-                    if source.get("research_only") is not False \
-                            or source.get("release_eligible") is not True:
-                        failures.append(
-                            f"Telugu source is not release-eligible: {name}")
-        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
-            failures.append(f"invalid Telugu pack manifest: {error}")
     if neural and not args.allow_neural:
         failures.append("Release contains an unapproved neural model/tokenizer")
 
@@ -139,7 +100,6 @@ def main() -> None:
         "totalBytes": total,
         "gateBytes": cap,
         "neuralArtifactsAllowed": args.allow_neural,
-        "corev4FullVocabulary": args.corev4,
         "gatePassed": not failures,
         "failures": failures,
         "files": records,

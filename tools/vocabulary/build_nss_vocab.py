@@ -69,7 +69,7 @@ DEFAULT_WIKITEXT = [CACHE / "wikitext-103-raw-train-00000-of-00002.parquet",
 DEFAULT_HELDOUT = TOOLS / "data" / "english-masc-heldout-v1.json.bz2"
 DEFAULT_OUT = TOOLS / "data" / "nss"
 
-# Pinned in tools/build_language_data.py / ARTIFACTS.json; a mismatch is fatal.
+# Pinned in ARTIFACTS.json (inputs of langdata.bin and nss-english.nsslm); a mismatch is fatal.
 EXPECTED_SHA256 = {
     "frequency-words": "7fea67ab954e2c01df6c608c9826e594cf36f8823b3243554f88245fb75dc506",
     "tatoeba": "bb3dcc28a8984a26dc466ee14eb53c4210b0dd9bb111b9d686d1efc83ecf091c",

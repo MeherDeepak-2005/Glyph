@@ -6,22 +6,9 @@ extension KeyboardViewController {
 	@discardableResult
 	func applyAutocorrectIfNeeded() -> Correction? {
 		guard autocorrectionAllowed else { return nil }
-		let snapshot: PresentedDecodeSnapshot
-		if let current = currentPresentedDecodeSnapshot {
-			snapshot = current
-		} else {
-			// A fast boundary can arrive before the asynchronous strip update. Only
-			// Tenglish has a bounded synchronous fallback: one memory-mapped exact lookup.
-			// English and neural work remain strictly off the host-insertion path.
-			let request = makeDecodeRequest(currentWord: currentWordBuffer,
-				context: currentContextBuffer, generation: generation)
-			guard let canonical = engine.immediateBoundarySnapshot(request) else { return nil }
-			let presented = SuggestionCasePolicy.present(canonical,
-				sentenceStart: shouldAutoShift(textDocumentProxy.documentContextBeforeInput))
-			decodeSnapshot = canonical
-			presentedDecodeSnapshot = presented
-			snapshot = presented
-		}
+		// A fast boundary can arrive before the asynchronous strip update: the word then
+		// stays as typed. Decoding stays strictly off the host-insertion path.
+		guard let snapshot = currentPresentedDecodeSnapshot else { return nil }
 		let word = snapshot.canonical.request.currentWord
 		guard !word.isEmpty,
 			  let correction = snapshot.correction,

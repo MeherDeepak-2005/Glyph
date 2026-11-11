@@ -8,15 +8,6 @@
 import XCTest
 
 final class keyboardUITests: XCTestCase {
-	private struct ReferenceKey: Codable {
-		let label: String
-		let identifier: String
-		let x: Double
-		let y: Double
-		let width: Double
-		let height: Double
-	}
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -47,19 +38,12 @@ final class keyboardUITests: XCTestCase {
 		app.launchArguments = ["-ui-testing-used-keyboard"]
 		app.launch()
 
-		let language = app.buttons["settings.language"]
+		let appearance = app.buttons["settings.appearance"]
+		XCTAssertTrue(appearance.waitForExistence(timeout: 5))
 		for _ in 0..<4 {
-			if language.isHittable { break }
+			if appearance.isHittable { break }
 			app.swipeUp()
 		}
-		XCTAssertTrue(language.waitForExistence(timeout: 5))
-		language.tap()
-		let english = app.buttons["language.english"]
-		XCTAssertTrue(english.waitForExistence(timeout: 3))
-		english.tap()
-
-		let appearance = app.buttons["settings.appearance"]
-		XCTAssertTrue(appearance.waitForExistence(timeout: 2))
 		appearance.tap()
 		XCTAssertTrue(app.navigationBars["Appearance"].waitForExistence(timeout: 2))
 		add(XCTAttachment(screenshot: app.screenshot()))
@@ -78,120 +62,14 @@ final class keyboardUITests: XCTestCase {
 	}
 
 	@MainActor
-	func testInstalledExtensionTypesInEveryLanguageMode() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
-		var host = launchRuntimeHost()
+	func testInstalledExtensionTypes() throws {
+		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
 			throw XCTSkip("Glyph is not the active software keyboard on this simulator")
 		}
 		XCTAssertTrue(host.keys["Q"].waitForExistence(timeout: 2))
 		host.keys["Q"].tap()
 		XCTAssertEqual(host.textFields["runtime.text"].value as? String, "Q")
-		host.terminate()
-
-		try selectLanguage(identifier: "language.tenglish", title: "Tenglish to Telugu")
-		host = launchRuntimeHost()
-		tapLetter("N", in: host)
-		tapLetter("e", in: host)
-		tapLetter("n", in: host)
-		tapLetter("u", in: host)
-		host.keys["Space"].tap()
-		let tEnglishField = host.textFields["runtime.text"]
-		let converted = NSPredicate(format: "value BEGINSWITH %@", "నేను")
-		expectation(for: converted, evaluatedWith: tEnglishField)
-		waitForExpectations(timeout: 3)
-		host.terminate()
-
-		try selectLanguage(identifier: "language.roman_telugu", title: "Tenglish (Roman)")
-		host = launchRuntimeHost()
-		for letter in ["i", "d", "h", "i"] { tapLetter(letter, in: host) }
-		host.keys["Space"].tap()
-		let romanOutput = host.textFields["runtime.text"].value as? String
-		XCTAssertEqual(romanOutput?.lowercased(), "idhi ",
-			"Roman Telugu must preserve Latin script while sentence casing remains active")
-		host.terminate()
-
-		try selectLanguage(identifier: "language.telugu", title: "Telugu (Native)")
-		host = launchRuntimeHost()
-		let ka = host.keys["Telugu ka"]
-		XCTAssertTrue(ka.waitForExistence(timeout: 4))
-		ka.tap()
-		let aa = host.keys["Telugu aa"]
-		XCTAssertTrue(aa.waitForExistence(timeout: 2))
-		aa.tap()
-		XCTAssertEqual(host.textFields["runtime.text"].value as? String, "కా")
-	}
-
-	/// Explicit research capture only. Apple Telugu is a system input mode, not an
-	/// asset the project downloads or redistributes. Screenshots and accessibility
-	/// geometry remain XCTest attachments in the immutable xcresult.
-	@MainActor
-	func testCaptureAppleTeluguReference() throws {
-		let explicitlyEnabled = ProcessInfo.processInfo.environment["CAPTURE_APPLE_TELUGU"] == "1"
-			|| UserDefaults.standard.bool(forKey: "KeyboardCaptureAppleTeluguReference")
-		guard explicitlyEnabled else {
-			throw XCTSkip("Set CAPTURE_APPLE_TELUGU=1 for a reference capture")
-		}
-		let app = launchRuntimeHost()
-		defer { app.terminate() }
-
-		let ka = app.keys["క"]
-		for _ in 0..<8 where !ka.exists {
-			let switcher = inputModeSwitch(in: app)
-			guard switcher.waitForExistence(timeout: 1) else {
-				throw XCTSkip("No input-mode switch key is exposed by the active keyboard")
-			}
-			switcher.tap()
-		}
-		guard ka.waitForExistence(timeout: 2) else {
-			throw XCTSkip("Apple Telugu is not enabled in this simulator")
-		}
-
-		captureReference(app, state: "alphabetic")
-		ka.press(forDuration: 0.8)
-		captureReference(app, state: "ka-long-press")
-		app.textFields["runtime.text"].tap()
-
-		ka.tap()
-		let aa = app.keys["ఆ"]
-		if aa.waitForExistence(timeout: 1) { aa.tap() }
-		captureReference(app, state: "composition-ka-aa")
-
-		let appleMore = app.keys["more"]
-		let conventionalNumbers = app.keys["123"]
-		let numbers = appleMore.waitForExistence(timeout: 1)
-			? appleMore : conventionalNumbers
-		XCTAssertTrue(numbers.waitForExistence(timeout: 1),
-			"Apple Telugu did not expose its numeric-page control")
-		numbers.tap()
-		XCTAssertTrue(app.keys["1"].waitForExistence(timeout: 1),
-			"Apple Telugu did not transition to its numeric page")
-		captureReference(app, state: "numbers")
-		if let shift = app.keys.allElementsBoundByIndex.first(where: {
-			$0.label.localizedCaseInsensitiveContains("shift")
-		}) {
-			shift.tap()
-			captureReference(app, state: "shift")
-		}
-	}
-
-	@MainActor
-	private func selectLanguage(identifier: String, title: String) throws {
-		let app = XCUIApplication()
-		app.launchArguments = []
-		app.launch()
-		let picker = app.buttons["settings.language"]
-		for _ in 0..<4 {
-			if picker.isHittable { break }
-			app.swipeUp()
-		}
-		XCTAssertTrue(picker.waitForExistence(timeout: 5))
-		picker.tap()
-		let identified = app.descendants(matching: .any)[identifier]
-		let option = identified.waitForExistence(timeout: 2) ? identified : app.buttons[title]
-		XCTAssertTrue(option.waitForExistence(timeout: 2))
-		option.tap()
-		app.terminate()
 	}
 
 	@MainActor
@@ -257,7 +135,6 @@ final class keyboardUITests: XCTestCase {
 	/// with "", so the lift-time check refused to commit the field's first glided word.
 	@MainActor
 	func testGlideCommitsTheFirstWordOfAnEmptyField() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		// The extension's first launch after an install can take several seconds.
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
@@ -281,7 +158,6 @@ final class keyboardUITests: XCTestCase {
 	/// Logs CONTRACTION lines with the strip and the committed word.
 	@MainActor
 	func testContractionsCommitWhatTheStripShows() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		// The extension's first launch after an install can take several seconds.
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
@@ -352,7 +228,7 @@ final class keyboardUITests: XCTestCase {
 	func testMemoryAcrossSurfaces() throws {
 		try XCTSkipUnless(ProcessInfo.processInfo.environment["KB_MEMORY_TOUR"] == "1",
 			"set TEST_RUNNER_KB_MEMORY_TOUR=1 to tour the keyboard's surfaces")
-		let host = launchRuntimeHost()   // types English: tour with the keyboard set to English
+		let host = launchRuntimeHost()
 		let keyboard = host.descendants(matching: .any)["glyph.keyboard"]
 		guard keyboard.waitForExistence(timeout: 10) else {
 			throw XCTSkip("Glyph is not the active software keyboard")
@@ -389,7 +265,6 @@ final class keyboardUITests: XCTestCase {
 
 	@MainActor
 	func testBackspaceUndoOfACorrectionSticks() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
 			throw XCTSkip("Glyph is not the active software keyboard")
@@ -600,45 +475,6 @@ final class keyboardUITests: XCTestCase {
 		shot.name = "globe menu"; shot.lifetime = .keepAlways; add(shot)
 	}
 
-	@MainActor
-	private func inputModeSwitch(in app: XCUIApplication) -> XCUIElement {
-		let keys = app.keys.allElementsBoundByIndex
-		if let key = keys.first(where: {
-			$0.label.localizedCaseInsensitiveContains("next keyboard")
-				|| $0.label.localizedCaseInsensitiveContains("globe")
-		}) { return key }
-		return app.buttons["Next Keyboard"]
-	}
-
-	@MainActor
-	private func captureReference(_ app: XCUIApplication, state: String) {
-		let keys = app.keys.allElementsBoundByIndex.filter(\.exists).map { key in
-			ReferenceKey(label: key.label, identifier: key.identifier,
-				x: key.frame.minX, y: key.frame.minY,
-				width: key.frame.width, height: key.frame.height)
-		}
-		let payload: [String: Any] = [
-			"schemaVersion": 1,
-			"state": state,
-			"capturedAt": ISO8601DateFormatter().string(from: Date()),
-			"keys": keys.map {
-				["label": $0.label, "identifier": $0.identifier, "x": $0.x,
-				 "y": $0.y, "width": $0.width, "height": $0.height]
-			},
-		]
-		if let data = try? JSONSerialization.data(withJSONObject: payload,
-			options: [.prettyPrinted, .sortedKeys]) {
-			let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
-			attachment.name = "apple-telugu-\(state).json"
-			attachment.lifetime = .keepAlways
-			add(attachment)
-		}
-		let screenshot = XCTAttachment(screenshot: app.screenshot())
-		screenshot.name = "apple-telugu-\(state)"
-		screenshot.lifetime = .keepAlways
-		add(screenshot)
-	}
-
     @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
@@ -655,7 +491,6 @@ final class keyboardUITests: XCTestCase {
 	/// the keyboard (the strip is still queryable afterward).
 	@MainActor
 	func testClipboardToolsArePresentAndTappable() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
 			throw XCTSkip("Glyph is not the active software keyboard on this simulator")
@@ -674,7 +509,6 @@ final class keyboardUITests: XCTestCase {
 
     @MainActor
     func testKeyboardHeightRemainsBoundedAcrossHostEditsAndRotation() throws {
-        try selectLanguage(identifier: "language.english", title: "English")
         let host = launchRuntimeHost()
         let deck = host.descendants(matching: .any)["glyph.keyboard"]
         XCTAssertTrue(deck.waitForExistence(timeout: 5), "Enable Glyph as the active software keyboard before running this device test")
@@ -731,7 +565,6 @@ final class keyboardUITests: XCTestCase {
 
     @MainActor
     func testHostSendClearsSuggestionsWithoutSpaceAndKeepsStarterWords() throws {
-        try selectLanguage(identifier: "language.english", title: "English")
         let host = launchRuntimeHost()
         guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
             throw XCTSkip("Glyph is not the active software keyboard on this device")
@@ -761,7 +594,6 @@ final class keyboardUITests: XCTestCase {
 	/// in commit c9ff326. Reports what was inserted via NSLog EMOJI-PROBE lines.
 	@MainActor
 	func testEmojiSelectionProbe() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
 			throw XCTSkip("Glyph is not the active software keyboard on this simulator")
@@ -831,7 +663,6 @@ final class keyboardUITests: XCTestCase {
 	/// and NSLog lines prefixed TYPO-BATTERY so the host log can be grepped.
 	@MainActor
 	func testTypoCorrectionBattery() throws {
-		try selectLanguage(identifier: "language.english", title: "English")
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
 			throw XCTSkip("Glyph is not the active software keyboard on this simulator")

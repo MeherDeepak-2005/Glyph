@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 """Coordinate search over the KB_TUNABLE constants, on the tune half only.
 
-  tune.py [--passes 2] [--jobs 4] [--start '{"deletionCost": 1.2}'] [--grid '{"splitCost": [1.1, 1.5]}']
+  tune.py [--passes 2] [--jobs 4] [--start '{"deletionCost": 1.2}'] [--grid '{"channelWeight": [3.0, 5.0]}']
           [--bin ios-tune] [--base final] [--wiki] [--product]
 
 Needs a --tuning build (evaluate.py build --bin ios-tune --tuning) and results/baseline.jsonl
 (--base NAME: another full run, e.g. the previous round's final, as the guardrail reference).
---grid replaces GRID; --start overrides the starting values (default: DEFAULTS). The gate's
-oovMargin, realWordMargin and closeRescueMargin are searched like constants (sent as KB_POLICY).
+--grid replaces GRID; --start overrides the starting values (default: DEFAULTS). Runs decode
+with the word model in KB_NSS (default keyboard/nss-english.nsslm).
 --wiki adds the tune half of the Wikipedia misspelling list (corpus/ext-cases.tsv) to the run.
 Objective: mean of the ECPS, synthetic (and with --wiki, Wikipedia) "fixed" rates. A setting
 is rejected when, against the reference run, false corrections (MacKenzie clean + ECPS
 correct words) or real-word fixes get worse with McNemar p < 0.05, or more than 30% of the
 hard set is changed.
 --product evaluates every combination of GRID instead of the coordinate search. Use it for
-constants that only work together: a channelWeight change is rejected at every gate margin
-the search tries one at a time (28 Oct), but not jointly with oovMargin.
+constants that only work together, such as channelWeight and nssRawCommitMargin.
 Every evaluation is appended to results/tune-log.jsonl; the best setting is printed.
 A --tuning build reads constants at run time, which hides latency the production build has
 (and vice versa): judge latency with production builds of each setting, alternated.
@@ -23,43 +22,33 @@ A --tuning build reads constants at run time, which hides latency the production
 import argparse, concurrent.futures as cf, hashlib, itertools, json, os, subprocess, sys
 import evaluate as ev
 
-# Third round (28 Oct): spelling errors. Channel weight, doubled letters, vowel for vowel and the
-# gate margins, from the second round's constants (DEFAULTS) on the tune half plus --wiki.
+# The constants the NSS joint search reads: the channel's edit costs and the score weight.
 GRID = {
-    'channelWeight': [2.0, 2.5, 3.0, 3.5, 4.0],
-    'doubledDeletionCost': [0.3, 0.5, 0.7],
-    'doubledInsertionCost': [0.3, 0.6, 1.0],
-    'vowelSubstitutionCost': [1.0, 1.5, 2.0],
-    'oovMargin': [1.0, 2.0, 3.0, 4.0],
-    'realWordMargin': [3.0, 4.0, 5.0],
-    'closeRescueMargin': [1.0, 2.0, 3.0],
-    'frequencyWeight': [0.0, 0.1, 0.3],
+    'channelWeight': [2.0, 3.0, 4.0, 5.0],
+    'insertionCost': [1.2, 1.6, 2.0],
+    'deletionCost': [0.8, 1.1, 1.4],
+    'transpositionCost': [0.5, 0.65, 0.9],
+    'substitutionBase': [0.4, 0.6, 0.8],
+    'nssRawCommitMargin': [0.0, 1.0, 2.0],
 }
-# The third round's result: the constants as they are in SpatialModel.hpp, CandidateGeneration.hpp, Ranking.hpp.
+# The constants as they are in SpatialModel.hpp, Ranking.hpp and Engine.hpp.
 DEFAULTS = {'deletionCost': 1.1, 'insertionCost': 1.6, 'transpositionCost': 0.65, 'substitutionBase': 0.6,
-            'adjacentFirstLetterPenalty': 1.0, 'otherFirstLetterPenalty': 2.0, 'missingFirstLetterPenalty': 1.5,
-            'firstLetterPenalty4': 0.2, 'languageWeight': 1.0, 'frequencyWeight': 0.1,
-            'channelWeight': 4.0, 'realWordChannelWeight': 1.0, 'recoveryChannelWeight': 1.0,
-            'doubledDeletionCost': 0.3, 'doubledInsertionCost': 0.6, 'vowelSubstitutionCost': 1.5}
+            'channelWeight': 4.0, 'nssRawCommitMargin': 0.0}
 META = json.loads((ev.CORPUS/'cases-meta.json').read_text())
 META.update(json.loads((ev.CORPUS/'ext-cases-meta.json').read_text()))
 META.update(json.loads((ev.CORPUS/'keep-cases-meta.json').read_text()))
 CASES = ev.CORPUS/'quick.tsv'
-POLICY = {'oovMargin': -0.5, 'realWordMargin': 5, 'closeRescueMargin': 3}   # Ranking.hpp CorrectionPolicy
 
 
 BINARY = 'ios-tune'
 
 
 def evaluate(setting):
-    key = hashlib.sha1((json.dumps(setting, sort_keys=True) + CASES.name).encode()).hexdigest()[:16]
+    env = ev.bench_env(**{f'KB_{k}': str(v) for k, v in setting.items()})
+    key = hashlib.sha1((json.dumps(setting, sort_keys=True) + CASES.name + env['KB_NSS']).encode()).hexdigest()[:16]
     out = ev.RESULTS/'tune'/BINARY/f'{key}.jsonl'
     out.parent.mkdir(parents=True, exist_ok=True)
     if not out.exists():
-        env = dict(os.environ, **{f'KB_{k}': str(v) for k, v in setting.items() if k not in POLICY})
-        if any(k in POLICY for k in setting):
-            gate = {k: setting.get(k, v) for k, v in POLICY.items()}
-            env['KB_POLICY'] = f"{gate['oovMargin']},{gate['realWordMargin']},{gate['closeRescueMargin']},0,0,1.6"
         keyboard = ev.REPO/'keyboard'
         subprocess.run([str(ev.BIN/BINARY), str(keyboard/'langdata.bin'), str(keyboard/'safety.kbguard'), str(CASES), str(out) + '.part'],
                        env=env, check=True, stderr=subprocess.DEVNULL)
@@ -122,7 +111,6 @@ def main():
     CASES.write_text(CASES.with_name(CASES.name.replace('-keep', '')).read_text() + ''.join(keep))
     log = open(ev.RESULTS/'tune-log.jsonl', 'a')
     best = dict(DEFAULTS, **json.loads(a.start))
-    for name in GRID: best.setdefault(name, POLICY.get(name))
     _, rows = evaluate(best)
     best_score, reasons, info = judge(rows, base)
     print('start', json.dumps(best), round(best_score, 3), info, reasons, flush=True)

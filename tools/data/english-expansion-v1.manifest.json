@@ -1,11 +1,6 @@
 {
   "additional_words": 632,
   "artifacts": {
-    "contexts": {
-      "bytes": 41612,
-      "path": "tools/data/english-contexts-v1.json.bz2",
-      "sha256": "45513ca164bfd7b0d86630e468f29222d5e1f0c997176dee28a38e485baa1c9d"
-    },
     "heldout": {
       "bytes": 120258,
       "path": "tools/data/english-masc-heldout-v1.json.bz2",
@@ -2765,10 +2760,6 @@
     {
       "path": "tools/vocabulary/curated_terms.tsv",
       "sha256": "3b203d351f28498737948a3240f1fced6befd79841bb5aee0231031f51f9d010"
-    },
-    {
-      "path": "tools/vocabulary/curated_contexts.jsonl",
-      "sha256": "5f75ec0df191e78600dbb17095305e75274c811e0b6dc915605b4ed2e44d7b68"
     }
   ],
   "release_eligible": true,

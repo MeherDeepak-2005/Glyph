@@ -3,9 +3,9 @@
   "failures": [],
   "files": [
     {
-      "bytes": 1231,
+      "bytes": 1215,
       "path": "Info.plist",
-      "sha256": "08710812bbcad021adefe51d5f58c358ee5e545e2182ea0d8463b8e7067d140f"
+      "sha256": "e10414e57b75a936426487570fab5e068223ea022d76fbad5379ac0d49748904"
     },
     {
       "bytes": 1033,
@@ -13,9 +13,14 @@
       "sha256": "271853104efc3a57ac3331a013f9337749683c8d4197c6e31268a87ca01cc1d6"
     },
     {
-      "bytes": 1318408,
+      "bytes": 12433,
+      "path": "ThirdPartyNotices.txt",
+      "sha256": "a97033cbd5d39ddc1168f33883d70a3ce65c80048bff2397a5521e370cbea32c"
+    },
+    {
+      "bytes": 1188312,
       "path": "demo_keyboard",
-      "sha256": "2de43a7aebb33579c29c7c2b0b6fc56ca451efd3d1bfb3db69dac368a0cd7230"
+      "sha256": "0ec9fed62faa422f3245900f9fb829495a25de262c79e9f525a4b7d43b919b68"
     },
     {
       "bytes": 41541,
@@ -23,39 +28,29 @@
       "sha256": "aab47a6f406a3ae3788c6bc5066d902e965c687e8ed06fa97ebb0fdcd0073dc8"
     },
     {
-      "bytes": 9391297,
+      "bytes": 2735,
+      "path": "english_layout.kbpack",
+      "sha256": "537fbd295bc5d41ca28882e8a3dc3d92108bfd44a6be53572e46805a40f4fe5c"
+    },
+    {
+      "bytes": 5707850,
       "path": "langdata.bin",
-      "sha256": "a5accdb6100bf782637b91b522a33af20d199e7c85cc39e9a0da21ff4cbfc0d8"
+      "sha256": "6345821a4a81337c3afe28674b8bdf76afd99e14e5f0121646c25592b621781a"
+    },
+    {
+      "bytes": 3922400,
+      "path": "nss-english.nsslm",
+      "sha256": "d1cecea11a181771dc260b701e6afa64a358973bd631a9b6e1a16299552b4067"
     },
     {
       "bytes": 31927,
       "path": "safety.kbguard",
-      "sha256": "15df514efe2e7b19f75aa12fe626f4cf33ce397ab73479c220c5f940d718ad5b"
-    },
-    {
-      "bytes": 1924776,
-      "path": "telugu_langdata.bin",
-      "sha256": "38daf3af2312e6f630d7a38529177c191ebc6a216d511d344a4e80bf2cf9b210"
-    },
-    {
-      "bytes": 4288,
-      "path": "telugu_layout.kbpack",
-      "sha256": "486d12c6748b0221ecbe641028f33174cbe45b7b1d9bc2ea55886e6f17caedd9"
-    },
-    {
-      "bytes": 5948,
-      "path": "telugu_pack_manifest.json",
-      "sha256": "20eceeb4b1f55553051ab6d4f642803dce5a0d0ace41ca6e98fda984f1b75d0b"
-    },
-    {
-      "bytes": 871171,
-      "path": "tenglish_lexicon.bin",
-      "sha256": "43a287d98b7e314266eb1af92c483b0002d6ceab47a4114e76f8ec6b921cbc49"
+      "sha256": "e49f5383ee1b14575cfcfe8e015d2e6760e8959c4a9f9bcea4f43f85e5b9c937"
     }
   ],
-  "gateBytes": 14000000,
+  "gateBytes": 25000000,
   "gatePassed": true,
-  "neuralArtifactsAllowed": false,
+  "neuralArtifactsAllowed": true,
   "schemaVersion": 1,
-  "totalBytes": 13591620
+  "totalBytes": 10909446
 }

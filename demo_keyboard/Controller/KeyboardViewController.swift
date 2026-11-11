@@ -23,13 +23,6 @@ final class KeyboardViewController: UIInputViewController {
 	var wordSessionID: UInt64 = 0
 	var layoutRevision: UInt64 = 0
 	var fieldInputKind: KeyboardInputKind = .standard
-	var configuredLanguageMode: KBLanguageMode = .english
-	/// Resolved only at controller/configuration boundaries. The key path reads this
-	/// Boolean and never hashes a pack or waits on the health cache lock.
-	var configuredLanguageModeAvailable = true
-	/// Neural packages are promotion-gated; the shipped tier is selected only here,
-	/// between words, and remains fixed until `wordSessionID` advances.
-	var wordSessionModelTier: DecodeModelTier = .ngram
 	var decodeSnapshot: DecodeSnapshot?
 	var presentedDecodeSnapshot: PresentedDecodeSnapshot?
 	var currentWordBuffer = ""
@@ -132,10 +125,6 @@ final class KeyboardViewController: UIInputViewController {
 	/// An immediate whole-word Backspace cancels it, so leagues never reward a
 	/// rejected Glide result.
 	var pendingGlideStatsID: UUID?
-	/// Original host context for the most recent Telugu key. Long-press alternatives
-	/// replace the already-committed base output against this exact context, preserving
-	/// a conjunct or dependent sign instead of deleting its leading consonant.
-	var lastTeluguKeyContext: String?
 
 	/// Resolved only after the host connection is live. Calling
 	/// `needsInputModeSwitchKey` during extension prewarming produces an inaccurate result
@@ -211,7 +200,6 @@ final class KeyboardViewController: UIInputViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		refreshConfiguredLanguageMode()
 		view.backgroundColor = .clear
 		view.isOpaque = false
 		view.layer.isOpaque = false
@@ -226,23 +214,10 @@ final class KeyboardViewController: UIInputViewController {
 		configurationObserver = KBConfigurationObserver { [weak self] in
 			DispatchQueue.main.async { [weak self] in
 				guard let self else { return }
-				if self.refreshConfiguredLanguageMode() {
-					self.invalidateDocumentSession()
-				}
 				self.buildKeyboard()
 				if self.hostConnectionReady { self.scheduleSuggestions() }
 			}
 		}
-
-		accessibilityObservers.append(NotificationCenter.default.addObserver(
-			forName: KeyboardEngine.searchPriorReadyNotification, object: engine, queue: .main) { [weak self] notice in
-				guard let self, self.hostConnectionReady, self.suggestionsAllowed,
-					self.activeLanguageMode == .english, self.activeGlideSessionID == nil,
-					let request = notice.userInfo?["request"] as? DecodeRequest,
-					request == self.makeDecodeRequest(currentWord: self.currentWordBuffer,
-						context: self.currentContextBuffer, generation: self.generation) else { return }
-				self.scheduleSuggestions()
-			})
 
 		// Follow the host app's light/dark appearance and rebuild on changes.
 		registerForTraitChanges([UITraitUserInterfaceStyle.self, UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
@@ -268,7 +243,7 @@ final class KeyboardViewController: UIInputViewController {
 
 	deinit {
 		for observer in accessibilityObservers { NotificationCenter.default.removeObserver(observer) }
-		#if DEBUG || INTERNAL_GRU
+		#if DEBUG
 		liveMemoryTimer?.invalidate()
 		#endif
 	}
@@ -310,14 +285,13 @@ final class KeyboardViewController: UIInputViewController {
 		inputView?.backgroundColor = .clear
 		inputView?.isOpaque = false
 
-		let kb = KeyboardView(theme: theme, showsGlobe: showsGlobe,
-			languageMode: activeLanguageMode)
+		let kb = KeyboardView(theme: theme, showsGlobe: showsGlobe)
 		// A prewarmed extension has no reliable text proxy yet. Exposing those keys lets
 		// an immediate tap race the one-time globe/trait rebuild and silently disappear.
 		kb.isUserInteractionEnabled = hostConnectionReady
 		kb.accessibilityElementsHidden = !hostConnectionReady
 		kb.hapticsEnabled   = KBSettings.haptics
-		kb.glideEnabled     = activeLanguageMode == .english
+		kb.glideEnabled     = true
 		showModelTier(on: kb)
 		let touchViewID = UUID().uuidString
 		kb.onTouchSample = { [weak self, weak kb] phase, id, key, time, tap in
@@ -326,7 +300,6 @@ final class KeyboardViewController: UIInputViewController {
 			self.recordTyping(phase, text: key, tap: tap, touchID: "\(touchViewID):\(id)", at: time)
 		}
 		kb.onInsert         = { [weak self] ch, tap in self?.handleInsert(ch, tap: tap) }
-		kb.onKeyOutput      = { [weak self] output, tap in self?.handleKeyOutput(output, tap: tap) }
 		kb.onReplaceLastInput = { [weak self] base, replacement in
 			self?.handleReplaceLastInput(base: base, with: replacement)
 		}
@@ -409,10 +382,7 @@ final class KeyboardViewController: UIInputViewController {
 			  request.generation == generation,
 			  request.layoutRevision == layoutRevision,
 			  request.currentWord == currentWordBuffer,
-			  request.context == currentContextBuffer,
-			  request.languageMode == activeLanguageMode,
-			  request.requestedModelTier == wordSessionModelTier,
-			  snapshot.modelTier == wordSessionModelTier else { return nil }
+			  request.context == currentContextBuffer else { return nil }
 		return snapshot
 	}
 	var currentPresentedDecodeSnapshot: PresentedDecodeSnapshot? {
@@ -425,7 +395,7 @@ final class KeyboardViewController: UIInputViewController {
 	// MARK: State for Clipboard
 	var cursorModeActive = false
 
-	#if DEBUG || INTERNAL_GRU
+	#if DEBUG
 	/// Feeds Keyboard health's live memory row while the keyboard is on screen.
 	private var liveMemoryTimer: Timer?
 	#endif
@@ -458,18 +428,6 @@ final class KeyboardViewController: UIInputViewController {
 			return true
 		}
 	}
-	/// Tenglish is a prose mode. Host traits take precedence so a user's language
-	/// preference can never transliterate an email address, URL, handle, or number.
-	var activeLanguageMode: KBLanguageMode {
-		guard configuredLanguageModeAvailable, !isSecureField else { return .english }
-		switch fieldInputKind {
-		case .standard, .webSearch:
-			return configuredLanguageMode
-		case .email, .url, .twitter, .numbersAndPunctuation,
-			 .numberPad, .decimalPad, .phonePad:
-			return .english
-		}
-	}
 
 	// MARK: UIKit lifecycle
 
@@ -480,7 +438,6 @@ final class KeyboardViewController: UIInputViewController {
         presentationDocument = nil
         keyboard?.dismissTools()
         setSuggestionBar([])
-		if refreshConfiguredLanguageMode() { buildKeyboard() }
 		keyboard?.isUserInteractionEnabled = false
 		keyboard?.accessibilityElementsHidden = true
 		view.backgroundColor = .clear
@@ -496,7 +453,7 @@ final class KeyboardViewController: UIInputViewController {
 			layoutRevision &+= 1
 			keyboard?.setInputKind(.standard)
 		}
-		keyboard?.glideEnabled = activeLanguageMode == .english
+		keyboard?.glideEnabled = true
 		if let keyboard { applyKeyboardHeight(keyboard.keyboardHeight) }
 		invalidateDocumentSession()
 		resetEraseTracking()           // a new field/host — stale erase state is meaningless
@@ -519,7 +476,7 @@ final class KeyboardViewController: UIInputViewController {
 		// and P arrive late, often with their lift, and their balloon never shows.
 		view.window?.gestureRecognizers?.forEach { $0.delaysTouchesBegan = false }
 		if !hostConnectionReady { handleHostCallback() }
-		#if DEBUG || INTERNAL_GRU
+		#if DEBUG
 		// Keyboard health follows the footprint live: one reading a second while on screen.
 		liveMemoryTimer?.invalidate()
 		KBDiagnostics.noteLiveFootprint()
@@ -532,7 +489,7 @@ final class KeyboardViewController: UIInputViewController {
 
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		#if DEBUG || INTERNAL_GRU
+		#if DEBUG
 		liveMemoryTimer?.invalidate()
 		liveMemoryTimer = nil
 		KBDiagnostics.noteLiveFootprint()             // the latest reading, shown once the keyboard is gone

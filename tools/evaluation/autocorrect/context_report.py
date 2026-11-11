@@ -5,9 +5,9 @@
 
 The keyboard will usually see context, so this leaves out the first word of a sentence
 (rows whose parsed context is empty) and reports, for every run against BASE:
-misspellings fixed (ECPS, synthetic) overall and by context length (the n-gram reads
-at most two words, the NSS the whole sentence), real-word errors fixed, correct words
-changed, unknown names changed in context, and next-word top 3. Contexts are parsed as
+misspellings fixed (ECPS, synthetic) overall and by context length (the NSS reads the
+whole sentence), real-word errors fixed, correct words changed, unknown names changed
+in context, and next-word top 3. Contexts are parsed as
 IOSBench.cpp parses them (contextWords: letters and apostrophes, stop at . ! ? newline,
 at most 8 words). Pairs are tested with exact McNemar.
 """

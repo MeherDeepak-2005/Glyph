@@ -1,7 +1,6 @@
 #pragma once
-#include "CandidateGeneration.hpp"
-#include "LanguageModel.hpp"
-#include "Ranking.hpp"
+#include "PackedLexicon.hpp"
+#include <functional>
 namespace kb {
 struct Point { double x = 0, y = 0; };
 struct GlideLayout { std::vector<std::pair<std::uint8_t, Point>> centers; double xPitch, yPitch; };
@@ -20,44 +19,4 @@ std::vector<ChannelCandidate> decodeGlide(std::span<const Point> observed, const
     std::size_t width, int band, double frequency, double direction, double seedRadius, std::size_t window,
     const std::function<bool()>& cancel,
     const std::function<double(std::size_t)>& languageLookahead = {});
-class GlideResampler {
-    double spacing_, distance_ = 0;
-    std::optional<Point> last_;
-public:
-    std::vector<Point> samples;
-    explicit GlideResampler(double spacing) : spacing_(spacing) {}
-    std::vector<Point> append(std::span<const Point> points);
-};
-class OnlineGlide {
-    std::vector<double> previous_;
-public:
-    std::vector<Point> ideal;
-    std::size_t sampleCount = 0;
-    explicit OnlineGlide(std::vector<Point> path);
-    void consume(std::span<const Point> points);
-    double prefixCost() const;
-};
-} // namespace kb
-
-namespace kb {
-class StreamingGlide final {
-    GlideResampler resampler_{0.5};
-    std::size_t rawCount_ = 0;
-    std::optional<std::pair<double, double>> pitch_;
-    std::vector<std::uint8_t> first_, last_, previousFirst_, previousLast_;
-    std::vector<std::pair<std::string, OnlineGlide>> candidates_;
-    std::unordered_set<std::string> words_;
-public:
-    bool invalid = false, needsAugmentation = false;
-    bool empty() const { return candidates_.empty(); }
-    bool consume(std::span<const Point> raw, const GlideLayout& layout);
-    void augment(const GenerationLexicon& lexicon, std::span<const std::string> contextWords, std::span<const std::string> dynamicWords);
-    std::vector<ChannelCandidate> rows() const;
-};
-std::vector<ChannelCandidate> augmentGlide(const GenerationLexicon& lexicon, std::vector<ChannelCandidate> beam,
-    std::span<const Point> points, std::span<const std::string> contextWords,
-    std::span<const std::string> dynamicWords, double gate, const std::function<bool()>& cancel);
-std::vector<RankedRow> rankGlide(const GenerationLexicon& lexicon, std::span<const ChannelCandidate> rows,
-    std::span<const double> language, std::span<const double> safety, double sigma, std::span<const std::uint8_t> dwell);
-std::vector<std::string> dynamicGlideWords(const CountRows& supplementary, const CountRows& personal, std::size_t limit);
 } // namespace kb

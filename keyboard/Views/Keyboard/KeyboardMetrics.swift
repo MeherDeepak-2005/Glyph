@@ -12,14 +12,6 @@ struct KeyboardLayoutMetrics: Equatable {
 	let rowHeight, keySpacing, rowSpacing, sidePadding, topPadding, bottomPadding: CGFloat
 	let maximumDeckWidth: CGFloat
 
-	/// A copy with the row height (and inter-row gap) scaled — used to make the taller
-	/// multi-row Telugu deck more compact without touching Latin geometry.
-	func scalingRowHeight(_ factor: CGFloat) -> KeyboardLayoutMetrics {
-		.init(profile: profile, rowHeight: rowHeight * factor, keySpacing: keySpacing,
-			rowSpacing: rowSpacing * factor, sidePadding: sidePadding, topPadding: topPadding,
-			bottomPadding: bottomPadding, maximumDeckWidth: maximumDeckWidth)
-	}
-
 	static func resolve(width: CGFloat, idiom: UIUserInterfaceIdiom) -> KeyboardLayoutMetrics {
 		if idiom == .pad {
 			return .init(profile: .pad, rowHeight: 48, keySpacing: 7, rowSpacing: 8,

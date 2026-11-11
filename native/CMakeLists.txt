@@ -1,23 +1,17 @@
 cmake_minimum_required(VERSION 3.22)
 project(XploreeDecoderCore VERSION 1.0 LANGUAGES CXX)
 
-# Platform-neutral algorithms only. Foundation/JNI/model APIs belong in adapters.
+# Platform-neutral algorithms only. Foundation and model runtimes belong in the adapter.
 add_library(DecoderCore STATIC
     DecoderCore/src/Personalization.cpp
-    DecoderCore/src/EngineWire.cpp
     DecoderCore/src/Engine.cpp
     DecoderCore/src/Safety.cpp
     DecoderCore/src/Adaptation.cpp
-    DecoderCore/src/CandidateGeneration.cpp
+    DecoderCore/src/Vocabulary.cpp
     DecoderCore/src/Glide.cpp
-    DecoderCore/src/IncrementalSearch.cpp
-    DecoderCore/src/LanguageModel.cpp
-    DecoderCore/src/Multiword.cpp
     DecoderCore/src/NeuralFst.cpp
     DecoderCore/src/NeuralLanguageModel.cpp
-    DecoderCore/src/NeuralSearch.cpp
     DecoderCore/src/PackedLexicon.cpp
-    DecoderCore/src/Ranking.cpp
     DecoderCore/src/SpatialModel.cpp)
 target_include_directories(DecoderCore PUBLIC DecoderCore/include)
 target_compile_features(DecoderCore PUBLIC cxx_std_20)
@@ -29,53 +23,37 @@ endif()
 option(KB_BUILD_TESTS "Build portable decoder tests" ON)
 if(KB_BUILD_TESTS)
     enable_testing()
+    set(LANGDATA "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+    set(MODEL "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm")
     add_executable(shared-engine-tests tests/EngineTests.cpp)
     target_link_libraries(shared-engine-tests PRIVATE DecoderCore)
-    add_test(NAME shared-engine COMMAND shared-engine-tests "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin"
+    add_test(NAME shared-engine COMMAND shared-engine-tests "${LANGDATA}" "${MODEL}"
         "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../tools/evaluation/fixtures/shared-engine")
-    add_executable(candidate-generation-tests tests/CandidateGenerationTests.cpp)
-    target_link_libraries(candidate-generation-tests PRIVATE DecoderCore)
-    add_test(NAME candidate-generation COMMAND candidate-generation-tests)
-    add_test(NAME neural-search COMMAND neural-search-tests)
-    add_executable(neural-search-tests tests/NeuralSearchTests.cpp)
-    target_link_libraries(neural-search-tests PRIVATE DecoderCore)
     add_executable(nss-fst-tests tests/NeuralFstTests.cpp)
     target_link_libraries(nss-fst-tests PRIVATE DecoderCore)
     add_test(NAME nss-fst COMMAND nss-fst-tests
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/nss/cifg-tied.nsslm"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
-    add_test(NAME nss-fst-trained COMMAND nss-fst-tests
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/nss/cifg-tied.nsslm" "${LANGDATA}")
+    add_test(NAME nss-fst-trained COMMAND nss-fst-tests "${MODEL}" "${LANGDATA}")
     add_executable(nss-word-model-tests tests/NeuralLanguageModelTests.cpp)
     target_link_libraries(nss-word-model-tests PRIVATE DecoderCore)
     add_test(NAME nss-expanded-model-reference COMMAND nss-word-model-tests
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.goldens.json"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+        "${MODEL}" "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.goldens.json" "${LANGDATA}")
     foreach(model cifg-tied lstm-untied gru-projected)
         add_test(NAME nss-word-model-${model} COMMAND nss-word-model-tests
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/nss/${model}.nsslm"
-            "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/nss/${model}.goldens.json"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/nss/${model}.goldens.json" "${LANGDATA}")
     endforeach()
     add_executable(raw-decoder-tests tests/RawDecoderTests.cpp)
     target_link_libraries(raw-decoder-tests PRIVATE DecoderCore)
-    add_test(NAME raw-decoder COMMAND raw-decoder-tests
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/nss-english.nsslm" "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
+    add_test(NAME raw-decoder COMMAND raw-decoder-tests "${MODEL}" "${LANGDATA}")
     add_executable(decoder-core-tests tests/PackedLexiconTests.cpp)
     target_link_libraries(decoder-core-tests PRIVATE DecoderCore)
+    add_test(NAME decoder-core COMMAND decoder-core-tests "${LANGDATA}")
     # These small portable executables use assert for their independent goldens.
     # Release must still execute them rather than compiling the checks away.
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-        target_compile_options(shared-engine-tests PRIVATE -UNDEBUG)
-        target_compile_options(candidate-generation-tests PRIVATE -UNDEBUG)
-        target_compile_options(neural-search-tests PRIVATE -UNDEBUG)
-        target_compile_options(decoder-core-tests PRIVATE -UNDEBUG)
-        target_compile_options(raw-decoder-tests PRIVATE -UNDEBUG)
-        target_compile_options(nss-word-model-tests PRIVATE -UNDEBUG)
-        target_compile_options(nss-fst-tests PRIVATE -UNDEBUG)
+        foreach(test shared-engine-tests nss-fst-tests nss-word-model-tests raw-decoder-tests decoder-core-tests)
+            target_compile_options(${test} PRIVATE -UNDEBUG)
+        endforeach()
     endif()
-    add_test(NAME decoder-core-parity COMMAND decoder-core-tests
-        "${CMAKE_CURRENT_SOURCE_DIR}/../keyboard/langdata.bin")
 endif()

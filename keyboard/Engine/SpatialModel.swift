@@ -88,28 +88,15 @@ final class TouchSpatialProfile {
 }
 
 nonisolated enum KB {
-	/// Letter rows and their visual offsets in key pitches, from the English layout pack
-	/// (tools/language_packs/sources/en-US/qwerty.json): the UIKit deck centres the nine-key
-	/// home row by half a pitch and shift places Z one-and-a-half pitches after Q. Tap
-	/// scoring and Glide decoding share this grid, and the native decoder is given the same
-	/// one (`installNativeGrid`), so the keys drawn and the keys decoded cannot disagree.
+	/// Letter rows and their visual offsets in key pitches, from the English layout pack:
+	/// the UIKit deck centres the nine-key home row by half a pitch and shift places Z
+	/// one-and-a-half pitches after Q. The native decoder is given the same grid
+	/// (`KeyboardEngine.nativeKeyGridInstalled`), so the keys drawn and the keys decoded
+	/// cannot disagree.
 	static let rows = LatinLayoutPack.english.gridRows
 	static let rowOffset = LatinLayoutPack.english.gridRowOffsets
-	static let sigma = 1.0
-	/// Floor for pressing a different key than the intended one; equals native
-	/// `substitutionBase` (fitted on tools/evaluation/autocorrect, 27 Oct 2026).
-	static let substitutionBase = 0.6
-	/// Touch spread in key widths for a tap measured against the key it landed on; equals native
-	/// `touchSigma` (0: the tap is measured from the intended key's centre).
-	static let touchSigma = 0.7
 	static let apostrophe = UInt8(ascii: "'")
-	/// Skipping an apostrophe the candidate has but the typed string omitted costs a
-	/// fraction of a real deletion: people drop apostrophes constantly (whats, dont,
-	/// cant) and the letters page has no ' key, so an omission is the EXPECTED channel
-	/// noise for a contraction, not a 1.6-cost edit. Without this, "whats" corrects to
-	/// "what" (freq wins the tie at equal cost) instead of "what's" like stock.
-	/// Mirrored in tools/lm/eval_harness.py (APOS_SKIP).
-	static let apostropheSkipCost = 0.4
+	/// Grid position (column + row offset, row) of each letter key.
 	static let pos: [UInt8: (Double, Double)] = {
 		var m: [UInt8: (Double, Double)] = [:]
 		for (r, row) in rows.enumerated() {
@@ -117,67 +104,4 @@ nonisolated enum KB {
 		}
 		return m
 	}()
-	/// Spelling (not keyboard) confusions, whatever the key distance; native `spellingSubstitution`.
-	/// `typedFirst`: the typed first letter has its own vowel-for-vowel cost (native `firstVowelSubstitutionCost`).
-	static let vowelSubstitutionCost = 1.5, firstVowelSubstitutionCost = 1.5, soundAlikeSubstitutionCost = 0.9
-	static func spellingSubstitution(_ intended: UInt8, _ typed: UInt8, typedFirst: Bool = false) -> Double {
-		spellingSubstitution(intended, typed, vowelCost: typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost)
-	}
-	static func spellingSubstitution(_ intended: UInt8, _ typed: UInt8, vowelCost: Double) -> Double {
-		let vowels: Set<UInt8> = [97, 101, 105, 111, 117]   // a e i o u
-		if vowels.contains(intended), vowels.contains(typed) { return vowelCost }
-		let pair = Set([intended, typed])
-		if pair == [99, 107] || pair == [99, 115] || pair == [115, 122] { return soundAlikeSubstitutionCost }   // c/k c/s s/z
-		return 3.0
-	}
-	static func subCost(_ intended: UInt8, _ typed: UInt8, typedFirst: Bool = false) -> Double {
-		subCost(intended, typed, vowelCost: typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost)
-	}
-	static func subCost(_ intended: UInt8, _ typed: UInt8, vowelCost: Double) -> Double {
-		if intended == typed { return 0 }
-		guard let a = pos[intended], let b = pos[typed] else { return 3.0 }
-		let d2 = (a.0 - b.0) * (a.0 - b.0) + (a.1 - b.1) * (a.1 - b.1)
-		return min(3.0, d2 / (2 * sigma * sigma) + substitutionBase, spellingSubstitution(intended, typed, vowelCost: vowelCost))
-	}
-	/// A spelling confusion of two letters, whatever their keys: vowel for vowel, c/k, c/s, s/z; native `spellingConfusion`.
-	static func spellingConfusion(_ a: UInt8, _ b: UInt8) -> Bool {
-		a != b && spellingSubstitution(a, b, vowelCost: 0) < 3.0
-	}
-	/// Row or diagonal keyboard neighbours (squared grid distance ≤ 1.3); native `neighbouringKeys`.
-	static func neighbouringKeys(_ a: UInt8, _ b: UInt8) -> Bool {
-		guard a != b, let p = pos[a], let q = pos[b] else { return false }
-		return (p.0 - q.0) * (p.0 - q.0) + (p.1 - q.1) * (p.1 - q.1) <= 1.3
-	}
-	/// Which first letters the retained search seeds: no spelling discounts; native `seedFirstLetterCost`.
-	static func seedFirstLetterCost(_ label: UInt8, typedFirst: UInt8, tap: KeyTap?) -> Double {
-		Trie.firstLetterPenaltyPolicy(typedLength: 8, candidateFirst: label, typedFirst: typedFirst, spelling: false)
-			+ subCost(label, typed: typedFirst, tap: tap, vowelCost: 3.0)
-	}
-	/// Grid position of a letter (col+rowOffset, row) — the coordinate space glide
-	/// decoding maps the swipe trajectory into.
-	static func grid(for letter: Character) -> (Double, Double)? {
-		guard let a = letter.asciiValue else { return nil }
-		return pos[a]
-	}
-	/// Continuous variant; native `substitutionCost` with a tap. A finite tap is measured against
-	/// the key it landed on (native `touchSubstitutionCost` at `touchSigma`): the pressed key costs
-	/// 0 however far off-centre, another key (d(intended)² − d(pressed)²) / 2σ² plus the
-	/// substitutionBase floor, so a centered tap never reads as ambiguous. With `touchSigma` 0 or a
-	/// non-finite tap, the distance from the intended key's center to the landing point.
-	static func subCost(_ intended: UInt8, typed: UInt8, tap: KeyTap?, typedFirst: Bool = false) -> Double {
-		subCost(intended, typed: typed, tap: tap, vowelCost: typedFirst ? firstVowelSubstitutionCost : vowelSubstitutionCost)
-	}
-	static func subCost(_ intended: UInt8, typed: UInt8, tap: KeyTap?, vowelCost: Double) -> Double {
-		guard let tap, let a = pos[intended], let t = pos[typed] else { return subCost(intended, typed, vowelCost: vowelCost) }
-		let px = t.0 + tap.dx, py = t.1 + tap.dy
-		let d2 = (a.0 - px) * (a.0 - px) + (a.1 - py) * (a.1 - py)
-		if touchSigma > 0, tap.dx.isFinite, tap.dy.isFinite {
-			if intended == typed { return 0 }
-			let spatial = max(0, d2 - (tap.dx * tap.dx + tap.dy * tap.dy)) / (2 * touchSigma * touchSigma) + substitutionBase
-			return min(3.0, spatial, spellingSubstitution(intended, typed, vowelCost: vowelCost))
-		}
-		let base = d2 / (2 * sigma * sigma)
-		return intended == typed ? min(3.0, base)
-			: min(3.0, base + substitutionBase, spellingSubstitution(intended, typed, vowelCost: vowelCost))
-	}
 }

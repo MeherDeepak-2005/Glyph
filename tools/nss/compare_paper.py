@@ -5,7 +5,9 @@ python3 tools/nss/compare_paper.py --out /tmp/nss-paired
 python3 tools/nss/compare_paper.py --score-only --out tools/evaluation/autocorrect/results
 
 The --score-only mode reads nss-paper-before{,.ext,.keep}.jsonl and after equivalents.
-All runs must be complete: incomplete or mismatched case sets are rejected.
+All runs must be complete: incomplete or mismatched case sets are rejected. The preserved
+decoder reads its own commit's keyboard/langdata.bin (KBLM v6); the working tree's KBLM v7
+pack has the same words, frequencies and trie (tools/verify_language_data.py).
 """
 import argparse
 import hashlib
@@ -38,9 +40,9 @@ def build(root, binary):
                     '-o', str(binary)], check=True)
 
 
-def replay(binary, model, out, name):
+def replay(binary, model, out, name, langdata=ROOT/'keyboard/langdata.bin'):
     for corpus, suffix in [('cases.tsv',''),('ext-cases.tsv','.ext'),('keep-cases.tsv','.keep')]:
-        subprocess.run([str(binary), str(ROOT/'keyboard/langdata.bin'), str(ROOT/'keyboard/safety.kbguard'),
+        subprocess.run([str(binary), str(langdata), str(ROOT/'keyboard/safety.kbguard'),
                         str(BENCH/'corpus'/corpus), str(out/f'{name}{suffix}.jsonl')],
                        env={**os.environ, 'KB_NSS': str(model)}, check=True)
 
@@ -113,7 +115,8 @@ def main():
             source=base/'source';source.mkdir()
             with tarfile.open(archive) as tar: tar.extractall(source,filter='data')
             build(source,out/'before');build(ROOT,out/'after')
-            replay(out/'before',ROOT/'tools/nss/artifacts/baseline-step8000.nsslm',out,'nss-paper-before')
+            replay(out/'before',ROOT/'tools/nss/artifacts/baseline-step8000.nsslm',out,'nss-paper-before',
+                   source/'keyboard/langdata.bin')
             replay(out/'after',ROOT/'keyboard/nss-english.nsslm',out,'nss-paper-after')
     score(out,args.report)
 

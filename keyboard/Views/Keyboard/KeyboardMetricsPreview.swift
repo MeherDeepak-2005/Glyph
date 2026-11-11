@@ -4,11 +4,10 @@ import UIKit
 #if DEBUG
 private struct KeyboardMetricsPreview: UIViewRepresentable {
 	let dark: Bool
-	let language: KBLanguageMode
 	let width: CGFloat
 
 	func makeUIView(context: Context) -> KeyboardView {
-		let view = KeyboardView(theme: .system(dark: dark), languageMode: language)
+		let view = KeyboardView(theme: .system(dark: dark))
 		view.setSuggestions(["the", "keyboard", "layout"])
 		return view
 	}
@@ -24,20 +23,14 @@ private struct KeyboardMetricsPreview: UIViewRepresentable {
 }
 
 #Preview("English 393pt") {
-	KeyboardMetricsPreview(dark: false, language: .english, width: 393)
+	KeyboardMetricsPreview(dark: false, width: 393)
 		.frame(width: 393)
 		.background(Color(white: 0.55))
 }
 
 #Preview("English Dark 430pt") {
-	KeyboardMetricsPreview(dark: true, language: .english, width: 430)
+	KeyboardMetricsPreview(dark: true, width: 430)
 		.frame(width: 430)
 		.background(Color(white: 0.18))
-}
-
-#Preview("Telugu 393pt") {
-	KeyboardMetricsPreview(dark: false, language: .telugu, width: 393)
-		.frame(width: 393)
-		.background(Color(white: 0.55))
 }
 #endif

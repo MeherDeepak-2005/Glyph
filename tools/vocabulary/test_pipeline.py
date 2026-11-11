@@ -1,4 +1,4 @@
-"""Admission, leakage, probability and release-artifact regression checks."""
+"""Admission, leakage and release-artifact regression checks."""
 import bz2
 from collections import Counter
 import json
@@ -13,11 +13,12 @@ import build_language_data as builder
 from fetch_sources import cleanup, SOURCES, digest
 
 class PipelineTests(unittest.TestCase):
-    def test_unsupported_spans_do_not_create_false_adjacencies(self):
+    def test_unsupported_spans_stay_boundaries(self):
         for span in ["2026", "café", "wi-fi", "https://example.com", "me@example.com"]:
             tokens = importer.tokenize("hello " + span + " friend")
-            self.assertIn(None, tokens, span)
-            self.assertNotIn(("hello", "friend"), importer.count_contexts([tokens], {"hello", "friend"})[2])
+            self.assertEqual(tokens[0], "hello", span)
+            self.assertEqual(tokens[-1], "friend", span)
+            self.assertIn(None, tokens[1:-1], span)
         self.assertEqual(importer.tokenize("I'm ready"), ["i'm", "ready"])
 
     def test_related_document_names_share_split(self):
@@ -35,14 +36,6 @@ class PipelineTests(unittest.TestCase):
             entries, _ = importer.select_entries(catalog, {}, {"epistemic": 999999}, Counter(), Counter(), 4)
             self.assertEqual(entries[0]["frequency_prior"], 20000)
 
-    def test_pruning_keeps_true_context_denominator(self):
-        groups = importer.context_groups(Counter({("hello", "friend"): 5, ("hello", "there"): 2}), 3, 10)
-        self.assertEqual(groups, [{"context": ["hello"], "total": 7, "entries": [["friend", 5]]}])
-        bi, _, totals = builder.merge_contexts({"hello": 0, "friend": 1}, {0: [(1, 4)]}, {},
-            {"sources": {"masc": {"bigrams": groups, "trigrams": []}}})
-        self.assertEqual(bi[0], [(1, 9)])
-        self.assertEqual(totals["bigrams"][0], 11)
-
     def test_baseline_frequencies_retained_and_duplicate_rejected(self):
         snapshot = {"baseline_words": 2, "entries": [{"word": "colour", "frequency_prior": 100, "sources": ["esdb"]}]}
         self.assertEqual(builder.merge_expansion([("the", 1000), ("hello", 50)], snapshot),
@@ -55,8 +48,8 @@ class PipelineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "pack.bin"
             path.write_bytes(b"existing")
-            with patch.object(builder, "LANGDATA_CAP", 1), self.assertRaises(ValueError):
-                builder.write_bin([("hello", 100)], {}, {}, [], output=path)
+            with self.assertRaises(ValueError):
+                builder.write_bin([("hello", 100)], output=path, max_bytes=1)
             self.assertEqual(path.read_bytes(), b"existing")
             self.assertFalse(path.with_suffix(".bin.tmp").exists())
 
@@ -65,19 +58,9 @@ class PipelineTests(unittest.TestCase):
             path = Path(folder) / "pack.bin"
             path.write_bytes(b"existing")
             with self.assertRaises(Exception):
-                builder.write_bin([("hello", -1)], {}, {}, [], output=path)
+                builder.write_bin([("hello", -1)], output=path)
             self.assertEqual(path.read_bytes(), b"existing")
             self.assertFalse(path.with_suffix(".bin.tmp").exists())
-
-    def test_duplicate_or_impossible_context_counts_are_rejected(self):
-        group = {"context": ["hello"], "total": 1, "entries": [["friend", 2]]}
-        snapshot = {"sources": {"masc": {"bigrams": [group], "trigrams": []}}}
-        with self.assertRaises(ValueError):
-            builder.merge_contexts({"hello": 0, "friend": 1}, {}, {}, snapshot)
-        group["total"] = 4
-        group["entries"].append(["friend", 2])
-        with self.assertRaises(ValueError):
-            builder.merge_contexts({"hello": 0, "friend": 1}, {}, {}, snapshot)
 
     def test_cleanup_preserves_unrecognized_or_changed_files(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -92,7 +75,7 @@ class PipelineTests(unittest.TestCase):
             self.assertTrue(recognized.exists())
 
     def test_vendored_snapshot_checksums_and_document_split(self):
-        manifest, snapshot, contexts = builder.load_expansion(builder.EXPANSION_MANIFEST)
+        manifest, snapshot = builder.load_expansion(builder.EXPANSION_MANIFEST)
         self.assertEqual(len(snapshot["entries"]), 632)
         families = {}
         for document in manifest["documents"]:
@@ -106,7 +89,6 @@ class PipelineTests(unittest.TestCase):
         heldout = json.loads(bz2.decompress(heldout_path.read_bytes()))
         for row in heldout["sentences"]:
             self.assertEqual(importer.document_split(row["document"]), "test")
-        self.assertTrue(contexts["sources"]["masc"]["bigrams"])
 
 if __name__ == "__main__":
     unittest.main()

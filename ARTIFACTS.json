@@ -1,21 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-19T11:39:08+05:30",
+  "generatedAt": "2026-11-09T18:12:55+05:30",
   "artifacts": [
     {
       "path": "keyboard/langdata.bin",
-      "sha256": "9db0760697014aecdf540d1828cd523156bcf87a2ed04f2afaa724ac24cd8ea6",
-      "bytes": 28311910,
-      "format": "KBLM v6",
+      "sha256": "6345821a4a81337c3afe28674b8bdf76afd99e14e5f0121646c25592b621781a",
+      "bytes": 5707850,
+      "format": "KBLM v7",
       "builder": "tools/build_language_data.py",
       "contents": {
         "words": 114283,
-        "bigramContexts": 55520,
-        "bigramEntries": 1280074,
-        "trigramContexts": 266840,
-        "trigramEntries": 767271,
-        "trieNodes": 275561,
-        "sentenceStarters": 20
+        "trieNodes": 275561
       },
       "inputs": [
         {
@@ -39,6 +34,59 @@
           "license": "CC-BY-SA-4.0"
         },
         {
+          "name": "Tatoeba English CC0 export snapshot (contractions)",
+          "path": "tools/data/tatoeba-eng-cc0-2026-07-18.tsv.bz2",
+          "sha256": "14f975533e2f15257f674d6099b95cf6b2c3458a8baf7496935081ad862f4b91",
+          "license": "CC0-1.0",
+          "contents": {
+            "sentences": 41502
+          },
+          "transformation": "Interior-apostrophe words counted and scaled onto the FrequencyWords frequency scale; no sentence text is shipped."
+        },
+        {
+          "name": "Project-curated supplemental English vocabulary",
+          "path": "tools/data/english_supplemental.tsv",
+          "sha256": "12c1cfefc2ae47785de897e2d4cf719064e1fd82e57638906409f8b4aa95dc8d",
+          "license": "Project-owned"
+        },
+        {
+          "name": "English expansion v1 vocabulary",
+          "bytes": 6455,
+          "path": "tools/data/english-expansion-v1.json.bz2",
+          "sha256": "cc1134dea1bd533339720decbb233bf456c1df394de07f26873199c18bf773e3",
+          "license": "Source licenses and transformations in expansion manifest"
+        },
+        {
+          "name": "English expansion provenance and admission rules",
+          "path": "tools/data/english-expansion-v1.manifest.json",
+          "sha256": "d719d754d909f8aee6dde0473cf9ee7296f1fa5ee2245a6526832a32a84a6368",
+          "license": "Metadata; source licenses recorded per entry"
+        },
+        {
+          "name": "User-provided Xploree/CoreV4 English stored spellings",
+          "path": "tools/data/corev4/english/english-all.txt",
+          "sha256": "64085e863a726407c3eb0c7a077bf78b560cfd28ae4987a49115a2580a5dbd5f",
+          "provenance": "tools/data/corev4/english/manifest.json",
+          "transformation": "Union with existing vocabulary; retain existing frequencies; new frequency prior 1; preserve four contraction-policy exclusions. Original dictionary and context files are offline assets."
+        }
+      ],
+      "integrationReport": "docs/corev4-import/IMPORT-RESULTS.txt"
+    },
+    {
+      "path": "keyboard/nss-english.nsslm",
+      "sha256": "d1cecea11a181771dc260b701e6afa64a358973bd631a9b6e1a16299552b4067",
+      "bytes": 3922400,
+      "format": "NSLM v1",
+      "builder": "tools/nss (python -m nss.export)",
+      "manifest": "keyboard/nss-english.manifest.json",
+      "contents": {
+        "architecture": "one CIFG-LSTM layer, 96-wide tied embeddings, 670 cells projected to 96",
+        "parameters": 3362638,
+        "vocabularyWords": 30000,
+        "quantization": "int8 rows with fp32 scales"
+      },
+      "inputs": [
+        {
           "name": "Tatoeba English export snapshot (all sentences)",
           "path": "tools/data/tatoeba-eng-2026-10-20.tsv.bz2",
           "url": "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences.tsv.bz2",
@@ -59,178 +107,18 @@
           "license": "CC-BY-SA-3.0"
         },
         {
-          "name": "Tatoeba English CC0 export snapshot (legacy --legacy-ngrams reproduction only)",
-          "path": "tools/data/tatoeba-eng-cc0-2026-07-18.tsv.bz2",
-          "sha256": "14f975533e2f15257f674d6099b95cf6b2c3458a8baf7496935081ad862f4b91",
-          "license": "CC0-1.0"
-        },
-        {
-          "name": "Project-curated supplemental English vocabulary",
-          "path": "tools/data/english_supplemental.tsv",
-          "sha256": "12c1cfefc2ae47785de897e2d4cf719064e1fd82e57638906409f8b4aa95dc8d",
-          "license": "Project-owned"
-        },
-        {
-          "name": "English expansion v1 contexts",
-          "bytes": 41612,
-          "path": "tools/data/english-contexts-v1.json.bz2",
-          "sha256": "45513ca164bfd7b0d86630e468f29222d5e1f0c997176dee28a38e485baa1c9d",
-          "license": "Source licenses and transformations in expansion manifest"
-        },
-        {
-          "name": "English expansion v1 vocabulary",
-          "bytes": 6455,
-          "path": "tools/data/english-expansion-v1.json.bz2",
-          "sha256": "cc1134dea1bd533339720decbb233bf456c1df394de07f26873199c18bf773e3",
-          "license": "Source licenses and transformations in expansion manifest"
-        },
-        {
-          "name": "English expansion provenance and admission rules",
-          "path": "tools/data/english-expansion-v1.manifest.json",
-          "sha256": "ac70a2d47058ff2ec2cb79995ac461444e20ea6e0a047fc7c957312bdbe666eb",
-          "license": "Metadata; source licenses recorded per entry"
-        },
-        {
-          "name": "User-provided Xploree/CoreV4 English stored spellings",
-          "path": "tools/data/corev4/english/english-all.txt",
-          "sha256": "64085e863a726407c3eb0c7a077bf78b560cfd28ae4987a49115a2580a5dbd5f",
-          "provenance": "tools/data/corev4/english/manifest.json",
-          "transformation": "Union with existing vocabulary; retain existing frequencies; new frequency prior 1; preserve four contraction-policy exclusions. Original context files are offline assets."
+          "name": "NSS word vocabulary (30,000 words of keyboard/langdata.bin)",
+          "path": "tools/data/nss/english-nss-vocab-30k.tsv",
+          "sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+          "provenance": "tools/data/nss/english-nss-vocab-30k.json",
+          "builder": "tools/vocabulary/build_nss_vocab.py"
         }
       ],
-      "integrationReport": "docs/corev4-import/IMPORT-RESULTS.txt",
-      "ngramPruning": {
-        "bigramMinCount": 4,
-        "bigramPerContext": 1024,
-        "trigramMinCount": 8,
-        "trigramPerContext": 64,
-        "contextTotals": "pre-pruning; unretained mass is assigned to the backoff at runtime",
-        "inVocabularyTokensCounted": 95050257
-      }
-    },
-    {
-      "path": "keyboard/telugu_layout.kbpack",
-      "sha256": "486d12c6748b0221ecbe641028f33174cbe45b7b1d9bc2ea55886e6f17caedd9",
-      "bytes": 4288,
-      "format": "binary-plist Telugu-layout-v2",
-      "builder": "tools/language_packs/build_telugu_pack.py",
-      "contents": {
-        "identifier": "te-IN-apple-mobile",
-        "normalization": "NFC",
-        "pages": [
-          "alphabetic",
-          "numbers"
-        ],
-        "glyphRows": 5,
-        "nativeSpeakerReviewed": false
-      },
-      "inputs": [
-        {
-          "name": "Project-authored Apple-mobile Telugu layout source",
-          "path": "tools/language_packs/sources/te-IN/apple-mobile-2020.json",
-          "url": "https://www.unicode.org/cldr/charts/41/keyboards/layouts/te.html",
-          "sha256": "65851c575bb67c79cf60f44056d748de6c87d31f40209ea77892ee4f8fcdd176",
-          "license": "Project-owned mapping; Unicode-3.0 cross-check"
-        }
-      ]
-    },
-    {
-      "path": "keyboard/telugu_langdata.bin",
-      "sha256": "6f887cc3b8eb7b50f7fabae17705dc3b356888de09187ccce53b4ac19ada4557",
-      "bytes": 1924776,
-      "format": "KBTD v1 compact scalar trie and bi/trigram LM",
-      "builder": "tools/language_packs/build_telugu_pack.py",
-      "contents": {
-        "words": 22000,
-        "trieNodes": 73851,
-        "trieEdges": 73850,
-        "bigramContexts": 567,
-        "bigramEntries": 951,
-        "trigramContexts": 650,
-        "trigramEntries": 667
-      },
-      "inputs": [
-        {
-          "name": "AI4Bharat Aksharantar Telugu training split",
-          "url": "https://huggingface.co/datasets/ai4bharat/Aksharantar",
-          "archiveSha256": "08f1c2841f4d02fcc2a56362f7760ec16fc52d8a199029c68d44024ab0d22c1a",
-          "memberSha256": "eb77e61d9bc2b3fc4ed1f94d5b56f0fdf0f13c916ea7bb66b1c810f5f00e55f8",
-          "license": "Source-dependent CC-BY/CC0"
-        },
-        {
-          "name": "Tatoeba Telugu detailed sentence snapshot",
-          "path": "tools/data/tatoeba-tel-ccby-2026-07-19.tsv.bz2",
-          "url": "https://tatoeba.org/en/downloads",
-          "sha256": "833268b5ac5b18f69903594a8e8c5ab7cbfdaa9f1d6f69e6dc927282cdc9da9c",
-          "license": "CC-BY-2.0-FR"
-        },
-        {
-          "name": "Hash-pinned Telugu/Roman corpus source manifest",
-          "path": "tools/language_packs/sources/te-IN/corpus-release-v1.json",
-          "sha256": "f0d62f106d02ca761cfa8d8dc68d28ff171a02c2550e4ebe958c0af0c3a6abbe",
-          "license": "Metadata; source licenses recorded per entry"
-        },
-        {
-          "name": "Project-reviewed core Tenglish aliases",
-          "path": "tools/language_packs/sources/te-IN/tenglish-core-reviewed.tsv",
-          "sha256": "de09faf9c89d9df9bd856d2416c90b02fc7abe2c0bc180cc539638bdce5b0c9b",
-          "license": "Project-owned"
-        }
-      ]
-    },
-    {
-      "path": "keyboard/tenglish_lexicon.bin",
-      "sha256": "e70b56a4bbb77f9c8ed39570a446691b3ba963cc6e7a97787d4ef195f7a967c7",
-      "bytes": 871171,
-      "format": "KBXL v3 compact weighted transliteration lexicon and Roman Telugu bi/trigram LM",
-      "builder": "tools/language_packs/build_telugu_pack.py",
-      "contents": {
-        "romanKeys": 12000,
-        "variants": 20028,
-        "bigramContexts": 82,
-        "bigramEntries": 141,
-        "trigramContexts": 33,
-        "trigramEntries": 34,
-        "unknownInputPolicy": "remain literal"
-      },
-      "inputs": [
-        {
-          "name": "AI4Bharat Aksharantar Telugu training split",
-          "url": "https://huggingface.co/datasets/ai4bharat/Aksharantar",
-          "archiveSha256": "08f1c2841f4d02fcc2a56362f7760ec16fc52d8a199029c68d44024ab0d22c1a",
-          "memberSha256": "eb77e61d9bc2b3fc4ed1f94d5b56f0fdf0f13c916ea7bb66b1c810f5f00e55f8",
-          "license": "Source-dependent CC-BY/CC0"
-        },
-        {
-          "name": "Project-reviewed core Tenglish aliases",
-          "path": "tools/language_packs/sources/te-IN/tenglish-core-reviewed.tsv",
-          "sha256": "de09faf9c89d9df9bd856d2416c90b02fc7abe2c0bc180cc539638bdce5b0c9b",
-          "license": "Project-owned"
-        },
-        {
-          "name": "Hash-pinned Telugu/Roman corpus source manifest",
-          "path": "tools/language_packs/sources/te-IN/corpus-release-v1.json",
-          "sha256": "f0d62f106d02ca761cfa8d8dc68d28ff171a02c2550e4ebe958c0af0c3a6abbe",
-          "license": "Metadata; source licenses recorded per entry"
-        }
-      ]
-    },
-    {
-      "path": "keyboard/telugu_pack_manifest.json",
-      "sha256": "7c6308c9611bb47b3966f5cfca43e7807163091d9755258a9da322053a893b38",
-      "bytes": 5948,
-      "format": "LanguagePackManifest v2",
-      "builder": "tools/language_packs/build_telugu_pack.py",
-      "contents": {
-        "releaseStatus": "research",
-        "benchmarkVersion": "telugu-beta-unvalidated-v2",
-        "tatoebaContributors": 13
-      },
-      "inputs": []
+      "transformation": "Model weights trained on the sentences; no sentence text is shipped. Lexicon words outside the vocabulary are scored from keyboard/langdata.bin at run time."
     },
     {
       "path": "keyboard/safety.kbguard",
-      "sha256": "15df514efe2e7b19f75aa12fe626f4cf33ce397ab73479c220c5f940d718ad5b",
+      "sha256": "e49f5383ee1b14575cfcfe8e015d2e6760e8959c4a9f9bcea4f43f85e5b9c937",
       "bytes": 31927,
       "format": "KBGUARD1 v1",
       "builder": "tools/build_safety_lexicon.py",
@@ -306,6 +194,21 @@
         {
           "name": "Unicode Character Database 14.0 names via Python unicodedata",
           "license": "Unicode-3.0"
+        }
+      ]
+    },
+    {
+      "path": "keyboard/english_layout.kbpack",
+      "sha256": "b0d8742ac46b38e071a6049eeb0a96a9cd99d59a31b8160dd93c53febed88ee8",
+      "bytes": 2729,
+      "format": "binary-plist latin-layout v1",
+      "builder": "tools/language_packs/build_latin_layout.py",
+      "inputs": [
+        {
+          "name": "Project-authored US English QWERTY layout source",
+          "path": "tools/language_packs/sources/en-US/qwerty.json",
+          "sha256": "5b3d91c9723fb45fb8b46bf3e9e7a283913d24570fa543f68da9a124b62172d3",
+          "license": "Project-owned"
         }
       ]
     }

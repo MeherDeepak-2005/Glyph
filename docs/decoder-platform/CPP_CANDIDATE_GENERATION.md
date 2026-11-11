@@ -1,5 +1,10 @@
 # C++ candidate-generation pipeline
 
+> Historical: this describes the hybrid decoder of October 2026 (n-gram language model,
+> GRU neural search, Android adapter). Its modules (`CandidateGeneration`,
+> `LanguageModel`, `Multiword`, `NeuralSearch`, `EngineWire`) have since been removed;
+> the decoder is the NSS joint search (`tools/nss/README.md`).
+
 The English candidate backend uses portable `native/DecoderCore` modules for
 generation, language scoring, ranking and correction. This migrates the existing
 hybrid decoder; it does not enable a new neural model or change the search space.

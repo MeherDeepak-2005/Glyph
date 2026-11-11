@@ -65,8 +65,8 @@ private:
 // Gboard's NSS fallback: a lexicon word outside the model vocabulary is reached through
 // P(<unk>|context) into the unigram lexicon,
 //   log P(w|context) = log P(<unk>|context) + log share + log u(w) - log oovMass,
-// with u(w) the n-gram unigram mass (pack frequency + 1; 0.5 without a pack entry, as
-// LanguageModel scores it) and oovMass the sum of u over emittable [a-z'] pack words
+// with u(w) the unigram mass (pack frequency + 1; 0.5 without a pack entry, as
+// UnigramModel scores it) and oovMass the sum of u over emittable [a-z'] pack words
 // outside the vocabulary. `share` is the fraction of <unk> training tokens that were
 // lexicon words; the rest is text the lexicon cannot emit (names), left as typed.
 struct UnknownWordTable {

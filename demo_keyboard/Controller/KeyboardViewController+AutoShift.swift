@@ -141,10 +141,9 @@ extension KeyboardViewController {
 		if case .revert(let original) = mode, s == original {} else { resolveCorrectionAsAccepted() }
 		switch mode {
 		case .complete(let partial):
-			let ctx = contextWords(textDocumentProxy.documentContextBeforeInput ?? "", max: 8)
 			guard replaceHostSuffix(partial, with: s + " ") else { return }
 			recordTyping("suggestion-pick", text: pickMode.replacing, replacement: s, evidence: "explicit-selection")
-			learnCommittedWord(context: ctx, word: s)
+			learnCommittedWord(s)
 			if !isSecureField { KBStats.noteCommitted(glided: false) }
 			// Swapping the typed word for a different suggestion is strong evidence the
 			// typed word was a mistake — lift its keep protection and walk back a use.
@@ -157,10 +156,9 @@ extension KeyboardViewController {
 			lastCorrection = Correction(original: partial, corrected: s, trailing: " ", fromAutocorrect: false, recordedWordSessionID: wordSessionID)
 			advanceWordSession()
 		case .predict:
-			let ctx = contextWords(textDocumentProxy.documentContextBeforeInput ?? "", max: 8)
 			insertIntoHost(s + " ")
 			recordTyping("prediction-pick", replacement: s, evidence: "explicit-selection")
-			learnCommittedWord(context: ctx, word: s)
+			learnCommittedWord(s)
 			if !isSecureField { KBStats.noteCommitted(glided: false) }
 			// Tapping a next-word prediction: a finalized word and, if it was armed, a direct NWP hit.
 			recordCommitMetrics(s, autocorrected: false)
@@ -191,7 +189,6 @@ extension KeyboardViewController {
 			} else {
 				oldAlternatives = []
 			}
-			let ctx = contextWords(textDocumentProxy.documentContextBeforeInput ?? "", max: 8)
 			let replacement = SuggestionCasePolicy.display(s,
 				sentenceStart: shouldAutoShift(textDocumentProxy.documentContextBeforeInput))
 			guard replaceHostSuffix(committed + " ", with: replacement + " ") else { return }
@@ -199,7 +196,7 @@ extension KeyboardViewController {
 			KBStats.confirm(pendingGlideStatsID)
 			pendingGlideStatsID = nil
 			recordTyping("glide-selection", text: committed, replacement: s, evidence: "explicit-selection", relatedWord: correctedWordID)
-			learnCommittedWord(context: ctx, word: s)
+			learnCommittedWord(s)
 			if committed.lowercased() != s.lowercased() {
 				recordReplacement(original: committed, replacement: s)
 			}

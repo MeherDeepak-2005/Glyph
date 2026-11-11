@@ -28,7 +28,8 @@ the independent reference implementation for comparisons within `1e-9`.
 
 The native backend is now the default for packed static full search, retained
 English search and batched language-score mathematics. See the exact remaining
-ownership inventory in [the architecture document](../../ANDROID_IOS_ARCHITECTURE.md).
+ownership inventory in the architecture document (`ANDROID_IOS_ARCHITECTURE.md`, since
+removed with the Android adapter).
 Final policy/ranking, mutable adopted words, Glide and neural migration remain work
 for subsequent parity stages. Telugu and transliteration remain in Swift.
 

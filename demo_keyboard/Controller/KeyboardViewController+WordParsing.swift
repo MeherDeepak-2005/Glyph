@@ -10,7 +10,7 @@ extension KeyboardViewController {
 	func isWordChar(_ c: Character) -> Bool {
 		c.isLetter || c == "'" || c == "\u{2019}" || c == "\u{02BC}"
 	}
-	/// Canonical form for the engine: the lexicon, n-grams, and tokenizer all store
+	/// Canonical form for the engine: the dictionary and the NSS vocabulary store
 	/// ASCII apostrophes. One-to-one per Character, so parsed word lengths (and the
 	/// deleteBackward counts derived from them) are unchanged.
 	func canonical(_ c: Character) -> Character {

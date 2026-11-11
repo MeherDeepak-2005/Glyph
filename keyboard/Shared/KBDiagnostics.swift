@@ -27,13 +27,6 @@ enum KBDiagnostics {
 		// Word-start search-space setup latency (Gboard's UpdateLM analog): the decode that
 		// builds the prediction/context search space when a new word begins.
 		var initLatencyBins: [Int]?
-		var searchPriorLatencyBins: [Int]?
-		var searchPriorCompleted: Int?
-		var searchPriorCancelled: Int?
-		var searchPriorCacheHits: Int?
-		var searchPriorCacheMisses: Int?
-		var neuralFundedDecodes: Int?
-		var ngramFundedDecodes: Int?
 
 		// MARK: Typing-quality benchmark metrics (aggregate counters only — never any text).
 		// These let the keyboard be measured against Gboard's TypingTester pillars. Each is a
@@ -90,10 +83,6 @@ enum KBDiagnostics {
 	/// ordinary mid-word tap decode.
 	static func recordInitializationLatency(milliseconds: Double) {
 		recordLatency(.initialization, milliseconds: milliseconds)
-	}
-
-	static func recordSearchPrior(milliseconds: Double = 0, state: String) {
-		metricsQueue.async { Recorder.shared.recordSearchPrior(milliseconds: milliseconds, state: state) }
 	}
 
 	static func beginHostInsert() -> OSSignpostID {
@@ -157,6 +146,9 @@ enum KBDiagnostics {
 			store.set([Double(bytes) / 1_048_576, Date().timeIntervalSince1970], forKey: liveKey)
 		}
 	}
+	/// True in the keyboard extension, false in the app.
+	static var isExtensionProcess: Bool { Bundle.main.bundleURL.pathExtension == "appex" }
+
 	/// The keyboard's latest live reading and when it was taken, or nil before the first one.
 	static func liveFootprint() -> (megabytes: Double, at: Date)? {
 		guard let reading = store.array(forKey: liveKey) as? [Double], reading.count == 2 else { return nil }
@@ -167,7 +159,7 @@ enum KBDiagnostics {
 	/// clipboard), and again a second later, once the previous surface's memory is released.
 	/// Extension only: the app builds keyboard views for previews in its own, roomier process.
 	static func noteSurface(_ surface: String) {
-		guard LanguagePackHealthInspector.isExtensionProcess else { return }
+		guard isExtensionProcess else { return }
 		let bytes = footprintBytes()
 		metricsQueue.async { Recorder.shared.noteSurface(surface, bytes: bytes) }
 		metricsQueue.asyncAfter(deadline: .now() + 1) {
@@ -193,7 +185,7 @@ enum KBDiagnostics {
 
 	/// Counts a panel event against the header arm this keyboard shows. Extension only.
 	static func notePanelEvent(_ event: PanelEvent) {
-		guard LanguagePackHealthInspector.isExtensionProcess else { return }
+		guard isExtensionProcess else { return }
 		let key = KBExperiments.panelHeader.arm + "." + event.rawValue
 		metricsQueue.async { Recorder.shared.notePanelEvent(key) }
 	}
@@ -273,12 +265,10 @@ enum KBDiagnostics {
 		Recorder.shared.clear()
 	}
 
-	// MARK: Live ranking log — inspect channel, n-gram, and frequency contributions
+	// MARK: Live decoder log
 	//
-	// When `verbose` is on, the engine logs one message per keystroke to the unified
-	// log (category "ranking"): every candidate's channel cost, n-gram score,
-	// frequency contribution, and final rank, plus the autocorrect margin decision.
-	// Watch it live while typing:
+	// When `verbose` is on, Debug builds log autocorrect decisions, suggestion picks and
+	// glide traces to the unified log (category "ranking"). Watch it live while typing:
 	//   log stream --predicate 'subsystem == "group.com.meherdeepak.glyph"' --level info
 
 	static let defaultVerbose = false
@@ -294,30 +284,6 @@ enum KBDiagnostics {
 	}
 	#endif
 	private static let rankLog = Logger(subsystem: KBSettings.appGroup, category: "ranking")
-
-	struct RankRow {
-		let word: String
-		let cost, logFreq, freqTerm, ngram, score: Double
-	}
-
-	/// One candidate table per ranking pass. `rows` already sorted best-first.
-	static func logRanking(label: String, context: [String], rows: [RankRow], ms: Double) {
-		#if DEBUG
-		guard verbose else { return }
-		func f(_ x: Double) -> String { String(format: "%+.2f", x) }
-		let ctx = context.suffix(4).joined(separator: " ")
-		var lines = ["[\(label)] ctx=\"\(ctx)\"  model=ngram  (\(String(format: "%.1f", ms)) ms)  score = chan + ngram + 0.3·freq"]
-		for (i, r) in rows.prefix(6).enumerated() {
-			let word = r.word.count >= 12 ? String(r.word.prefix(12))
-				: r.word.padding(toLength: 12, withPad: " ", startingAt: 0)
-			let freq = r.freqTerm == r.logFreq
-				? String(format: "%.2f", r.logFreq)
-				: "\(String(format: "%.2f", r.logFreq))→\(String(format: "%.2f", r.freqTerm))"
-			lines.append("  \(i < 3 ? "▶" : " ") \(word) chan \(f(-r.cost))  ng \(f(r.ngram))  freq \(freq)  = \(f(r.score))")
-		}
-		rankLog.debug("\(lines.joined(separator: "\n"), privacy: .private(mask: .hash))")
-		#endif
-	}
 
 	/// The autocorrect margin-gate outcome for the word just committed.
 	static func logDecision(typed: String, best: String?, margin: Double, threshold: Double, corrected: Bool) {
@@ -336,15 +302,6 @@ enum KBDiagnostics {
 		#if DEBUG
 		guard verbose else { return }
 		rankLog.debug("[pick] mode=\(mode, privacy: .public) replace=\"\(replacing, privacy: .private(mask: .hash))\" -> \"\(picked, privacy: .private(mask: .hash))\" tail=\"\(contextTail, privacy: .private(mask: .hash))\" deletes=\(deletes, privacy: .public) inserted=\(inserted, privacy: .public)")
-		#endif
-	}
-
-	/// Next-word prediction: which words, and how many came from beam search vs n-gram.
-	static func logPredict(context: [String], words: [String], beam: Int, ngram: Int) {
-		#if DEBUG
-		guard verbose else { return }
-		let ctx = context.suffix(4).joined(separator: " ")
-		rankLog.debug("[predict] ctx=\"\(ctx, privacy: .private(mask: .hash))\" words=\(words.joined(separator: ", "), privacy: .private(mask: .hash)) beam=\(beam, privacy: .public) ngram=\(ngram, privacy: .public)")
 		#endif
 	}
 
@@ -368,25 +325,14 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// Per-user glide adaptation (#37): the supervised sample just observed and the σ / gate
-	/// it produced, so the runtime tuning is watchable in the same log stream as ranking.
-	static func logGlideAdapt(kind: String, cost: Double, profile: GlideProfile) {
-		#if DEBUG
-		guard verbose else { return }
-		let s = profile.summary
-		rankLog.debug("[glide-adapt] \(kind, privacy: .public) cost=\(String(format: "%.3f", cost), privacy: .public) sigma=\(String(format: "%.3f", s.sigma), privacy: .public) gate=\(String(format: "%.3f", s.gate), privacy: .public) n=\(s.samples, privacy: .public)")
-		#endif
-	}
-
 	/// The App Group file real glide strokes are appended to (for offline calibration).
 	static var glideCaptureURL: URL? {
 		FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: KBSettings.appGroup)?
 			.appendingPathComponent("glide_capture.jsonl")
 	}
 
-	/// Append one glide record as a JSONL line, when KBSettings.glideCapture is on. Fits the
-	/// harness noise model to real strokes offline (tools/glide_eval/calibrate.py). Best-effort;
-	/// never blocks typing.
+	/// Append one glide record as a JSONL line, when KBSettings.glideCapture is on, for fitting
+	/// a swipe noise model to real strokes offline. Best-effort; never blocks typing.
 	///
 	/// `path` is the RAW grid trajectory aligned 1:1 with `times` (seconds), NOT the resampled
 	/// path — resampling to even arc length erases the velocity that dwell/pivot calibration
@@ -592,24 +538,6 @@ enum KBDiagnostics {
 			tick += 1
 			if tick % 32 == 0 { persistLocked() }
 			lock.unlock()
-		}
-
-		func recordSearchPrior(milliseconds: Double, state: String) {
-			lock.lock(); synchronizeResetLocked(); defer { lock.unlock() }
-			switch state {
-			case "completed": snap.searchPriorCompleted = (snap.searchPriorCompleted ?? 0) + 1
-			case "cancelled": snap.searchPriorCancelled = (snap.searchPriorCancelled ?? 0) + 1
-			case "hit": snap.searchPriorCacheHits = (snap.searchPriorCacheHits ?? 0) + 1
-			case "miss": snap.searchPriorCacheMisses = (snap.searchPriorCacheMisses ?? 0) + 1
-			case "neural-funded": snap.neuralFundedDecodes = (snap.neuralFundedDecodes ?? 0) + 1
-			case "ngram-funded": snap.ngramFundedDecodes = (snap.ngramFundedDecodes ?? 0) + 1
-			default: return
-			}
-			if state == "completed" || state == "cancelled" {
-				snap.searchPriorLatencyBins = bucket(snap.searchPriorLatencyBins, milliseconds)
-			}
-			tick += 1
-			if tick % 32 == 0 { persistLocked() }
 		}
 
 		// MARK: Typing-quality accumulators

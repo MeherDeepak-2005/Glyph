@@ -10,44 +10,6 @@ enum KBWordCase {
 	}
 }
 
-nonisolated enum KBLanguageMode: String, Codable, CaseIterable, Identifiable, Sendable {
-	case english
-	/// Keep the legacy raw value so installed users migrate without a preference reset.
-	case tenglishToTelugu = "tenglish"
-	case romanTelugu = "roman_telugu"
-	case telugu
-
-	var id: String { rawValue }
-
-	var displayName: String {
-		switch self {
-		case .english: return "English"
-		case .tenglishToTelugu: return "Tenglish to Telugu"
-		case .romanTelugu: return "Tenglish (Roman)"
-		case .telugu: return "Telugu (Native)"
-		}
-	}
-
-	var detail: String {
-		switch self {
-		case .english: return "English QWERTY"
-		case .tenglishToTelugu: return "Roman typing with Telugu conversion"
-		case .romanTelugu: return "Romanised Telugu in Latin script"
-		case .telugu: return "Native Telugu layout"
-		}
-	}
-
-	/// Parsing alone is insufficient: a stale or partially copied resource may still have
-	/// a valid header, so activation uses the manifest/hash verdict the companion app shows.
-	var isRuntimeAvailable: Bool {
-		switch self {
-		case .english: return true
-		case .tenglishToTelugu, .romanTelugu, .telugu:
-			return LanguagePackHealthInspector.bundledHealth(for: self).isReady
-		}
-	}
-}
-
 struct KBGradient: Hashable {
 	let start: UInt32
 	let end: UInt32
@@ -200,13 +162,11 @@ enum KBSettings {
 	private enum Key {
 		static let accent   = "kb.accent"
 		static let haptics  = "kb.haptics"
-		static let language = "kb.language"
 		static let glideCap = "kb.glidecapture"
 		static let hasUsed  = "kb.hasused"
 		static let lastSeen = "kb.keyboard.lastSeen"
 		static let fullAccess = "kb.fullaccess"
 		static let fullAccessObservedAt = "kb.fullaccess.observedAt"
-		static let extensionLanguageReport = "kb.language.extension.report.v1"
 	}
 	/// KLIPY mobile client key injected through the extension's `KLIPY_API_KEY`
 	/// build setting. It is intentionally treated as a public, rotatable client
@@ -240,66 +200,6 @@ enum KBSettings {
         KBPalette.accent(id: defaults.string(forKey: Key.accent) ?? "system").id
     }
 	static var accent: KBAccent { KBPalette.accent(id: accentID) }
-	/// The user's durable selection. A temporarily missing or rejected extension pack
-	/// must not rewrite this preference to English.
-	static var preferredLanguageMode: KBLanguageMode {
-		get {
-			guard let raw = store.string(forKey: Key.language),
-				  let mode = KBLanguageMode(rawValue: raw) else {
-				return .english
-			}
-			return mode
-		}
-		set {
-			store.set(newValue.rawValue, forKey: Key.language)
-			postConfigurationChange()
-		}
-	}
-	static var languageMode: KBLanguageMode {
-		get { preferredLanguageMode }
-		set { preferredLanguageMode = newValue }
-	}
-
-	static func languagePackHealth(for mode: KBLanguageMode) -> LanguagePackHealth {
-		let local = LanguagePackHealthInspector.bundledHealth(for: mode)
-		guard !LanguagePackHealthInspector.isExtensionProcess else { return local }
-		return reconciledLanguagePackHealth(local: local,
-			extensionReport: extensionLanguageReport, hasUsedKeyboard: hasUsedKeyboard)
-	}
-
-	/// Pure reconciliation seam used by the app and regression tests. Local corruption
-	/// wins over stale-install messaging, while an observed extension load failure is
-	/// surfaced verbatim instead of being collapsed into a generic validation label.
-	static func reconciledLanguagePackHealth(local: LanguagePackHealth,
-		extensionReport report: KeyboardExtensionLanguageReport?,
-		hasUsedKeyboard: Bool) -> LanguagePackHealth {
-		guard local.languageMode != .english, hasUsedKeyboard else { return local }
-		guard local.isReady else { return local }
-		guard let report else {
-			return local.replacingState(.appExtensionBuildMismatch,
-				detail: "The installed keyboard has not reported this app build yet. Open Glyph once from the globe menu.")
-		}
-		guard report.marketingVersion == local.marketingVersion,
-			  report.buildVersion == local.buildVersion else {
-			return local.replacingState(.appExtensionBuildMismatch,
-				detail: "App build \(local.marketingVersion) (\(local.buildVersion)) and the last-seen keyboard build \(report.marketingVersion) (\(report.buildVersion)) differ.")
-		}
-		guard let extensionHealth = report.healthByLanguage[local.languageMode.rawValue] else {
-			return local.replacingState(.appExtensionBuildMismatch,
-				detail: "The installed keyboard did not report a \(local.languageMode.displayName) pack. Open the keyboard once after updating.")
-		}
-		if !extensionHealth.isReady { return extensionHealth }
-		guard extensionHealth.packSignature == local.packSignature else {
-			return local.replacingState(.appExtensionBuildMismatch,
-				detail: "The app and keyboard extension contain different \(local.languageMode.displayName) resources.")
-		}
-		return extensionHealth
-	}
-
-	static var extensionLanguageReport: KeyboardExtensionLanguageReport? {
-		guard let data = store.data(forKey: Key.extensionLanguageReport) else { return nil }
-		return try? JSONDecoder().decode(KeyboardExtensionLanguageReport.self, from: data)
-	}
 	/// Haptic tap on each key press. Default on; availability is controlled by iOS.
 	static var haptics: Bool {
 		get { store.object(forKey: Key.haptics) as? Bool ?? true }
@@ -324,21 +224,6 @@ enum KBSettings {
 		store.set(now, forKey: Key.lastSeen)
 		store.set(fullAccess, forKey: Key.fullAccess)
 		store.set(now, forKey: Key.fullAccessObservedAt)
-		// Hashing the pack is deliberately kept off extension presentation and key input.
-		DispatchQueue.global(qos: .utility).async {
-			let health = [KBLanguageMode.tenglishToTelugu, .romanTelugu, .telugu].map {
-				LanguagePackHealthInspector.bundledHealth(for: $0)
-			}
-			let report = KeyboardExtensionLanguageReport(observedAt: Date(),
-				marketingVersion: LanguagePackHealthInspector.marketingVersion,
-				buildVersion: LanguagePackHealthInspector.buildVersion,
-				healthByLanguage: Dictionary(uniqueKeysWithValues: health.map {
-					($0.languageMode.rawValue, $0)
-				}))
-			if let data = try? JSONEncoder().encode(report) {
-				store.set(data, forKey: Key.extensionLanguageReport)
-			}
-		}
 	}
 	/// Last Full Access state observed by the extension after a real host connection.
 	/// The containing app cannot query this directly, so it presents this cached state.
@@ -354,8 +239,8 @@ enum KBSettings {
 		return value > 0 ? Date(timeIntervalSince1970: value) : nil
 	}
 	/// DEBUG capture: append each glide's grid path + decoded words to a JSONL file in the
-	/// App Group, so tools/glide_eval/calibrate.py can fit the harness noise model to real
-	/// strokes. OFF by default; on-device only; never leaves the device.
+	/// App Group, for fitting a swipe noise model to real strokes offline. OFF by default;
+	/// on-device only; never leaves the device.
 	static var glideCapture: Bool {
 		get { store.object(forKey: Key.glideCap) as? Bool ?? false }
 		set { store.set(newValue, forKey: Key.glideCap) }

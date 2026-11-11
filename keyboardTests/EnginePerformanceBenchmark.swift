@@ -166,12 +166,11 @@ struct EnginePerformanceBenchmark {
 		engine.initializationGroup.wait()
 		let initMs = (ProcessInfo.processInfo.systemUptime - started) * 1_000
 		let afterInit = KBDiagnostics.footprintBytes()
-		let tier = engine.preferredModelTier(for: .english)
-		#expect(tier == .neuralSearchSpace)
+		#expect(engine.isReady)
 
 		let pitch = CGSize(width: 37, height: 54)
 		let centers: [(letter: Character, point: CGPoint)] = KB.rows.joined().compactMap { letter in
-			guard let grid = KB.grid(for: letter) else { return nil }
+			guard let ascii = letter.asciiValue, let grid = KB.pos[ascii] else { return nil }
 			return (letter, CGPoint(x: 20 + CGFloat(grid.0) * pitch.width, y: 30 + CGFloat(grid.1) * pitch.height))
 		}
 		let layout = GlideLayout(centers: centers, xPitch: pitch.width, yPitch: pitch.height)
@@ -181,7 +180,7 @@ struct EnginePerformanceBenchmark {
 			document &+= 1; generation &+= 2
 			return DecodeRequest(fieldRevision: 1, documentRevision: document, wordSessionID: session,
 				generation: generation, layoutRevision: 1, currentWord: word, context: context,
-				taps: taps, languageMode: .english, requestedModelTier: tier)
+				taps: taps)
 		}
 		// The keyboard slides up before its first word: decode once it is on screen.
 		try await Task.sleep(nanoseconds: 300_000_000)

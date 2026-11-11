@@ -1,10 +1,12 @@
 #pragma once
-#include "LanguageModel.hpp"
 #include "NeuralLanguageModel.hpp"
+#include "PackedLexicon.hpp"
 #include "Ranking.hpp"
 #include <bit>
+#include <functional>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace kb {
 // Published NSS constants, Zhang et al. EMNLP Industry 2024, §4.4.
@@ -30,15 +32,13 @@ public:
     // which the search only calls on the root and on child links, reads without a check.
     std::size_t nodeCount() const noexcept { return parent.size(); }
     Node node(std::size_t index) const noexcept {
-        const auto* at = trie_ + nodeSize_ * index;
-        const std::uint32_t id = wideIDs_ ? le32(at + 6) : (le16(at + 6) == 0xffffu ? 0xffffffffu : le16(at + 6));
+        const auto* at = trie_ + PackedLexicon::trieNodeSize() * index;
+        const std::uint32_t id = le32(at + 6);
         return {std::to_integer<std::uint8_t>(at[0]), le32(at + 2), std::to_integer<std::uint8_t>(at[1]),
             id == 0xffffffffu ? std::nullopt : std::optional<std::int32_t>(std::int32_t(id))};
     }
 private:
     const std::byte* trie_;
-    std::size_t nodeSize_;
-    bool wideIDs_;
     static std::uint32_t le16(const std::byte* at) noexcept {
         return std::to_integer<std::uint32_t>(at[0]) | std::to_integer<std::uint32_t>(at[1]) << 8;
     }
@@ -59,31 +59,15 @@ public:
     std::size_t size() const noexcept { return nodes_.size(); }
 };
 
-// The language graph the joint search composes with C o L. State 0 is the context's
-// root, state 1 the shared unigram state; other states are reached by word arcs.
-class SearchGraph {
-public:
-    struct Transition { std::uint32_t next; double logProbability; };
-    virtual ~SearchGraph() = default;
-    virtual void update(std::span<const std::string> context, bool newWord = false) = 0;
-    virtual void resetContext() = 0;
-    virtual bool expanded(std::uint32_t state) const = 0;
-    virtual void extend(std::uint32_t state) = 0;
-    virtual std::vector<Transition> transitions(std::uint32_t state, std::uint32_t word) const = 0;
-    virtual double lookahead(std::uint32_t state, std::uint32_t node) const = 0;
-    virtual double wordScore(std::uint32_t state, std::uint32_t word) const = 0;
-    // The `count` best-scoring words at `state` (next-word prediction), without a lexicon scan.
-    virtual std::vector<std::pair<std::uint32_t, double>> best(std::uint32_t state, std::size_t count) const = 0;
-    virtual const NeuralLexicon& lexicon() const = 0;
-    virtual std::uint64_t revision() const = 0;
-};
-
 // Figures 2–4: start=0, shared unigram state=1; each neural arc has its own
 // destination with an epsilon edge to 1. Direct and fallback paths coexist.
 // §4.4.3: all mutable arcs in ONE array, states index contiguous ranges. Reset
 // clears sizes while retaining capacity. The static unigram graph is shared.
-class NeuralFst final : public SearchGraph {
+class NeuralFst final {
 public:
+    // State 0 is the context's root, state 1 the shared unigram state; other states are
+    // reached by word arcs.
+    struct Transition { std::uint32_t next; double logProbability; };
     struct Arc { std::uint32_t word, next; float logProbability; };
     struct Stats { std::size_t updates = 0, extensions = 0, arcs = 0, states = 0; };
     // exact: every vocabulary word scores its own model probability, also below the arc
@@ -130,18 +114,19 @@ public:
         : NeuralFst(std::move(model), std::move(lex), Options{}) {}
     NeuralFst(std::shared_ptr<const NeuralWordModel> model, std::shared_ptr<const NeuralLexicon> lex, Options options)
         : NeuralFst(std::make_shared<Tables>(std::move(model), std::move(lex), options)) {}
-    void update(std::span<const std::string> context, bool newWord = false) override;
-    void resetContext() override;
-    bool expanded(std::uint32_t state) const override;
-    void extend(std::uint32_t state) override;
-    std::vector<Transition> transitions(std::uint32_t state, std::uint32_t word) const override;
-    double lookahead(std::uint32_t state, std::uint32_t node) const override;
-    double wordScore(std::uint32_t state, std::uint32_t word) const override;
-    std::vector<std::pair<std::uint32_t, double>> best(std::uint32_t state, std::size_t count) const override;
-    const NeuralLexicon& lexicon() const override { return *lexicon_; }
-    std::uint64_t revision() const override { return revision_; }
+    void update(std::span<const std::string> context, bool newWord = false);
+    void resetContext();
+    bool expanded(std::uint32_t state) const;
+    void extend(std::uint32_t state);
+    std::vector<Transition> transitions(std::uint32_t state, std::uint32_t word) const;
+    double lookahead(std::uint32_t state, std::uint32_t node) const;
+    double wordScore(std::uint32_t state, std::uint32_t word) const;
+    // The `count` best-scoring words at `state` (next-word prediction), without a lexicon scan.
+    std::vector<std::pair<std::uint32_t, double>> best(std::uint32_t state, std::size_t count) const;
+    const NeuralLexicon& lexicon() const { return *lexicon_; }
+    std::uint64_t revision() const { return revision_; }
     // exact: log P(text outside the lexicon | context) = P(<unk>) x (1 - share) x half a
-    // count among the words outside the vocabulary (as the n-gram scores unseen text).
+    // count among the words outside the vocabulary (as UnigramModel scores unseen text).
     double typedUnknown() const;
     Stats stats() const;
     std::uint64_t modelSteps() const { return ring_->steps() + extensions_; }
@@ -171,60 +156,17 @@ private:
                 std::span<const float> features, float threshold);
 };
 
-// The paper's control arm (§5.2): the N-gram search space, here the production
-// Witten–Bell n-gram (LanguageModel) as a backoff graph. A state is a two-word history;
-// its arcs are the observed bigram/trigram successors with their exact interpolated
-// probabilities, every other word reaches the unigram distribution through the
-// history's backoff weight. Word states expand under the same rule as NeuralFst's
-// ExtendLM (until then the next word is contextless, Fig. 3), so the two graphs share
-// one search and differ only in their probabilities. Personal history is not included.
-class NgramFst final : public SearchGraph {
-public:
-    NgramFst(const PackedLexicon&, std::shared_ptr<const NeuralLexicon>);
-    void update(std::span<const std::string> context, bool newWord = false) override;
-    void resetContext() override;
-    bool expanded(std::uint32_t state) const override { return state <= 1 || states_.at(state).expanded; }
-    void extend(std::uint32_t state) override { states_.at(state).expanded = true; }
-    std::vector<Transition> transitions(std::uint32_t state, std::uint32_t word) const override;
-    double lookahead(std::uint32_t state, std::uint32_t node) const override;
-    double wordScore(std::uint32_t state, std::uint32_t word) const override;
-    std::vector<std::pair<std::uint32_t, double>> best(std::uint32_t state, std::size_t count) const override;
-    const NeuralLexicon& lexicon() const override { return *lexicon_; }
-    std::uint64_t revision() const override { return revision_; }
-    std::size_t states() const noexcept { return states_.size(); }
-private:
-    struct History {
-        std::int32_t first = -1, second = -1;   // packed ids; -1: none
-        bool ready = false, expanded = false;
-        double backoff = 0;                     // log weight of the unigram path
-        std::unordered_map<std::uint32_t, float> successors;   // log P(word | history)
-        std::vector<std::pair<std::uint32_t, float>> ranked;    // successors, best first
-        ArcLookahead lookahead;
-    };
-    const PackedLexicon& packed_;
-    std::shared_ptr<const NeuralLexicon> lexicon_;
-    double unigramShift_ = 0;   // log(emittable mass / n-gram corpus total)
-    mutable std::vector<History> states_;
-    mutable std::unordered_map<std::uint64_t, std::uint32_t> index_;
-    mutable std::vector<float> scratch_;
-    std::vector<std::int32_t> context_;
-    std::uint64_t revision_ = 0;
-    const History& prepared(std::uint32_t state) const;
-    std::uint32_t stateFor(std::int32_t first, std::int32_t second) const;
-};
-
 // Lazy C o L o G composition. Language lookahead is included BEFORE beam pruning;
 // there is no frequency-only retrieval or pre-LM candidate shortlist.
 class NeuralFstSearch final {
 public:
-    // raw: the channel is key geometry plus uniform insertion/deletion/transposition
-    // costs, without the spelling rules (doubled letters, vowel/sound-alike confusions,
-    // apostrophe skips); see EngineOptions::raw.
-    // touchSigma > 0: taps scored by touchSubstitutionCost with this spread (not raw).
+    // The channel is key geometry (geometricSubstitutionCost) plus uniform insertion,
+    // deletion and transposition costs, without spelling rules (doubled letters,
+    // vowel/sound-alike confusions, apostrophe skips).
     // channelWeight: the channel cost's weight against log P in every score and bound.
-    struct Options { double beam = 16; std::size_t width = 512; bool raw = false; double touchSigma = 0; double channelWeight = kb::channelWeight; };
-    explicit NeuralFstSearch(SearchGraph& graph) : graph_(graph) {}
-    NeuralFstSearch(SearchGraph& graph, Options options) : graph_(graph), options_(options) {}
+    struct Options { double beam = 16; std::size_t width = 512; double channelWeight = kb::channelWeight; };
+    explicit NeuralFstSearch(NeuralFst& graph) : graph_(graph) {}
+    NeuralFstSearch(NeuralFst& graph, Options options) : graph_(graph), options_(options) {}
     std::vector<RankedRow> decode(std::string_view typed, std::span<const std::optional<TouchOffset>> taps,
                                  const std::function<bool()>& cancelled = {});
     void reset();
@@ -240,7 +182,7 @@ private:
         bool boundary = false;
     };
     struct End { Token token; std::uint32_t word, next; double language; };
-    SearchGraph& graph_;
+    NeuralFst& graph_;
     Options options_;
     std::vector<Token> beam_;
     std::unordered_set<std::string> complete_;
@@ -250,10 +192,7 @@ private:
     std::uint64_t revision_ = 0;
     std::size_t expandedLastFrame_ = 0;
     double bound(const Token&) const;
-    double deletion(std::uint8_t letter, std::uint8_t previous, std::uint8_t typedLetter) const;
-    double insertion(std::uint8_t typedLetter, std::uint8_t previous, std::uint8_t candidateLetter) const;
-    double substitution(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap, bool first) const;
-    std::vector<Token> prune(std::vector<Token>, bool deletions, std::uint8_t typedLetter);
+    std::vector<Token> prune(std::vector<Token>, bool deletions);
     std::vector<End> endings(std::span<const Token>) const;
     void advance(std::uint8_t letter, std::optional<TouchOffset> tap);
 };

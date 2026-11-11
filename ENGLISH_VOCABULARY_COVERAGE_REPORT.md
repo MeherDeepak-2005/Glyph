@@ -1,4 +1,4 @@
-> Historical baseline report: measured before the English expansion. See [implementation results](docs/english-vocabulary/IMPLEMENTATION_RESULTS.md) for the integrated pack and validation.
+> Historical baseline report: measured before the English expansion. See [implementation results](docs/english-vocabulary/IMPLEMENTATION_RESULTS.md) for the integrated pack and validation. The pack has since become KBLM v7 (words, unigram frequencies and the trie, without the bigram/trigram tables audited here), the NSS word model (`tools/nss`) is the only language model, and Telugu/transliteration support is removed.
 
 # Xploree English vocabulary coverage and expansion plan
 

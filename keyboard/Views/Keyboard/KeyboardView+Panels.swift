@@ -286,14 +286,6 @@ extension KeyboardView {
 		}
 		onInsert?(s, tap)
 	}
-	func routeOutput(_ output: KeyOutput, _ tap: KeyTap?) {
-        suggestionBar.dismissTools()
-		if isEmojiSearching || isMediaSearching {
-			if case .text(let text) = output { routeInsert(text, tap) }
-			return
-		}
-		onKeyOutput?(output, tap)
-	}
 	func routeDelete() {
         suggestionBar.dismissTools()
 		if isEmojiSearching {

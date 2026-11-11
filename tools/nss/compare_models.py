@@ -5,10 +5,9 @@
 Every model is scored as exported (int8 rows, nss.export.quantized_copy) on the data-v2
 test splits (soda dialogues; tatoeba without most Tom/Mary sentences; wikitext), the
 original data/ tatoeba test and MASC held-out (identical in both corpora), with
-nss.metrics.evaluate; then on MASC against the production Witten-Bell n-gram
-(nss.evaluate.masc_comparison). nss.evaluate scores one checkpoint on the sets of the
-corpus it was given; models trained on data/ and data-v2/ need the shared sets. OUT.json
-keeps earlier models' entries.
+nss.metrics.evaluate; then on MASC over the keyboard's lexicon (nss.evaluate.masc_lexicon).
+nss.evaluate scores one checkpoint on the sets of the corpus it was given; models trained
+on data/ and data-v2/ need the shared sets. OUT.json keeps earlier models' entries.
 """
 
 from __future__ import annotations
@@ -22,7 +21,7 @@ import torch
 
 from nss import DATA, WORKSPACE
 from nss.data import Shard
-from nss.evaluate import masc_comparison
+from nss.evaluate import masc_lexicon
 from nss.export import quantized_copy
 from nss.lexicon import Lexicon, UnkPolicy
 from nss.metrics import evaluate
@@ -56,9 +55,9 @@ def main() -> None:
             entry["sets"][label] = evaluate(int8, shard, device, scored)
             print(name, label, json.dumps({k: round(v, 4) for k, v in entry["sets"][label].items()}), flush=True)
         policy = UnkPolicy.build(lexicon, vocab, entry["unk_lexicon_share"])
-        entry["masc_vs_ngram"] = masc_comparison(int8, vocab, lexicon, policy, device)
-        for register, row in entry["masc_vs_ngram"].items():
-            print(name, "masc-vs-ngram", register, json.dumps({k: round(v, 4) for k, v in row.items()}), flush=True)
+        entry["masc_lexicon"] = masc_lexicon(int8, vocab, lexicon, policy, device)
+        for register, row in entry["masc_lexicon"].items():
+            print(name, "masc-lexicon", register, json.dumps({k: round(v, 4) for k, v in row.items()}), flush=True)
         report[name] = entry
         out.write_text(json.dumps(report, indent=2) + "\n")
 

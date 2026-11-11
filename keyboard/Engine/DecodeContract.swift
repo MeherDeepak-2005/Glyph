@@ -1,12 +1,5 @@
 import Foundation
 
-enum DecodeModelTier: String, Codable, Equatable {
-	case ngram
-	case neuralGRU
-	/// The word-level neural search space (tools/nss): the shared C++ engine's "nss" tier.
-	case neuralSearchSpace = "nss"
-}
-
 /// Immutable identity for one decoder request. A result may be presented or committed
 /// only while every revision still matches the controller's current document state.
 struct DecodeRequest: Equatable {
@@ -18,14 +11,10 @@ struct DecodeRequest: Equatable {
 	let currentWord: String
 	let context: [String]
 	let taps: [KeyTap?]?
-	let languageMode: KBLanguageMode
-	/// Chosen only at a word boundary and frozen in this request's word session.
-	let requestedModelTier: DecodeModelTier
 
 	init(fieldRevision: UInt64, documentRevision: UInt64, wordSessionID: UInt64,
 		 generation: UInt64, layoutRevision: UInt64, currentWord: String,
-		 context: [String], taps: [KeyTap?]?, languageMode: KBLanguageMode = .english,
-		 requestedModelTier: DecodeModelTier = .ngram) {
+		 context: [String], taps: [KeyTap?]?) {
 		self.fieldRevision = fieldRevision
 		self.documentRevision = documentRevision
 		self.wordSessionID = wordSessionID
@@ -34,20 +23,15 @@ struct DecodeRequest: Equatable {
 		self.currentWord = currentWord
 		self.context = context
 		self.taps = taps
-		self.languageMode = languageMode
-		self.requestedModelTier = requestedModelTier
 	}
 }
 
+/// Where a candidate came from: the typed text itself, a dictionary word the joint search
+/// completed, or two words split at a missing space. The raw values are the engine's.
 enum DecodeCandidateSource: String, Codable, Equatable {
 	case typed
 	case fuzzyLexicon
-	case completion
-	case contextInjection
-	case broadRecovery
 	case splitCorrection
-	case transliterationLexicon
-	case transliterationComposition
 }
 
 struct DecodeCandidateEvidence: Equatable {
@@ -74,78 +58,6 @@ struct DecodeCandidateEvidence: Equatable {
 	}
 }
 
-/// Scoring half of the neural-search-space model: exact complete-word log probabilities
-/// for the hypotheses the search produced. Implementations must score only the supplied
-/// bounded set, never run on the host-insertion path, and must return on their own queue.
-protocol NeuralLanguagePrior: AnyObject {
-	var modelTier: DecodeModelTier { get }
-	/// Readiness is sampled only between words. Once selected, a model tier is frozen
-	/// for the complete word session and must not silently fall back mid-word.
-	var isReady: Bool { get }
-	func prepareContext(_ words: [String], wordSessionID: UInt64)
-	func score(candidates: [String], wordSessionID: UInt64,
-		 completion: @escaping (Result<[String: Double], Error>) -> Void)
-	func discardSession(_ wordSessionID: UInt64)
-	func prepareForSelection()
-	func handleMemoryPressure()
-}
-
-/// An exact complete-word log probability, including the word-ending event.
-struct SearchPriorWord: Equatable {
-	let word: String
-	let logProbability: Double
-}
-
-/// A first-letter spatial constraint. The remaining text identifies the typed word;
-/// it does not imply that subword generation is constrained to an exact prefix.
-struct SearchPrefix: Equatable, Hashable {
-	let text: String
-	let firstLetters: Set<Character>
-}
-
-/// Every value affecting generation participates in cache identity. Vocabulary
-/// revision changes when personal/supplementary words are added or reset.
-struct SearchPriorQuery: Equatable, Hashable {
-	let context: [String]
-	let prefix: SearchPrefix?
-	let pool: [String]
-	let vocabularyRevision: UInt64
-
-	init(context: [String], prefix: SearchPrefix?, pool: [String], vocabularyRevision: UInt64 = 0) {
-		self.context = context.suffix(8).map { $0.lowercased() }
-		self.prefix = prefix.map { SearchPrefix(text: $0.text.lowercased(), firstLetters: $0.firstLetters) }
-		self.pool = Array(Set(pool.map { $0.lowercased() })).sorted()
-		self.vocabularyRevision = vocabularyRevision
-	}
-
-	var withoutPrefix: SearchPriorQuery {
-		SearchPriorQuery(context: context, prefix: nil, pool: pool, vocabularyRevision: vocabularyRevision)
-	}
-}
-
-protocol SearchPriorProvider: AnyObject {
-	func warmSearchPrior(_ query: SearchPriorQuery, lexicon: KBGenerationLexicon)
-	func searchPriorWords(_ query: SearchPriorQuery) -> [SearchPriorWord]?
-}
-
-/// One model supplies both generation and exact candidate scoring — the neural search space.
-/// There is no separate rescoring model: hypotheses are ranked by the same scores that
-/// guided the search.
-protocol NeuralSearchPrior: SearchPriorProvider, NeuralLanguagePrior {
-	var onSearchPriorReady: ((SearchPriorQuery) -> Void)? { get set }
-	func cancelPendingSearch()
-}
-
-extension NeuralSearchPrior {
-	var onSearchPriorReady: ((SearchPriorQuery) -> Void)? { get { nil } set {} }
-	func cancelPendingSearch() {}
-}
-
-extension NeuralLanguagePrior {
-	func prepareForSelection() {}
-	func handleMemoryPressure() {}
-}
-
 /// One authoritative answer for a request. `suggestions.first` is always the center
 /// suggestion. If `correction` is non-nil it is also `suggestions.first`, so a boundary
 /// can never commit a word different from the primary word the user just saw.
@@ -156,7 +68,6 @@ struct DecodeSnapshot: Equatable {
 	let correction: String?
 	let confidence: Double
 	let nextCharacterPriors: [Character: Double]
-	let modelTier: DecodeModelTier
 	let completedAtUptime: TimeInterval
 
 	func isValid(for current: DecodeRequest) -> Bool {
@@ -193,8 +104,7 @@ enum SuggestionCasePolicy {
 			let exact = !typed.isEmpty
 				&& candidate.caseInsensitiveCompare(typed) == .orderedSame
 			return PresentedSuggestion(canonicalText: candidate,
-				text: display(candidate, typedWord: typed, sentenceStart: sentenceStart,
-					languageMode: snapshot.request.languageMode),
+				text: display(candidate, typedWord: typed, sentenceStart: sentenceStart),
 				isExactTypedCandidate: exact)
 		}
 		let correction = snapshot.correction.map { canonical -> String in
@@ -203,16 +113,14 @@ enum SuggestionCasePolicy {
 			})?.text {
 				return displayed
 			}
-			return display(canonical, typedWord: typed, sentenceStart: sentenceStart,
-				languageMode: snapshot.request.languageMode)
+			return display(canonical, typedWord: typed, sentenceStart: sentenceStart)
 		}
 		return PresentedDecodeSnapshot(canonical: snapshot, suggestions: suggestions,
 			correction: correction)
 	}
 
 	static func display(_ candidate: String, typedWord: String? = nil,
-		sentenceStart: Bool, languageMode: KBLanguageMode = .english) -> String {
-		guard languageMode == .english else { return candidate }
+		sentenceStart: Bool) -> String {
 		let intrinsic = intrinsicEnglishCase(candidate)
 		guard let typedWord, !typedWord.isEmpty else {
 			return sentenceStart ? initialCapital(intrinsic) : intrinsic

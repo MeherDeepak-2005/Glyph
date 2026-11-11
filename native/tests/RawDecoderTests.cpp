@@ -1,8 +1,7 @@
-// Raw decoding: the n-gram as a search graph (NgramFst) must reproduce the production
-// LanguageModel exactly, NeuralFst's exact scores must equal the model's distribution
-// (with <unk> shared outside the vocabulary), both graphs' lookaheads must bound their
-// word scores, best() must equal a brute-force top k, and the raw decision must be the
-// plain argmax.
+// The decoder's graph and decision: NeuralFst's exact scores must equal the model's
+// distribution (with <unk> shared outside the vocabulary), its lookaheads must bound its
+// word scores, best() must equal a brute-force top k, UnigramModel must score text outside
+// the lexicon by its context-free unigram mass, and the decision must be the plain argmax.
 //   raw-decoder-tests model.nsslm langdata.bin
 #include "../DecoderCore/include/Engine.hpp"
 #include <cassert>
@@ -17,14 +16,14 @@ static std::vector<std::byte> read(const char* path) {
     std::stringstream ss; ss << in.rdbuf(); auto s = ss.str();
     std::vector<std::byte> out(s.size()); std::memcpy(out.data(), s.data(), s.size()); return out;
 }
-static std::vector<std::pair<std::uint32_t, double>> bruteForce(const SearchGraph& graph, const NeuralLexicon& lex, std::size_t count) {
+static std::vector<std::pair<std::uint32_t, double>> bruteForce(const NeuralFst& graph, const NeuralLexicon& lex, std::size_t count) {
     std::vector<std::pair<std::uint32_t, double>> all;
     for (std::uint32_t w = 0; w < lex.unigram.size(); ++w) if (std::isfinite(lex.unigram[w]) && lex.terminal[w] != UINT32_MAX) all.emplace_back(w, graph.wordScore(0, w));
     std::partial_sort(all.begin(), all.begin() + std::ptrdiff_t(count), all.end(),
         [](const auto& a, const auto& b) { return a.second == b.second ? a.first < b.first : a.second > b.second; });
     all.resize(count); return all;
 }
-static void admissible(const SearchGraph& graph, const NeuralLexicon& lex, std::uint32_t state) {
+static void admissible(const NeuralFst& graph, const NeuralLexicon& lex, std::uint32_t state) {
     for (std::uint32_t w = 0; w < lex.unigram.size(); w += 13) {
         if (!std::isfinite(lex.unigram[w]) || lex.terminal[w] == UINT32_MAX) continue;
         const auto score = graph.wordScore(state, w);
@@ -37,35 +36,19 @@ int main(int argc, char** argv) {
     auto model = NeuralWordModel::load(bytes);
     auto packed = std::make_shared<PackedLexicon>(pack);
     auto lex = std::make_shared<NeuralLexicon>(*packed);
-    LanguageModel ngram(packed.get(), Smoothing::wittenBell);
-    const PersonalCounts none;
-    const GenerationLexicon view{packed.get()};
-    std::vector<std::string> words; std::vector<std::uint32_t> ids;
-    for (std::uint32_t w = 0; w < packed->wordCount(); ++w) if (std::isfinite(lex->unigram[w])) { words.emplace_back(packed->word(w)); ids.push_back(w); }
 
-    // 1. NgramFst = LanguageModel, for every emittable word, in contexts of 0-2 known words.
-    NgramFst graph(*packed, lex);
+    // 1. UnigramModel: (frequency + 1) / (sum of frequency + 1 over the dictionary); half a
+    // count for text outside it.
+    UnigramModel unigram(*packed);
+    double total = 0;
+    for (std::uint32_t w = 0; w < packed->wordCount(); ++w) total += double(packed->frequency(w)) + 1;
     std::size_t checked = 0;
-    for (std::vector<std::string> context : std::vector<std::vector<std::string>>{{}, {"of"}, {"i", "am"}, {"the", "united"}, {"xqzzy"}, {"xqzzy", "going"}, {"you", "xqzzy"}}) {
-        graph.update(context, true);
-        auto expected = ngram.scores(words, context, none, view);
-        // The lexicon's unigram table is float: agreement to float precision (~1e-6 at -20).
-        for (std::size_t i = 0; i < words.size(); ++i) { assert(std::abs(graph.wordScore(0, ids[i]) - expected[i]) < 2e-6); ++checked; }
-        admissible(graph, *lex, 0);
-        auto best = graph.best(0, 5), brute = bruteForce(graph, *lex, 5);
-        for (std::size_t i = 0; i < 5; ++i) assert(best[i].first == brute[i].first && std::abs(best[i].second - brute[i].second) < 1e-9);
+    for (std::uint32_t w = 0; w < packed->wordCount(); w += 7) {
+        assert(std::abs(unigram.logProbability(packed->word(w)) - std::log((double(packed->frequency(w)) + 1) / total)) < 1e-9); ++checked;
     }
-    // A multiword path keeps n-gram context: "of" then "the" scores P(the | ..., of).
-    std::vector<std::string> context{"one"};
-    graph.update(context, true);
+    for (const char* text : {"xqzzy", "ahmetovic", "", "the cat"}) { assert(std::abs(unigram.logProbability(text) - std::log(0.5 / total)) < 1e-12); ++checked; }
+    const std::vector<std::string> context{"one"};
     const auto of = std::uint32_t(*packed->wordID("of")), the = std::uint32_t(*packed->wordID("the"));
-    const auto next = graph.transitions(0, of).front().next;
-    std::vector<std::string> extended{"one", "of"}, target{"the"};
-    assert(!graph.expanded(next));   // contextless until expanded, like NeuralFst (Fig. 3)
-    assert(std::abs(graph.wordScore(next, the) - ngram.scores(target, {}, none, view)[0]) < 2e-6);
-    graph.extend(next);
-    assert(std::abs(graph.wordScore(next, the) - ngram.scores(target, extended, none, view)[0]) < 2e-6);
-    admissible(graph, *lex, next);
 
     // 2. NeuralFst::best equals a brute-force top k over both paths.
     NeuralFst neural(model, lex);
@@ -193,15 +176,19 @@ int main(int argc, char** argv) {
     }
     assert(!std::isfinite(neural.typedUnknown()));   // the published graph has no such score
 
-    // 4. Raw decoding: deterministic, and the commit is the plain argmax against the typed text.
+    // 4. Decoding: deterministic, and the commit is the plain argmax against the typed text.
+    // Variant 1 is the shipped configuration (EngineOptions{}): exact scores with the floor.
+    std::size_t literals = 0;
     for (int variant = 0; variant < 4; ++variant) {
-    EngineOptions options; options.raw = true; options.nssExact = variant != 2; options.nssUnigramFloor = variant == 1 || variant == 3;
+    EngineOptions options; options.nssExact = variant != 2; options.nssUnigramFloor = variant == 1 || variant == 3;
     if (variant == 3) { options.nssUnknownExponent = 0.5; options.nssTypedUnknown = true; }
-    auto engine = std::make_shared<Engine>(packed, options, nullptr, model);
+    if (variant == 1) { const EngineOptions shipped; assert(shipped.nssExact == options.nssExact && shipped.nssUnigramFloor == options.nssUnigramFloor
+        && shipped.nssUnknownExponent == options.nssUnknownExponent && shipped.nssTypedUnknown == options.nssTypedUnknown); }
+    auto engine = std::make_shared<Engine>(packed, model, options);
     auto state = engine->createState();
-    for (const char* tier : {"ngram", "nss"}) {
+    {
         for (const char* typed : {"teh", "recieve", "howmny", "hello", "ahmet"}) {
-            DecodeInput in; in.modelTier = tier; in.word = in.normalized = typed;
+            DecodeInput in; in.word = in.normalized = typed;
             in.context = {"i", "will", "send", "you"}; in.identity.fieldRevision = 1; in.identity.wordSessionID = 7;
             auto one = engine->createSession()->decode(in, state->view()), two = engine->createSession()->decode(in, state->view());
             assert(one.status == EngineStatus::ok && one.suggestions == two.suggestions && one.correction.word == two.correction.word);
@@ -212,18 +199,25 @@ int main(int argc, char** argv) {
             } else if (typedRow != one.candidates.end()) {
                 for (const auto& c : one.candidates) if (c.ranked.key.size() == std::strlen(typed) && c.ranked.channel.cost > 0) assert(c.typedMargin <= 0 || c.ranked.key.find(' ') != std::string::npos);
             }
+            // Text outside the lexicon scores its unigram mass, unless the model's P(<unk>) does
+            // (the typed row is among the 24 candidates kept when it ranks well enough).
+            if (!packed->wordID(typed) && !options.nssTypedUnknown && typedRow != one.candidates.end()) {
+                assert(std::abs(typedRow->ranked.language - unigram.logProbability(typed)) < 1e-12);
+                ++literals;
+            }
         }
         // A word the user kept (undid its correction) is never corrected again.
-        DecodeInput kept; kept.modelTier = tier; kept.word = kept.normalized = "teh"; kept.context = {"i", "will", "send", "you"};
+        DecodeInput kept; kept.word = kept.normalized = "teh"; kept.context = {"i", "will", "send", "you"};
         kept.identity.fieldRevision = 3; kept.identity.wordSessionID = 9;
         assert(engine->createSession()->decode(kept, state->view()).correction.word);
         kept.kept = true;
         assert(!engine->createSession()->decode(kept, state->view()).correction.word);
-        DecodeInput next; next.modelTier = tier; next.context = {"thank"}; next.identity.fieldRevision = 2;
+        DecodeInput next; next.context = {"thank"}; next.identity.fieldRevision = 2;
         auto predicted = engine->createSession()->decode(next, state->view());
         assert(predicted.suggestions.size() == 3);
     }
     }
-    std::cout << "Raw decoding: n-gram graph matches LanguageModel on " << checked << " scores; NSS exact scores match the model on "
+    assert(literals >= 3);
+    std::cout << "Decoding: UnigramModel matches the dictionary on " << checked << " scores and " << literals << " typed literals; NSS exact scores match the model on "
               << exactChecked << " (" << belowThreshold << " vocabulary scores below e^-15); lookahead bounds, best(), argmax commit passed\n";
 }

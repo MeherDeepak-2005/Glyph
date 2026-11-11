@@ -6,7 +6,6 @@ final class KeyboardView: UIView {
 	/// center, in key-grid units (nil for non-letter keys and programmatic inserts) —
 	/// the channel model uses it for sub-key precision.
 	var onInsert:         ((String, KeyTap?) -> Void)?
-	var onKeyOutput:      ((KeyOutput, KeyTap?) -> Void)?
 	var onDelete:         (() -> Void)?
 	var onReturn:         (() -> Void)?
 	var onCursorModeBegan: (() -> Void)?
@@ -54,8 +53,6 @@ final class KeyboardView: UIView {
 	let theme: KeyboardTheme
 	let deckLayer = CAGradientLayer()
 	let showsGlobe: Bool
-	let languageMode: KBLanguageMode
-	let languageLayout: KeyboardLayoutDescriptor
 	var page: KeyboardSurfacePage = .letters
 	var shift: ShiftState = .on
 	var rows: [[KeyButton]] = []
@@ -107,12 +104,10 @@ final class KeyboardView: UIView {
 	var onGlideBegan: (() -> Void)?
 	var onGlidePreview: (([CGPoint], [TimeInterval], GlideLayout) -> Void)?
 	var onGlideCancelled: (() -> Void)?
-	/// Tenglish Glide is intentionally disabled until tap transliteration has a trained
-	/// FST/LM and its own labelled path benchmark. Disabling here preserves normal
-	/// fire-on-touch typing instead of reclassifying a stroke and dropping the first key.
+	/// When false, every stroke types as taps (fire-on-touch) instead of being read as a glide.
 	var glideEnabled = true
-	/// Debug builds name the decoder tier on the space bar ("space · NSS"), so a
-	/// silent fallback to n-gram is visible. Nil keeps the stock "space".
+	/// Debug builds name the decoder on the space bar ("space · NSS"), or why it is not
+	/// running, so a missing model is visible. Nil keeps the stock "space".
 	var spaceBadge: String? {
 		didSet {
 			guard spaceBadge != oldValue else { return }
@@ -137,7 +132,7 @@ final class KeyboardView: UIView {
 		let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width
 		let base = KeyboardLayoutMetrics.resolve(width: width,
 			idiom: traitCollection.userInterfaceIdiom)
-		return languageMode == .telugu ? base.scalingRowHeight(Self.teluguRowHeightScale) : base
+		return base
 	}
 	var keySpacing: CGFloat { metrics.keySpacing }
 	var rowSpacing: CGFloat { metrics.rowSpacing }
@@ -154,16 +149,8 @@ final class KeyboardView: UIView {
 	private var expansionSpace: CGFloat {
 		page == .media || page == .emoji ? Self.mediaExpansion : 0
 	}
-	private var keyRowCount: Int {
-		guard languageMode == .telugu,
-			  page == .letters || page == .alternateLetters else { return 4 }
-		let glyphRows = page == .alternateLetters
-			? (languageLayout.alternate ?? languageLayout.primary).rows.count
-			: languageLayout.primary.rows.count
-		return max(1, glyphRows + 1)
-	}
 	var keyboardHeight: CGFloat {
-		let count = keyRowCount
+		let count = 4
 		return headerSpace + expansionSpace + topPad + rowHeight * CGFloat(count)
 			+ rowSpacing * CGFloat(max(0, count - 1)) + botPad
 	}
@@ -204,12 +191,9 @@ final class KeyboardView: UIView {
 	}
 
 	// MARK: Lifecycle
-	init(theme: KeyboardTheme, showsGlobe: Bool = true,
-		 languageMode: KBLanguageMode = .english) {
+	init(theme: KeyboardTheme, showsGlobe: Bool = true) {
 		self.theme = theme
 		self.showsGlobe = showsGlobe
-		self.languageMode = languageMode
-		self.languageLayout = KeyboardLayoutDescriptor.forMode(languageMode)
 		self.suggestionBar = SuggestionBar(theme: theme)
 		super.init(frame: .zero)
 		accessibilityIdentifier = "glyph.keyboard"

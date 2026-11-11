@@ -2,8 +2,7 @@
 # Engine speed and memory on a connected iPhone (keyboardTests/EnginePerformanceBenchmark.swift):
 # engine start, word-start prediction, per-keystroke decode, glide and live-swipe latency, footprint.
 #   tools/perf/device_perf.sh DEVICE_ID NAME [Release|Debug] [BUILD_SETTING=value ...]
-# Release (default) is the shipping optimisation, made testable for @testable import, with the
-# extension's raw NSS flag applied to the test host too (the decoder bridge is compiled into both).
+# Release (default) is the shipping optimisation, made testable for @testable import.
 # The phone must stay unlocked. Writes tools/perf/results/NAME.json.
 set -euo pipefail
 repo="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -13,7 +12,7 @@ log="$(mktemp -t device-perf)"
 TEST_RUNNER_KB_PERF=1 xcodebuild test -project "$repo/keyboard.xcodeproj" -scheme keyboard \
   -configuration "$config" -destination "platform=iOS,id=$device" -allowProvisioningUpdates \
   -only-testing:keyboardTests/EnginePerformanceBenchmark \
-  ENABLE_TESTABILITY=YES 'GCC_PREPROCESSOR_DEFINITIONS=$(inherited) KB_NSS_RAW=1' "$@" >"$log" 2>&1 || true
+  ENABLE_TESTABILITY=YES "$@" >"$log" 2>&1 || true
 json="$(grep -o 'KB_PERF {.*}' "$log" | head -1 | cut -c9- || true)"
 view="$(grep -o 'KB_PERF_VIEW {.*}' "$log" | head -1 | cut -c14- || true)"
 if [ -z "$json" ]; then

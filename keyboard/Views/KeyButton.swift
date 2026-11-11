@@ -25,7 +25,6 @@ final class KeyButton: UIView {
 	private let recessColor: UIColor               // cap fill while the balloon is floating
 	private let spokenLabelWasExplicit: Bool
 	private let foregroundColor: UIColor
-	private let glyphScale: CGFloat            // legend point-size multiplier (Telugu < 1)
 	private(set) var acceptsInput = true
 
 	/// Character to show in the press balloon (nil = no balloon). Reads the live label
@@ -50,7 +49,6 @@ final class KeyButton: UIView {
 		// Recessed "empty slot" look while the balloon floats: darken in both themes so the
 		// cap reads as a blackish transparent well and only the raised balloon shows the glyph.
 		self.recessColor = theme.isDark ? UIColor(white: 0, alpha: 0.34) : UIColor(white: 0, alpha: 0.16)
-		self.glyphScale = spec.glyphScale
 		self.baseRadius = theme.cornerRadius
 		self.spokenLabelWasExplicit = spec.accessibilityLabel != nil
 		self.foregroundColor = {
@@ -208,9 +206,9 @@ final class KeyButton: UIView {
 	}
 
 	private func legendFont(_ text: String) -> UIFont {
-		if text.count > 1 { return KeyboardTypography.keyWord(scale: glyphScale) }
+		if text.count > 1 { return KeyboardTypography.keyWord() }
 		let lowercase = letterBase != nil && text == text.lowercased() && text != text.uppercased()
-		return KeyboardTypography.keyCharacter(lowercase: lowercase, scale: glyphScale)
+		return KeyboardTypography.keyCharacter(lowercase: lowercase)
 	}
 
 	static let symbolConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)

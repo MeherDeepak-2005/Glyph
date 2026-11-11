@@ -9,7 +9,7 @@ extension KeyboardViewController {
 	/// permanent keep. Called at the entry of every non-undo handler — exactly the
 	/// moment the undo affordance expires.
 	func resolveCorrectionAsAccepted() {
-		if let c = lastCorrection, c.fromAutocorrect, activeLanguageMode == .english {
+		if let c = lastCorrection, c.fromAutocorrect {
 			engine.correctionStood(c.original)
 		}
 	}
@@ -21,20 +21,20 @@ extension KeyboardViewController {
 		pendingGlideStatsID = nil
 	}
 
-	func learnCommittedWord(context: [String], word: String) {
-		guard activeLanguageMode == .english, permitsLearning else { return }
-		engine.learn(context: context, word: word)
+	func learnCommittedWord(_ word: String) {
+		guard permitsLearning else { return }
+		engine.learn(word: word)
 	}
 
 	func recordReplacement(original: String, replacement: String) {
-		guard activeLanguageMode == .english, permitsLearning else { return }
+		guard permitsLearning else { return }
 		engine.wordReplaced(original: original, with: replacement)
 	}
 
 	/// The user undid a correction: the next boundary must not redo it. Not tied to the
 	/// recorder's or learning's field checks, which once left undos forgotten.
 	func rejectCorrection(_ word: String) {
-		guard activeLanguageMode == .english, !isSecureField else { return }
+		guard !isSecureField else { return }
 		engine.dontCorrect(word)
 	}
 
@@ -68,38 +68,26 @@ extension KeyboardViewController {
 		keyboard?.setKeyPriors([:])
 	}
 
-	/// Model selection happens only here, between words. The selected tier is then
-	/// copied into every DecodeRequest until the next session boundary.
+	/// A new word session begins between words.
 	func advanceWordSession() {
-		let finishedSession = wordSessionID
 		wordSessionID &+= 1
 		currentWordBuffer = ""
 		wordTaps.removeAll(keepingCapacity: true)
 		typingTrace = TypingTrace()
-		engine.discardModelSession(finishedSession)
-		wordSessionModelTier = engine.preferredModelTier(for: activeLanguageMode)
 		showModelTier(on: keyboard)
 	}
 
-	/// Debug and internal GRU builds only: name the session's decoder tier on the space bar.
+	/// Debug builds only: "NSS" on the space bar while the decoder is up, else why it is not
+	/// (no loadable model, or no engine yet).
 	func showModelTier(on keyboard: KeyboardView?) {
-		#if DEBUG || INTERNAL_GRU
-		switch wordSessionModelTier {
-		case .neuralSearchSpace: keyboard?.spaceBadge = "NSS"
-		case .neuralGRU: keyboard?.spaceBadge = "GRU"
-		case .ngram:
-			// Say why NSS is not in use: no bundled or loadable model, or no engine for it.
-			let reason = engine.neuralWordModel == nil ? "no model"
-				: engine.neuralSearchSpaceReady ? nil : "no engine"
-			keyboard?.spaceBadge = activeLanguageMode != .english ? "n-gram"
-				: "n-gram" + (reason.map { " (\($0))" } ?? "")
-		}
+		#if DEBUG
+		keyboard?.spaceBadge = engine.isReady ? "NSS" : engine.neuralWordModel == nil ? "no model" : "no engine"
 		#endif
 	}
 
 	@inline(__always)
 	func insertIntoHost(_ text: String) {
-		#if DEBUG || INTERNAL_GRU
+		#if DEBUG
 		let started = ProcessInfo.processInfo.systemUptime
 		let signpost = KBDiagnostics.beginHostInsert()
 		textDocumentProxy.insertText(text)

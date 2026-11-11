@@ -21,7 +21,7 @@ std::uint64_t u64(std::span<const std::byte> bytes, std::size_t at) { std::uint6
 float f32(std::span<const std::byte> bytes, std::size_t at) { float v; std::memcpy(&v, bytes.data() + at, 4); return v; }
 std::size_t layerSection(std::size_t layer, std::size_t part) { return 10 + 4 * layer + part; }
 float sigmoid(float x) { return 1.0f / (1.0f + std::exp(-x)); }
-// int8 row . float vector. Explicit NEON (iOS/Android arm64): the shipping -Os builds do not
+// int8 row . float vector. Explicit NEON (arm64): the shipping -Os builds do not
 // auto-vectorize the widening loop, and this dot product is all of the model's arithmetic.
 float dot(const std::int8_t* q, const float* x, std::size_t n) {
     std::size_t k = 0;

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Compare two langdata packs by logical content, independent of file format."""
+"""Compare two langdata packs by logical content, independent of file format.
+
+The content is the vocabulary, its frequencies and the spelling trie. KBLM v7
+(tools/build_language_data.py) holds nothing else. Older packs (v4-v6, in the git
+history) also held bigram/trigram tables and sentence starters; those sections are
+skipped, so a v7 pack can be checked against the v6 pack it replaced.
+"""
 
 from __future__ import annotations
 
@@ -11,30 +17,37 @@ from pathlib import Path
 MAGIC = 0x4B424C4D
 EMPTY32 = 0xFFFFFFFF
 EMPTY16 = 0xFFFF
+# Default --max-bytes per candidate version; v7 is tools/build_language_data.py LANGDATA_CAP.
+SIZE_CAPS = {6: 20_000_000, 7: 8_000_000}
 
 
 class Pack:
     def __init__(self, path: Path):
         self.path = path
         self.data = path.read_bytes()
-        magic, self.version, self.words, self.bi_contexts, self.bi_entries, \
-            self.tri_contexts, self.tri_entries, self.trie_nodes, self.starters = \
-            struct.unpack_from("<9I", self.data, 0)
-        if magic != MAGIC or self.version not in (4, 5, 6):
-            raise ValueError(f"{path}: expected langdata v4, v5 or v6")
-        self.freq_base = 36
-        self.offsets_base = self.freq_base + 4 * self.words
-        self.bi_base = self.offsets_base + 4 * (self.words + 1)
-        compact = self.version == 5
-        self.entry_size = 6 if compact else 8
-        self.node_size = 12 if compact else 14
-        self.starter_size = 6 if compact else 8
-        self.bi_entries_base = self.bi_base + (12 if compact else 16) * self.bi_contexts
-        self.tri_base = self.bi_entries_base + self.entry_size * self.bi_entries
-        self.tri_entries_base = self.tri_base + (12 if compact else 20) * self.tri_contexts
-        self.trie_base = self.tri_entries_base + self.entry_size * self.tri_entries
-        self.starters_base = self.trie_base + self.node_size * self.trie_nodes
-        self.blob_base = self.starters_base + self.starter_size * self.starters
+        magic, self.version, self.words = struct.unpack_from("<3I", self.data, 0)
+        if magic != MAGIC or self.version not in (4, 5, 6, 7):
+            raise ValueError(f"{path}: expected langdata v4-v7")
+        if self.version == 7:
+            self.trie_nodes = struct.unpack_from("<I", self.data, 12)[0]
+            self.freq_base = 16
+            self.node_size = 14
+            self.offsets_base = self.freq_base + 4 * self.words
+            self.trie_base = self.offsets_base + 4 * (self.words + 1)
+            self.blob_base = self.trie_base + self.node_size * self.trie_nodes
+        else:
+            _, _, _, bi_contexts, bi_entries, tri_contexts, tri_entries, self.trie_nodes, starters = \
+                struct.unpack_from("<9I", self.data, 0)
+            compact = self.version == 5
+            entry_size = 6 if compact else 8
+            self.freq_base = 36
+            self.node_size = 12 if compact else 14
+            self.offsets_base = self.freq_base + 4 * self.words
+            self.trie_base = self.offsets_base + 4 * (self.words + 1) \
+                + (12 if compact else 16) * bi_contexts + entry_size * bi_entries \
+                + (12 if compact else 20) * tri_contexts + entry_size * tri_entries
+            self.blob_base = self.trie_base + self.node_size * self.trie_nodes \
+                + (6 if compact else 8) * starters
         if self.blob_base > len(self.data):
             raise ValueError(f"{path}: truncated section table")
 
@@ -44,49 +57,6 @@ class Pack:
         words = tuple(self.data[self.blob_base + offsets[i]:self.blob_base + offsets[i + 1]]
                       for i in range(self.words))
         return words, frequencies
-
-    def entries(self, base: int, start: int, count: int):
-        fmt = "<HI" if self.version == 5 else "<II"
-        return tuple(struct.unpack_from(fmt, self.data, base + self.entry_size * index)
-                     for index in range(start, start + count))
-
-    def bigrams(self):
-        output = {}
-        if self.version == 5:
-            for index in range(self.bi_contexts):
-                ctx, count, total, start = struct.unpack_from(
-                    "<HHII", self.data, self.bi_base + 12 * index)
-                output[ctx] = (total, self.entries(self.bi_entries_base, start, count))
-        else:
-            for index in range(self.bi_contexts):
-                ctx, total, start, count = struct.unpack_from(
-                    "<IIII", self.data, self.bi_base + 16 * index)
-                if ctx != EMPTY32:
-                    output[ctx] = (total, self.entries(self.bi_entries_base, start, count))
-        return output
-
-    def trigrams(self):
-        output = {}
-        if self.version == 5:
-            starts = [struct.unpack_from("<I", self.data, self.tri_base + 12 * i + 8)[0]
-                      for i in range(self.tri_contexts)] + [self.tri_entries]
-            for index in range(self.tri_contexts):
-                key, total, start = struct.unpack_from(
-                    "<III", self.data, self.tri_base + 12 * index)
-                output[key] = (total, self.entries(
-                    self.tri_entries_base, start, starts[index + 1] - start))
-        else:
-            for index in range(self.tri_contexts):
-                w1, w2, total, start, count = struct.unpack_from(
-                    "<IIIII", self.data, self.tri_base + 20 * index)
-                if w1 != EMPTY32:
-                    output[(w1, w2) if self.version == 6 else (w1 << 16) | w2] = (
-                        total, self.entries(self.tri_entries_base, start, count))
-        return output
-
-    @staticmethod
-    def context_pair(key):
-        return key if isinstance(key, tuple) else (key >> 16, key & 65535)
 
     def trie(self):
         records = []
@@ -102,36 +72,29 @@ class Pack:
             records.append((label, children, first, word, maximum))
         return tuple(records)
 
-    def sentence_starters(self):
-        fmt = "<HI" if self.version == 5 else "<II"
-        return tuple(struct.unpack_from(fmt, self.data,
-            self.starters_base + self.starter_size * index) for index in range(self.starters))
-
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("reference", type=Path)
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--max-bytes", type=int)
     args = parser.parse_args()
     old, new = Pack(args.reference), Pack(args.candidate)
+    cap = args.max_bytes if args.max_bytes is not None else SIZE_CAPS.get(new.version, 11_000_000)
     checks = {
         "vocabulary/frequencies": old.vocabulary() == new.vocabulary(),
-        "bigrams": old.bigrams() == new.bigrams(),
-        "trigrams": {old.context_pair(k): v for k, v in old.trigrams().items()}
-            == {new.context_pair(k): v for k, v in new.trigrams().items()},
         "trie": old.trie() == new.trie(),
-        "sentence starters": old.sentence_starters() == new.sentence_starters(),
-        "candidate size": len(new.data) <= (args.max_bytes if args.max_bytes is not None else (20_000_000 if new.version == 6 else 11_000_000)),
+        "candidate size": len(new.data) <= cap,
     }
     failures = [name for name, passed in checks.items() if not passed]
     if failures:
         raise SystemExit("language-data verification failed: " + ", ".join(failures))
-    print(f"verified v{old.version} -> v{new.version}: all logical records identical")
+    print(f"verified v{old.version} -> v{new.version}: vocabulary, frequencies and trie identical")
     print(f"size: {len(old.data):,} -> {len(new.data):,} bytes "
           f"({(1 - len(new.data) / len(old.data)) * 100:.1f}% smaller)")
     print(f"sha256: {digest(args.candidate)}")

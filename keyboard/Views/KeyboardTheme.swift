@@ -267,7 +267,7 @@ private struct KBHSL {
 
 // MARK: - Model
 
-enum KeyboardSurfacePage { case letters, alternateLetters, numbers, symbols, emoji, media, clipboard }
+enum KeyboardSurfacePage { case letters, numbers, symbols, emoji, media, clipboard }
 enum KeyboardInputKind: Equatable {
 	case standard, email, url, webSearch, twitter
 	case numbersAndPunctuation, numberPad, decimalPad, phonePad
@@ -304,8 +304,5 @@ struct KeySpec {
 	var isInputModeSwitch: Bool = false
 	var isSpace: Bool = false
 	var alternatives: [String] = []
-	/// Multiplier on the key legend's point size. 1.0 for Latin; Telugu script keys pass
-	/// a smaller value so the tall multi-row Indic deck can use shorter, more compact keys.
-	var glyphScale: CGFloat = 1.0
 	var action: () -> Void
 }

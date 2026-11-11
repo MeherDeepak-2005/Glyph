@@ -81,9 +81,9 @@ int main(int argc, char** argv) {
     assert(search.decode("hello", {}, [] { return true; }).empty());
     assert(search.decode("é", {}).empty());
     // Field identity is part of cache invalidation, even when visible windows match.
-    auto engine = std::make_shared<Engine>(lex, EngineOptions{}, nullptr, model);
+    auto engine = std::make_shared<Engine>(lex, model);
     auto state = engine->createState(); auto session = engine->createSession();
-    DecodeInput in; in.modelTier = "nss"; in.word = in.normalized = "you";
+    DecodeInput in; in.word = in.normalized = "you";
     std::vector<std::string> sentence{"i", "think", "that", "you", "can", "send", "me", "the", "new", "book"};
     for (std::size_t end = 1; end <= sentence.size(); ++end) {
         const auto from = end > 8 ? end - 8 : 0;
@@ -101,28 +101,12 @@ int main(int argc, char** argv) {
     assert(touchSubstitutionCost('s', 's', TouchOffset{0.45, 0.4}, 0.7) == 0);
     const auto border = touchSubstitutionCost('d', 's', TouchOffset{0.5, 0}, 0.7), centre = touchSubstitutionCost('d', 's', TouchOffset{0, 0}, 0.7);
     assert(std::abs(border - substitutionBase) < 1e-9 && centre > border + 0.9);
-    // The NSS tier's product rules (decodeNeural).
-    std::uint64_t wordSession = 1000;
-    auto typedWord = [&](std::string shown, std::string normalized, std::vector<std::string> context) {
-        DecodeInput request; request.modelTier = "nss"; request.word = std::move(shown); request.normalized = std::move(normalized);
-        request.context = std::move(context); request.identity.fieldRevision = 3; request.identity.wordSessionID = ++wordSession;
-        return session->decode(request, state->view());
-    };
-    // A leading apostrophe opens a quote: the word keeps it, corrected or not.
-    auto quoted = typedWord("'happy", "'happy", {"i", "am", "so"});
-    assert(!quoted.correction.word);
-    for (const auto& suggestion : quoted.suggestions) assert(suggestion.front() == '\'');
-    // A typed "id" is never shortened to "i".
-    auto id = typedWord("id", "id", {"i", "think"});
-    assert(id.correction.word != std::optional<std::string>("i"));
-    // A capitalized non-word after the sentence's first word needs nssCapitalMargin more margin.
-    auto lower = typedWord("jurevis", "jurevis", {"i", "was", "talking", "to"}), name = typedWord("Jurevis", "jurevis", {"i", "was", "talking", "to"});
-    assert(lower.correction.gate && name.correction.gate);
-    assert(std::abs(lower.correction.margin - name.correction.margin - nssCapitalMargin) < 1e-6);
-    // A typo aimed at a blocked word is left alone, not recovered into another word.
+    // A typo aimed at a blocked word is never committed as that word.
     state->setSafety({{"bitch", std::numeric_limits<double>::infinity()}});
-    auto aimed = typedWord("biitch", "biitch", {});
-    assert(!aimed.correction.word);
-    std::cout << "NSS graph: " << expectedArcs << " untruncated initial arcs; direct/fallback, ExtendLM, lookahead, pruning, cancellation, field reset "
-                 "and the NSS tier's touch, quote, id, name and blocked-typo rules passed\n";
+    DecodeInput aimed; aimed.word = aimed.normalized = "biitch"; aimed.identity.fieldRevision = 3; aimed.identity.wordSessionID = 1001;
+    auto decoded = session->decode(aimed, state->view());
+    assert(decoded.correction.word != std::optional<std::string>("bitch"));
+    for (const auto& suggestion : decoded.suggestions) assert(suggestion != "bitch");
+    std::cout << "NSS graph: " << expectedArcs << " untruncated initial arcs; direct/fallback, ExtendLM, lookahead, pruning, cancellation, field reset, "
+                 "touch costs and blocked words passed\n";
 }

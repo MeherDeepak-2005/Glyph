@@ -3,6 +3,7 @@
 # pulls the JSONL into results/ so `evaluate.py score NAME` compares it with Mac runs.
 #   tools/evaluation/autocorrect/device_bench.sh DEVICE_ID NAME [corpus.tsv ...]
 # Default corpora: cases.taps.tsv ext-cases.taps.tsv keep-cases.taps.tsv keystrokes.tsv.
+# langdata.bin, safety.kbguard and the word model nss-english.nsslm go to Documents/bench/in.
 # C++ is built at -Os like evaluate.py build; Swift stays Debug. Needs the developer certificate
 # trusted on the phone.
 set -euo pipefail
@@ -15,7 +16,7 @@ xcodebuild -project "$repo/keyboard.xcodeproj" -scheme keyboard -configuration D
   -destination "id=$device" -derivedDataPath "$derived" -allowProvisioningUpdates \
   GCC_OPTIMIZATION_LEVEL=s build-for-testing -quiet
 xcrun devicectl device install app --device "$device" "$derived/Build/Products/Debug-iphoneos/keyboard.app" >/dev/null
-for f in "$repo/keyboard/langdata.bin" "$repo/keyboard/safety.kbguard"; do copy to --source "$f" --destination "Documents/bench/in/$(basename "$f")"; done
+for f in "$repo/keyboard/langdata.bin" "$repo/keyboard/safety.kbguard" "$repo/keyboard/nss-english.nsslm"; do copy to --source "$f" --destination "Documents/bench/in/$(basename "$f")"; done
 for c in "${corpora[@]}"; do copy to --source "$here/corpus/$c" --destination "Documents/bench/in/$c"; done
 xcodebuild -project "$repo/keyboard.xcodeproj" -scheme keyboard -configuration Debug \
   -destination "id=$device" -derivedDataPath "$derived" GCC_OPTIMIZATION_LEVEL=s \

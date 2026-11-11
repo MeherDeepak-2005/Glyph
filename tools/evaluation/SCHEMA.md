@@ -69,7 +69,7 @@ physical-device memory, energy, and jetsam tests remain separate release gates.
 ## Severe-typo runtime benchmark
 
 `keyboardTests/SevereTypoBenchmark.swift` replays `coeevitjkn → correction`
-through the Swift engine with empty context, `auto`, and three recorded live
+through the keyboard engine with empty context, `auto`, and three recorded live
 contexts. Each mode/context uses a fresh engine, one first decode and 30 repeated
 warm decodes. It records suggestions, the boundary correction, candidate evidence,
 and decode timing to `results/coeevitjkn-simulator.json`. No expected answer is
@@ -85,25 +85,7 @@ xcodebuild -project keyboard.xcodeproj -scheme keyboard -configuration Release \
   ENABLE_TESTABILITY=YES CODE_SIGNING_ALLOWED=NO test
 ```
 
-Without trained artifacts, the report explicitly records the neural mode as
-unavailable. To compare a real neural search model, create
-`/tmp/ioskeyboard-severe-benchmark-config.json` with absolute paths:
-
-```json
-{
-  "kind": "gru",
-  "model": "/path/to/trained/gru.mlpackage",
-  "tokenizer": "/path/to/matching/gru_tokenizer.bin",
-  "scoreModel": "/path/to/gru_score.mlpackage"
-}
-```
-
-`scoreModel` is optional, and a compiled `.mlmodelc` step model is accepted too.
-`gru` is the only supported kind: the model is installed as the engine's neural
-search space, so it both generates hypotheses inside the trie search and scores
-them, with the GRU tier's candidate-cap and multiword behavior. There is no
-separate rescoring model, so the comparison is end-to-end n-gram versus NSS. Model load and engine
-synchronous construction are outside the reported decode timers. The first
-decode includes queued engine initialization (lexicon/personalization/index warmup);
-warm decodes are reported separately. Simulator timing and RAM
-must not be presented as physical-iPhone measurements.
+Model load and engine synchronous construction are outside the reported decode
+timers. The first decode includes queued engine initialization
+(lexicon/personalization/index warmup); warm decodes are reported separately.
+Simulator timing and RAM must not be presented as physical-iPhone measurements.

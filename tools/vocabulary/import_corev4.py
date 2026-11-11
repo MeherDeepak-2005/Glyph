@@ -83,7 +83,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--source-core',type=pathlib.Path,required=True)
     p.add_argument('--output',type=pathlib.Path,default=ROOT/'tools/data/corev4/english')
-    p.add_argument('--baseline-pack', type=pathlib.Path, default=ROOT/'keyboard/langdata.bin', help='pre-import v5 pack; reproduce using build_language_data.py --without-corev4')
+    p.add_argument('--baseline-pack', type=pathlib.Path, default=ROOT/'keyboard/langdata.bin', help='pre-import KBLM v5 pack (SHA-256 in manifest.json); build it with build_language_data.py --without-corev4 from a revision before KBLM v7')
     args=p.parse_args();core=args.source_core.resolve();out=args.output.resolve()
     audit=json.loads((core/'analysis/daily-use-audit/dictionary-integrity.json').read_text())
     if len(audit)!=7:raise ValueError('expected seven separately audited English dictionary variants')

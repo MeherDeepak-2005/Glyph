@@ -27,12 +27,10 @@ final class SettingsStore: ObservableObject {
     private var reloading = false
 	@Published var accentID: String { didSet { if !reloading { KBSettings.accentID = accentID } } }
 	@Published var haptics:  Bool       { didSet { KBSettings.haptics = haptics } }
-	@Published var languageMode: KBLanguageMode { didSet { KBSettings.preferredLanguageMode = languageMode } }
 
 	init() {
 		accentID = KBSettings.accentID
 		haptics  = KBSettings.haptics
-		languageMode = KBSettings.preferredLanguageMode
 	}
 
 	func reload() {
@@ -40,7 +38,6 @@ final class SettingsStore: ObservableObject {
         defer { reloading = false }
 		accentID = KBSettings.accentID
 		haptics = KBSettings.haptics
-		languageMode = KBSettings.preferredLanguageMode
 	}
 
 	var accent: KBAccent { KBPalette.accent(id: accentID) }
@@ -86,7 +83,6 @@ struct ContentView: View {
 				}
 
 				Section {
-					LanguagePickerRow(selection: $store.languageMode)
 					NavigationLink {
 						ThemeStudioView()
 					} label: {
@@ -148,7 +144,7 @@ struct ContentView: View {
 				}
 			}
 
-				#if DEBUG || INTERNAL_GRU
+				#if DEBUG
 				Section("Developer") {
 					NavigationLink {
 						DiagnosticsView()
@@ -538,7 +534,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Accuracy")
 			} footer: {
-				Text("WMR = committed words the user went back and edited ÷ words committed (lower is better). NWP hit = intended word already in the top-3 before the first letter. Reverted = autocorrections the user undid. Word Error Rate (WER) needs ground-truth intent and is measured offline in tools/lm — not on device.")
+				Text("WMR = committed words the user went back and edited ÷ words committed (lower is better). NWP hit = intended word already in the top-3 before the first letter. Reverted = autocorrections the user undid. Word Error Rate (WER) needs ground-truth intent and is measured offline (tools/evaluation/autocorrect) — not on device.")
 			}
 
 			Section {
@@ -575,8 +571,6 @@ struct DiagnosticsView: View {
 				ForEach((snap.integrityEvents ?? [:]).keys.sorted(), id: \.self) { code in
 					row(code, String(snap.integrityEvents?[code] ?? 0))
 				}
-				row("Neural-funded decodes", String(snap.neuralFundedDecodes ?? 0))
-				row("N-gram-funded decodes", String(snap.ngramFundedDecodes ?? 0))
 				row("Storage failures", String(snap.storageFailureCount ?? 0))
 			}
 
@@ -771,46 +765,6 @@ struct SettingRow: View {
 			}
 			if let trailingGradient {
 				Circle().fill(trailingGradient).frame(width: 18, height: 18)
-			}
-		}
-	}
-}
-
-private struct LanguagePickerRow: View {
-	@Binding var selection: KBLanguageMode
-	private var selectedHealth: LanguagePackHealth {
-		KBSettings.languagePackHealth(for: selection)
-	}
-
-	var body: some View {
-		VStack(alignment: .leading, spacing: 4) {
-			HStack(spacing: 12) {
-				Image(systemName: "character.book.closed.fill")
-					.font(.system(size: 15, weight: .semibold))
-					.foregroundStyle(.white)
-					.frame(width: 30, height: 30)
-					.background(Color(uiColor: .systemTeal),
-						in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-				Text("Language")
-				Spacer()
-				Picker("Language", selection: $selection) {
-					ForEach(KBLanguageMode.allCases) { mode in
-						let health = KBSettings.languagePackHealth(for: mode)
-						Text(health.isReady ? mode.displayName
-							 : "\(mode.displayName) · \(health.conciseDetail)")
-							.tag(mode)
-							.accessibilityIdentifier("language.\(mode.rawValue)")
-					}
-				}
-				.labelsHidden()
-				.pickerStyle(.menu)
-				.accessibilityIdentifier("settings.language")
-			}
-			if !selectedHealth.isReady {
-				Text(selectedHealth.detail)
-					.font(.caption)
-					.foregroundStyle(.secondary)
-					.padding(.leading, 42)
 			}
 		}
 	}

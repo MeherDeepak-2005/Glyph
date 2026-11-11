@@ -4,29 +4,13 @@ KLIPY_API_KEY =
 KLIPY_CONTENT_FILTER_APPROVED = NO
 KLIPY_MEDIA_ENABLED = NO
 
-// GRU neural search space (NN-LM in the trie) — the decoder's only neural model.
-// Set only for an explicitly opt-in, optimized internal profiling build: pair
-// INTERNAL_GRU_ENABLED = YES with the INTERNAL_GRU Swift compile flag to both bundle
-// gru.mlpackage and wire GRULanguagePrior into the engine. Ordinary Release builds
-// remain n-gram-only and the artifact verifier rejects any accidentally bundled
-// neural files.
-INTERNAL_GRU_MODEL_PACKAGE =
-INTERNAL_GRU_TOKENIZER_MODEL =
-// Optional batched scorer (export_gru_score_coreml.py → gru_score.mlpackage). When set, one [B,T]
-// Core ML call scores the whole candidate pool instead of per-candidate single-step threading; when
-// empty, GRULanguagePrior uses the single-step + first-piece-admission path (nothing regresses).
-INTERNAL_GRU_SCORE_PACKAGE =
-INTERNAL_GRU_ENABLED = NO
-
-// Word-level neural search space LM (tools/nss, an .nsslm file): the English decoder in
-// every build. NSS_ENABLED bundles NSS_MODEL as nss-english.nsslm and KeyboardEngine.shared
-// selects the shared C++ engine's "nss" tier from the first word. KB_NSS_RAW runs it as the
-// official configuration: the word model alone (no correction rules, no n-gram mixing),
-// exact scores with the published unigram fallback kept as a floor (KBDecoderBridge.mm).
-// Set NSS_ENABLED = NO in Secrets.xcconfig for an n-gram-only comparison build.
+// Word-level neural search space LM (tools/nss, an .nsslm file): the English decoder, and its
+// only language model. NSS_ENABLED bundles NSS_MODEL as nss-english.nsslm; the shared C++
+// engine decodes with it over langdata.bin (exact scores with the dictionary's unigram
+// distribution as a floor, KBDecoderBridge.mm). Without the model the keyboard types without
+// suggestions or autocorrect.
 NSS_MODEL = $(SRCROOT)/keyboard/nss-english.nsslm
 NSS_ENABLED = YES
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) KB_NSS_RAW=1
 
 #include? "Secrets.xcconfig"
 #include? "Klipy.xcconfig"

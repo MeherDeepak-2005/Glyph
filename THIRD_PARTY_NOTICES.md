@@ -47,6 +47,9 @@ exact form. No source sentence is copied into the review artifact.
 
 - Telugu Hate Speech source: https://huggingface.co/datasets/mounikaiiith/Telugu-Hatespeech
 - License: https://creativecommons.org/licenses/by/4.0/
+- Aksharantar source and citation: https://huggingface.co/datasets/ai4bharat/Aksharantar
+- Aksharantar licensing (manually collected rows CC BY, mined/existing-source rows CC0):
+  https://huggingface.co/datasets/ai4bharat/Aksharantar#licensing-information
 
 ## English Speller Database (ESDB)
 
@@ -70,17 +73,17 @@ frequency list to rank ESDB-validated entries. The source is pinned at commit
 The FrequencyWords repository code is MIT licensed and its generated frequency
 content is licensed under Creative Commons Attribution-ShareAlike 4.0
 International. Glyph filters the list, adds project vocabulary and contractions,
-and serializes it into a memory-mapped trie with frequency and language-model data.
+and serializes it into a memory-mapped trie with unigram frequencies.
 
 - Source: https://github.com/hermitdave/FrequencyWords
 - License: https://creativecommons.org/licenses/by-sa/4.0/
 
 ## Tatoeba English Sentences
 
-The bi- and trigram counts in `keyboard/langdata.bin` are derived in part from every
-English sentence in the Tatoeba export snapshot dated October 20, 2026, vendored at
+The word model `keyboard/nss-english.nsslm` was trained in part on every English
+sentence in the Tatoeba export snapshot dated October 20, 2026, vendored at
 `tools/data/tatoeba-eng-2026-10-20.tsv.bz2` (2,039,120 sentences). Glyph lowercases and
-tokenizes the sentences and ships only aggregate, pruned counts, never sentence text.
+tokenizes the sentences and ships only the trained model weights, never sentence text.
 Tatoeba sentences are licensed under Creative Commons Attribution 2.0 France; a
 subset is additionally dedicated to the public domain under CC0. Copyright in each
 sentence belongs to its Tatoeba contributor.
@@ -88,54 +91,19 @@ sentence belongs to its Tatoeba contributor.
 - Source: https://tatoeba.org/en/downloads
 - License: https://creativecommons.org/licenses/by/2.0/fr/
 
-The earlier CC0-only snapshot `tools/data/tatoeba-eng-cc0-2026-07-18.tsv.bz2` is kept
-so `tools/build_language_data.py --legacy-ngrams` can reproduce the previous pack.
+`keyboard/langdata.bin` counts contractions (words with an interior apostrophe) in the
+CC0-only snapshot `tools/data/tatoeba-eng-cc0-2026-07-18.tsv.bz2` (41,502 sentences)
+and ships only their scaled counts.
 
 ## WikiText-103
 
-The bi- and trigram counts in `keyboard/langdata.bin` are also derived from the raw
-training split of WikiText-103 (Merity et al., 2016), built from verified Good and
-Featured Wikipedia articles, at Hugging Face dataset revision
-`b08601e04326c79dfdd32d625aee71d232d685c3`. Only aggregate, pruned counts are shipped.
+The word model `keyboard/nss-english.nsslm` was also trained on the raw training split
+of WikiText-103 (Merity et al., 2016), built from verified Good and Featured Wikipedia
+articles, at Hugging Face dataset revision `b08601e04326c79dfdd32d625aee71d232d685c3`.
+Only the trained model weights are shipped.
 
 - Source: https://huggingface.co/datasets/Salesforce/wikitext
 - License: https://creativecommons.org/licenses/by-sa/3.0/
-
-## AI4Bharat Aksharantar Telugu
-
-`keyboard/tenglish_lexicon.bin` and the vocabulary/trie portion of
-`keyboard/telugu_langdata.bin` contain transformed records from the Telugu training
-split of AI4Bharat Aksharantar. The pack preserves source weights, normalizes output
-to NFC, selects a bounded vocabulary, and does not include validation or test rows.
-
-Aksharantar uses source-dependent licensing: manually collected data is CC BY and
-mined/existing-source data is CC0. The exact archive and member hashes are recorded
-in `keyboard/telugu_pack_manifest.json` and `ARTIFACTS.json`.
-
-- Source and citation: https://huggingface.co/datasets/ai4bharat/Aksharantar
-- Licensing: https://huggingface.co/datasets/ai4bharat/Aksharantar#licensing-information
-
-## Tatoeba Telugu Sentences
-
-The compact bi- and trigram records in `keyboard/telugu_langdata.bin` are derived
-from the Tatoeba Telugu detailed sentence export snapshot dated July 19, 2026. The
-keyboard ships aggregate counts, not sentence text. The source is licensed under
-Creative Commons Attribution 2.0 France.
-
-Contributors in this snapshot: AlphaSteppeNomad, Balamax, bharath, cntrational,
-epraneeth98, frpzzd, Hari, NigerianSmiths, nurendra, ramanirudh, rarmdhyymm, simley,
-and strykerami.
-
-- Source: https://tatoeba.org/en/downloads
-- License: https://creativecommons.org/licenses/by/2.0/fr/
-
-## Unicode CLDR Telugu Keyboard Data
-
-The external Telugu layout source is cross-checked against the Unicode CLDR Apple
-Telugu keyboard chart. Unicode data is used under the Unicode License v3.
-
-- Layout chart: https://www.unicode.org/cldr/charts/41/keyboards/layouts/te.html
-- License: https://www.unicode.org/license.txt
 
 ## Unicode Character Data
 
@@ -159,19 +127,18 @@ License: https://creativecommons.org/licenses/by/4.0/
 
 MASC (Manually Annotated Sub-Corpus), American National Corpus
 Credit: Nancy Ide, Keith Suderman, and the MASC/OANC contributors. The selected
-text-only corpus is tokenized, document-family split, deduplicated, filtered to
-English vocabulary and transformed into bounded aggregate bi/trigram counts.
-No MASC sentences are shipped inside the keyboard pack. Evaluation-only held-out
-text remains in the source repository, separate from runtime resources.
+text-only corpus is tokenized, document-family split and deduplicated; its
+training-split word counts are admission evidence for the vocabulary only. No MASC
+text or counts are shipped inside the keyboard. Evaluation-only held-out text remains
+in the source repository, separate from runtime resources.
 Source: https://anc.org/data/masc/
 Usage and redistribution terms: https://anc.org/data/oanc/
 Download: https://github.com/nancyide/anc-website/releases/download/datasets-2026-09-25/masc_500k_texts.zip
 
-Project-authored additions and example contexts are tracked in
-tools/vocabulary/curated_terms.tsv and curated_contexts.jsonl. Their weights are
-conservative editorial priors, not measured corpus frequencies. The dictionary
-remains an adapted FrequencyWords resource under CC BY-SA 4.0; these additions
-are distributed with that adapted data under the same license.
+Project-authored additions are tracked in tools/vocabulary/curated_terms.tsv. Their
+weights are conservative editorial priors, not measured corpus frequencies. The
+dictionary remains an adapted FrequencyWords resource under CC BY-SA 4.0; these
+additions are distributed with that adapted data under the same license.
 
 ESDB upstream combined and constituent notices (verbatim):
 
@@ -284,20 +251,10 @@ WordNet was used to help with the initial POS assignment:
 
 Xploree / CoreV4 English vocabulary import (user-provided local checkout)
 Stored spellings from seven English dictionary variants are unioned into the
-English KBLM v6 pack. Existing iOS frequencies/context counts are preserved;
-new forms use a conservative prior of 1, not CoreV4 empirical counts. Source
+English KBLM v7 pack. Existing frequencies are preserved; new forms use a
+conservative prior of 1, not CoreV4 empirical counts. Source
 binary dictionaries/context files are preserved separately under
  tools/data/corev4/english/raw with checksums and paths in manifest.json.
 CoreV4 capitalization/display metadata and context scales are not transferred
 to KBLM. This import does not assign the CoreV4 material the licenses of the
 separate ESDB, FrequencyWords, Tatoeba, WordNet or MASC sources listed above.
-
-## MARISA prototype (native/experimental/marisa only)
-
-The optional native experiment vendors MARISA 0.3.1, commit
-`3e87d53b78e15f2f43783d5e376561a8c9722051`, from
-https://github.com/s-yata/marisa-trie under its BSD-2-Clause option.
-Copyright (c) 2010–2025, Susumu Yata. All rights reserved.
-The complete license and disclaimer are retained in
-[native/experimental/marisa/vendor/COPYING.md](native/experimental/marisa/vendor/COPYING.md).
-This dependency is not linked into the shipping iOS or Android targets.
