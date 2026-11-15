@@ -4,7 +4,7 @@
 
 Matrices are int8 with one fp32 scale per row (symmetric, round to nearest); biases stay
 fp32. The C++ runtime (native/DecoderCore NeuralLanguageModel) memory-maps the file and
-dequantizes rows on the fly, so resident weights are the file's clean pages. Writes
+multiplies the int8 rows in place, so resident weights are the file's clean pages. Writes
 <out>.manifest.json (hashes, architecture, sizes, quantization error, unk policy) and
 <out>.goldens.json (reference log-probabilities from the dequantized model, which the
 C++ tests must reproduce). Only the LSTM/CIFG and GRU families have a runtime kernel.
