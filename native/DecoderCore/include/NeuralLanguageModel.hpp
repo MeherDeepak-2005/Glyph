@@ -15,8 +15,8 @@ class PackedLexicon;
 
 // Word-level neural search space LM (tools/nss): a recurrent model (CIFG/LSTM or GRU)
 // over the fixed 30k-word NSS vocabulary plus <unk>, read from an `.nsslm` file
-// (tools/nss/nss/export.py). int8 rows with fp32 scales are dequantized on the fly, so
-// the weights stay in the mapped file. Immutable once loaded and safe to share; it
+// (tools/nss/nss/export.py). int8 rows with fp32 scales are multiplied in place against
+// activations quantized per use to int16 blocks, so the weights stay in the mapped file. Immutable once loaded and safe to share; it
 // borrows `bytes`, which `owner` keeps alive.
 class NeuralWordModel final {
 public:

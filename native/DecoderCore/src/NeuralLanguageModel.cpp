@@ -21,29 +21,96 @@ std::uint64_t u64(std::span<const std::byte> bytes, std::size_t at) { std::uint6
 float f32(std::span<const std::byte> bytes, std::size_t at) { float v; std::memcpy(&v, bytes.data() + at, 4); return v; }
 std::size_t layerSection(std::size_t layer, std::size_t part) { return 10 + 4 * layer + part; }
 float sigmoid(float x) { return 1.0f / (1.0f + std::exp(-x)); }
-// int8 row . float vector. Explicit NEON (iOS/Android arm64): the shipping -Os builds do not
-// auto-vectorize the widening loop, and this dot product is all of the model's arithmetic.
-float dot(const std::int8_t* q, const float* x, std::size_t n) {
+
+// The model's arithmetic is int8 weight rows . activation vectors. Each activation vector is
+// quantized once per use to int16 in blocks of 16 values, one scale per block (|q| <= 32767;
+// llama.cpp quantizes activations on the fly in blocks the same way for its Q8_0 dot
+// products). Each block's dot product is an exact integer sum, int8 x int16 multiply-
+// accumulates into int32 lanes (NEON vmull/vmlal, every arm64 iPhone including A12), then one
+// float multiply-add by its scale: ~12 instructions per 16 weights instead of 19 for widening
+// every weight to float. M1, -Os, the shipped model: output layer + log-softmax 325 -> 194 µs,
+// one CIFG step 50 -> 40 µs; goldens max |error| 4.0e-4 -> 7.2e-4 (tolerance 2e-3).
+// Rejected on 16 Nov 2026: one int16 scale per vector (the hidden vector's peak is ~5x its
+// RMS: errors reached 3.4e-3), int8 activations with SDOT (2.7e-2 error, only 18% faster), a
+// two-part int16 split (exact but slower per step), and four rows at a time (-Os spills).
+constexpr std::size_t block = 16;
+struct Activations { std::vector<std::int16_t> q; std::vector<float> scale; };
+// x must be finite (it is: embeddings, tanh/sigmoid products and their projections).
+void quantize(const float* x, std::size_t n, Activations& out) {
+    out.q.resize(n);
+    out.scale.resize((n + block - 1) / block);
+    for (std::size_t b = 0, k = 0; k < n; ++b, k += block) {
+        const auto end = std::min(n, k + block);
+        float peak = 0;
+        for (std::size_t i = k; i < end; ++i) peak = std::max(peak, std::fabs(x[i]));
+        const float inverse = peak > 0 ? 32767.0f / peak : 0.0f;
+        for (std::size_t i = k; i < end; ++i) out.q[i] = std::int16_t(std::lrintf(x[i] * inverse));
+        out.scale[b] = peak / 32767.0f;
+    }
+}
+// int8 row . x (n values), in x's units (multiply by the row's scale).
+__attribute__((always_inline)) inline float dot(const std::int8_t* q, const Activations& x, std::size_t n) {
+    const std::int16_t* v = x.q.data();
     std::size_t k = 0;
     float total = 0;
 #if defined(__ARM_NEON)
-    float32x4_t a0 = vdupq_n_f32(0), a1 = vdupq_n_f32(0), a2 = vdupq_n_f32(0), a3 = vdupq_n_f32(0);
-    for (; k + 16 <= n; k += 16) {
-        const int8x16_t v = vld1q_s8(q + k);
-        const int16x8_t lo = vmovl_s8(vget_low_s8(v)), hi = vmovl_s8(vget_high_s8(v));
-        a0 = vfmaq_f32(a0, vcvtq_f32_s32(vmovl_s16(vget_low_s16(lo))), vld1q_f32(x + k));
-        a1 = vfmaq_f32(a1, vcvtq_f32_s32(vmovl_s16(vget_high_s16(lo))), vld1q_f32(x + k + 4));
-        a2 = vfmaq_f32(a2, vcvtq_f32_s32(vmovl_s16(vget_low_s16(hi))), vld1q_f32(x + k + 8));
-        a3 = vfmaq_f32(a3, vcvtq_f32_s32(vmovl_s16(vget_high_s16(hi))), vld1q_f32(x + k + 12));
+    float32x4_t acc = vdupq_n_f32(0);
+    for (; k + block <= n; k += block) {
+        const int8x16_t w = vld1q_s8(q + k);
+        const int16x8_t a = vmovl_s8(vget_low_s8(w)), b = vmovl_high_s8(w);
+        const int16x8_t x0 = vld1q_s16(v + k), x1 = vld1q_s16(v + k + 8);
+        int32x4_t s0 = vmull_s16(vget_low_s16(a), vget_low_s16(x0)), s1 = vmull_high_s16(a, x0);
+        s0 = vmlal_s16(s0, vget_low_s16(b), vget_low_s16(x1));
+        s1 = vmlal_high_s16(s1, b, x1);
+        acc = vfmaq_n_f32(acc, vcvtq_f32_s32(vaddq_s32(s0, s1)), x.scale[k / block]);
     }
-    total = vaddvq_f32(vaddq_f32(vaddq_f32(a0, a1), vaddq_f32(a2, a3)));
-#else
-    float s[8] = {};
-    for (; k + 8 <= n; k += 8) for (std::size_t j = 0; j < 8; ++j) s[j] += float(q[k + j]) * x[k + j];
-    total = ((s[0] + s[1]) + (s[2] + s[3])) + ((s[4] + s[5]) + (s[6] + s[7]));
+    total = vaddvq_f32(acc);
 #endif
-    for (; k < n; ++k) total += float(q[k]) * x[k];
+    for (std::size_t b = k / block; k < n; ++b) {
+        std::int32_t sum = 0;
+        for (const auto end = std::min(n, k + block); k < end; ++k) sum += std::int32_t(q[k]) * v[k];
+        total += float(sum) * x.scale[b];
+    }
     return total;
+}
+
+#if defined(__ARM_NEON)
+// e^x for x <= 0 (Cephes expf: range reduction by ln 2, degree-5 polynomial; ~2 ulp).
+// Values below -87 flush to e^-87, which no longer moves a float sum of >= 1.
+inline float32x4_t expNonPositive(float32x4_t x) {
+    x = vmaxq_f32(x, vdupq_n_f32(-87.0f));
+    const float32x4_t n = vrndnq_f32(vmulq_n_f32(x, 1.44269504088896341f));
+    x = vfmsq_f32(x, n, vdupq_n_f32(0.693359375f));
+    x = vfmsq_f32(x, n, vdupq_n_f32(-2.12194440e-4f));
+    float32x4_t p = vdupq_n_f32(1.9875691500e-4f);
+    p = vfmaq_f32(vdupq_n_f32(1.3981999507e-3f), p, x);
+    p = vfmaq_f32(vdupq_n_f32(8.3334519073e-3f), p, x);
+    p = vfmaq_f32(vdupq_n_f32(4.1665795894e-2f), p, x);
+    p = vfmaq_f32(vdupq_n_f32(1.6666665459e-1f), p, x);
+    p = vfmaq_f32(vdupq_n_f32(5.0000001201e-1f), p, x);
+    p = vfmaq_f32(vaddq_f32(x, vdupq_n_f32(1.0f)), p, vmulq_f32(x, x));
+    const int32x4_t power = vshlq_n_s32(vaddq_s32(vcvtq_s32_f32(n), vdupq_n_s32(127)), 23);
+    return vmulq_f32(p, vreinterpretq_f32_s32(power));
+}
+#endif
+// sum of e^(v - best) over all values (-inf entries contribute 0).
+double sumExp(std::span<const float> values, float best) {
+    std::size_t k = 0;
+    double sum = 0;
+#if defined(__ARM_NEON)
+    // Float lanes for at most 512 values at a time, then double: the float sums stay short.
+    const float32x4_t shift = vdupq_n_f32(best);
+    while (k + 8 <= values.size()) {
+        float32x4_t s0 = vdupq_n_f32(0), s1 = vdupq_n_f32(0);
+        for (const auto end = std::min(values.size(), k + 512); k + 8 <= end; k += 8) {
+            s0 = vaddq_f32(s0, expNonPositive(vsubq_f32(vld1q_f32(values.data() + k), shift)));
+            s1 = vaddq_f32(s1, expNonPositive(vsubq_f32(vld1q_f32(values.data() + k + 4), shift)));
+        }
+        sum += double(vaddvq_f32(vaddq_f32(s0, s1)));
+    }
+#endif
+    for (; k < values.size(); ++k) sum += std::exp(double(values[k] - best));
+    return sum;
 }
 bool emittable(std::string_view word) {
     return !word.empty() && std::all_of(word.begin(), word.end(), [](char c) { return (c >= 'a' && c <= 'z') || c == '\''; });
@@ -160,6 +227,7 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
     if (token < 0 || std::size_t(token) >= vocabulary_) throw std::out_of_range("NSS token");
     if (state.size() != stateSize_ || next.size() != stateSize_ || features.size() != features_) throw std::invalid_argument("NSS state size");
     thread_local std::vector<float> previous, input, gates, cell;
+    thread_local Activations x, xh;
     previous.assign(state.begin(), state.end());
     if (token == bos_) std::fill(previous.begin(), previous.end(), 0.0f);
     const auto* row = embedding_.q + std::size_t(token) * embed_;
@@ -175,7 +243,8 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
         if (lstm) {
             input.resize(layer.input + recurrent_);
             std::copy(h, h + recurrent_, input.begin() + std::ptrdiff_t(layer.input));
-            for (std::size_t r = 0; r < w.rows; ++r) gates[r] = w.scale[r] * dot(w.q + r * w.cols, input.data(), w.cols) + layer.bias[r];
+            quantize(input.data(), w.cols, x);
+            for (std::size_t r = 0; r < w.rows; ++r) gates[r] = w.scale[r] * dot(w.q + r * w.cols, x, w.cols) + layer.bias[r];
             const float* c = h + recurrent_;
             cell.resize(hidden_);
             std::vector<float>& m = input;   // reused: the gate input is no longer needed
@@ -196,17 +265,20 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
             float* outH = next.data() + offset;
             if (layer.projection.q) {
                 const auto& p = layer.projection;
-                for (std::size_t r = 0; r < p.rows; ++r) outH[r] = p.scale[r] * dot(p.q + r * p.cols, m.data(), p.cols);
+                quantize(m.data(), p.cols, x);
+                for (std::size_t r = 0; r < p.rows; ++r) outH[r] = p.scale[r] * dot(p.q + r * p.cols, x, p.cols);
             } else std::copy(m.begin(), m.end(), outH);
             std::copy(cell.begin(), cell.end(), next.data() + offset + recurrent_);
             input.assign(outH, outH + recurrent_);
             offset += recurrent_ + hidden_;
         } else {
             cell.resize(w.rows);
+            quantize(input.data(), layer.input, x);
+            quantize(h, hidden_, xh);
             for (std::size_t r = 0; r < w.rows; ++r) {
                 const auto* q = w.q + r * w.cols;
-                gates[r] = w.scale[r] * dot(q, input.data(), layer.input) + layer.bias[r];
-                cell[r] = w.scale[r] * dot(q + layer.input, h, hidden_) + layer.bias[w.rows + r];
+                gates[r] = w.scale[r] * dot(q, x, layer.input) + layer.bias[r];
+                cell[r] = w.scale[r] * dot(q + layer.input, xh, hidden_) + layer.bias[w.rows + r];
             }
             float* outH = next.data() + offset;
             for (std::size_t j = 0; j < hidden_; ++j) {
@@ -219,22 +291,25 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
         }
     }
     if (gruProjection_.q) {
+        quantize(input.data(), gruProjection_.cols, x);
         for (std::size_t r = 0; r < gruProjection_.rows; ++r)
-            features[r] = gruProjection_.scale[r] * dot(gruProjection_.q + r * gruProjection_.cols, input.data(), gruProjection_.cols);
+            features[r] = gruProjection_.scale[r] * dot(gruProjection_.q + r * gruProjection_.cols, x, gruProjection_.cols);
     } else std::copy(input.begin(), input.begin() + std::ptrdiff_t(features_), features.begin());
 }
 
+// The output layer (vocabulary x features, ~30k rows) is ~85% of the model's cost: it runs
+// once per context change and once per later word of a multi-word candidate.
 void NeuralWordModel::wordLogProbabilities(std::span<const float> features, std::span<float> out) const {
     if (features.size() != features_ || out.size() != vocabulary_) throw std::invalid_argument("NSS output size");
+    thread_local Activations x;
+    quantize(features.data(), features_, x);
     float best = -std::numeric_limits<float>::infinity();
     for (std::size_t v = 0; v < vocabulary_; ++v) {
-        out[v] = output_.scale[v] * dot(output_.q + v * features_, features.data(), features_) + outputBias_[v];
+        out[v] = output_.scale[v] * dot(output_.q + v * features_, x, features_) + outputBias_[v];
         if (std::int32_t(v) != pad_ && std::int32_t(v) != bos_ && std::int32_t(v) != eos_) best = std::max(best, out[v]);
     }
     for (auto id : {pad_, bos_, eos_}) out[std::size_t(id)] = -std::numeric_limits<float>::infinity();
-    double sum = 0;
-    for (auto value : out) sum += std::exp(double(value - best));
-    const auto norm = float(double(best) + std::log(sum));
+    const auto norm = float(double(best) + std::log(sumExp(out, best)));
     for (auto& value : out) value -= norm;
 }
 

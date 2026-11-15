@@ -134,11 +134,13 @@ request's context is matched against the ring and only new words are stepped:
 | The host's 8-word window slides by a word | 1 (the state keeps the whole sentence) |
 | A different sentence or field | at most the context length |
 
-One step plus the output layer is about 3.3M multiply-adds. The C++ kernel dequantizes
-int8 rows with explicit NEON (the shipping `-Os` build does not auto-vectorize it); on
-an M2 at `-Os`: 44 µs per LSTM step, 0.36 ms for the 30k-word output layer and
-log-softmax, 0.43 ms per committed word, 0.3 µs for a keystroke inside a word (the
-cached distribution). Physical-iPhone timings are still to be measured.
+One step plus the output layer is about 3.3M multiply-adds. The C++ kernel multiplies the
+int8 rows in place against activations quantized per use to int16 in blocks of 16 (exact
+integer NEON sums, one float scale per block; every arm64 iPhone, A12 included) and
+normalizes with a vectorized float exp. On an M1 at `-Os` (16 Nov 2026): 40 µs per LSTM
+step (50 before), 0.19 ms for the 30k-word output layer and log-softmax (0.33 before),
+0.3 µs for a keystroke inside a word (the cached distribution). The goldens still match
+within 2e-3 (max 7.2e-4). Physical-iPhone timings are still to be measured.
 
 ## Architectures
 
