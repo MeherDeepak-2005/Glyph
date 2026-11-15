@@ -37,6 +37,19 @@ public:
     void installBlocked(std::span<const std::string> terms) const;
     bool blocked(std::uint32_t id) const noexcept { return id < words_ && !blocked_.empty() && (blocked_[id >> 6] >> (id & 63) & 1); }
     std::size_t blockedCount() const noexcept { return blockedCount_; }
+    // Spelling policies for modern vocabulary (langdata.kbmodern, KBMODERN v1, built with the
+    // dictionary by tools/vocabulary/build_unigram_pack.py): editor-reviewed permissions, not
+    // counts. Install once at load, before any decode; a sidecar that is malformed or was
+    // built for other dictionary bytes is refused and leaves no policy.
+    bool installModern(std::span<const std::byte> sidecar) const;
+    bool hasModern() const noexcept { return !policies_.empty(); }
+    // Bit 0: keep the typed spelling (never autocorrect it away). Bit 1: never commit this
+    // word automatically (it can still be suggested).
+    std::uint32_t modernFlags(std::string_view word) const;
+    bool preserves(std::string_view word) const { return modernFlags(word) & 1; }
+    // False when any word of `text` (a split correction is several) must not be committed
+    // automatically.
+    bool allowsCorrection(std::string_view text) const;
     struct TrieNodeRecord { std::uint8_t label; std::uint32_t firstChild, childCount, maxFrequency; std::optional<std::int32_t> wordID; };
     bool hasTrie() const noexcept { return nodes_ > 0; }
     TrieNodeRecord trieRecord(std::size_t node) const;
@@ -65,6 +78,8 @@ private:
     mutable std::once_flag blockedOnce_;
     mutable std::vector<std::uint64_t> blocked_;
     mutable std::size_t blockedCount_ = 0;
+    struct Policy { std::uint32_t word, flags; };
+    mutable std::vector<Policy> policies_;   // ascending word ID; written once, before decoding
     std::optional<std::size_t> trieNode(std::string_view prefix) const;
 };
 } // namespace kb

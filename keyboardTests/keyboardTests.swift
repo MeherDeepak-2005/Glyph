@@ -79,7 +79,7 @@ struct KeyboardTests {
 		let bytes = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? Int.max
 		#expect(data.nativeCandidateLexicon.formatVersion == 7)
 		#expect(bytes <= 32_000_000)
-		#expect(data.wordCount == 114_283)
+		#expect(data.wordCount == 187_462)   // the unigram-v1 dictionary (tools/vocabulary/build_unigram_pack.py)
 	}
 
 	@Test func suggestionCasePolicyOwnsDisplayTapAndCorrectionText() throws {
@@ -1056,11 +1056,11 @@ struct KeyboardTests {
 
 	@Test func contractionTyposAndIdFollowTheNSSRanking() async {
 		let engine = makeEngine()
-		// Typo + missing apostrophe: raw NSS has no apostrophe-restoration rule, so "thads"
-		// goes to the nearest well-scored dictionary word, "thad" (the n-gram tier and the
-		// removed NSS rules restored "that's"). Strip and Space still agree.
+		// Typo + missing apostrophe: raw NSS has no apostrophe-restoration rule; "thads" goes to
+		// the best-scoring dictionary word, which with the unigram-v1 weights is "that's" (the
+		// earlier dictionary gave "thad"). Strip and Space still agree.
 		let thads = await decode(engine, word: "thads", context: [])
-		#expect(thads.correction == "thad",
+		#expect(thads.correction == "that's",
 			"thads: correction=\(thads.correction ?? "nil") sugg=\(thads.suggestions)")
 		#expect(thads.suggestions.first == thads.correction)
 		// "id" at a sentence start becomes "I", as "im" does (a known raw-NSS miss; the removed

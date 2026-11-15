@@ -295,7 +295,8 @@ extension KeyboardView {
 				let recordedTap = keyTap(for: key, at: p)
 				nextRecordedTouch &+= 1
 				recordedTouches[touch] = (nextRecordedTouch, recordedKey, recordedTap)
-				onTouchSample?("touch-down", nextRecordedTouch, recordedKey, touch.timestamp, recordedTap)
+				onTouchSample?(TouchSample(phase: "touch-down", id: nextRecordedTouch, key: recordedKey,
+					time: touch.timestamp, tap: recordedTap, point: p, radius: touch.majorRadius))
 			}
 			if key.isInputModeSwitch {
 				if let event { onInputModeEvent?(key, event) } else { key.trigger() }
@@ -334,6 +335,12 @@ extension KeyboardView {
 					lastGlidePreviewTime = 0
 					glide = GlideTrack(startKey: key, points: [p], times: [touch.timestamp],
 									   keys: [ObjectIdentifier(key)])
+					collectsGlideSamples = recordsGlideSamples?() ?? false
+					glideSamples.removeAll(keepingCapacity: true)
+					glideSampleStartKey = key.popupText ?? key.committedText
+					if collectsGlideSamples {
+						glideSamples.append(GlideSample(point: p, time: touch.timestamp, radius: touch.majorRadius))
+					}
 				}
 			}
 		}
@@ -341,7 +348,24 @@ extension KeyboardView {
 
 	private func finishRecordedTouch(_ touch: UITouch, cancelled: Bool) {
 		guard let (id, key, tap) = recordedTouches.removeValue(forKey: touch) else { return }
-		onTouchSample?(cancelled ? "touch-cancel" : "touch-up", id, key, touch.timestamp, tap)
+		onTouchSample?(TouchSample(phase: cancelled ? "touch-cancel" : "touch-up", id: id, key: key,
+			time: touch.timestamp, tap: tap, point: touch.location(in: self), radius: touch.majorRadius))
+	}
+
+	/// The recorder's copy of the tracked stroke: every coalesced sample UIKit delivered (the
+	/// decoder takes one per callback), bounded so a finger resting on the deck cannot grow it.
+	private func collectGlideSamples(_ touch: UITouch, with event: UIEvent?) {
+		guard collectsGlideSamples else { return }
+		for sample in event?.coalescedTouches(for: touch) ?? [touch] where glideSamples.count < 4_096 {
+			glideSamples.append(GlideSample(point: sample.location(in: self), time: sample.timestamp, radius: sample.majorRadius))
+		}
+	}
+
+	/// The finished gesture's samples and start key, handed over once (to the controller, when
+	/// the gesture ended or was cancelled).
+	func takeGlideSamples() -> (samples: [GlideSample], startKey: String?)? {
+		defer { glideSamples.removeAll(keepingCapacity: true); collectsGlideSamples = false }
+		return collectsGlideSamples && !glideSamples.isEmpty ? (glideSamples, glideSampleStartKey) : nil
 	}
 
 	private func performHaptic(for key: KeyButton) {
@@ -387,6 +411,7 @@ extension KeyboardView {
 			}
 
 			if touch == glideTouch, glide != nil {
+				collectGlideSamples(touch, with: event)
 				trackGlide(touch)
 				if glide?.isGlide == true { continue }
 			}
@@ -409,7 +434,7 @@ extension KeyboardView {
 			finishRecordedTouch(touch, cancelled: false)
 			if cursorTouch === touch { endCursorHold() }
 			if finishAlternatives(for: touch, commit: true) {
-				if touch == glideTouch { glideTouch = nil; glide = nil; clearTrail() }
+				if touch == glideTouch { glideTouch = nil; glide = nil; collectsGlideSamples = false; clearTrail() }
 				clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 				continue
 			}
@@ -419,6 +444,10 @@ extension KeyboardView {
 				continue
 			}
 			if touch == glideTouch, glide?.isGlide == true {   // a glide: decode, commit nothing
+				// The lift point, for the recorder only: the decoder's path ends at the last move.
+				if collectsGlideSamples, glideSamples.count < 4_096 {
+					glideSamples.append(GlideSample(point: touch.location(in: self), time: touch.timestamp, radius: touch.majorRadius))
+				}
 				let pts = glide?.points ?? []
 				let times = glide?.times ?? []
 				let layout = glideLayout()
@@ -432,7 +461,7 @@ extension KeyboardView {
 				clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 				continue
 			}
-			if touch == glideTouch { glideTouch = nil; glide = nil; clearTrail() }
+			if touch == glideTouch { glideTouch = nil; glide = nil; collectsGlideSamples = false; clearTrail() }
 			clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 		}
 	}
@@ -462,8 +491,11 @@ extension KeyboardView {
 				onInputModeEvent?(key, event)
 			}
 			if touch == glideTouch {
+				let wasGlide = glide?.isGlide == true
 				glideTouch = nil; glide = nil; lastGlidePreviewTime = 0; clearTrail()
 				suggestionBar.setGlidePreview(nil)
+				// A cancelled tap is not a gesture: only a classified Glide keeps its samples.
+				if !wasGlide { collectsGlideSamples = false }
 				onGlideCancelled?()
 			}
 			if touch == repeatTouch { endRepeat() }

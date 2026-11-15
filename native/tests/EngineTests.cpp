@@ -3,6 +3,8 @@
 // decoding, Glide, and the 132 decode and 60 Glide goldens (tools/evaluation/fixtures/shared-engine,
 // written by tools/evaluation/autocorrect/GenGolden.cpp).
 //   shared-engine-tests langdata.bin model.nsslm [REPO FIXTURES]
+#include <string>
+#include <vector>
 #include "../DecoderCore/include/Engine.hpp"
 #include "../DecoderCore/include/Safety.hpp"
 #include "../DecoderCore/include/SpatialModel.hpp"
@@ -105,7 +107,7 @@ static void testBlockedWords(const std::shared_ptr<Engine>& engine, const std::s
     state->setSafety(parseSafetyPenalties(blob));   // installs the bitset (once per reader)
     std::size_t inDictionary = 0;
     for (const auto& term : safety.blockedTerms()) if (auto id = reader->wordID(term)) { ++inDictionary; assert(reader->blocked(std::uint32_t(*id))); }
-    assert(inDictionary == 279 && reader->blockedCount() == 279);
+    assert(inDictionary == 297 && reader->blockedCount() == 297);
     auto isBlockedWord = [&](const std::string& word) { auto id = reader->wordID(word); return id && reader->blocked(std::uint32_t(*id)); };
     for (const auto& term : safety.blockedTerms()) if (reader->wordID(term))
         for (const auto& hit : reader->search(term, 2.8)) assert(!isBlockedWord(hit.word));
@@ -122,7 +124,7 @@ static void testBlockedWords(const std::shared_ptr<Engine>& engine, const std::s
         for (const auto& s : decoded.suggestions) assert(s == typo || !isBlockedWord(s));
         for (const auto& c : decoded.candidates) assert(c.ranked.key == typo || !isBlockedWord(c.ranked.key));
     }
-    std::cout << "Blocked words: 279 dictionary words excluded from search, decoding, predictions and corrections\n";
+    std::cout << "Blocked words: 297 dictionary words excluded from search, decoding, predictions and corrections\n";
 }
 // The app installs its layout pack's grid; a bad grid is refused and the current one kept.
 static void testInstalledGrid() {
@@ -186,12 +188,22 @@ static void testPersonalization(const std::shared_ptr<const PackedLexicon>& read
     assert(state.view().lexicon.contains("meherdeepak"));
     std::cout << "Personalization: unigram counts, copy-on-write snapshots, keep/undo, limits, prune, boost, adoption and reset passed\n";
 }
+// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
+// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
+static void installPolicies(const PackedLexicon& lexicon, std::string path) {
+    if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
+    std::ifstream in(path + ".kbmodern", std::ios::binary);
+    if (!in) return;
+    std::vector<char> sidecar((std::istreambuf_iterator<char>(in)), {});
+    lexicon.installModern({reinterpret_cast<const std::byte*>(sidecar.data()), sidecar.size()});
+}
 int main(int argc, char** argv) {
     assert(argc == 3 || argc == 5);
     testInstalledGrid();
     std::ifstream stream(argv[1], std::ios::binary); std::vector<char> chars((std::istreambuf_iterator<char>(stream)), {}); assert(!chars.empty());
     auto backing = std::make_shared<std::vector<char>>(std::move(chars));
     auto reader = std::shared_ptr<const PackedLexicon>(new PackedLexicon({reinterpret_cast<const std::byte*>(backing->data()), backing->size()}), [backing](const PackedLexicon* p) { delete p; });
+    installPolicies(*reader, argv[1]);
     std::ifstream modelStream(argv[2], std::ios::binary); std::vector<char> modelChars((std::istreambuf_iterator<char>(modelStream)), {}); assert(!modelChars.empty());
     auto modelBacking = std::make_shared<std::vector<char>>(std::move(modelChars));
     auto model = NeuralWordModel::load({reinterpret_cast<const std::byte*>(modelBacking->data()), modelBacking->size()}, modelBacking);

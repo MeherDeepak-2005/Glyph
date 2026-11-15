@@ -30,3 +30,6 @@ build NeuralFstTests.cpp nss-fst-tests
 
 build RawDecoderTests.cpp raw-decoder-tests
 "$work_dir/raw-decoder-tests" "$model" "$langdata"
+
+build ModernVocabularyTests.cpp modern-vocabulary-tests
+"$work_dir/modern-vocabulary-tests" "$langdata" "${langdata%.bin}.kbmodern" "$model"

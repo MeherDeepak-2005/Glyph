@@ -1,10 +1,11 @@
 """Full-softmax cross-entropy over the 30k vocabulary without materializing all logits.
 
 A [tokens x 30k] logit matrix for a 6k-token batch is ~0.7 GB in fp32, plus as much
-again for its gradient. This computes the loss and gradients in row chunks and
-recomputes each chunk's logits in backward, so peak memory is one chunk. The loss is
-exact (no sampling): P(<unk>|context) must be calibrated, and sampled softmax biases
-exactly the rare-class probabilities the <unk> fallback depends on.
+again for its gradient. This computes the loss in row chunks, so peak memory is one
+chunk, and accumulates the gradients of the summed loss in the same pass (they depend
+only on each chunk's softmax), so every chunk's logits and softmax are computed once.
+The loss is exact (no sampling): P(<unk>|context) must be calibrated, and sampled
+softmax biases exactly the rare-class probabilities the <unk> fallback depends on.
 """
 
 from __future__ import annotations
@@ -19,28 +20,26 @@ class ChunkedCrossEntropy(torch.autograd.Function):
     @staticmethod
     def forward(ctx, features, weight, bias, targets, rows_weight, chunk):
         total = features.new_zeros(())
+        grad_features = torch.empty_like(features)
+        grad_weight = torch.zeros_like(weight)
+        grad_bias = torch.zeros_like(bias)
         for start in range(0, features.shape[0], chunk):
-            logits = torch.addmm(bias, features[start:start + chunk], weight.t())
-            picked = logits.gather(1, targets[start:start + chunk, None]).squeeze(1)
-            total = total + ((torch.logsumexp(logits, -1) - picked) * rows_weight[start:start + chunk]).sum()
-        ctx.save_for_backward(features, weight, bias, targets, rows_weight)
-        ctx.chunk = chunk
+            rows, wanted, scale = features[start:start + chunk], targets[start:start + chunk], rows_weight[start:start + chunk]
+            log_probabilities = torch.log_softmax(torch.addmm(bias, rows, weight.t()), -1)
+            total = total - (log_probabilities.gather(1, wanted[:, None]).squeeze(1) * scale).sum()
+            # d loss / d logits = (softmax - one-hot) per row, times the row's weight
+            probabilities = log_probabilities.exp_()
+            probabilities[torch.arange(rows.shape[0], device=rows.device), wanted] -= 1
+            probabilities *= scale[:, None]
+            grad_features[start:start + chunk] = probabilities @ weight
+            grad_weight.addmm_(probabilities.t(), rows)
+            grad_bias += probabilities.sum(0)
+        ctx.save_for_backward(grad_features, grad_weight, grad_bias)
         return total
 
     @staticmethod
     def backward(ctx, grad):
-        features, weight, bias, targets, rows_weight = ctx.saved_tensors
-        grad_features = torch.empty_like(features)
-        grad_weight = torch.zeros_like(weight)
-        grad_bias = torch.zeros_like(bias)
-        for start in range(0, features.shape[0], ctx.chunk):
-            rows = features[start:start + ctx.chunk]
-            probabilities = torch.softmax(torch.addmm(bias, rows, weight.t()), -1)
-            probabilities[torch.arange(rows.shape[0], device=rows.device), targets[start:start + ctx.chunk]] -= 1
-            probabilities *= rows_weight[start:start + ctx.chunk, None]
-            grad_features[start:start + ctx.chunk] = probabilities @ weight
-            grad_weight.addmm_(probabilities.t(), rows)
-            grad_bias += probabilities.sum(0)
+        grad_features, grad_weight, grad_bias = ctx.saved_tensors
         return grad_features * grad, grad_weight * grad, grad_bias * grad, None, None, None
 
 

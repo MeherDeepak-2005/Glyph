@@ -37,8 +37,27 @@ final class KeyboardView: UIView {
 
 	/// Set to the tapped key's landing offset for the duration of `key.action()`, so
 	/// the char closures can attach it to `onInsert`. nil outside a live letter tap.
-	var onTouchSample: ((String, UInt64, String?, TimeInterval, KeyTap?) -> Void)?
+	/// One finger on a key, for the typing recorder: the key it resolved to, the tap offset the
+	/// decoder saw, and where the finger actually was (view points, unclamped) with its
+	/// contact radius. `touch-up`/`touch-cancel` carry the lift position and the down tap.
+	struct TouchSample {
+		let phase: String
+		let id: UInt64
+		let key: String?
+		let time: TimeInterval
+		let tap: KeyTap?
+		let point: CGPoint
+		let radius: CGFloat
+	}
+	var onTouchSample: ((TouchSample) -> Void)?
 	var recordedTouches: [UITouch: (UInt64, String?, KeyTap?)] = [:]
+	/// Asked once when a finger that could become a Glide lands: true collects the stroke's
+	/// full-rate samples for the typing recorder. The decoder never reads them.
+	var recordsGlideSamples: (() -> Bool)?
+	struct GlideSample { let point: CGPoint; let time: TimeInterval; let radius: CGFloat }
+	var collectsGlideSamples = false
+	var glideSamples: [GlideSample] = []
+	var glideSampleStartKey: String?
 	var nextRecordedTouch: UInt64 = 0
 	/// True while a held key's auto-repeat fires: one hold is one physical tap.
 	var isRepeatingKey = false

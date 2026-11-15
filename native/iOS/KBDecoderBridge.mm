@@ -98,6 +98,9 @@ static std::vector<std::optional<kb::TouchOffset>> KBTaps(NSData *offsets, NSDat
     return self;
 }
 - (void)installBlockedFromSafety:(KBNativeSafetyLexicon *)safety { _reader->installBlocked([safety nativeLexicon]->blockedTerms()); }
+- (BOOL)installModernData:(NSData *)data {
+    return _reader->installModern({static_cast<const std::byte *>(data.bytes), data.length});
+}
 - (const void *)backingAddress { return _reader->backingAddress(); }
 - (const kb::PackedLexicon *)nativeLexicon { return _reader.get(); }
 - (NSUInteger)formatVersion { return _reader->version(); }

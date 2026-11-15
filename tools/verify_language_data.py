@@ -18,7 +18,7 @@ MAGIC = 0x4B424C4D
 EMPTY32 = 0xFFFFFFFF
 EMPTY16 = 0xFFFF
 # Default --max-bytes per candidate version; v7 is tools/build_language_data.py LANGDATA_CAP.
-SIZE_CAPS = {6: 20_000_000, 7: 8_000_000}
+SIZE_CAPS = {6: 20_000_000, 7: 10_000_000}
 
 
 class Pack:

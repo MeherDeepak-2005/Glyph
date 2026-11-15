@@ -73,7 +73,8 @@ extension KeyboardViewController {
 			// WMR: backspacing away a committed correction/pick/glide is the clearest
 			// "user edited a word after committing it" signal. A reverted engine autocorrect
 			// additionally counts toward the over-correction rate.
-			recordTyping("undo", text: c.corrected, replacement: c.original, evidence: c.fromAutocorrect ? "explicit-autocorrect-undo" : "explicit-retraction", relatedWord: c.recordedWordSessionID)
+			recordTyping("undo", text: c.corrected, replacement: c.original, evidence: c.fromAutocorrect ? "explicit-autocorrect-undo" : "explicit-retraction", relatedWord: c.recordedWordSessionID,
+				sinceMs: (ProcessInfo.processInfo.systemUptime - c.appliedAt) * 1_000)
 			KBDiagnostics.noteWordModified(revertedCorrection: c.fromAutocorrect)
 			// Walk back the exact learned replacement for every source (autocorrect,
 			// completion, or Glide). Autocorrect additionally needs a session keep so
@@ -168,7 +169,8 @@ extension KeyboardViewController {
 			let ctx = textDocumentProxy.documentContextBeforeInput ?? ""
 			if s == original, let corrected = lastCompleteWord(ctx) {
 				guard replaceHostSuffix(corrected + " ", with: original + " ") else { return }
-				recordTyping("undo", text: corrected, replacement: original, evidence: "explicit-autocorrect-undo", relatedWord: lastCorrection?.recordedWordSessionID)
+				recordTyping("undo", text: corrected, replacement: original, evidence: "strip-autocorrect-undo", relatedWord: lastCorrection?.recordedWordSessionID,
+					sinceMs: lastCorrection.map { (ProcessInfo.processInfo.systemUptime - $0.appliedAt) * 1_000 })
 				rejectCorrection(original)
 				recordReplacement(original: corrected, replacement: original)
 				// Tapping the undo chip edits an already-committed (auto)corrected word.
@@ -195,7 +197,8 @@ extension KeyboardViewController {
 			if pendingGlideVerdict { pendingGlideVerdict = false; engine.glideCorrected(to: s) }
 			KBStats.confirm(pendingGlideStatsID)
 			pendingGlideStatsID = nil
-			recordTyping("glide-selection", text: committed, replacement: s, evidence: "explicit-selection", relatedWord: correctedWordID)
+			recordTyping("glide-selection", text: committed, replacement: s, evidence: "explicit-selection", relatedWord: correctedWordID,
+				sinceMs: lastCorrection.map { (ProcessInfo.processInfo.systemUptime - $0.appliedAt) * 1_000 })
 			learnCommittedWord(s)
 			if committed.lowercased() != s.lowercased() {
 				recordReplacement(original: committed, replacement: s)

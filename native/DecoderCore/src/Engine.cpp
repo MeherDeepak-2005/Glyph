@@ -1,5 +1,7 @@
 #include "../include/Engine.hpp"
+#include "../include/NssRules.hpp"
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
@@ -104,15 +106,73 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
         literal = g.typedUnknown();
     else
         literal = engine_->unigram_.logProbability(typed);
-    const RankedRow typedRow{{typed, 0, 0}, typed, 0, literal, literal, {}};
+    RankedRow typedRow{{typed, 0, 0}, typed, 0, literal, literal, {}};
     std::erase_if(ranked, [&](const auto& row) { return row.key == typed; });
     std::erase_if(complete, [&](const auto& row) { return row.key == typed; });
-    auto best = std::max_element(complete.begin(), complete.end(), [](const auto& a, const auto& b) { return a.score == b.score ? a.key > b.key : a.score < b.score; });
+    // NssRules.hpp: a candidate whose first letter differs from the typed one pays
+    // nssFirstLetterCost on its channel cost.
+    if (nssRuleOn(nssRuleFirstLetter)) for (auto* rows : {&ranked, &complete}) for (auto& row : *rows)
+        if (const double extra = nssFirstLetterCost(typed, row.key); extra > 0) { row.channel.cost += extra; row.score -= channelWeight * extra; }
+    if (nssRuleOn(nssRuleFrequency)) {
+        const auto prior = [&](RankedRow& row) {
+            if (row.key.find(' ') != std::string::npos) return;
+            if (auto id = engine_->packed_->wordID(row.key)) {
+                const double add = nssFrequencyWeight * std::log(double(std::max(engine_->packed_->frequency(std::uint32_t(*id)), 1u)) + 1);
+                row.language += add; row.score += add;
+            }
+        };
+        for (auto& row : ranked) prior(row);
+        for (auto& row : complete) prior(row);
+        prior(typedRow);
+    }
+    // The sentence's first word: without context the model only knows which words open
+    // sentences, so a word that seldom opens one is overruled by one that often does. There,
+    // P(w) mixes the model with the dictionary's context-free unigram P(w) (weight
+    // nssStartUnigramWeight), for the typed text and every single-word candidate alike.
+    const bool start = input.context.empty();
+    if (start && nssStartUnigramWeight > 0) {
+        const double w = nssStartUnigramWeight;
+        const auto rescore = [&](RankedRow& row) {
+            if (row.key.find(' ') != std::string::npos) return;   // a split ("of the") keeps its sequence score
+            const double unigram = engine_->unigram_.logProbability(row.key);
+            const double hi = std::max(row.language, unigram), lo = std::min(row.language, unigram);
+            const double a = row.language >= unigram ? 1 - w : w;   // the larger term's weight
+            const double mixed = hi + std::log(a + (1 - a) * std::exp(lo - hi));
+            row.score += mixed - row.language;
+            row.language = mixed;
+        };
+        for (auto& row : ranked) rescore(row);
+        for (auto& row : complete) rescore(row);
+        rescore(typedRow);
+    }
+    const auto higher = [](const auto& a, const auto& b) { return a.score == b.score ? a.key > b.key : a.score < b.score; };
+    auto best = std::max_element(complete.begin(), complete.end(), higher);
+    // NssRules.hpp split margin: a two-word best that does not clear it gives way to the best single word.
+    if (nssRuleOn(nssRuleSplitMargin) && best != complete.end() && best->key.find(' ') != std::string::npos && best->score - typedRow.score <= nssSplitMargin) {
+        best = complete.end();
+        for (auto it = complete.begin(); it != complete.end(); ++it)
+            if (it->key.find(' ') == std::string::npos && (best == complete.end() || higher(*best, *it))) best = it;
+    }
     // A kept word (the user undid a correction of it) stays as typed. A typed non-word may be
-    // replaced below its own score by nssRawCommitMargin; a typed dictionary word only by a
-    // better-scoring word.
-    if (best != complete.end() && best->score > typedRow.score - (typedIsWord ? 0 : nssRawCommitMargin) && !input.kept)
+    // replaced below its own score by nssRawCommitMargin, nssStartCommitMargin as the sentence's
+    // first word, or nssCapitalizedCommitMargin when written capitalized after the first word
+    // (a name); a typed dictionary word only by a better-scoring word.
+    const auto upper = [](char c) { return c >= 'A' && c <= 'Z'; };
+    const bool capitalized = !input.context.empty() && !input.word.empty() && upper(input.word[0]) &&
+        !std::all_of(input.word.begin(), input.word.end(), [&](char c) { return upper(c) || !std::isalpha(static_cast<unsigned char>(c)); });
+    const double margin = typedIsWord ? 0 : start ? nssStartCommitMargin : capitalized ? nssCapitalizedCommitMargin : nssRawCommitMargin;
+    double allowance = margin;
+    if (best != complete.end() && !typedIsWord && nssRuleOn(nssRuleSameSound)) {
+        double next = -std::numeric_limits<double>::infinity();
+        for (const auto& row : complete) if (&row != &*best) next = std::max(next, row.score);
+        allowance += nssSameSoundAllowance(typed, best->key, best->score - next);
+    }
+    if (best != complete.end() && best->score > typedRow.score - allowance && !input.kept)
         out.correction = {best->key, best->score - typedRow.score};
+    // Spelling policy (langdata.kbmodern): a preserved spelling stays as typed, and a word
+    // marked never-automatic is offered on the strip but not committed for the user.
+    if (out.correction.word && (engine_->packed_->preserves(typed) || !engine_->packed_->allowsCorrection(*out.correction.word)))
+        out.correction = {};
     ranked.push_back(typedRow);
     std::sort(ranked.begin(), ranked.end(), [](const auto& a, const auto& b) { return a.score == b.score ? a.key < b.key : a.score > b.score; });
     for (const auto& row : ranked) {

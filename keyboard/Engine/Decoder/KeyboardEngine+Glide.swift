@@ -122,7 +122,7 @@ extension KeyboardEngine {
 			// learning/diagnostics and never change the displayed commit decision.
 			let committed = GlidePrediction(word: prediction.word, alternatives: prediction.alternatives,
 				shapeCostByWord: exactCosts, margin: prediction.margin)
-			let gestureID = self.noteGlideCommit(winner: committed.word, shapeCostByWord: committed.shapeCostByWord)
+			let gestureID = self.noteGlideCommit(committed, source: "session")
 			DispatchQueue.main.async { completion(committed.word, committed.alternatives) }
 			self.glideQueue.async { [weak self] in
 				self?.logCachedGlide(committed, path: path, times: times,
@@ -255,8 +255,7 @@ extension KeyboardEngine {
 		// The controller also cancels the debounced work item before calling here.
 		cancelSuggestions()
 		if let publishedPrediction {
-			let gestureID = noteGlideCommit(winner: publishedPrediction.word,
-				shapeCostByWord: publishedPrediction.shapeCostByWord)
+			let gestureID = noteGlideCommit(publishedPrediction, source: "preview")
 			// The visible preview is the gesture's contract. Commit it inline on the
 			// main-thread lift callback; never run a second decoder that can disagree.
 			completion(publishedPrediction.word, publishedPrediction.alternatives)
@@ -271,7 +270,7 @@ extension KeyboardEngine {
 		}
 		let cacheKey = glideCacheKey(path: path, times: times, layout: layout, context: context)
 		if let cached = recentGlidePreview(key: cacheKey) {
-			let gestureID = noteGlideCommit(winner: cached.word, shapeCostByWord: cached.shapeCostByWord)
+			let gestureID = noteGlideCommit(cached, source: "cache")
 			// `glide` is invoked from touchesEnded on main. Deliver inline so an exact
 			// preview hit inserts before the next display frame.
 			completion(cached.word, cached.alternatives)
@@ -305,7 +304,7 @@ extension KeyboardEngine {
 			}
 			// Stash raw shape costs so an explicit alternative selection can provide a
 			// supervised sample. An automatic commit is never treated as ground truth.
-			let gestureID = self.noteGlideCommit(winner: prediction.word, shapeCostByWord: prediction.shapeCostByWord)
+			let gestureID = self.noteGlideCommit(prediction, source: "final")
 			// Queue the visible insertion before diagnostics and optional capture formatting.
 			// Those facilities must never add lift-to-insert latency.
 			deliver(prediction.word, prediction.alternatives)
@@ -339,12 +338,17 @@ extension KeyboardEngine {
 	// behind `glideLock`, so a verdict fired from the main thread costs microseconds.
 
 	@discardableResult
-	private func noteGlideCommit(winner: String, shapeCostByWord: [String: Double]) -> String {
+	private func noteGlideCommit(_ prediction: GlidePrediction, source: String) -> String {
 		let id = UUID().uuidString
 		glideLock.lock()
-		lastGlideOutcome = GlideOutcome(id: id, winner: winner, shapeCostByWord: shapeCostByWord)
+		lastGlideOutcome = GlideOutcome(id: id, winner: prediction.word, shapeCostByWord: prediction.shapeCostByWord,
+			alternatives: prediction.alternatives, margin: prediction.margin, source: source)
 		glideLock.unlock()
 		return id
+	}
+	/// The gesture just committed, for the typing recorder; the verdict calls below still own it.
+	func committedGlideEvidence() -> GlideOutcome? {
+		glideLock.lock(); defer { glideLock.unlock() }; return lastGlideOutcome
 	}
 	private func takeGlideOutcome() -> GlideOutcome? {
 		glideLock.lock(); defer { lastGlideOutcome = nil; glideLock.unlock() }; return lastGlideOutcome

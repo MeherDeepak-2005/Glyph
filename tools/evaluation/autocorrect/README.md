@@ -28,6 +28,8 @@ python3 evaluate.py score NAME [--vs baseline] [--split held|tune|all]
 python3 evaluate.py golden [--write]                # regenerate decode and Glide goldens, print visible changes
 python3 evaluate.py core                            # CoreV4 on the external lists
 python3 score_runs.py REF RUN [RUN ...]             # several runs against one reference
+python3 ablate.py run NAME=ENV ... [--jobs N]       # NSS product rules: configurations x shards on every core (held half)
+python3 ablate.py latency NAME=ENV ...              # uncontended typing latency per configuration
 python3 context_report.py BASE RUN [RUN ...]        # rows with left context, by context length
 python3 tune.py --bin ios-tune [--grid JSON] [--start JSON]   # coordinate search, tune half
 python3 latency_tradeoff.py BIN '{"deletionCost": 1.1}' ...   # typing latency + accuracy

@@ -6,6 +6,11 @@ result into B streams at sentence starts. Batches are consecutive [B, T] windows
 a sentence longer than T continues in the next batch with the carried (detached)
 state, and `<bos>` resets the state inside a window. Targets that are `<bos>` (the
 deterministic step from one sentence to the next) are masked out of the loss.
+
+`truncate` (a probability) starts that share of the sentences part-way: `<bos>` is
+followed by the words from a uniformly drawn position on. The keyboard feeds the model
+the words its host shows it, after `<bos>`: at most eight, and fewer when the host cuts
+the text before the cursor, so the model also meets `<bos>` in the middle of a sentence.
 """
 
 from __future__ import annotations
@@ -54,6 +59,29 @@ def gather(shard: Shard, indices: np.ndarray, out: np.ndarray, at: int) -> int:
     return at
 
 
+def truncated(sequence: np.ndarray, probability: float, rng: np.random.Generator) -> np.ndarray:
+    """`sequence` (sentences `<bos> w1 .. wn <eos>`, back to back) with a `probability`
+    share of the sentences of two or more words losing their first k words, k uniform
+    in 1..n-1: `<bos> w(k+1) .. wn <eos>`."""
+    if probability <= 0:
+        return sequence
+    starts = np.flatnonzero(sequence == BOS)
+    words = np.diff(np.append(starts, len(sequence))) - 2
+    chosen = np.flatnonzero((words >= 2) & (rng.random(len(starts)) < probability))
+    dropped = 1 + (rng.random(len(chosen)) * (words[chosen] - 1)).astype(np.int64)
+    # +1 at the first dropped word, -1 after the last; the running sum marks the dropped words.
+    edges = np.zeros(len(sequence) + 1, np.int8)
+    edges[starts[chosen] + 1] = 1
+    edges[starts[chosen] + 1 + dropped] -= 1
+    return sequence[np.cumsum(edges[:-1], dtype=np.int8) == 0]
+
+
+def truncated_shard(shard: Shard, seed: int = 0) -> Shard:
+    """A held-out shard with every sentence of two or more words started part-way."""
+    tokens = truncated(np.asarray(shard.tokens), 1.0, np.random.default_rng(seed))
+    return Shard(tokens, np.append(np.flatnonzero(tokens == BOS), len(tokens)))
+
+
 def streams(sequence: np.ndarray, batch: int) -> np.ndarray:
     """Cut a token sequence into `batch` equal rows that each start at a `<bos>`."""
     bos = np.flatnonzero(sequence == BOS)
@@ -65,9 +93,10 @@ def streams(sequence: np.ndarray, batch: int) -> np.ndarray:
 
 
 class Mixture:
-    def __init__(self, data: Path, weights: dict[str, float], split: str = "train", seed: int = 0):
+    def __init__(self, data: Path, weights: dict[str, float], split: str = "train", seed: int = 0,
+                 truncate: float = 0.0):
         self.shards = {source: Shard.load(data, source, split) for source in weights}
-        self.weights, self.seed = weights, seed
+        self.weights, self.seed, self.truncate = weights, seed, truncate
 
     def epoch_tokens(self) -> int:
         return int(sum(self.shards[s].size * w for s, w in self.weights.items()))
@@ -94,7 +123,7 @@ class Mixture:
         for run in np.split(order, bounds):
             shard = picks[owner[run[0]]][0]
             at = gather(shard, flat[run], out, at)
-        return out
+        return truncated(out, self.truncate, rng)
 
     def batches(self, batch: int, bptt: int, epoch: int) -> Iterator[tuple[np.ndarray, np.ndarray]]:
         rows = streams(self.sequence(epoch), batch)

@@ -11,6 +11,12 @@ extension KeyboardViewController {
 	func resolveCorrectionAsAccepted() {
 		if let c = lastCorrection, c.fromAutocorrect {
 			engine.correctionStood(c.original)
+			// Once per correction: this is called at the entry of every later handler.
+			if let word = c.recordedWordSessionID, word != recordedAcceptance {
+				recordedAcceptance = word
+				recordTyping("correction-accepted", text: c.original, replacement: c.corrected, evidence: "user-continued",
+					relatedWord: word, sinceMs: (ProcessInfo.processInfo.systemUptime - c.appliedAt) * 1_000)
+			}
 		}
 	}
 

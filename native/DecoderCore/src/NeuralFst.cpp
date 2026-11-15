@@ -1,4 +1,5 @@
 #include "../include/NeuralFst.hpp"
+#include "../include/NssRules.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -246,7 +247,7 @@ double NeuralFstSearch::bound(const Token& t) const {
     return t.language + graph_.lookahead(t.state, t.node) - options_.channelWeight * t.cost;
 }
 
-void NeuralFstSearch::reset() { beam_.clear(); complete_.clear(); completeRows_.clear(); typed_.clear(); taps_.clear(); revision_ = graph_.revision(); }
+void NeuralFstSearch::reset() { lastLetter_ = 0; beam_.clear(); complete_.clear(); completeRows_.clear(); typed_.clear(); taps_.clear(); revision_ = graph_.revision(); }
 std::vector<NeuralFstSearch::Token> NeuralFstSearch::prune(std::vector<Token> input, bool deletions) {
     auto order = [&](const Token& a, const Token& b) {
         auto x = a.upper, y = b.upper;
@@ -290,9 +291,10 @@ std::vector<NeuralFstSearch::Token> NeuralFstSearch::prune(std::vector<Token> in
         out.push_back(t);
         if (!deletions || t.pending) continue;
         const auto node = lex.node(t.node);
+        const std::uint8_t previous = t.node ? node.label : 0;
         for (auto child = node.firstChild; child < node.firstChild + node.childCount; ++child) {
             auto next = t; next.node = child; next.boundary = false;
-            next.cost += deletionCost;
+            next.cost += nssDeletionCost(lex.node(child).label, previous, lastLetter_);
             next.upper = bound(next);
             if (next.upper >= floor) queue.push(std::move(next));
         }
@@ -316,10 +318,10 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
     for (const auto& t : beam_) {
         if (t.pending) {
             auto done = t; done.pending = 0;
-            done.cost += geometricSubstitutionCost(t.pending, letter, tap); next.push_back(std::move(done)); continue;
+            done.cost += nssSubstitutionCost(t.pending, letter, tap); next.push_back(std::move(done)); continue;
         }
         auto extra = t;
-        extra.cost += insertionCost;
+        extra.cost += nssInsertionCost(letter, lastLetter_, t.node ? lex.node(t.node).label : 0);
         next.push_back(std::move(extra));
         // A space key replaced by c/v/b/n/m consumes a touch without a lexicon letter.
         if (t.boundary && std::string_view("cvbnm").find(char(letter)) != std::string_view::npos) {
@@ -329,7 +331,7 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
         for (auto child = n.firstChild; child < n.firstChild + n.childCount; ++child) {
             const auto c = lex.node(child);
             auto sub = t; sub.node = child; sub.boundary = false;
-            sub.cost += geometricSubstitutionCost(c.label, letter, tap); next.push_back(std::move(sub));
+            sub.cost += nssSubstitutionCost(c.label, letter, tap); next.push_back(std::move(sub));
             // Two-label channel arc for adjacent transposition. The pending input is
             // consumed on the next frame, so no unfinished transposition can emit a word.
             for (auto grand = c.firstChild; grand < c.firstChild + c.childCount; ++grand) if (lex.node(grand).label == letter && c.label != letter) {
@@ -338,6 +340,7 @@ void NeuralFstSearch::advance(std::uint8_t letter, std::optional<TouchOffset> ta
             }
         }
     }
+    lastLetter_ = letter;   // deletions after this frame follow this typed letter
     beam_ = prune(std::move(next), true);
     auto ends = endings(beam_);
     std::stable_sort(ends.begin(), ends.end(), [this](const End& a, const End& b) {

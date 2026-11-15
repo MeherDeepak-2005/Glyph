@@ -1,11 +1,15 @@
 """Train an NSS word LM from a JSON config.
 
     python -m nss.train --config configs/cifg-lstm-96x670.json [--out runs/NAME] [--resume]
+                        [--init runs/OTHER/best.pt]
 
 Config sections: "model" (architecture options, see nss.models), "data" (mixture
-weights per source), "train" (batch, bptt, tokens, lr, warmup, clip, weight_decay,
-eval_every, seed). Writes runs/NAME/{log.jsonl, last.pt, best.pt, config.json}. best.pt
-is chosen on the valid perplexity of word targets, averaged over the valid sets.
+weights per source; "truncate": the share of sentences started part-way, see nss.data),
+"train" (batch, bptt, tokens, lr, warmup, clip, weight_decay, eval_every, seed). Writes
+runs/NAME/{log.jsonl, last.pt, best.pt, config.json}. best.pt is chosen on the valid
+perplexity of word targets, averaged over the valid sets and, with "truncate", over the
+same sets with every sentence started part-way. --init starts from another checkpoint's
+weights (same architecture and vocabulary) with a fresh optimizer and schedule.
 """
 
 from __future__ import annotations
@@ -22,7 +26,7 @@ import numpy as np
 import torch
 
 from . import DATA, RUNS
-from .data import Mixture, Shard, lexicon_share
+from .data import Mixture, Shard, lexicon_share, truncated_shard
 from .losses import cross_entropy_sum
 from .metrics import evaluate
 from .models import build, detach
@@ -69,6 +73,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--data", type=Path, default=DATA)
     parser.add_argument("--device")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--init", type=Path, help="start from this checkpoint's weights")
     parser.add_argument("--tokens", type=float, help="override train.tokens")
     args = parser.parse_args(argv)
 
@@ -89,12 +94,15 @@ def main(argv: list[str] | None = None) -> None:
     if corpus["vocabulary_sha256"] != vocab.sha256:
         raise SystemExit("training data was built with a different vocabulary")
     weights = config["data"]["weights"]
-    mixture = Mixture(args.data, weights, "train", cfg["seed"])
+    truncate = float(config["data"].get("truncate", 0.0))
+    mixture = Mixture(args.data, weights, "train", cfg["seed"], truncate)
     valid = {name: Shard.load(args.data, name, "valid") for name in cfg["valid"]}
+    if truncate > 0:
+        valid.update({f"{name}-truncated": truncated_shard(shard) for name, shard in list(valid.items())})
     model = build(config["model"], len(vocab)).to(device)
     share = lexicon_share(args.data, weights)
     extra = {"vocabulary_sha256": vocab.sha256, "langdata_sha256": corpus["langdata_sha256"],
-             "unk_lexicon_share": share, "data": {"weights": weights, "corpus": corpus}}
+             "unk_lexicon_share": share, "data": {"weights": weights, "truncate": truncate, "corpus": corpus}}
 
     decay = [p for n, p in model.named_parameters() if not model.no_decay(n)]
     no_decay = [p for n, p in model.named_parameters() if model.no_decay(n)]
@@ -110,6 +118,12 @@ def main(argv: list[str] | None = None) -> None:
         optimizer.load_state_dict(checkpoint["optimizer"])
         step, epoch = checkpoint["step"], checkpoint["epoch"]
         best, skip = checkpoint.get("best", best), checkpoint.get("epoch_batches", 0)
+    elif args.init:
+        initial = torch.load(args.init, map_location=device, weights_only=False)
+        if initial["vocabulary_sha256"] != vocab.sha256:
+            raise SystemExit("--init checkpoint was trained on a different vocabulary")
+        model.load_state_dict(initial["model"])
+        extra["initialized_from"] = {"path": str(args.init), "step": initial["step"]}
     else:
         with torch.no_grad():
             model.output_bias.copy_(unigram_bias(mixture, len(vocab)).to(device))

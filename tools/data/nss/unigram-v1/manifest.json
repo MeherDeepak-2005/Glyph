@@ -1,0 +1,982 @@
+{
+  "schema_version": 1,
+  "status": "candidate; device and native-speaker acceptance pending",
+  "baseline_words": 114288,
+  "words": 187462,
+  "added_words": 73174,
+  "removed_words": 0,
+  "added_with_human_source_occurrences": 38548,
+  "added_without_measured_human_usage": 34626,
+  "new_word_admission": "Pinned ESDB tiers 60/70; 2-32 lower-case ASCII letters with interior apostrophes; existing contraction exclusions. No arbitrary size cap. All baseline forms retained.",
+  "frequency_estimation": "Exact observed subtitle/Tatoeba/WikiText counts kept separate. Validation fits a source mixture for neural-OOV conditional likelihood. Stored weights are quantized estimates, not observed counts. Every ASCII word receives one explicit smoothing mass.",
+  "synthetic_soda": "Counts recorded for audit only; not used for admission, weights or validation selection.",
+  "quantization_scale": 1000000000,
+  "smoothing_mass": 1,
+  "source_totals": {
+    "subtitle": 734777659,
+    "tatoeba": 12144835,
+    "wikitext": 78873848
+  },
+  "selected": {
+    "weights": {
+      "subtitle": 0.2,
+      "tatoeba": 0.6,
+      "wikitext": 0.2
+    },
+    "neural_oov_validation_nll": {
+      "tatoeba": 9.994560616566803,
+      "wikitext": 10.805641201848237
+    },
+    "macro_nll": 10.40010090920752
+  },
+  "trials": [
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.0,
+        "wikitext": 1.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.34935752587804,
+        "wikitext": 10.517112872044976
+      },
+      "macro_nll": 11.433235198961508
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.1,
+        "wikitext": 0.9
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 11.076984247702507,
+        "wikitext": 10.520281348646336
+      },
+      "macro_nll": 10.79863279817442
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.2,
+        "wikitext": 0.8
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.816944424625548,
+        "wikitext": 10.531282475759442
+      },
+      "macro_nll": 10.674113450192495
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.3,
+        "wikitext": 0.7
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.628832272779539,
+        "wikitext": 10.548823028445463
+      },
+      "macro_nll": 10.588827650612501
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.4,
+        "wikitext": 0.6
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.471083654228787,
+        "wikitext": 10.57454428144042
+      },
+      "macro_nll": 10.522813967834605
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.5,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.329150240492895,
+        "wikitext": 10.611759709073931
+      },
+      "macro_nll": 10.470454974783413
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.6,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.196040798955785,
+        "wikitext": 10.666597364198413
+      },
+      "macro_nll": 10.431319081577099
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.7,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.06820516642663,
+        "wikitext": 10.751232686500666
+      },
+      "macro_nll": 10.409718926463647
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.8,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.945317857404717,
+        "wikitext": 10.893939251422267
+      },
+      "macro_nll": 10.419628554413492
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 0.9,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.835937651683112,
+        "wikitext": 11.184725288881776
+      },
+      "macro_nll": 10.510331470282445
+    },
+    {
+      "weights": {
+        "subtitle": 0.0,
+        "tatoeba": 1.0,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.899077440069709,
+        "wikitext": 13.286238495005422
+      },
+      "macro_nll": 11.592657967537566
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.0,
+        "wikitext": 0.9
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.229301801528695,
+        "wikitext": 10.513027016406102
+      },
+      "macro_nll": 11.371164408967399
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.1,
+        "wikitext": 0.8
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.995207032427766,
+        "wikitext": 10.519261740781587
+      },
+      "macro_nll": 10.757234386604676
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.2,
+        "wikitext": 0.7
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.736287876726387,
+        "wikitext": 10.533380043558697
+      },
+      "macro_nll": 10.634833960142542
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.3,
+        "wikitext": 0.6
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.545568017732231,
+        "wikitext": 10.555512214414483
+      },
+      "macro_nll": 10.550540116073357
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.4,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.383217196165539,
+        "wikitext": 10.588431736031264
+      },
+      "macro_nll": 10.485824466098402
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.5,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.235108302055862,
+        "wikitext": 10.637603023349522
+      },
+      "macro_nll": 10.436355662702692
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.6,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.094482392822586,
+        "wikitext": 10.713938649107945
+      },
+      "macro_nll": 10.404210520965265
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.7,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.958556445500939,
+        "wikitext": 10.842476756453586
+      },
+      "macro_nll": 10.400516600977262
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.8,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.831243016379847,
+        "wikitext": 11.10024911016521
+      },
+      "macro_nll": 10.46574606327253
+    },
+    {
+      "weights": {
+        "subtitle": 0.1,
+        "tatoeba": 0.9,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.781737510103476,
+        "wikitext": 12.406130415062268
+      },
+      "macro_nll": 11.093933962582872
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.0,
+        "wikitext": 0.8
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.161144162021321,
+        "wikitext": 10.514696622595809
+      },
+      "macro_nll": 11.337920392308565
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.1,
+        "wikitext": 0.7
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.924183834989913,
+        "wikitext": 10.524000687589224
+      },
+      "macro_nll": 10.724092261289568
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.2,
+        "wikitext": 0.6
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.662406894626173,
+        "wikitext": 10.542623280687383
+      },
+      "macro_nll": 10.602515087656778
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.3,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.466963233864732,
+        "wikitext": 10.571848781669177
+      },
+      "macro_nll": 10.519406007766953
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.4,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.298479571855747,
+        "wikitext": 10.616531384417762
+      },
+      "macro_nll": 10.457505478136754
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.5,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.143032774822808,
+        "wikitext": 10.686743086343572
+      },
+      "macro_nll": 10.414887930583191
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.6,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.994560616566803,
+        "wikitext": 10.805641201848237
+      },
+      "macro_nll": 10.40010090920752
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.7,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.854067104141128,
+        "wikitext": 11.04360489749752
+      },
+      "macro_nll": 10.448836000819323
+    },
+    {
+      "weights": {
+        "subtitle": 0.2,
+        "tatoeba": 0.8,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.773160425840425,
+        "wikitext": 12.171182105721948
+      },
+      "macro_nll": 10.972171265781187
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.0,
+        "wikitext": 0.7
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.103784701293876,
+        "wikitext": 10.520698638178379
+      },
+      "macro_nll": 11.312241669736128
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.1,
+        "wikitext": 0.6
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.854955487055626,
+        "wikitext": 10.534210624136183
+      },
+      "macro_nll": 10.694583055595904
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.2,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.5881822155995,
+        "wikitext": 10.559617753326577
+      },
+      "macro_nll": 10.57389998446304
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.3,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.386334330135211,
+        "wikitext": 10.600165896742318
+      },
+      "macro_nll": 10.493250113438766
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.4,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.21020381969043,
+        "wikitext": 10.665113717923484
+      },
+      "macro_nll": 10.437658768806957
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.5,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.046437194378376,
+        "wikitext": 10.776194817218501
+      },
+      "macro_nll": 10.411316005798438
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.6,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.892289815047954,
+        "wikitext": 10.99922581129223
+      },
+      "macro_nll": 10.445757813170093
+    },
+    {
+      "weights": {
+        "subtitle": 0.3,
+        "tatoeba": 0.7,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.789610033553524,
+        "wikitext": 12.026183459437053
+      },
+      "macro_nll": 10.90789674649529
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.0,
+        "wikitext": 0.6
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.05177327319468,
+        "wikitext": 10.531890735598008
+      },
+      "macro_nll": 11.291832004396344
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.1,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.784524156917108,
+        "wikitext": 10.551680119534927
+      },
+      "macro_nll": 10.668102138226018
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.2,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.510834820838081,
+        "wikitext": 10.5879107868503
+      },
+      "macro_nll": 10.54937280384419
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.3,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.300931353427032,
+        "wikitext": 10.647961022716165
+      },
+      "macro_nll": 10.4744461880716
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.4,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.115982209220384,
+        "wikitext": 10.752272434613342
+      },
+      "macro_nll": 10.434127321916863
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.5,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.945616303781414,
+        "wikitext": 10.96324847445641
+      },
+      "macro_nll": 10.454432389118912
+    },
+    {
+      "weights": {
+        "subtitle": 0.4,
+        "tatoeba": 0.6,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.824025413649188,
+        "wikitext": 11.923352197302144
+      },
+      "macro_nll": 10.873688805475666
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.0,
+        "wikitext": 0.5
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.003287831340682,
+        "wikitext": 10.550345953712284
+      },
+      "macro_nll": 11.276816892526483
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.1,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.71109002439732,
+        "wikitext": 10.580204900512772
+      },
+      "macro_nll": 10.645647462455045
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.2,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.428566930938102,
+        "wikitext": 10.635185064443847
+      },
+      "macro_nll": 10.531875997690975
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.3,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.209292340494814,
+        "wikitext": 10.733303646216779
+      },
+      "macro_nll": 10.471297993355797
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.4,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.017036106269387,
+        "wikitext": 10.934187291252531
+      },
+      "macro_nll": 10.475611698760959
+    },
+    {
+      "weights": {
+        "subtitle": 0.5,
+        "tatoeba": 0.5,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.876212035053843,
+        "wikitext": 11.847043417891603
+      },
+      "macro_nll": 10.861627726472722
+    },
+    {
+      "weights": {
+        "subtitle": 0.6,
+        "tatoeba": 0.0,
+        "wikitext": 0.4
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 11.958297691281972,
+        "wikitext": 10.580095930676727
+      },
+      "macro_nll": 11.269196810979349
+    },
+    {
+      "weights": {
+        "subtitle": 0.6,
+        "tatoeba": 0.1,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.633483249886071,
+        "wikitext": 10.627614053380174
+      },
+      "macro_nll": 10.630548651633124
+    },
+    {
+      "weights": {
+        "subtitle": 0.6,
+        "tatoeba": 0.2,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.34056723374201,
+        "wikitext": 10.71951540082675
+      },
+      "macro_nll": 10.53004131728438
+    },
+    {
+      "weights": {
+        "subtitle": 0.6,
+        "tatoeba": 0.3,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.113416479137209,
+        "wikitext": 10.911688561962364
+      },
+      "macro_nll": 10.512552520549786
+    },
+    {
+      "weights": {
+        "subtitle": 0.6,
+        "tatoeba": 0.4,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 9.949622671784352,
+        "wikitext": 11.790971534635698
+      },
+      "macro_nll": 10.870297103210024
+    },
+    {
+      "weights": {
+        "subtitle": 0.7,
+        "tatoeba": 0.0,
+        "wikitext": 0.3
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 11.919047453124032,
+        "wikitext": 10.62937653384712
+      },
+      "macro_nll": 11.274211993485576
+    },
+    {
+      "weights": {
+        "subtitle": 0.7,
+        "tatoeba": 0.1,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.551807066474714,
+        "wikitext": 10.712247965004693
+      },
+      "macro_nll": 10.632027515739704
+    },
+    {
+      "weights": {
+        "subtitle": 0.7,
+        "tatoeba": 0.2,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.250066728680533,
+        "wikitext": 10.896396679127246
+      },
+      "macro_nll": 10.57323170390389
+    },
+    {
+      "weights": {
+        "subtitle": 0.7,
+        "tatoeba": 0.3,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.052430018044788,
+        "wikitext": 11.753422698792864
+      },
+      "macro_nll": 10.902926358418826
+    },
+    {
+      "weights": {
+        "subtitle": 0.8,
+        "tatoeba": 0.0,
+        "wikitext": 0.2
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 11.893414120495937,
+        "wikitext": 10.717608218026038
+      },
+      "macro_nll": 11.305511169260988
+    },
+    {
+      "weights": {
+        "subtitle": 0.8,
+        "tatoeba": 0.1,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.47176928718567,
+        "wikitext": 10.890720632849176
+      },
+      "macro_nll": 10.681244960017423
+    },
+    {
+      "weights": {
+        "subtitle": 0.8,
+        "tatoeba": 0.2,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.203270719056368,
+        "wikitext": 11.736961022673722
+      },
+      "macro_nll": 10.970115870865044
+    },
+    {
+      "weights": {
+        "subtitle": 0.9,
+        "tatoeba": 0.0,
+        "wikitext": 0.1
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 11.911586250528462,
+        "wikitext": 10.905897267405775
+      },
+      "macro_nll": 11.408741758967118
+    },
+    {
+      "weights": {
+        "subtitle": 0.9,
+        "tatoeba": 0.1,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 10.457938846075637,
+        "wikitext": 11.753928124746272
+      },
+      "macro_nll": 11.105933485410954
+    },
+    {
+      "weights": {
+        "subtitle": 1.0,
+        "tatoeba": 0.0,
+        "wikitext": 0.0
+      },
+      "neural_oov_validation_nll": {
+        "tatoeba": 12.45495892647562,
+        "wikitext": 11.99078897344431
+      },
+      "macro_nll": 12.222873949959965
+    }
+  ],
+  "validation": {
+    "baseline": {
+      "tatoeba": {
+        "tokens": 64473,
+        "covered_tokens": 63668,
+        "coverage": 0.9875141532114219,
+        "neural_oov_tokens": 1335,
+        "covered_neural_oov_tokens": 530,
+        "neural_oov_coverage": 0.3970037453183521,
+        "supported_neural_oov_nll": 11.453270254911855
+      },
+      "wikitext": {
+        "tokens": 392772,
+        "covered_tokens": 378819,
+        "coverage": 0.9644755736152272,
+        "neural_oov_tokens": 26206,
+        "covered_neural_oov_tokens": 12253,
+        "neural_oov_coverage": 0.46756467984431044,
+        "supported_neural_oov_nll": 12.321883553498354
+      }
+    },
+    "candidate": {
+      "tatoeba": {
+        "tokens": 64473,
+        "covered_tokens": 63758,
+        "coverage": 0.9889100863927536,
+        "neural_oov_tokens": 1335,
+        "covered_neural_oov_tokens": 620,
+        "neural_oov_coverage": 0.46441947565543074,
+        "supported_neural_oov_nll": 9.994516020669865
+      },
+      "wikitext": {
+        "tokens": 392772,
+        "covered_tokens": 380352,
+        "coverage": 0.9683786013259601,
+        "neural_oov_tokens": 26206,
+        "covered_neural_oov_tokens": 13786,
+        "neural_oov_coverage": 0.5260627337251012,
+        "supported_neural_oov_nll": 10.805372329586277
+      }
+    },
+    "common_support_baseline": {
+      "tatoeba": {
+        "tokens": 530,
+        "covered_tokens": 530,
+        "coverage": 1.0,
+        "neural_oov_tokens": 530,
+        "covered_neural_oov_tokens": 530,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 11.453270254911855
+      },
+      "wikitext": {
+        "tokens": 12253,
+        "covered_tokens": 12253,
+        "coverage": 1.0,
+        "neural_oov_tokens": 12253,
+        "covered_neural_oov_tokens": 12253,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 12.321883553498354
+      }
+    },
+    "common_support_candidate": {
+      "tatoeba": {
+        "tokens": 530,
+        "covered_tokens": 530,
+        "coverage": 1.0,
+        "neural_oov_tokens": 530,
+        "covered_neural_oov_tokens": 530,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 10.1667851680527
+      },
+      "wikitext": {
+        "tokens": 12253,
+        "covered_tokens": 12253,
+        "coverage": 1.0,
+        "neural_oov_tokens": 12253,
+        "covered_neural_oov_tokens": 12253,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 10.632242505070183
+      }
+    }
+  },
+  "ngrams": {
+    "bigrams": 0,
+    "trigrams": 0,
+    "starters": 0,
+    "phrase_contexts": 0
+  },
+  "policies": "Preserve/no-auto-replacement only; no suggestion boosts.",
+  "baseline_sha256": "a549a5306501c80fc317cb2a855b95428996ad1c4a24b759cbecfcbe3a979d93",
+  "model_sha256": "d1cecea11a181771dc260b701e6afa64a358973bd631a9b6e1a16299552b4067",
+  "builder_sha256": "2e3185c6fc0c5506b13787a1edb90baf11ccd5e65a91942e2cff77cec8567d5d",
+  "validation_database_sha256": "89b764a8847a1a575a8c6b7811e9fbc8176bc31c287b6fdf3cc70781667ace61",
+  "model_vocabulary_sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+  "model_output_layer_changed": false,
+  "inputs": {
+    "tools/data/esdb-v2-en-60-70-2026-07-20.tsv.bz2": "b24c7392b4aec4adfea0b9322f80f86ab14a3ce13b74825ba2453af38c49ec28",
+    "tools/.cache/en_full.txt": "7fea67ab954e2c01df6c608c9826e594cf36f8823b3243554f88245fb75dc506",
+    "tools/.cache/rigorous-2026-11-02/corpus/counts.tsv.gz": "94ba52d72743f7f7697cd0f51400d29689d6318ec73b41784df7d54eb6249464",
+    "tools/.cache/rigorous-2026-11-02/corpus/corpus.json": "86c91b3012724b3bd646341f66114d839498808dc77c0ce0962469e7631f3c17",
+    "tools/vocabulary/modern_catalog.json": "043d80a0055b8efa743a327909c9457fe661edec3113035963c65ba0b1f6cbbe"
+  },
+  "split_limitations": [
+    "No user IDs in cached sources; split unit is dialogue/article/text document.",
+    "Exact dedup only; near duplicates not certified absent.",
+    "Legacy baseline may have seen cross-document duplicates; new training excludes all retained holdout sentences.",
+    "Cached heldouts have prior research exposure; no blind modern final test is available."
+  ],
+  "test_used_for_selection": false,
+  "limitations": [
+    "Word forms include inflections and possessives, not this many distinct headwords.",
+    "The historical ESDB snapshot is American English and folds source casing/accents to ASCII; it is not an unmodified regional spelling catalog.",
+    "No fresh representative Indian-English or contemporary human-chat frequency corpus is available.",
+    "Unobserved forms have smoothing weights, not empirically measured frequencies.",
+    "Existing non-ASCII and hyphenated forms are retained but remain unsupported by the NSS ASCII graph.",
+    "Existing baseline lexical noise is retained for compatibility.",
+    "Large spelling coverage alone does not establish better correction or prediction."
+  ],
+  "artifacts": {
+    "ADDED_WORDS.tsv": {
+      "bytes": 3979650,
+      "sha256": "72060be16a4db273d2f5e33cea9ba34746c7da3188d1afb986f6d857ba505f1f"
+    },
+    "ADDED_WORDS.txt": {
+      "bytes": 762858,
+      "sha256": "1747da0a5db73a045af630a5cf1b1178033fa5585b522498549498683baf55fe"
+    },
+    "MODERN_COVERAGE.tsv": {
+      "bytes": 18783,
+      "sha256": "98da6ba6550f02f36321c15faddc5743a2f49f6ba30186c70fcf1cab4cc0ff87"
+    },
+    "NOTICE.txt": {
+      "bytes": 6037,
+      "sha256": "6a2de44105cfe4fdbfcb6a1327244d652093107180fb1de99b76e83fff00dc8c"
+    },
+    "baseline-unigram.bin": {
+      "bytes": 5708169,
+      "sha256": "a41b53b85996ddd12c27db79b8986b3708d54fa10a5a1fc35cb6a817da613d24"
+    },
+    "baseline-unigram.kbmodern": {
+      "bytes": 568,
+      "sha256": "f3aced0445bc325737e3c940d46e553c5b13dd51fa4e7ec016c2ec1091d2cd57"
+    },
+    "english-unigram.bin": {
+      "bytes": 9254997,
+      "sha256": "f7f3c5f01aa30619544b3312c7f774bf34e2f088810a15d819d822d3f04344b1"
+    },
+    "english-unigram.kbmodern": {
+      "bytes": 568,
+      "sha256": "47975beb810c4265e604f75969ced3f86b5f618e1228af5d47f57fc764c989b3"
+    },
+    "unigrams.tsv": {
+      "bytes": 10818278,
+      "sha256": "bb23792cdb2ce184d79de41c18be976654cd14969451d4124d93d1873899f541"
+    }
+  }
+}

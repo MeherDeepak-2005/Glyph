@@ -84,7 +84,7 @@ SUPPLEMENTAL = ROOT / "data" / "english_supplemental.tsv"
 OUT = ROOT.parent / "keyboard" / "langdata.bin"
 EXPANSION_MANIFEST = ROOT / "data" / "english-expansion-v1.manifest.json"
 COREV4_MANIFEST = ROOT / "data" / "corev4" / "english" / "manifest.json"
-LANGDATA_CAP = 8_000_000
+LANGDATA_CAP = 10_000_000
 
 
 def sha256(path: Path) -> str:

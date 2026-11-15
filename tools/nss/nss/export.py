@@ -211,12 +211,23 @@ def main(argv: list[str] | None = None) -> None:
     if checkpoint["vocabulary_sha256"] != vocab.sha256:
         raise SystemExit("checkpoint was trained on a different vocabulary")
     lexicon = Lexicon.load()
-    if checkpoint["langdata_sha256"] != lexicon.sha256:
-        print("note: keyboard/langdata.bin changed since the training data was built", flush=True)
     model = build(checkpoint["config"]["model"], len(vocab))
     model.load_state_dict(checkpoint["model"])
     model.eval()
+    # The share of <unk> that belongs to lexicon words depends on the lexicon, not on the
+    # weights: when the dictionary changed after training, take it from a corpus recounted
+    # against the current one (build_corpus; the tokens do not depend on the lexicon).
     share = float(checkpoint["unk_lexicon_share"])
+    if checkpoint["langdata_sha256"] != lexicon.sha256:
+        corpus = json.loads((args.data / "corpus.json").read_text())
+        if corpus["langdata_sha256"] == lexicon.sha256 and corpus["vocabulary_sha256"] == vocab.sha256:
+            from .data import lexicon_share
+            recounted = lexicon_share(args.data, checkpoint["data"]["weights"])
+            print(f"<unk> lexicon share recounted for the current dictionary: {share:.4f} -> {recounted:.4f}", flush=True)
+            share = recounted
+        else:
+            print("note: keyboard/langdata.bin changed since the training data was built; "
+                  "rerun nss.build_corpus to recount the <unk> lexicon share", flush=True)
     reference = quantized_copy(model)
     center = unk_log_center(reference, args.data)
     info = write(model, vocab, share, lexicon.sha256, args.out, center)

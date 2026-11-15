@@ -161,8 +161,8 @@ private:
 class NeuralFstSearch final {
 public:
     // The channel is key geometry (geometricSubstitutionCost) plus uniform insertion,
-    // deletion and transposition costs, without spelling rules (doubled letters,
-    // vowel/sound-alike confusions, apostrophe skips).
+    // deletion and transposition costs, with the product rules in NssRules.hpp layered on
+    // top (nssRules 0 = geometry and uniform costs alone).
     // channelWeight: the channel cost's weight against log P in every score and bound.
     struct Options { double beam = 16; std::size_t width = 512; double channelWeight = kb::channelWeight; };
     explicit NeuralFstSearch(NeuralFst& graph) : graph_(graph) {}
@@ -188,6 +188,7 @@ private:
     std::unordered_set<std::string> complete_;
     std::vector<RankedRow> completeRows_;
     std::string typed_;
+    std::uint8_t lastLetter_ = 0;   // the last typed letter the beam consumed
     std::vector<std::optional<TouchOffset>> taps_;
     std::uint64_t revision_ = 0;
     std::size_t expandedLastFrame_ = 0;

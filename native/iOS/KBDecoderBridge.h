@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 // Installs the safety-blocked words as a word-ID bitset, once, before any decode: the
 // decoder never emits them afterwards.
 - (void)installBlockedFromSafety:(KBNativeSafetyLexicon *)safety;
+// Installs the spelling policies (langdata.kbmodern) once, before any decode. NO when the
+// sidecar is malformed or was built for a different dictionary; decoding then runs without them.
+- (BOOL)installModernData:(NSData *)data;
 @end
 
 // The decoder's letter grid (native SpatialModel). The app installs its layout pack's grid

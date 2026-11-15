@@ -117,6 +117,7 @@
 				Engine/Vocabulary/LangData.swift,
 				english_layout.kbpack,
 				langdata.bin,
+				langdata.kbmodern,
 				safety.kbguard,
 				Shared/HostDocumentReconciler.swift,
 				Shared/HostSuffixReplacementPlan.swift,
@@ -162,6 +163,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				langdata.bin,
+				langdata.kbmodern,
 				"nss-english.goldens.json",
 				"nss-english.manifest.json",
 				"nss-english.nsslm",
@@ -615,7 +617,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG RESEARCH_BETA $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -672,7 +674,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "RESEARCH_BETA $(inherited)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -689,6 +691,7 @@
 				DEVELOPMENT_TEAM = U66M5N8GCZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/AppInfo.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glyph;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -727,6 +730,7 @@
 				ENABLE_CODE_COVERAGE = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/AppInfo.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glyph;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

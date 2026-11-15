@@ -20,6 +20,12 @@ nonisolated final class LangData {
 		// anything but a valid v7 dictionary.
 		guard let backing = try? NSData(contentsOf: url, options: .alwaysMapped),
 			let reader = try? KBPackedLexicon(backing: backing) else { return nil }
+		// Spelling policies for modern vocabulary ride beside the dictionary; a missing or
+		// mismatched sidecar is refused natively and decoding runs without them.
+		if let sidecar = try? Data(contentsOf: url.deletingPathExtension().appendingPathExtension("kbmodern")),
+		   !reader.installModernData(sidecar) {
+			KBDiagnostics.recorder.storageFailure(operation: "kbmodern-load")
+		}
 		let d = Data(referencing: backing)
 		data = d
 		nativeCandidateLexicon = reader

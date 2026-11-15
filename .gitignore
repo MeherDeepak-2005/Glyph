@@ -79,6 +79,10 @@ graphify-out/
 !tools/data/corev4/**/*.txt
 !docs/corev4-import/*.txt
 
+# The research PUBLIC key ships with the app; the unigram dictionary's notices and word list are source.
+!keyboard/App/research-public-key.txt
+!tools/data/nss/unigram-v1/*.txt
+
 # Portable decoder build definitions are source, not generated text.
 !CMakeLists.txt
 
@@ -88,3 +92,6 @@ graphify-out/
 # NSS word LM workspace: tokenized corpora and training runs (tools/nss/README.md)
 tools/nss/data/
 tools/nss/runs/
+
+## The research private key opens every uploaded typing recording (tools/research/chunks.swift)
+Config/research-private-key.txt

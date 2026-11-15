@@ -61,6 +61,22 @@ extension KeyboardView {
 
     func keyLabelForTesting(at point: CGPoint) -> String? { key(at: point)?.accessibilityLabel }
 
+	/// The deck as the finger sees it, for the typing recorder: every key's label and rectangle
+	/// in this view's points, the letter pitches the decoder uses, and the screen it is on.
+	func recordedGeometry() -> KBTypingRecorder.Layout {
+		func tenth(_ value: CGFloat) -> Double { (Double(value) * 10).rounded() / 10 }
+		let keys = rows.joined().prefix(128).map { key in
+			KBTypingRecorder.Key(label: String((key.popupText ?? key.committedText ?? key.accessibilityLabel ?? "").prefix(16)),
+				x: tenth(key.frame.minX), y: tenth(key.frame.minY), w: tenth(key.frame.width), h: tenth(key.frame.height))
+		}
+		let screen = window?.windowScene?.screen
+		return KBTypingRecorder.Layout(width: tenth(bounds.width), height: tenth(bounds.height),
+			xPitch: tenth(unitPitch), yPitch: tenth(rowHeight + rowSpacing), keys: Array(keys),
+			page: "\(page)", profile: "\(metrics.profile)",
+			screenWidth: tenth(screen?.bounds.width ?? 0), screenHeight: tenth(screen?.bounds.height ?? 0),
+			screenScale: Double(screen?.scale ?? 0))
+	}
+
 	func keyFramesForTesting() -> [CGRect] {
 		rows.flatMap { $0 }.map(\.frame)
 	}

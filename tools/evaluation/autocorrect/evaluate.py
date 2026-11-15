@@ -195,6 +195,8 @@ def metrics(meta):
         'GUARD unknown names changed': (by.get('keep_name', []) + by.get('keep_name_ctx', []), changed, False, True),
         'GUARD unknown slang changed': (by.get('keep_slang', []), changed, False, True),
         'GUARD rare dictionary words changed': (by.get('keep_word', []), changed, False, True),
+        # make_tenglish.py: Roman Telugu typed between English words, meant as typed.
+        'GUARD Tenglish words changed': (by.get('keep_tenglish', []), changed, False, True),
         'GUARD correct plurals stripped': (pick(lambda m: m['set'] in ('clean', 'ecps_ok') and m['target'].endswith('s') and len(m['target']) > 3),
                                            lambda r, m: commit(r, m) == m['target'][:-1], False, True),
         'GUARD real-word errors fixed': (by.get('realword', []), fixed, True, True),
@@ -233,7 +235,7 @@ def score(name, vs, split, json_out):
     # Keystroke savings and latency are not paired-binary: thresholded instead.
     nw = [i for i, m in meta.items() if m['set'] == 'nw' and i in runs['new'][0] and i in runs['ref'][0]]
     def savings(rows): return 100 * sum(rows[i]['len'] - rows[i]['kf'] for i in nw) / sum(rows[i]['len'] + 1 for i in nw) if nw else float('nan')
-    def lat(rows, ids, key='ms'): return [rows[i][key] for i in ids if key in rows[i]]
+    def lat(rows, ids, key='ms'): return [rows[i][key] for i in ids if i in rows and key in rows[i]]
     typo = [i for i, m in meta.items() if m['set'] in ('ecps', 'syn') and i in runs['new'][0] and i in runs['ref'][0]]
     keys = lambda rows: [x for i in nw for x in rows[i].get('msk', [])]
     extra = [('GUARD keystroke savings', savings(runs['ref'][0]), savings(runs['new'][0]), savings(runs['core'][0]), 0.5, True)]

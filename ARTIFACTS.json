@@ -4,15 +4,23 @@
   "artifacts": [
     {
       "path": "keyboard/langdata.bin",
-      "sha256": "6345821a4a81337c3afe28674b8bdf76afd99e14e5f0121646c25592b621781a",
-      "bytes": 5707850,
+      "sha256": "de4a9277d7371deae2026b7d317b40468f0cad7799cb313eb01871cad258511a",
+      "bytes": 9254977,
       "format": "KBLM v7",
-      "builder": "tools/build_language_data.py",
+      "builder": "tools/vocabulary/build_unigram_pack.py",
       "contents": {
-        "words": 114283,
-        "trieNodes": 275561
+        "words": 187462,
+        "trieNodes": 437845
       },
       "inputs": [
+        {
+          "name": "NSS unigram dictionary v1 ledger (every word form with its sources and stored weight)",
+          "path": "tools/data/nss/unigram-v1/unigrams.tsv",
+          "sha256": "bb23792cdb2ce184d79de41c18be976654cd14969451d4124d93d1873899f541",
+          "provenance": "tools/data/nss/unigram-v1/manifest.json",
+          "notices": "tools/data/nss/unigram-v1/NOTICE.txt",
+          "transformation": "Packed in (-weight, word) order as KBLM v7; no word, weight or word ID differs from the ledger. The ledger was estimated on the dev branch (tools/vocabulary/build_unigram.py) from the inputs of the previous pack, listed below, plus WikiText-103 counts."
+        },
         {
           "name": "English Speller Database v2 size-60/70 snapshot",
           "path": "tools/data/esdb-v2-en-60-70-2026-07-20.tsv.bz2",
@@ -70,7 +78,37 @@
           "transformation": "Union with existing vocabulary; retain existing frequencies; new frequency prior 1; preserve four contraction-policy exclusions. Original dictionary and context files are offline assets."
         }
       ],
-      "integrationReport": "docs/corev4-import/IMPORT-RESULTS.txt"
+      "integrationReport": "docs/unigram-v1/README.md",
+      "previous": {
+        "sha256": "6345821a4a81337c3afe28674b8bdf76afd99e14e5f0121646c25592b621781a",
+        "bytes": 5707850,
+        "contents": {
+          "words": 114283,
+          "trieNodes": 275561
+        },
+        "builder": "tools/build_language_data.py"
+      }
+    },
+    {
+      "path": "keyboard/langdata.kbmodern",
+      "sha256": "d698e5f380958cbe19d98485a31a609e8f49a5c5ca3ed43b8c134c34583ef852",
+      "bytes": 568,
+      "format": "KBMODERN v1",
+      "builder": "tools/vocabulary/build_unigram_pack.py",
+      "contents": {
+        "policies": 60,
+        "contexts": 0,
+        "boundTo": "SHA-256 of keyboard/langdata.bin"
+      },
+      "inputs": [
+        {
+          "name": "Modern vocabulary catalog (reviewed spelling policies)",
+          "path": "tools/vocabulary/modern_catalog.json",
+          "sha256": "043d80a0055b8efa743a327909c9457fe661edec3113035963c65ba0b1f6cbbe",
+          "license": "Project-owned"
+        }
+      ],
+      "transformation": "Word IDs of catalog entries that are preserved spellings or never automatic replacements; no suggestion boosts."
     },
     {
       "path": "keyboard/nss-english.nsslm",

@@ -10,6 +10,7 @@ extension KeyboardViewController {
 	func handleGlide(_ path: [CGPoint], _ times: [TimeInterval], _ layout: GlideLayout) {
         let liftDocument = readHostDocument()
 		let liftAt = ProcessInfo.processInfo.systemUptime
+		holdGlideSamples(from: keyboard, liftAt: liftAt)
 		let sessionID = activeGlideSessionID
 		let publishedPrediction: GlidePrediction? = {
 			guard let shown = displayedGlidePrediction,
@@ -41,7 +42,7 @@ extension KeyboardViewController {
 		invalidateSuggestionRequests(cancelEngineWork: true)
 		resetEraseTracking()
 		wordTaps.removeAll(keepingCapacity: true)
-		guard !secure else { return }                    // no gliding passwords
+		guard !secure else { pendingGlideRecord = nil; return }   // no gliding passwords
 		resolveCorrectionAsAccepted()
 		resolveGlideUnverified()
 		if publishedPrediction == nil, let sessionID {
@@ -49,7 +50,7 @@ extension KeyboardViewController {
 			engine.finishGlideSession(sessionID, path: path, times: times, layout: layout) {
 				[weak self] word, alternatives in
 				guard let self else { return }
-				guard let word else { self.scheduleSuggestions(); return }
+				guard let word else { self.recordGlide(outcome: "rejected"); self.scheduleSuggestions(); return }
 				self.commitGlidedWord(word, alternatives: alternatives, context: context,
 					documentContext: before, expectedDocument: liftDocument, liftAt: liftAt)
 			}
@@ -59,7 +60,7 @@ extension KeyboardViewController {
 		engine.glide(path: path, times: times, layout: layout, context: context,
 			publishedPrediction: publishedPrediction) { [weak self] word, alternatives in
 			guard let self else { return }
-			guard let word else { self.scheduleSuggestions(); return }
+			guard let word else { self.recordGlide(outcome: "rejected"); self.scheduleSuggestions(); return }
 			self.commitGlidedWord(word, alternatives: alternatives, context: context,
 							   documentContext: before, expectedDocument: liftDocument, liftAt: liftAt)
 		}
@@ -70,6 +71,7 @@ extension KeyboardViewController {
                                    liftAt: TimeInterval) {
         guard let expectedDocument, let current = readHostDocument(),
             current.isAvailable, expectedDocument.matches(current) else {
+            recordGlide(outcome: "dropped")
             reconcileHostDocument()
             return
         }
@@ -80,6 +82,7 @@ extension KeyboardViewController {
         if let documentContext,
             (textDocumentProxy.documentContextBeforeInput ?? "") != documentContext {
             KBDiagnostics.noteIntegrityEvent("glide-context-moved")
+            recordGlide(outcome: "dropped")
             return
         }
 		let ctx = documentContext ?? textDocumentProxy.documentContextBeforeInput ?? ""
@@ -96,6 +99,7 @@ extension KeyboardViewController {
 		// handleInsert — so it is not re-counted as a tap here, which is exactly what drops
 		// keystrokes-per-character below 1.0.
 		recordCommitMetrics(word, autocorrected: false, source: "glide-unverified")
+		recordGlide(outcome: "committed", word: word)
 		learnCommittedWord(word)
 		lastCorrection = Correction(original: "", corrected: display, trailing: " ", fromAutocorrect: false, recordedWordSessionID: wordSessionID)
 		advanceWordSession()
@@ -135,7 +139,9 @@ extension KeyboardViewController {
 		noteProxyEdit()
 		if !wordTaps.isEmpty { wordTaps.removeLast() }
 		if !currentWordBuffer.isEmpty { currentWordBuffer.removeLast() }
-		if !typingTrace.keystrokes.isEmpty { typingTrace.keystrokes.removeLast() }
+		// The gesture replaces the word being typed: its letters and timing are not the glide's.
+		typingTrace = TypingTrace()
+		glidePreviewCount = 0
 		recordTyping("glide-began", evidence: "retract-provisional-letter")
 		glidePreviewEnabled = true
 		let before = textDocumentProxy.documentContextBeforeInput ?? ""
@@ -147,6 +153,7 @@ extension KeyboardViewController {
 
 	func handleGlidePreview(_ path: [CGPoint], _ times: [TimeInterval], _ layout: GlideLayout) {
 		guard glidePreviewEnabled else { return }
+		glidePreviewCount += 1
 		glidePreviewSequence &+= 1
 		pendingGlidePreview = GlidePreviewRequest(
 			path: path,

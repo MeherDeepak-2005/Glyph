@@ -1,4 +1,5 @@
 #include "../include/PackedLexicon.hpp"
+#include "../include/DictionaryDigest.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -187,5 +188,52 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
     for (const auto& [id, cost] : hits)
         result.push_back({std::string(word(id)), cost, std::log(double(std::max(frequency(id), 1u)) + 1)});
     return result;
+}
+bool PackedLexicon::installModern(std::span<const std::byte> sidecar) const {
+    constexpr std::string_view sidecarMagic = "KBMODERN";
+    constexpr std::size_t header = 56, digest = 32;   // magic, 4 x u32, dictionary SHA-256
+    if (!policies_.empty() || sidecar.size() < header + digest || sidecar.size() > 1'000'000) return false;
+    auto field = [&](std::size_t at) {
+        std::uint32_t value = 0;
+        for (unsigned i = 0; i < 4; ++i) value |= std::to_integer<std::uint32_t>(sidecar[at + i]) << (8 * i);
+        return value;
+    };
+    for (std::size_t i = 0; i < sidecarMagic.size(); ++i) if (sidecar[i] != std::byte(sidecarMagic[i])) return false;
+    const auto count = field(16);
+    // Version 1, this dictionary's word count, no context rows (they fed the n-gram strip).
+    if (field(8) != 1 || field(12) != words_ || field(20) != 0 || count > 10'000 ||
+        sidecar.size() != header + 8 * std::size_t(count) + digest) return false;
+    const auto checksum = dictionarySHA256(sidecar.first(sidecar.size() - digest));
+    if (!std::equal(checksum.begin(), checksum.end(), sidecar.end() - digest)) return false;
+    const auto dictionary = dictionarySHA256(bytes_);
+    if (!std::equal(dictionary.begin(), dictionary.end(), sidecar.begin() + 24)) return false;
+    std::vector<Policy> policies;
+    policies.reserve(count);
+    for (std::size_t i = 0; i < count; ++i) {
+        const Policy policy{field(header + 8 * i), field(header + 8 * i + 4)};
+        // A preserved spelling is also never an automatic replacement (bit 0 implies bit 1).
+        if (policy.word >= words_ || !policy.flags || (policy.flags & ~3u) || ((policy.flags & 1) && !(policy.flags & 2)) ||
+            (!policies.empty() && policy.word <= policies.back().word)) return false;
+        policies.push_back(policy);
+    }
+    policies_ = std::move(policies);
+    return !policies_.empty();
+}
+std::uint32_t PackedLexicon::modernFlags(std::string_view text) const {
+    if (policies_.empty()) return 0;
+    const auto id = wordID(text);
+    if (!id) return 0;
+    const auto found = std::lower_bound(policies_.begin(), policies_.end(), std::uint32_t(*id),
+        [](const Policy& policy, std::uint32_t wanted) { return policy.word < wanted; });
+    return found != policies_.end() && found->word == std::uint32_t(*id) ? found->flags : 0;
+}
+bool PackedLexicon::allowsCorrection(std::string_view text) const {
+    while (!text.empty()) {
+        const auto end = text.find(' ');
+        if (modernFlags(text.substr(0, end)) & 2) return false;
+        if (end == text.npos) break;
+        text.remove_prefix(end + 1);
+    }
+    return true;
 }
 } // namespace kb

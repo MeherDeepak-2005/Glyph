@@ -11,14 +11,35 @@ artifacts are unchanged.
 Use Python 3.12 or newer. From the repository root:
 
 ```sh
-python3 -B tools/build_language_data.py
+python3 -B tools/vocabulary/build_unigram_pack.py            # writes keyboard/langdata.bin + langdata.kbmodern
+python3 -B tools/vocabulary/build_unigram_pack.py --check    # fails when either file is stale
+python3 -B -m unittest tools/vocabulary/test_unigram_pack.py
+```
+
+The shipped pack is the **unigram-v1** dictionary: 187,462 word forms (the 114,288-form
+reference plus 73,174 additions; nothing removed) with re-estimated unigram weights. Its
+ledger, `tools/data/nss/unigram-v1/unigrams.tsv`, lists every word with its sources and
+stored weight; `manifest.json` beside it records how the weights were estimated and
+`docs/unigram-v1/README.md` the evaluation. The estimate itself was produced on the `dev`
+branch (`tools/vocabulary/build_unigram.py` there); this branch packs the ledger into
+KBLM v7 without changing a word, a weight or a word ID.
+
+`langdata.kbmodern` carries the spelling policies of `tools/vocabulary/modern_catalog.json`
+for the words in the pack: a *preserved* spelling (rizz, delulu, ngl...) is never
+autocorrected away, and a *never-automatic* word is offered on the strip but never committed
+for the user. The sidecar is bound to the pack by SHA-256, so the two files are always
+rebuilt together. Layout: `tools/vocabulary/build_unigram_pack.py`.
+
+The earlier 114,283-word pack is still reproducible:
+
+```sh
+python3 -B tools/build_language_data.py --output /existing/folder/reference.bin
 python3 -B -m unittest tools/test_build_language_data.py tools/vocabulary/test_pipeline.py
 ```
 
-The builder verifies the committed compressed snapshots, manifest and curated
+That builder verifies the committed compressed snapshots, manifest and curated
 inputs, then writes the pack atomically. Its existing pinned FrequencyWords cache
-may need downloading on a fresh machine. Use `--output /existing/folder/candidate.bin`
-to build a candidate first; the default builds the 114,283-word full CoreV4 union.
+may need downloading on a fresh machine.
 `tools/verify_language_data.py keyboard/langdata.bin candidate.bin` checks that two
 packs hold the same vocabulary, frequencies and trie (it also reads the v4-v6 packs in
 the git history).
@@ -67,7 +88,7 @@ benchmark/audit evidence under a different filename.
 - MASC training counts are admission evidence only. Held-out text is **not** a
   runtime pack resource.
 - Regenerate all numeric IDs, retain frequency ordering, and reject packs above
-  8,000,000 bytes (`LANGDATA_CAP`).
+  10,000,000 bytes (`LANGDATA_CAP`).
 
 Existing runtime safety filtering remains authoritative. This phase does not add
 locale/register-specific runtime ranking or promise tone awareness; provenance
@@ -104,7 +125,7 @@ English tokenization/display policy; this expansion does not silently rewrite th
 
 Check the **complete arm64 iPhone extension**, not just the dictionary, using
 `tools/verify_release_artifacts.py /path/to/demo_keyboard.appex --allow-neural --output /tmp/bundle-audit.json`.
-Its budgets are 8,000,000 bytes for the language pack and 25,000,000 bytes for the
+Its budgets are 10,000,000 bytes for the language pack and 25,000,000 bytes for the
 extension with the NSS word model. A universal simulator executable includes x86_64
 and arm64 and is not the iPhone shipping-size measurement. Final signing and
 provisioning can add bytes; verify the distribution archive as well.

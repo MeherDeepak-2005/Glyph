@@ -2,6 +2,8 @@
 // line: `decode` for corpus.json (golden-corpus.json), `glide` for glides.json (golden-glide.json).
 // native/tests/EngineTests.cpp replays both.
 //   gengolden langdata.bin model.nsslm REPO FIXTURES decode|glide
+#include <string>
+#include <vector>
 #include "Engine.hpp"
 #include "Safety.hpp"
 #include "MiniJson.hpp"
@@ -25,11 +27,21 @@ static const char* sourceName(CandidateSource source) {
     static const char* names[] = {"typed", "fuzzyLexicon", "splitCorrection"};
     return names[static_cast<int>(source)];
 }
+// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
+// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
+static void installPolicies(const PackedLexicon& lexicon, std::string path) {
+    if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
+    std::ifstream in(path + ".kbmodern", std::ios::binary);
+    if (!in) return;
+    std::vector<char> sidecar((std::istreambuf_iterator<char>(in)), {});
+    lexicon.installModern({reinterpret_cast<const std::byte*>(sidecar.data()), sidecar.size()});
+}
 int main(int argc, char** argv) {
     if (argc != 6) { std::cerr << "usage: gengolden langdata.bin model.nsslm REPO FIXTURES decode|glide\n"; return 2; }
     const std::string root = argv[3], fixtures = argv[4], mode = argv[5];
     auto pack = bytes(argv[1]), weights = bytes(argv[2]);
     auto reader = std::shared_ptr<const PackedLexicon>(new PackedLexicon(*pack), [pack](const PackedLexicon* p) { delete p; });
+    installPolicies(*reader, argv[1]);
     auto model = NeuralWordModel::load(*weights, weights);
     auto engine = std::make_shared<Engine>(reader, model); auto state = engine->createState();
     state->setSafety(parseSafetyPenalties(slurp(root + "/keyboard/safety.kbguard")));

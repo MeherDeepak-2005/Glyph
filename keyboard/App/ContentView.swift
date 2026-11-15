@@ -135,6 +135,16 @@ struct ContentView: View {
 								   tint: Color(uiColor: .systemIndigo),
 								   title: "Privacy & Data")
 				}
+				#if RESEARCH_BETA
+				NavigationLink {
+					ResearchView()
+				} label: {
+					SettingRow(icon: "waveform.badge.magnifyingglass",
+							   tint: Color(uiColor: .systemTeal),
+							   title: "Typing Research",
+							   value: KBTypingRecorder.enabled ? "On" : "Off")
+				}
+				#endif
 				NavigationLink {
 					ThirdPartyNoticesView()
 				} label: {
@@ -177,6 +187,13 @@ struct ContentView: View {
 		.task { await commercial.refresh() }
 		.onChange(of: scenePhase) { _, phase in
 			if phase == .active { refreshInstallState() }
+			#if RESEARCH_BETA
+			// Recordings go up when the app is opened and when it is left (research on only).
+			if phase == .active || phase == .background, KBTypingRecorder.installID != nil {
+				Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }
+				ResearchUploader.scheduleBackgroundRefresh()
+			}
+			#endif
 		}
 		.alert("Reset learned words?", isPresented: $showResetConfirm) {
 			Button("Reset", role: .destructive, action: resetUserData)
@@ -389,12 +406,17 @@ private struct PrivacyDataView: View {
 	var body: some View {
 		List {
 			Section("Typing") {
-				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Glyph does not transmit the text you type to a server.")
+				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Unless you turn on Typing Research, Glyph does not transmit the text you type to a server.")
 			}
+			#if RESEARCH_BETA
+			Section("Typing Research (beta)") {
+				Text("Off unless you turn it on. While it is on, Glyph records the words you type in ordinary text fields, your touches and swipe paths, and what you do with suggestions and corrections, and uploads them encrypted to the Glyph developer to improve typing and Glide. Password, email, phone, number, address and code fields are never recorded. You can stop and delete at any time in Typing Research.")
+			}
+			#endif
 			Section("On-device storage") {
 				privacyRow("Personalization", "Word and context counts used to improve suggestions. Stored in the shared app container until reset.")
 				privacyRow("Appearance", "Theme choices remain on this device until changed or deleted.")
-				privacyRow("Diagnostics", "Release builds store only aggregate latency, memory, and storage-health counters. Typed text is never included.")
+				privacyRow("Diagnostics", "Aggregate latency, memory, and storage-health counters. Typed text is never included. With Typing Research on, these counters are uploaded with your recordings.")
 			}
 			Section("Full Access") {
 				Text("The keyboard remains usable without Full Access. Full Access enables shared settings, on-device learning persistence, and media search. Haptics stay local. Only a GIF or Sticker query you explicitly submit is sent to KLIPY; surrounding typed text is never included.")
@@ -564,7 +586,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Typing research")
 			} footer: {
-				Text("Off by default. Records typed text, key timing, touch offsets, suggestions and correction actions locally in general text fields. Ordinary text can still contain personal information. No upload. Up to 10 MB of records; files older than 7 days are removed on the next write or export. An export adds one snapshot of up to 10 MB. Delete removes both. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
+				Text("Off by default. Records typed text, key timing, touches, Glide paths, suggestions and correction actions in general text fields. Ordinary text can still contain personal information. Beta builds upload the recordings, encrypted, when the app is opened (Typing Research); up to 200 MB and 30 days wait on the device. An export adds one more copy. Delete removes what is on the device. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
 			}
 
 			Section("Input integrity") {
@@ -821,7 +843,7 @@ private struct FirstRunView: View {
 					.accessibilityIdentifier("onboarding.continue")
 
 					Spacer(minLength: 48)
-					Label("Your typing stays on your iPhone.", systemImage: "shield")
+					Label("Your typing stays on your iPhone unless you join Typing Research.", systemImage: "shield")
 						.font(.footnote)
 						.foregroundStyle(.tertiary)
 						.padding(.bottom, 18)

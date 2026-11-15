@@ -11,6 +11,9 @@
 // frequencies as u^a, KB_NSS_TYPED=1 typed text outside the lexicon scored from P(<unk>).
 //
 // Same TSV/JSONL contract as CoreBench.cpp.
+#include <string>
+#include <vector>
+#include <iterator>
 #include "Engine.hpp"
 #include "Safety.hpp"
 #include <algorithm>
@@ -92,6 +95,15 @@ static void processRecord(std::ostream& out, const char* label) {
         << ",\"footprint_bytes\":" << info.phys_footprint << ",\"heap_in_use_bytes\":" << heap.size_in_use
         << ",\"heap_allocated_bytes\":" << heap.size_allocated << "}\n";
 }
+// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
+// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
+static void installPolicies(const PackedLexicon& lexicon, std::string path) {
+    if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
+    std::ifstream in(path + ".kbmodern", std::ios::binary);
+    if (!in) return;
+    std::vector<char> sidecar((std::istreambuf_iterator<char>(in)), {});
+    lexicon.installModern({reinterpret_cast<const std::byte*>(sidecar.data()), sidecar.size()});
+}
 int main(int argc, char** argv) {
     if (argc < 5) { std::cerr << "langdata.bin safety.kbguard cases.tsv output.jsonl\n"; return 2; }
     std::ofstream out(argv[4]);
@@ -101,6 +113,7 @@ int main(int argc, char** argv) {
     void* data = mmap(nullptr, std::size_t(st.st_size), PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
     if (data == MAP_FAILED) { std::cerr << "cannot map " << argv[1] << "\n"; return 3; }
     auto reader = std::shared_ptr<const PackedLexicon>(new PackedLexicon({static_cast<const std::byte*>(data), std::size_t(st.st_size)}));
+    installPolicies(*reader, argv[1]);
     EngineOptions options;
     if (std::getenv("KB_NSS_PAPER") && std::string(std::getenv("KB_NSS_PAPER")) == "1") options.nssExact = false;
     if (std::getenv("KB_NSS_FLOOR") && std::string(std::getenv("KB_NSS_FLOOR")) == "0") options.nssUnigramFloor = false;

@@ -84,6 +84,8 @@ final class KeyboardViewController: UIInputViewController {
 		var trailing: String       // boundary/space/newline inserted after it (may be "")
 		let fromAutocorrect: Bool  // engine autocorrect: suppress re-correction on undo
 		var recordedWordSessionID: UInt64? = nil
+		/// When it was applied (systemUptime): the recorder reports how long it stood.
+		var appliedAt = ProcessInfo.processInfo.systemUptime
 	}
 	var lastCorrection: Correction?
 
@@ -98,7 +100,7 @@ final class KeyboardViewController: UIInputViewController {
 	var replacementStarted = false
 	/// Recent autocorrects (typed → corrected), so erasing a correction and retyping
 	/// the original is recognizable even after `lastCorrection` expired.
-	var recentCorrections: [(original: String, corrected: String)] = []
+	var recentCorrections: [(original: String, corrected: String, word: UInt64)] = []
 
 	/// Per-tap landing offsets for the word currently being typed, one per letter, so
 	/// the channel model can score sub-key precision. Best-effort: cleared on word
@@ -117,6 +119,26 @@ final class KeyboardViewController: UIInputViewController {
 	}
 	var typingTrace = TypingTrace()
 	var lastKeyUptime = 0.0
+	/// Typing-recorder state (KeyboardViewController+Recording.swift); the decoder reads none of it.
+	/// A lifted gesture's samples wait here until the decoder answers.
+	struct PendingGlideRecord {
+		let samples: [KeyboardView.GlideSample]
+		let startKey: String?
+		let previews: Int
+		let liftAt: Double
+	}
+	var pendingGlideRecord: PendingGlideRecord?
+	var glidePreviewCount = 0
+	/// The geometry the recorder last described: a touch on any other gets a `layout` event first.
+	struct RecordedLayout: Equatable {
+		let revision: UInt64
+		let view: ObjectIdentifier
+		let size: CGSize
+		let page: KeyboardSurfacePage
+	}
+	var recordedLayout: RecordedLayout?
+	/// The correction whose acceptance was already recorded (its word session).
+	var recordedAcceptance: UInt64?
 
 	/// A glided word is awaiting an explicit verdict. Typing on is intentionally
 	/// unlabelled: only selecting an alternative is safe supervision for adaptation.
@@ -294,10 +316,16 @@ final class KeyboardViewController: UIInputViewController {
 		kb.glideEnabled     = true
 		showModelTier(on: kb)
 		let touchViewID = UUID().uuidString
-		kb.onTouchSample = { [weak self, weak kb] phase, id, key, time, tap in
+		kb.onTouchSample = { [weak self, weak kb] sample in
 			guard let self, let kb, self.keyboard === kb,
 				!kb.isEmojiSearching, !kb.isMediaSearching else { return }
-			self.recordTyping(phase, text: key, tap: tap, touchID: "\(touchViewID):\(id)", at: time)
+			if sample.phase == "touch-down" { self.recordLayoutIfNeeded() }
+			self.recordTyping(sample.phase, text: sample.key, tap: sample.tap, touchID: "\(touchViewID):\(sample.id)",
+				point: sample.point, radius: sample.radius, at: sample.time)
+		}
+		kb.recordsGlideSamples = { [weak self] in
+			guard let self else { return false }
+			return KBTypingRecorder.enabled && self.permitsTypingData
 		}
 		kb.onInsert         = { [weak self] ch, tap in self?.handleInsert(ch, tap: tap) }
 		kb.onReplaceLastInput = { [weak self] base, replacement in
@@ -328,7 +356,12 @@ final class KeyboardViewController: UIInputViewController {
 		kb.onGlidePreview   = { [weak self] path, times, layout in
 			self?.handleGlidePreview(path, times, layout)
 		}
-		kb.onGlideCancelled = { [weak self] in self?.cancelGlidePreview(clearStrip: true) }
+		kb.onGlideCancelled = { [weak self, weak kb] in
+			guard let self else { return }
+			self.holdGlideSamples(from: kb, liftAt: ProcessInfo.processInfo.systemUptime)
+			self.recordGlide(outcome: "cancelled")
+			self.cancelGlidePreview(clearStrip: true)
+		}
 		kb.onGlide          = { [weak self] path, times, layout in self?.handleGlide(path, times, layout) }
 		// Emoji search swaps the strip for a taller header. The `keyboard === kb` guard matters:
 		// buildKeyboard() (theme/globe change) replaces the view AND the constraint, so
@@ -434,6 +467,7 @@ final class KeyboardViewController: UIInputViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		hostConnectionReady = false
+		recordedLayout = nil   // each appearance describes its geometry to the typing recorder again
         documentReconciler.reset()
         presentationDocument = nil
         keyboard?.dismissTools()

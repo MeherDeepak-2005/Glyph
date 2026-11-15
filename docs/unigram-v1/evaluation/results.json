@@ -1,0 +1,395 @@
+{
+  "lexical_test": {
+    "baseline": {
+      "tatoeba": {
+        "tokens": 64653,
+        "covered_tokens": 63775,
+        "coverage": 0.9864198103722952,
+        "neural_oov_tokens": 1448,
+        "covered_neural_oov_tokens": 570,
+        "neural_oov_coverage": 0.393646408839779,
+        "supported_neural_oov_nll": 11.52714019337215
+      },
+      "wikitext": {
+        "tokens": 418078,
+        "covered_tokens": 402035,
+        "coverage": 0.9616267777783093,
+        "neural_oov_tokens": 28857,
+        "covered_neural_oov_tokens": 12814,
+        "neural_oov_coverage": 0.4440517032262536,
+        "supported_neural_oov_nll": 12.201402141310645
+      }
+    },
+    "candidate": {
+      "tatoeba": {
+        "tokens": 64653,
+        "covered_tokens": 63870,
+        "coverage": 0.9878891930768874,
+        "neural_oov_tokens": 1448,
+        "covered_neural_oov_tokens": 665,
+        "neural_oov_coverage": 0.4592541436464088,
+        "supported_neural_oov_nll": 10.095322492188307
+      },
+      "wikitext": {
+        "tokens": 418078,
+        "covered_tokens": 404160,
+        "coverage": 0.966709561373715,
+        "neural_oov_tokens": 28857,
+        "covered_neural_oov_tokens": 14939,
+        "neural_oov_coverage": 0.5176906816370378,
+        "supported_neural_oov_nll": 10.829681063305241
+      }
+    },
+    "common_support_baseline": {
+      "tatoeba": {
+        "tokens": 570,
+        "covered_tokens": 570,
+        "coverage": 1.0,
+        "neural_oov_tokens": 570,
+        "covered_neural_oov_tokens": 570,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 11.52714019337215
+      },
+      "wikitext": {
+        "tokens": 12814,
+        "covered_tokens": 12814,
+        "coverage": 1.0,
+        "neural_oov_tokens": 12814,
+        "covered_neural_oov_tokens": 12814,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 12.201402141310645
+      }
+    },
+    "common_support_candidate": {
+      "tatoeba": {
+        "tokens": 570,
+        "covered_tokens": 570,
+        "coverage": 1.0,
+        "neural_oov_tokens": 570,
+        "covered_neural_oov_tokens": 570,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 10.305312491627422
+      },
+      "wikitext": {
+        "tokens": 12814,
+        "covered_tokens": 12814,
+        "coverage": 1.0,
+        "neural_oov_tokens": 12814,
+        "covered_neural_oov_tokens": 12814,
+        "neural_oov_coverage": 1.0,
+        "supported_neural_oov_nll": 10.616537796638193
+      }
+    }
+  },
+  "cases": {
+    "cases": 3238,
+    "documents": {
+      "tatoeba": 512,
+      "wikitext": 140
+    },
+    "split": "test (not used for unigram selection)",
+    "case_sha256": "eeb1493a5f085793e8e3139c07d9ab78b369e620a19dde757b6fdabade6298d7",
+    "target_injected": false,
+    "synthetic_errors": true,
+    "fresh_blind_neural_test": false,
+    "limitations": "Existing CIFG training and prior corpus research exposure prevent a blind neural evaluation claim."
+  },
+  "model_changed": false,
+  "device_performance_verified": false,
+  "options": {
+    "KB_NSS": "/Users/meher/Downloads/iOSKeyboard/keyboard/nss-english.nsslm",
+    "KB_NSS_ONLY": "1",
+    "KB_NSS_FLOOR": "1"
+  },
+  "binary_sha256": "b9594b6b89987524560b41309498a87b1a2896b9d97e08743a20cc2eb1ff49ab",
+  "typing": {
+    "baseline": {
+      "all": {
+        "cases": 3238,
+        "top3": 1904,
+        "commit_correct": 1947,
+        "false_correction": 15,
+        "top3_rate": 0.5880172946263126
+      },
+      "tatoeba": {
+        "cases": 2542,
+        "top3": 1514,
+        "commit_correct": 1542,
+        "false_correction": 10,
+        "top3_rate": 0.5955940204563336
+      },
+      "clean": {
+        "cases": 652,
+        "top3": 0,
+        "commit_correct": 637,
+        "false_correction": 15,
+        "top3_rate": 0.0
+      },
+      "tatoeba/clean": {
+        "cases": 512,
+        "top3": 0,
+        "commit_correct": 502,
+        "false_correction": 10,
+        "top3_rate": 0.0
+      },
+      "deletion": {
+        "cases": 652,
+        "top3": 596,
+        "commit_correct": 550,
+        "false_correction": 0,
+        "top3_rate": 0.9141104294478528
+      },
+      "tatoeba/deletion": {
+        "cases": 512,
+        "top3": 473,
+        "commit_correct": 436,
+        "false_correction": 0,
+        "top3_rate": 0.923828125
+      },
+      "swap": {
+        "cases": 630,
+        "top3": 612,
+        "commit_correct": 605,
+        "false_correction": 0,
+        "top3_rate": 0.9714285714285714
+      },
+      "tatoeba/swap": {
+        "cases": 494,
+        "top3": 482,
+        "commit_correct": 477,
+        "false_correction": 0,
+        "top3_rate": 0.9757085020242915
+      },
+      "prefix": {
+        "cases": 652,
+        "top3": 541,
+        "commit_correct": 155,
+        "false_correction": 0,
+        "top3_rate": 0.8297546012269938
+      },
+      "tatoeba/prefix": {
+        "cases": 512,
+        "top3": 435,
+        "commit_correct": 127,
+        "false_correction": 0,
+        "top3_rate": 0.849609375
+      },
+      "next": {
+        "cases": 652,
+        "top3": 155,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.23773006134969324
+      },
+      "tatoeba/next": {
+        "cases": 512,
+        "top3": 124,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.2421875
+      },
+      "wikitext": {
+        "cases": 696,
+        "top3": 390,
+        "commit_correct": 405,
+        "false_correction": 5,
+        "top3_rate": 0.5603448275862069
+      },
+      "wikitext/clean": {
+        "cases": 140,
+        "top3": 0,
+        "commit_correct": 135,
+        "false_correction": 5,
+        "top3_rate": 0.0
+      },
+      "wikitext/deletion": {
+        "cases": 140,
+        "top3": 123,
+        "commit_correct": 114,
+        "false_correction": 0,
+        "top3_rate": 0.8785714285714286
+      },
+      "wikitext/swap": {
+        "cases": 136,
+        "top3": 130,
+        "commit_correct": 128,
+        "false_correction": 0,
+        "top3_rate": 0.9558823529411765
+      },
+      "wikitext/prefix": {
+        "cases": 140,
+        "top3": 106,
+        "commit_correct": 28,
+        "false_correction": 0,
+        "top3_rate": 0.7571428571428571
+      },
+      "wikitext/next": {
+        "cases": 140,
+        "top3": 31,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.22142857142857142
+      }
+    },
+    "candidate": {
+      "all": {
+        "cases": 3238,
+        "top3": 1911,
+        "commit_correct": 1962,
+        "false_correction": 10,
+        "top3_rate": 0.5901791229153799
+      },
+      "tatoeba": {
+        "cases": 2542,
+        "top3": 1517,
+        "commit_correct": 1555,
+        "false_correction": 5,
+        "top3_rate": 0.5967741935483871
+      },
+      "clean": {
+        "cases": 652,
+        "top3": 0,
+        "commit_correct": 642,
+        "false_correction": 10,
+        "top3_rate": 0.0
+      },
+      "tatoeba/clean": {
+        "cases": 512,
+        "top3": 0,
+        "commit_correct": 507,
+        "false_correction": 5,
+        "top3_rate": 0.0
+      },
+      "deletion": {
+        "cases": 652,
+        "top3": 598,
+        "commit_correct": 554,
+        "false_correction": 0,
+        "top3_rate": 0.9171779141104295
+      },
+      "tatoeba/deletion": {
+        "cases": 512,
+        "top3": 475,
+        "commit_correct": 440,
+        "false_correction": 0,
+        "top3_rate": 0.927734375
+      },
+      "swap": {
+        "cases": 630,
+        "top3": 614,
+        "commit_correct": 609,
+        "false_correction": 0,
+        "top3_rate": 0.9746031746031746
+      },
+      "tatoeba/swap": {
+        "cases": 494,
+        "top3": 483,
+        "commit_correct": 480,
+        "false_correction": 0,
+        "top3_rate": 0.9777327935222672
+      },
+      "prefix": {
+        "cases": 652,
+        "top3": 544,
+        "commit_correct": 157,
+        "false_correction": 0,
+        "top3_rate": 0.8343558282208589
+      },
+      "tatoeba/prefix": {
+        "cases": 512,
+        "top3": 435,
+        "commit_correct": 128,
+        "false_correction": 0,
+        "top3_rate": 0.849609375
+      },
+      "next": {
+        "cases": 652,
+        "top3": 155,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.23773006134969324
+      },
+      "tatoeba/next": {
+        "cases": 512,
+        "top3": 124,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.2421875
+      },
+      "wikitext": {
+        "cases": 696,
+        "top3": 394,
+        "commit_correct": 407,
+        "false_correction": 5,
+        "top3_rate": 0.5660919540229885
+      },
+      "wikitext/clean": {
+        "cases": 140,
+        "top3": 0,
+        "commit_correct": 135,
+        "false_correction": 5,
+        "top3_rate": 0.0
+      },
+      "wikitext/deletion": {
+        "cases": 140,
+        "top3": 123,
+        "commit_correct": 114,
+        "false_correction": 0,
+        "top3_rate": 0.8785714285714286
+      },
+      "wikitext/swap": {
+        "cases": 136,
+        "top3": 131,
+        "commit_correct": 129,
+        "false_correction": 0,
+        "top3_rate": 0.9632352941176471
+      },
+      "wikitext/prefix": {
+        "cases": 140,
+        "top3": 109,
+        "commit_correct": 29,
+        "false_correction": 0,
+        "top3_rate": 0.7785714285714286
+      },
+      "wikitext/next": {
+        "cases": 140,
+        "top3": 31,
+        "commit_correct": 0,
+        "false_correction": 0,
+        "top3_rate": 0.22142857142857142
+      }
+    }
+  },
+  "baseline_pack_sha256": "a41b53b85996ddd12c27db79b8986b3708d54fa10a5a1fc35cb6a817da613d24",
+  "candidate_pack_sha256": "f7f3c5f01aa30619544b3312c7f774bf34e2f088810a15d819d822d3f04344b1",
+  "paired_top3": {
+    "deletion": {
+      "delta": 0.003067484662576687,
+      "document_bootstrap_95ci": [
+        0.0,
+        0.007668711656441718
+      ]
+    },
+    "swap": {
+      "delta": 0.0031746031746031746,
+      "document_bootstrap_95ci": [
+        0.0,
+        0.007936507936507936
+      ]
+    },
+    "prefix": {
+      "delta": 0.004601226993865031,
+      "document_bootstrap_95ci": [
+        0.0,
+        0.010736196319018405
+      ]
+    },
+    "next": {
+      "delta": 0.0,
+      "document_bootstrap_95ci": [
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

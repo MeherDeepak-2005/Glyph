@@ -13,14 +13,14 @@
       "sha256": "271853104efc3a57ac3331a013f9337749683c8d4197c6e31268a87ca01cc1d6"
     },
     {
-      "bytes": 12433,
+      "bytes": 13141,
       "path": "ThirdPartyNotices.txt",
-      "sha256": "a97033cbd5d39ddc1168f33883d70a3ce65c80048bff2397a5521e370cbea32c"
+      "sha256": "62cb2b816512e24234fc6ff18c2d7e875d07a1a29bf27cb9fa283915f50d9cb3"
     },
     {
-      "bytes": 1188312,
+      "bytes": 1255480,
       "path": "demo_keyboard",
-      "sha256": "0ec9fed62faa422f3245900f9fb829495a25de262c79e9f525a4b7d43b919b68"
+      "sha256": "db4d97d783aeee252f939f04a39678688155d12e13e8993deec4d4cec41d30e2"
     },
     {
       "bytes": 41541,
@@ -33,9 +33,14 @@
       "sha256": "537fbd295bc5d41ca28882e8a3dc3d92108bfd44a6be53572e46805a40f4fe5c"
     },
     {
-      "bytes": 5707850,
+      "bytes": 9254977,
       "path": "langdata.bin",
-      "sha256": "6345821a4a81337c3afe28674b8bdf76afd99e14e5f0121646c25592b621781a"
+      "sha256": "de4a9277d7371deae2026b7d317b40468f0cad7799cb313eb01871cad258511a"
+    },
+    {
+      "bytes": 568,
+      "path": "langdata.kbmodern",
+      "sha256": "d698e5f380958cbe19d98485a31a609e8f49a5c5ca3ed43b8c134c34583ef852"
     },
     {
       "bytes": 3922400,
@@ -52,5 +57,5 @@
   "gatePassed": true,
   "neuralArtifactsAllowed": true,
   "schemaVersion": 1,
-  "totalBytes": 10909446
+  "totalBytes": 14525017
 }

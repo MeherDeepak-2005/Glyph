@@ -19,9 +19,10 @@ extension KeyboardViewController {
 			KBDiagnostics.noteIntegrityEvent("correction-host-mismatch")
 			return nil
 		}
-		recordTyping("autocorrection", text: word, replacement: correction, evidence: "automatic-unverified")
+		recordTyping("autocorrection", text: word, replacement: correction, evidence: "automatic-unverified",
+			snapshot: snapshot.canonical)
 		noteProxyEdit()
-		recentCorrections.append((original: word, corrected: correction))
+		recentCorrections.append((original: word, corrected: correction, word: wordSessionID))
 		if recentCorrections.count > 4 { recentCorrections.removeFirst() }
 		return Correction(original: word, corrected: correction, trailing: "", fromAutocorrect: true, recordedWordSessionID: wordSessionID)
 	}
@@ -74,13 +75,18 @@ extension KeyboardViewController {
 		let erased = HostDocumentSnapshot.folded(erasedWord)
 		guard erased.count >= 2, !committed.isEmpty,
 			  erased.lowercased() != committed.lowercased(), !isSecureField else { return }
-		if let hit = recentCorrections.last(where: { $0.corrected.lowercased() == erased.lowercased() }),
-		   hit.original.lowercased() == committed.lowercased() {
+		// The erased word was one of our corrections: retyping the original is a manual undo of
+		// it, anything else a different fix of the same word. Both name the corrected word session.
+		let corrected = recentCorrections.last(where: { $0.corrected.lowercased() == erased.lowercased() })
+		let revertedCorrection = corrected?.original.lowercased() == committed.lowercased()
+		if revertedCorrection {
 			rejectCorrection(committed)
 			decodeSnapshot = nil
 			presentedDecodeSnapshot = nil
 		}
-		recordTyping("manual-replacement", text: erased, replacement: committed, evidence: "inferred-word-swap")
+		recordTyping("manual-replacement", text: erased, replacement: committed,
+			evidence: revertedCorrection ? "manual-autocorrect-undo" : corrected != nil ? "manual-fix-of-correction" : "inferred-word-swap",
+			relatedWord: corrected?.word)
 		recordReplacement(original: erased, replacement: committed)
 	}
 }

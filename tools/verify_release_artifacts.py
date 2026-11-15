@@ -9,7 +9,7 @@ import json
 import plistlib
 from pathlib import Path
 
-LANGDATA_CAP = 8_000_000  # tools/build_language_data.py LANGDATA_CAP
+LANGDATA_CAP = 10_000_000  # tools/build_language_data.py LANGDATA_CAP
 NO_NEURAL_EXTENSION_CAP = 14_000_000
 NEURAL_EXTENSION_CAP = 25_000_000
 NEURAL_CONTAINER_SUFFIXES = (
@@ -23,7 +23,8 @@ NEURAL_RESOURCE_NAMES = {
 # The English keyboard's resources. nss-english.nsslm is its only language model, a neural
 # artifact, so a release audit passes --allow-neural.
 REQUIRED_RELEASE_RESOURCES = {
-    "emoji.bin", "english_layout.kbpack", "langdata.bin", "nss-english.nsslm", "safety.kbguard",
+    "emoji.bin", "english_layout.kbpack", "langdata.bin", "langdata.kbmodern", "nss-english.nsslm",
+    "safety.kbguard",
 }
 RESOURCE_CAPS = {"langdata.bin": LANGDATA_CAP}
 

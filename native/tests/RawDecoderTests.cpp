@@ -4,7 +4,9 @@
 // the lexicon by its context-free unigram mass, and the decision must be the plain argmax.
 //   raw-decoder-tests model.nsslm langdata.bin
 #include "../DecoderCore/include/Engine.hpp"
+#include "../DecoderCore/include/NssRules.hpp"
 #include <cassert>
+#include <cctype>
 #include <cmath>
 #include <cstring>
 #include <fstream>
@@ -176,12 +178,15 @@ int main(int argc, char** argv) {
     }
     assert(!std::isfinite(neural.typedUnknown()));   // the published graph has no such score
 
-    // 4. Decoding: deterministic, and the commit is the plain argmax against the typed text.
-    // Variant 1 is the shipped configuration (EngineOptions{}): exact scores with the floor.
+    // 4. Decoding: deterministic, and the commit is the best completed word when it scores above
+    // the typed text (a typed non-word: above it minus nssRawCommitMargin). Variant 1 is the
+    // shipped configuration (EngineOptions{}): exact scores with the floor, typed text outside
+    // the lexicon scored from P(<unk>).
     std::size_t literals = 0;
     for (int variant = 0; variant < 4; ++variant) {
     EngineOptions options; options.nssExact = variant != 2; options.nssUnigramFloor = variant == 1 || variant == 3;
-    if (variant == 3) { options.nssUnknownExponent = 0.5; options.nssTypedUnknown = true; }
+    options.nssTypedUnknown = variant == 1 || variant == 3;
+    if (variant == 3) options.nssUnknownExponent = 0.5;
     if (variant == 1) { const EngineOptions shipped; assert(shipped.nssExact == options.nssExact && shipped.nssUnigramFloor == options.nssUnigramFloor
         && shipped.nssUnknownExponent == options.nssUnknownExponent && shipped.nssTypedUnknown == options.nssTypedUnknown); }
     auto engine = std::make_shared<Engine>(packed, model, options);
@@ -193,11 +198,16 @@ int main(int argc, char** argv) {
             auto one = engine->createSession()->decode(in, state->view()), two = engine->createSession()->decode(in, state->view());
             assert(one.status == EngineStatus::ok && one.suggestions == two.suggestions && one.correction.word == two.correction.word);
             const auto typedRow = std::find_if(one.candidates.begin(), one.candidates.end(), [&](const auto& c) { return c.ranked.key == typed; });
+            const double margin = packed->wordID(typed) ? 0 : nssRawCommitMargin;   // all lowercase: no capitalized margin
             if (one.correction.word) {
-                assert(one.correction.margin > 0 && one.suggestions.front() == *one.correction.word);
-                for (const auto& c : one.candidates) if (c.ranked.key == *one.correction.word) assert(c.typedMargin > 0);
+                assert(one.correction.margin > -margin && one.suggestions.front() == *one.correction.word);
+                for (const auto& c : one.candidates) if (c.ranked.key == *one.correction.word) assert(c.typedMargin > -margin);
             } else if (typedRow != one.candidates.end()) {
-                for (const auto& c : one.candidates) if (c.ranked.key.size() == std::strlen(typed) && c.ranked.channel.cost > 0) assert(c.typedMargin <= 0 || c.ranked.key.find(' ') != std::string::npos);
+                // NssRules split margin: a split that outscored the typed text but not by nssSplitMargin
+                // was set aside, and the typed text may stand although a strip word outscores it.
+                const bool splitSetAside = nssRuleOn(nssRuleSplitMargin) && std::any_of(one.candidates.begin(), one.candidates.end(),
+                    [](const auto& c) { return c.typedMargin > 0 && c.ranked.key.find(' ') != std::string::npos; });
+                if (!splitSetAside) for (const auto& c : one.candidates) if (c.ranked.key.size() == std::strlen(typed) && c.ranked.channel.cost > 0) assert(c.typedMargin <= 0 || c.ranked.key.find(' ') != std::string::npos);
             }
             // Text outside the lexicon scores its unigram mass, unless the model's P(<unk>) does
             // (the typed row is among the 24 candidates kept when it ranks well enough).
@@ -205,6 +215,17 @@ int main(int argc, char** argv) {
                 assert(std::abs(typedRow->ranked.language - unigram.logProbability(typed)) < 1e-12);
                 ++literals;
             }
+        }
+        // A non-word written with a capital after the first word (a name) uses
+        // nssCapitalizedCommitMargin: it is replaced only by a word scoring above that margin.
+        for (const char* typed : {"Recieve", "Ahmet", "Teh"}) {
+            DecodeInput in; in.word = typed; in.normalized = typed; in.normalized[0] = char(std::tolower(static_cast<unsigned char>(in.normalized[0])));
+            in.context = {"i", "will", "send", "you"}; in.identity.fieldRevision = 4; in.identity.wordSessionID = 11;
+            auto out = engine->createSession()->decode(in, state->view());
+            if (out.correction.word && !packed->wordID(in.normalized)) assert(out.correction.margin > -nssCapitalizedCommitMargin);
+            in.context.clear(); in.identity.wordSessionID = 12;   // the sentence's first word: its own margin
+            out = engine->createSession()->decode(in, state->view());
+            if (out.correction.word && !packed->wordID(in.normalized)) assert(out.correction.margin > -nssStartCommitMargin);
         }
         // A word the user kept (undid its correction) is never corrected again.
         DecodeInput kept; kept.word = kept.normalized = "teh"; kept.context = {"i", "will", "send", "you"};

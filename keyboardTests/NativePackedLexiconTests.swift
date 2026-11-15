@@ -29,9 +29,9 @@ struct NativePackedLexiconTests {
         for word in ["accommodative", "acetylcholine", "café", "naïve", "wi-fi"] {
             let id = try #require(reader.trieWordID(word))
             #expect(reader.word(Int(id)) == word)
-            #expect(reader.freq(Int(id)) == 1)
+            #expect(reader.freq(Int(id)) >= 1)   // unigram-v1 re-estimated the CoreV4 forms' prior of 1
         }
-        #expect(try #require(reader.trieWordID("wi-fi")) > 65_535)
+        #expect(try #require(reader.trieWordID("accommodative")) > 65_535)
         for excluded in ["cant", "im", "lets", "wont"] {
             #expect(reader.trieWordID(excluded) == nil)
         }

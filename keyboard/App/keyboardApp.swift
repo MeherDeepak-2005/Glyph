@@ -10,6 +10,9 @@ import SwiftUI
 @main
 struct keyboardApp: App {
 	init() {
+		#if RESEARCH_BETA
+		ResearchUploader.registerBackgroundRefresh()
+		#endif
 		#if DEBUG
 		if ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {
 			KBSettings.hasUsedKeyboard = true

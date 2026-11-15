@@ -20,6 +20,7 @@ def write_bundle(root: Path) -> None:
     """A minimal English extension: the binary, its resources and the NSS word model."""
     for name, payload in (("demo_keyboard", b"binary"), ("emoji.bin", b"emoji"),
                           ("english_layout.kbpack", b"layout"), ("langdata.bin", b"english"),
+                          ("langdata.kbmodern", b"policies"),
                           ("nss-english.nsslm", b"model"), ("safety.kbguard", b"safety")):
         (root / name).write_bytes(payload)
 
@@ -73,10 +74,10 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             root = Path(value)
             write_bundle(root)
             with (root / "langdata.bin").open("wb") as handle:
-                handle.truncate(8_000_001)
+                handle.truncate(10_000_001)
             too_big = audit(root, "--allow-neural")
             self.assertNotEqual(too_big.returncode, 0)
-            self.assertIn("langdata.bin exceeds 8,000,000 bytes", too_big.stdout + too_big.stderr)
+            self.assertIn("langdata.bin exceeds 10,000,000 bytes", too_big.stdout + too_big.stderr)
 
     def test_rejects_enabled_klipy_without_key_and_filter_review(self) -> None:
         with tempfile.TemporaryDirectory() as value:

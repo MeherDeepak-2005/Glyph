@@ -189,6 +189,11 @@ final class KeyboardEngine {
 		let id: String
 		let winner: String
 		let shapeCostByWord: [String: Double]
+		/// For the typing recorder: the strip's alternatives, the winner's score margin and
+		/// which decode produced the word (preview, cache, session or final).
+		let alternatives: [String]
+		let margin: Double
+		let source: String
 	}
 	var lastGlideOutcome: GlideOutcome?
 

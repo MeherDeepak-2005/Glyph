@@ -54,8 +54,22 @@ struct EngineView {
 // Decoding commits the best completed word for a typed non-word when it scores above the
 // typed text minus this margin (0: only when it outscores it); a typed dictionary word needs a
 // better score. Larger commits more of the corrections the strip already shows, and changes
-// more unknown words (names, rare words).
-KB_TUNABLE(nssRawCommitMargin, 0.0);
+// more unknown words (names, rare words, Tenglish). 2 (15 Nov 2026, tuned on the benchmark's
+// tune half with nssTypedUnknown): misspellings fixed up about 2 points, rare and hard words
+// unchanged; removing the rule (a very large margin) changed every name and Tenglish word.
+KB_TUNABLE(nssRawCommitMargin, 2.0);
+// The margin instead for a typed non-word written with a capital after the sentence's first
+// word ("talking to Ahmet"): the host does not capitalize there, so the user did, and the
+// word is most likely a name.
+KB_TUNABLE(nssCapitalizedCommitMargin, 0.0);
+// The sentence's first word (no context words). Without context the model knows only which
+// words open sentences, and a misspelled first word is seldom one of them. Its P(w) is mixed
+// with the dictionary's context-free unigram P(w) at this weight, and the margin for a typed
+// non-word is this one. 0.25 and 1.5 (15 Nov 2026, tune half, sentence-start rows): every
+// set better or equal than the plain model with the ordinary margin; at 0.5 and above the
+// dictionary's low counts for contractions lost "i'll"/"we're" as first words.
+KB_TUNABLE(nssStartUnigramWeight, 0.25);
+KB_TUNABLE(nssStartCommitMargin, 1.5);
 // The neural search space (NeuralFst, Zhang et al. EMNLP Industry 2024) over the dictionary.
 struct EngineOptions {
     // NeuralFst::Options::exact: exact vocabulary scores and <unk> shared outside the
@@ -67,8 +81,10 @@ struct EngineOptions {
     // NeuralFst::Options::unknownExponent (with nssExact).
     double nssUnknownExponent = 1;
     // nssExact: typed text outside the lexicon is scored by NeuralFst::typedUnknown (the
-    // model's P(<unk>) in context) instead of UnigramModel's context-free half count.
-    bool nssTypedUnknown = false;
+    // model's P(<unk>) in context) instead of UnigramModel's context-free half count: where
+    // the context expects a name or an unknown word, the typed text is harder to replace.
+    // On with nssRawCommitMargin 2 (15 Nov 2026).
+    bool nssTypedUnknown = true;
 };
 // The dictionary's context-free unigram distribution, P(w) = (frequency + 1) / (sum of
 // frequency + 1 over the dictionary); text outside it counts half. It scores what the NSS
