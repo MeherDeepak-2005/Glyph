@@ -3,9 +3,6 @@ import CoreText
 import os
 import SwiftUI
 
-// KeyboardView — the on-screen key deck (touches, layout, popups, shift).
-// Emoji picker → Emoji.swift; keys/theme/suggestion bar → their own files.
-
 struct KeyboardLayoutMetrics: Equatable {
 	enum Profile: Equatable { case compactPhone, phone, largePhone, landscapePhone, pad }
 	let profile: Profile

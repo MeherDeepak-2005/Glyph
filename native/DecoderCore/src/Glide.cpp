@@ -14,7 +14,7 @@ constexpr double maximum = std::numeric_limits<double>::max();
 Point toGrid(Point p, const GlideLayout& layout) {
     if (layout.centers.empty()) return p;
     auto reference = layout.centers.front();
-    const auto first = std::uint8_t(gridLetters().front());   // the grid's (0, 0) key: q on QWERTY
+    const auto first = std::uint8_t(gridLetters().front());
     for (const auto& key : layout.centers) if (key.first == first) { reference = key; break; }
     auto anchor = center(reference.first).value_or(Point{});
     return {anchor.x + (p.x - reference.second.x) / layout.xPitch, anchor.y + (p.y - reference.second.y) / layout.yPitch};
@@ -127,7 +127,6 @@ double shape(std::span<const Point> observed, std::span<const Point> observedTan
     auto ideal = letters.size() == 1 ? std::vector<Point>(32, letters.front()) : resampleN(letters, 32);
     if (ideal.size() != 32) return maximum;
     auto idealTangents = direction > 0 ? tangents(ideal) : std::vector<Point>{};
-    // Two DTW rows on the stack: a Glide decode scores thousands of words.
     std::array<double, 33> rows[2]; rows[0].fill(maximum); rows[1].fill(maximum);
     auto* previous = &rows[0]; auto* current = &rows[1]; (*previous)[0] = 0;
     for (int i = 1; i <= 32; ++i) {
@@ -171,8 +170,6 @@ std::vector<ChannelCandidate> decodeGlide(std::span<const Point> points, const P
     auto emit = [&](std::size_t node, std::int64_t index) {
         auto record = lexicon.trieRecord(node); if (!record.wordID || lexicon.blocked(std::uint32_t(*record.wordID))) return;
         std::string word(lexicon.word(*record.wordID)); if (word.size() < 2) return;
-        // A node's path is its letters' key centers, whichever hypothesis reached it, so a
-        // word scored once already holds the only cost it can get: skip the repeat.
         if (indices.contains(word)) return;
         trace.clear();
         while (index >= 0) { trace.push_back(arena[index].point); index = arena[index].parent; }
@@ -180,8 +177,6 @@ std::vector<ChannelCandidate> decodeGlide(std::span<const Point> points, const P
         indices.emplace(word, result.size());
         result.push_back({std::move(word), shape(observed, obsTan, trace, band, direction), 0});
     };
-    // Distance from each key center to each observed point, filled per label on first use:
-    // the beam asks for the same pairs for every hypothesis and window step.
     std::vector<double> near(256 * 32, -1.0);
     auto distances = [&](std::uint8_t label, Point p) -> const double* {
         auto* row = near.data() + std::size_t(label) * 32;
@@ -238,4 +233,4 @@ std::vector<ChannelCandidate> decodeGlide(std::span<const Point> points, const P
     }
     return result;
 }
-} // namespace kb
+}

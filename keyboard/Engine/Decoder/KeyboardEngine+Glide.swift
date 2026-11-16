@@ -2,21 +2,11 @@ import Foundation
 import CoreGraphics
 
 extension KeyboardEngine {
-	// MARK: Glide typing
-	//
-	// Every glide decodes in the shared engine's neural search space (KBSharedGlide): shape
-	// candidates from the dictionary trie, steered by the NSS graph's lookahead, ranked by
-	// shape and the graph's score in context. Live previews stream one session per gesture;
-	// the final decision is the last visible prediction, or one full-path decode when none
-	// was shown.
 
-	/// Accessed only on `glidePreviewQueue`. Each session retains its native glide stream
-	/// for the lifetime of one finger gesture.
 	struct StreamingGlideSession {
 		let id: GlideSessionID
 		let context: [String]
 		var shared: KBSharedGlide?
-		/// Vocabulary cannot change mid-gesture; computed once when the shared stream starts.
 		var dynamicWords: [String] = []
 		var revision: UInt64 = 0
 		var latestPrediction: GlidePrediction?
@@ -33,8 +23,6 @@ extension KeyboardEngine {
 		return generation == glidePreviewGeneration
 	}
 
-	/// Called at gesture start, cancellation, and lift. A decoder already running checks
-	/// this ticket and exits instead of competing with the final pass.
 	func cancelGlidePreviews() {
 		glidePreviewLock.lock()
 		glidePreviewGeneration &+= 1
@@ -57,8 +45,6 @@ extension KeyboardEngine {
 		glidePreviewQueue.async { [weak self] in self?.glideSessions[id] = nil }
 	}
 
-	/// Consume a cumulative UIKit path. Completion is always delivered on main so the
-	/// controller can directly publish the middle suggestion without another hop.
 	func updateGlideSession(_ id: GlideSessionID, path: [CGPoint], times: [TimeInterval],
 		layout: GlideLayout, completion: @escaping (GlideUpdate?) -> Void) {
 		let started = ProcessInfo.processInfo.systemUptime
@@ -83,8 +69,6 @@ extension KeyboardEngine {
 		}
 	}
 
-	/// Finalizes from the same retained session. Only the winner and visible runners-up
-	/// receive exact full-path shape costs, for learning and diagnostics.
 	func finishGlideSession(_ id: GlideSessionID, path: [CGPoint], times: [TimeInterval],
 		layout: GlideLayout, completion: @escaping (String?, [String]) -> Void) {
 		let started = ProcessInfo.processInfo.systemUptime
@@ -118,8 +102,6 @@ extension KeyboardEngine {
 			for word in displayed {
 				if let cost = GlideDecoder.shapeCost(of: word, processed) { exactCosts[word] = cost }
 			}
-			// The streaming snapshot is authoritative: exact costs are retained only for
-			// learning/diagnostics and never change the displayed commit decision.
 			let committed = GlidePrediction(word: prediction.word, alternatives: prediction.alternatives,
 				shapeCostByWord: exactCosts, margin: prediction.margin)
 			let gestureID = self.noteGlideCommit(committed, source: "session")
@@ -131,8 +113,6 @@ extension KeyboardEngine {
 		}
 	}
 
-	/// Runs the gesture's native stream over the whole path so far. Nil without a shared
-	/// engine (no dictionary or model) or when nothing matched.
 	private func consumeStreamingPath(_ path: [CGPoint], layout: GlideLayout,
 		session: inout StreamingGlideSession) -> GlideUpdate? {
 		guard let engine = sharedEngine else { return nil }
@@ -149,8 +129,6 @@ extension KeyboardEngine {
 		} catch { session.invalid = true; return nil }
 	}
 
-	/// The ranked words of one native glide update as a prediction: the winner, three
-	/// alternatives, the shape costs of the best dozen and the winner's score margin.
 	private func prediction(_ shared: KBSharedGlide, path: [CGPoint], layout: GlideLayout,
 		dynamicWords: [String]) throws -> GlidePrediction? {
 		let scored = try shared.update(GlideBuffers.points(path), keys: GlideBuffers.keys(layout),
@@ -162,15 +140,12 @@ extension KeyboardEngine {
 			margin: scored.count > 1 ? scored[0].score - scored[1].score : .greatestFiniteMagnitude)
 	}
 
-	/// One full-path decode in a fresh native glide session.
 	private func decodeGlide(path: [CGPoint], layout: GlideLayout, context: [String]) -> GlidePrediction? {
 		guard let engine = sharedEngine else { return nil }
 		let shared = engine.glideSession(withContext: context.map { $0.lowercased() })
 		return try? prediction(shared, path: path, layout: layout, dynamicWords: lexicon.glideDynamicWords(limit: 128))
 	}
 
-	/// In-progress decode for UI feedback, single-flight per the controller, so preview work
-	/// can never occupy the final decoder or the suggestion queue.
 	func glidePreview(path: [CGPoint], times: [TimeInterval] = [], layout: GlideLayout,
 					  context: [String], completion: @escaping (GlidePrediction?) -> Void) {
 		let generation = currentGlidePreviewGeneration()
@@ -208,18 +183,11 @@ extension KeyboardEngine {
 		glidePreviewCacheLock.lock(); defer { glidePreviewCacheLock.unlock() }
 		guard let cached = glidePreviewCache,
 			  cached.key == key,
-			  // A user may pause on the final key before lifting. The exact cache key
-			  // already includes every path point, timestamp, layout pitch, and context,
-			  // so a five-second gesture-local window is safer than expiring a valid
-			  // displayed result after 350 ms and launching a disagreeing final decode.
 			  ProcessInfo.processInfo.systemUptime - cached.createdAt <= 5.0
 		else { return nil }
 		return cached.prediction
 	}
 
-	/// Stable FNV-1a fingerprint of the exact raw path, timing samples, layout scale,
-	/// and language context. A cache hit therefore means preview and commit consumed
-	/// identical evidence, not merely a similar endpoint.
 	private func glideCacheKey(path: [CGPoint], times: [TimeInterval], layout: GlideLayout,
 							   context: [String]) -> UInt64 {
 		var hash: UInt64 = 0xcbf29ce484222325
@@ -242,22 +210,13 @@ extension KeyboardEngine {
 		return hash
 	}
 
-	/// Decode a swipe into a word and deliver the winner and up to 3 alternatives for the
-	/// suggestion bar (swap targets) on the MAIN queue; (nil, []) when the swipe matched
-	/// nothing.
 	func glide(path: [CGPoint], times: [TimeInterval] = [], layout: GlideLayout, context: [String],
 				   publishedPrediction: GlidePrediction? = nil,
 				   completion: @escaping (String?, [String]) -> Void) {
 		cancelGlidePreviews()
-		// Invalidate any suggestion pass already dispatched to the engine queue.
-		// A queued pass that hasn't started yet bails at its isLatest() check;
-		// a pass mid-execution still completes, but any further queued ones skip.
-		// The controller also cancels the debounced work item before calling here.
 		cancelSuggestions()
 		if let publishedPrediction {
 			let gestureID = noteGlideCommit(publishedPrediction, source: "preview")
-			// The visible preview is the gesture's contract. Commit it inline on the
-			// main-thread lift callback; never run a second decoder that can disagree.
 			completion(publishedPrediction.word, publishedPrediction.alternatives)
 			glideQueue.async { [weak self] in
 				guard let self,
@@ -271,8 +230,6 @@ extension KeyboardEngine {
 		let cacheKey = glideCacheKey(path: path, times: times, layout: layout, context: context)
 		if let cached = recentGlidePreview(key: cacheKey) {
 			let gestureID = noteGlideCommit(cached, source: "cache")
-			// `glide` is invoked from touchesEnded on main. Deliver inline so an exact
-			// preview hit inserts before the next display frame.
 			completion(cached.word, cached.alternatives)
 			glideQueue.async { [weak self] in
 				guard let self,
@@ -283,8 +240,6 @@ extension KeyboardEngine {
 			}
 			return
 		}
-		// Dedicated interactive queue: the full-path decision never waits behind
-		// suggestions or a live-preview decode.
 		let finalStarted = ProcessInfo.processInfo.systemUptime
 		let finalSignpost = KBDiagnostics.beginGlideFinal()
 		glideQueue.async { [weak self] in
@@ -302,11 +257,7 @@ extension KeyboardEngine {
 				KBDiagnostics.logGlide(points: processed.points.count, pivots: processed.pivots.count, letters: "rejected")
 				return
 			}
-			// Stash raw shape costs so an explicit alternative selection can provide a
-			// supervised sample. An automatic commit is never treated as ground truth.
 			let gestureID = self.noteGlideCommit(prediction, source: "final")
-			// Queue the visible insertion before diagnostics and optional capture formatting.
-			// Those facilities must never add lift-to-insert latency.
 			deliver(prediction.word, prediction.alternatives)
 			self.logCachedGlide(prediction, path: path, times: times, layout: layout,
 				processed: processed, gestureID: gestureID)
@@ -318,8 +269,6 @@ extension KeyboardEngine {
 		let displayed = [prediction.word] + prediction.alternatives
 		KBDiagnostics.logGlide(points: processed.points.count, pivots: processed.pivots.count,
 							   letters: displayed.joined(separator: ","), margin: prediction.margin)
-		// Offline calibration capture (debug flag): RAW grid path + timestamps, dwell letters
-		// and the commit margin.
 		let rawGrid = path.map { point -> (Double, Double) in
 			let grid = GlidePreprocess.toGrid(point, layout: layout)
 			return (Double(grid.x), Double(grid.y))
@@ -328,14 +277,6 @@ extension KeyboardEngine {
 								   dwell: processed.dwellKeys, candidates: Array(displayed.prefix(3)),
 								   committed: prediction.word, margin: prediction.margin)
 	}
-
-	// MARK: The user's verdict on a committed glide
-	//
-	// A committed glide leaves a stash of its candidates' raw SHAPE costs. The controller
-	// then reports what the user did with it. Tapping a different bar alternative is the
-	// only explicit label (captured for offline calibration); typing on or deleting merely
-	// discards the pending sample. None of these touch the engine queue: the stash is
-	// behind `glideLock`, so a verdict fired from the main thread costs microseconds.
 
 	@discardableResult
 	private func noteGlideCommit(_ prediction: GlidePrediction, source: String) -> String {
@@ -346,7 +287,6 @@ extension KeyboardEngine {
 		glideLock.unlock()
 		return id
 	}
-	/// The gesture just committed, for the typing recorder; the verdict calls below still own it.
 	func committedGlideEvidence() -> GlideOutcome? {
 		glideLock.lock(); defer { glideLock.unlock() }; return lastGlideOutcome
 	}
@@ -354,15 +294,10 @@ extension KeyboardEngine {
 		glideLock.lock(); defer { lastGlideOutcome = nil; glideLock.unlock() }; return lastGlideOutcome
 	}
 
-	/// Typing on is not proof that the automatic winner was intended. Discard the
-	/// pending sample; only an explicit alternative supplies a label.
 	func glideUnverified() { _ = takeGlideOutcome() }
-	/// The user swapped the glided word for a bar alternative — THAT word is the true one.
 	func glideCorrected(to word: String) {
 		guard let o = takeGlideOutcome() else { return }
 		KBDiagnostics.captureGlideLabel(id: o.id, intended: word.lowercased())
 	}
-	/// The user backspaced the whole glided word away. We don't know what they meant; only
-	/// drop the stash so a later verdict can't double-count.
 	func glideRejected() { _ = takeGlideOutcome() }
 }

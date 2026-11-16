@@ -14,7 +14,6 @@ from torch.nn import functional as F
 
 from .base import RMSNorm, StreamingLM, SwiGLU
 
-
 class Mixer(nn.Module):
     def __init__(self, dim: int, state: int, ffn: int):
         super().__init__()
@@ -24,7 +23,6 @@ class Mixer(nn.Module):
         self.gate = nn.Linear(dim, state, bias=False)
         self.out = nn.Linear(state, dim, bias=False)
         self.mlp = SwiGLU(dim, ffn)
-        # Start with long memories: decays spread over ~0.73..0.98.
         nn.init.constant_(self.decay.weight, 0.0)
         with torch.no_grad():
             self.decay.bias.copy_(torch.linspace(1.0, 4.0, state))
@@ -40,7 +38,6 @@ class Mixer(nn.Module):
         y = self.out(torch.stack(states, 1) * F.silu(self.gate(u)))
         x = x + y
         return x + self.mlp(self.mlp_norm(x)), h
-
 
 class SSM(StreamingLM):
     arch = "ssm"

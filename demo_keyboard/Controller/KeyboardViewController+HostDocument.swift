@@ -1,7 +1,6 @@
 import UIKit
 
 extension KeyboardViewController {
-	// MARK: Contextual action key — mirrors the host field's Return key (go / search / send …)
 
     func handleHostCallback() {
         let firstConnection = hostConnectionDidBecomeAvailable()
@@ -18,9 +17,6 @@ extension KeyboardViewController {
     func readHostDocument() -> HostDocumentSnapshot? {
         guard hostConnectionReady, !isSecureField else { return nil }
         let proxy = textDocumentProxy
-        // Swift imports documentIdentifier as non-optional, but a disconnecting host returns
-        // nil and the bridge traps (seen on device 31 Oct and 1 Nov 2026). Read it through the
-        // Objective-C runtime: no identifier means the document is unavailable.
         guard let documentID = (proxy as AnyObject).perform(Self.documentIdentifierSelector)?
                 .takeUnretainedValue() as? UUID else {
             KBDiagnostics.noteIntegrityEvent("host-document-id-missing")
@@ -31,8 +27,6 @@ extension KeyboardViewController {
             selection: proxy.selectedText, hasText: proxy.hasText)
     }
 
-    /// Returns true after invalidating a stale document, including a clear inside
-    /// what used to be the 500 ms suppression window.
     @discardableResult
     func reconcileHostDocument(_ state: HostDocumentSnapshot? = nil) -> Bool {
         let change = documentReconciler.observe(state ?? readHostDocument())
@@ -79,8 +73,6 @@ extension KeyboardViewController {
         recoveryMonitor?.setEnabled(needed)
     }
 
-    /// Transactions suppress only reentrant callbacks from our own proxy calls.
-    /// Their final observed state becomes the acknowledgement for later callbacks.
     func beginKeyboardEdit(reconcileFirst: Bool = true) {
         if reconcileFirst && documentReconciler.editDepth == 0 { reconcileHostDocument() }
         documentReconciler.beginKeyboardEdit()
@@ -105,16 +97,12 @@ extension KeyboardViewController {
         updateRecoveryTimer()
     }
 
-	/// UIInputViewController can be prewarmed without a live host connection, so proxy
-	/// reads and prediction work start only after the host invokes an input callback.
 	@discardableResult
 	private func hostConnectionDidBecomeAvailable() -> Bool {
 		let firstConnection = !hostConnectionReady
 		if firstConnection {
 			hostConnectionReady = true
 			KBSettings.markKeyboardObserved(fullAccess: hasFullAccess)
-			// Resolve the universal strip before the possible globe rebuild. The rebuilt
-			// view reuses the same geometry, keeping the first connected frame stable.
 			resolveSuggestionModeIfNeeded()
 			let requiresSwitchKey = needsInputModeSwitchKey
 			if showsGlobe != requiresSwitchKey {

@@ -26,7 +26,6 @@ MODELS = {
     "gru-projected": {"arch": "gru", "embed": 8, "hidden": 12, "proj": 8, "tied": True},
 }
 
-
 def main() -> None:
     full = Vocabulary.load()
     extra = [w for w in ("i'm", "going", "photos", "tomorrow", "morning", "dinner") if w not in full.words[:300]]
@@ -36,15 +35,13 @@ def main() -> None:
     for index, (name, config) in enumerate(MODELS.items()):
         torch.manual_seed(index)
         model = build(config, len(vocab)).eval()
-        with torch.no_grad():   # spread the output so arcs and <unk> are not uniform
+        with torch.no_grad():
             model.output_bias.normal_(0, 2)
         path = OUT / f"{name}.nsslm"
         write(model, vocab, 0.4, lexicon.sha256, path, unk_center=-3.0)
-        # The runtime runs the int8 model; compare against exactly that.
         reference = quantized_copy(model)
         path.with_suffix(".goldens.json").write_text(json.dumps(goldens(reference, vocab, 0.4, lexicon, -3.0), indent=1) + "\n")
         print(path, path.stat().st_size)
-
 
 if __name__ == "__main__":
     main()

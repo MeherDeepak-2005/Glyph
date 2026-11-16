@@ -39,13 +39,11 @@ COREV4 = pathlib.Path(os.environ.get('COREV4', '/Users/meherdeepak/Downloads/Cor
 CORE_RESULTS = pathlib.Path(os.environ.get('COREV4_RESULTS',
     COREV4/'analysis/autocorrect-comparison-2026-10-27/results/core-us74-medium.fwd.jsonl'))
 
-
 def core_sources():
     """The DecoderCore library's sources, as native/CMakeLists.txt lists them."""
     cmake = (REPO/'native/CMakeLists.txt').read_text()
     start = cmake.index('add_library(DecoderCore STATIC')
     return [str(REPO/'native'/l.strip()) for l in cmake[start:cmake.index(')', start)].splitlines()[1:] if l.strip().endswith('.cpp')]
-
 
 def bench_env(**extra):
     """The environment for a benchmark run: the word model from KB_NSS, else the shipped one."""
@@ -53,13 +51,11 @@ def bench_env(**extra):
     env.setdefault('KB_NSS', str(NSS))
     return env
 
-
 def build(binary='ios-bench', tuning=False):
     BIN.mkdir(exist_ok=True)
     subprocess.run(['xcrun', 'clang++', '-std=c++20', '-Os', '-DNDEBUG', *(['-DKB_TUNING'] if tuning else []), '-I', str(REPO/'native/DecoderCore/include'),
                     str(HERE/'IOSBench.cpp'), *core_sources(), '-o', str(BIN/binary)], check=True)
     print(BIN/binary)
-
 
 def run(name, quick, binary='ios-bench', taps=False):
     RESULTS.mkdir(exist_ok=True)
@@ -79,14 +75,13 @@ def run(name, quick, binary='ios-bench', taps=False):
                        env=env, check=True, stderr=subprocess.DEVNULL)
         print(part)
 
-
 def golden(write):
     """GenGolden.cpp decodes fixtures/shared-engine/corpus.json and glides.json like EngineTests' replay."""
     fixtures = REPO/'tools/evaluation/fixtures/shared-engine'
     BIN.mkdir(exist_ok=True)
     subprocess.run(['xcrun', 'clang++', '-std=c++20', '-O1', '-I', str(REPO/'native/DecoderCore/include'), '-I', str(REPO/'native/tests'),
                     str(HERE/'GenGolden.cpp'), *core_sources(), '-o', str(BIN/'gengolden')], check=True)
-    def fix(x):   # JSONSerialization writes 2.0 as 2
+    def fix(x):
         if isinstance(x, float) and x.is_integer(): return int(x)
         if isinstance(x, list): return [fix(v) for v in x]
         if isinstance(x, dict): return {k: fix(v) for k, v in x.items()}
@@ -107,7 +102,6 @@ def golden(write):
             print(f"  {o['id']} {c.get('typed', c.get('word'))!r} ctx={c.get('context')}: {o.get('correction')} {o['suggestions']} -> {n.get('correction')} {n['suggestions']}")
         if write: (fixtures/goldens).write_text(json.dumps(new, sort_keys=True, indent=1) + '\n')
 
-
 def core():
     """CoreV4 US-74k, medium mode, fresh profile: the 27 Oct configuration."""
     import shutil
@@ -126,7 +120,6 @@ def core():
                        check=True, stderr=subprocess.DEVNULL)
         print(RESULTS/f'corev4.{cases}.jsonl')
 
-
 def load(path):
     rows, info = {}, {}
     path = pathlib.Path(path)
@@ -137,7 +130,6 @@ def load(path):
             if 'id' in r: rows[r['id']] = r
             else: info.setdefault(r['kind'], []).append(r)
     return rows, info
-
 
 def norm(s): return ' '.join((s or '').lower().split())
 def commit(r, m): return norm(r['c']) if r.get('c') else norm(m['typed'])
@@ -155,7 +147,6 @@ def mcnemar(b, c):
     return min(1.0, 2 * sum(math.comb(n, i) for i in range(min(b, c) + 1)) / 2**n)
 def quantile(xs, p):
     xs = sorted(xs); return xs[min(len(xs) - 1, int(p * len(xs)))] if xs else float('nan')
-
 
 def metrics(meta):
     """name -> (ids, per-item predicate(r, m), higher_is_better, guardrail)."""
@@ -191,16 +182,13 @@ def metrics(meta):
         'GUARD false corrections, MacKenzie clean': (by.get('clean', []), changed, False, True),
         'GUARD false corrections, ECPS correct': (by.get('ecps_ok', []), changed, False, True),
         'GUARD hard valid words changed': (by.get('hard', []), changed, False, True),
-        # make_keep.py: text the user meant that is not in the iOS vocabulary.
         'GUARD unknown names changed': (by.get('keep_name', []) + by.get('keep_name_ctx', []), changed, False, True),
         'GUARD unknown slang changed': (by.get('keep_slang', []), changed, False, True),
         'GUARD rare dictionary words changed': (by.get('keep_word', []), changed, False, True),
-        # make_tenglish.py: Roman Telugu typed between English words, meant as typed.
         'GUARD Tenglish words changed': (by.get('keep_tenglish', []), changed, False, True),
         'GUARD correct plurals stripped': (pick(lambda m: m['set'] in ('clean', 'ecps_ok') and m['target'].endswith('s') and len(m['target']) > 3),
                                            lambda r, m: commit(r, m) == m['target'][:-1], False, True),
         'GUARD real-word errors fixed': (by.get('realword', []), fixed, True, True),
-        # make_contractions.py: real sentences, a word typed without its apostrophe.
         'Contractions restored in sentences': (by.get('contraction', []), fixed, True, False),
         'Contractions in top 3 in sentences': (by.get('contraction', []), top3, True, False),
         'GUARD plain word changed in sentences': (by.get('contraction_plain', []), changed, False, True),
@@ -208,7 +196,6 @@ def metrics(meta):
         'GUARD next word in top 3': (by.get('nw', []), lambda r, m: r['r0'] >= 0, True, True),
     })
     return out
-
 
 def score(name, vs, split, json_out):
     meta = json.loads((CORPUS/'cases-meta.json').read_text())
@@ -232,7 +219,6 @@ def score(name, vs, split, json_out):
         core = f'{rate["core"]:8.2f}%' if rate['core'] is not None else '        -'
         print(f'{label:44}{len(ids):>7}{rate["ref"]:10.2f}%{rate["new"]:10.2f}%{core} {b:>5}/{c:<5}{p:8.1e}{"  FAIL" if bad else ""}')
         report['metrics'][label] = dict(n=len(ids), ref=rate['ref'], new=rate['new'], core=rate['core'], gained=b, lost=c, p=p, guardrail=guard, failed=bad)
-    # Keystroke savings and latency are not paired-binary: thresholded instead.
     nw = [i for i, m in meta.items() if m['set'] == 'nw' and i in runs['new'][0] and i in runs['ref'][0]]
     def savings(rows): return 100 * sum(rows[i]['len'] - rows[i]['kf'] for i in nw) / sum(rows[i]['len'] + 1 for i in nw) if nw else float('nan')
     def lat(rows, ids, key='ms'): return [rows[i][key] for i in ids if i in rows and key in rows[i]]
@@ -257,7 +243,6 @@ def score(name, vs, split, json_out):
     print('\nguardrails:', 'all pass' if not failed else 'FAILED: ' + ', '.join(failed))
     if json_out: pathlib.Path(json_out).write_text(json.dumps(report, indent=1) + '\n')
     return 1 if failed else 0
-
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()

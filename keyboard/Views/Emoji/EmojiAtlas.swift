@@ -1,35 +1,11 @@
 import UIKit
 import Darwin
 
-// MARK: - EmojiAtlas: pre-rasterized emoji tiles served from an mmap'd file
-//
-// Why: drawing emoji as TEXT routes through CoreText's Apple Color Emoji renderer,
-// which caches ~65 KB of DIRTY memory per rasterized glyph and releases it only on a
-// memory warning — scrolling the whole catalog costs ~30 MB against the extension's
-// ~60–70 MB jetsam ceiling (SwiftKey shipped NSCache swizzling to fight the same
-// wall). The fix is the same trick this codebase uses for all its data: rasterize
-// ONCE in the HOST app (multi-GB budget), write raw RGBA tiles to the App Group, and
-// mmap the file in the extension. Cells then show cropped CGImages backed by CLEAN,
-// evictable file pages — no glyph cache, no dirty growth, crisp at native scale.
-//
-// The file is pure pixels; the geometry lives in the NAME
-// (emoji_atlas_v2_<catalog>_t<tilePx>_n<count>_os<iosMajor>.bin). The reader uses a
-// read-only MAP_PRIVATE mapping, and a stale file (emoji.bin rebuilt, iOS major
-// upgrade changing the artwork, different display scale) simply never matches — the
-// grid falls back to live text rendering until the app regenerates.
 final class EmojiAtlas {
-	/// Logical tile side in points (matches the grid's glyph box); pixels = pt × scale.
-	/// 47 pt (was 36) draws browse-grid emoji ~30% larger; the new size changes the file
-	/// name, so the app regenerates the atlas and old tiles are never mapped.
 	nonisolated static let pointSize: CGFloat = 47
-	/// Glyph font inside a tile: 36.5 pt at display size — the same as `glyphFontSize`,
-	/// so atlas cells and text-fallback cells look the same.
 	private nonisolated static let glyphFraction: CGFloat = 28.0 / 36.0
 	nonisolated static let glyphFontSize: CGFloat = pointSize * glyphFraction
-	/// Browse-grid column pitch: the grid fits as many cells of at least this width as
-	/// the row allows (6 on a 393 pt phone).
 	nonisolated static let cellPitch: CGFloat = 60
-	/// The search results strip keeps the old, compact size (44 pt cells).
 	nonisolated static let compactPointSize: CGFloat = 36
 	nonisolated static let compactGlyphFontSize: CGFloat = 28
 
@@ -37,8 +13,6 @@ final class EmojiAtlas {
 	private let tilePx: Int
 	private let displayScale: CGFloat
 	private let strip: CGImage
-	/// Store-order lookup so recents and search results (strings, not grid indices)
-	/// can be served from tiles too. ~1,300 short strings, a one-off walk at load.
 	private let indexOf: [String: Int]
 
 	private init?(url: URL, tilePx: Int, count: Int, store: EmojiStore) {
@@ -91,8 +65,6 @@ final class EmojiAtlas {
 		return provider
 	}
 
-	/// The tile for an exact catalog emoji, or nil (caller falls back to text).
-	/// `cropping` shares the file-backed provider — no bytes are read until render.
 	func image(for emoji: String) -> UIImage? {
 		guard let i = indexOf[emoji],
 			  let tile = strip.cropping(to: CGRect(x: 0, y: CGFloat(i * tilePx),
@@ -100,8 +72,6 @@ final class EmojiAtlas {
 		else { return nil }
 		return UIImage(cgImage: tile, scale: displayScale, orientation: .up)
 	}
-
-	// MARK: Locating the file
 
 	private nonisolated static func containerURL() -> URL? {
 		FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: KBSettings.appGroup)
@@ -119,7 +89,6 @@ final class EmojiAtlas {
 		Int((pointSize * max(scale, 1)).rounded())
 	}
 
-	/// Non-caching load, for tests and the shared path below.
 	static func load(store: EmojiStore?, scale: CGFloat, in dir: URL? = nil) -> EmojiAtlas? {
 		guard let store, let dir = dir ?? containerURL() else { return nil }
 		let tile = tilePx(for: scale)
@@ -129,9 +98,6 @@ final class EmojiAtlas {
 		return EmojiAtlas(url: url, tilePx: tile, count: count, store: store)
 	}
 
-	/// Process-wide instance (main thread only — UI paths). A failed load is NOT
-	/// cached: the app may generate the file while this extension process is alive,
-	/// so the next emoji-page open retries the map.
 	private static var _shared: EmojiAtlas?
 	private static var sharedIdentity: (fingerprint: UInt64, tilePx: Int)?
 	static func loadShared(store: EmojiStore?, scale: CGFloat) -> EmojiAtlas? {
@@ -145,18 +111,10 @@ final class EmojiAtlas {
 		return _shared
 	}
 
-	/// Releases only the process mapping. The immutable file remains in the App Group
-	/// and is mapped again on the next emoji-page open.
 	static func purgeShared() {
 		_shared = nil
 		sharedIdentity = nil
 	}
-
-	// MARK: Generation (HOST APP ONLY)
-	//
-	// Rasterizing walks every glyph through the very CoreText cache this type exists
-	// to keep out of the extension — never call it there. The app's budget shrugs it
-	// off, and the write happens once per (emoji set, tile size, iOS major).
 
 	@discardableResult
 	nonisolated static func generateIfNeeded(store: EmojiStore? = EmojiStore.bundled,
@@ -170,15 +128,12 @@ final class EmojiAtlas {
 			fingerprint: store.catalogFingerprint))
 		if FileManager.default.fileExists(atPath: url.path) { return url }
 
-		// Sweep stale atlases (old emoji set, previous iOS major, other scales).
 		if let entries = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
 			for f in entries where f.lastPathComponent.hasPrefix("emoji_atlas_") {
 				try? FileManager.default.removeItem(at: f)
 			}
 		}
 
-		// Write to a temp name, rename when complete — the extension can never map a
-		// half-written file (the name-encoded size check would reject it anyway).
 		let tmp = dir.appendingPathComponent(".emoji_atlas_\(UUID().uuidString).tmp")
 		guard FileManager.default.createFile(atPath: tmp.path, contents: nil) else { return nil }
 		defer { try? FileManager.default.removeItem(at: tmp) }
@@ -191,8 +146,6 @@ final class EmojiAtlas {
 		return url
 	}
 
-	/// One reused RGBA buffer + CGContext; each emoji is cleared, drawn centered, and
-	/// appended. Thread-safe off main (UIKit string drawing has been since iOS 4).
 	private nonisolated static func rasterize(_ store: EmojiStore, tilePx tile: Int, to handle: FileHandle) -> Bool {
 		var buf = [UInt8](repeating: 0, count: tile * tile * 4)
 		return buf.withUnsafeMutableBytes { raw -> Bool in
@@ -202,7 +155,6 @@ final class EmojiAtlas {
 									  bitsPerComponent: 8, bytesPerRow: tile * 4, space: space,
 									  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
 			else { return false }
-			// UIKit string drawing expects a top-left-origin (flipped) context.
 			ctx.translateBy(x: 0, y: CGFloat(tile))
 			ctx.scaleBy(x: 1, y: -1)
 			UIGraphicsPushContext(ctx)
@@ -217,7 +169,7 @@ final class EmojiAtlas {
 						var font = UIFont.systemFont(ofSize: T * glyphFraction)
 						var str = NSAttributedString(string: store.emoji(c, item), attributes: [.font: font])
 						var sz = str.size()
-						if sz.width > T || sz.height > T {          // wide glyphs (flags, families)
+						if sz.width > T || sz.height > T {
 							font = font.withSize(font.pointSize * min(T / sz.width, T / sz.height))
 							str = NSAttributedString(string: store.emoji(c, item), attributes: [.font: font])
 							sz = str.size()

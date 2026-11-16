@@ -17,9 +17,7 @@ from pathlib import Path
 MAGIC = 0x4B424C4D
 EMPTY32 = 0xFFFFFFFF
 EMPTY16 = 0xFFFF
-# Default --max-bytes per candidate version; v7 is tools/build_language_data.py LANGDATA_CAP.
 SIZE_CAPS = {6: 20_000_000, 7: 10_000_000}
-
 
 class Pack:
     def __init__(self, path: Path):
@@ -72,10 +70,8 @@ class Pack:
             records.append((label, children, first, word, maximum))
         return tuple(records)
 
-
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
@@ -98,7 +94,6 @@ def main() -> None:
     print(f"size: {len(old.data):,} -> {len(new.data):,} bytes "
           f"({(1 - len(new.data) / len(old.data)) * 100:.1f}% smaller)")
     print(f"sha256: {digest(args.candidate)}")
-
 
 if __name__ == "__main__":
     main()

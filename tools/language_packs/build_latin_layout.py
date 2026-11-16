@@ -32,10 +32,8 @@ CONTROLS = {
 FIELD_KINDS = {"email", "url", "webSearch", "twitter"}
 MAX_KEY_SCALARS = 8
 
-
 class LayoutError(ValueError):
     pass
-
 
 def _text(value: object, what: str) -> str:
     if not isinstance(value, str) or not value:
@@ -46,7 +44,6 @@ def _text(value: object, what: str) -> str:
     if len(value) > MAX_KEY_SCALARS or any(unicodedata.category(c).startswith("C") for c in value):
         raise LayoutError(f"{what} {value!r} is not a printable key value")
     return value
-
 
 def _key(item: object, where: str) -> dict:
     """Canonical key: {"key": text} or {"control": name}, plus optional fields."""
@@ -82,12 +79,10 @@ def _key(item: object, where: str) -> dict:
         out["accessibilityLabel"] = _text(item["accessibilityLabel"], f"{where} accessibilityLabel")
     return out
 
-
 def _row(row: object, where: str) -> list[dict]:
     if not isinstance(row, list) or not row:
         raise LayoutError(f"{where} must be a non-empty list")
     return [_key(item, f"{where}[{i}]") for i, item in enumerate(row)]
-
 
 def compile_document(document: dict) -> dict:
     if document.get("schemaVersion") != SCHEMA_VERSION or document.get("format") != FORMAT:
@@ -130,7 +125,6 @@ def compile_document(document: dict) -> dict:
         pages.append(out)
     by_id = {page["id"]: page for page in pages}
 
-    # The decoders' grid: one row per letter row, in order, letters a-z only.
     letters = by_id["letters"]
     grid_rows = ["".join(k["key"] for k in row if "key" in k) for row in letters["rows"]]
     flat = "".join(grid_rows)
@@ -169,12 +163,10 @@ def compile_document(document: dict) -> dict:
         "alternatives": alternatives,
     }
 
-
 def compile_layout(source: Path, output: Path) -> dict:
     compiled = compile_document(json.loads(source.read_text(encoding="utf-8")))
     output.write_bytes(plistlib.dumps(compiled, fmt=plistlib.FMT_BINARY, sort_keys=True))
     return compiled
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -184,7 +176,6 @@ def main() -> None:
     compiled = compile_layout(args.source, args.output)
     print(f"{args.output}: {compiled['identifier']} v{compiled['version']}, "
           f"grid {compiled['letterGrid']['rows']}, {args.output.stat().st_size} bytes")
-
 
 if __name__ == "__main__":
     main()

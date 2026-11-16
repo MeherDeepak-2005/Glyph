@@ -26,7 +26,6 @@ TELUGU_END = 0x0C7F
 POSITIVE_LABELS = {"1", "hate", "hatespeech", "true", "yes"}
 NEGATIVE_LABELS = {"0", "false", "no", "non-hate", "nonhate"}
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -34,14 +33,11 @@ def sha256(path: Path) -> str:
             digest.update(block)
     return digest.hexdigest()
 
-
 def normalize_token(value: str) -> str:
     return unicodedata.normalize("NFC", value).strip("'\u2019").casefold()
 
-
 def is_telugu(value: str) -> bool:
     return any(TELUGU_START <= ord(char) <= TELUGU_END for char in value)
-
 
 def tokenize(value: str) -> set[str]:
     words: set[str] = set()
@@ -62,7 +58,6 @@ def tokenize(value: str) -> set[str]:
     if current:
         flush()
     return words
-
 
 def read_document_counts(path: Path, text_column: str, label_column: str):
     positive: Counter[str] = Counter()
@@ -91,7 +86,6 @@ def read_document_counts(path: Path, text_column: str, label_column: str):
         raise ValueError("both positive and negative documents are required")
     return positive, negative, positive_documents, negative_documents
 
-
 def ranked_terms(
     positive: Counter[str],
     negative: Counter[str],
@@ -115,7 +109,6 @@ def ranked_terms(
     rows.sort(key=lambda row: (-row[3], -row[1], row[0]))
     return rows[:limit]
 
-
 def roman_aliases(archive: Path, member: str, native_terms: set[str], limit: int):
     if "train" not in Path(member).name.casefold():
         raise ValueError("only an Aksharantar training member may generate aliases")
@@ -135,7 +128,6 @@ def roman_aliases(archive: Path, member: str, native_terms: set[str], limit: int
                     aliases[native].add(roman)
     return aliases
 
-
 def write_tsv(path: Path, rows: list[dict[str, str]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", newline="", delete=False,
@@ -146,7 +138,6 @@ def write_tsv(path: Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
         temporary = Path(handle.name)
     temporary.replace(path)
-
 
 def build_candidates(
     hate_csv: Path,
@@ -243,7 +234,6 @@ def build_candidates(
                                       sort_keys=True) + "\n", encoding="utf-8")
     return audit
 
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--hate-csv", type=Path, required=True)
@@ -273,7 +263,6 @@ def main() -> None:
     counts = audit["candidate_counts"]
     print(f"wrote review-only candidates: {counts['telugu']} Telugu, "
           f"{counts['tenglish']} Tenglish; runtime terms added: 0")
-
 
 if __name__ == "__main__":
     main()

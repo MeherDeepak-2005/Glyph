@@ -4,19 +4,10 @@ import CloudKit
 import CryptoKit
 import Foundation
 
-/// Sends the typing recorder's sealed chunks to the research CloudKit container.
-///
-/// Only the app uploads; the keyboard extension only writes files. Every chunk is compressed
-/// and then encrypted to the research public key bundled with the app (HPKE, X25519 +
-/// ChaCha20-Poly1305), so what leaves the phone can be read only with the private key that
-/// `tools/research/keys.swift` wrote beside the repository. Without a valid public key
-/// nothing is uploaded: there is no plaintext path.
 enum ResearchUploader {
     static let containerID = "iCloud.com.meherdeepak.glyph"
     static let refreshTaskID = "com.meherdeepak.glyph.research-upload"
     static let recordType = "TypingChunk"
-    /// Sealed file layout: this magic, the 32-byte HPKE encapsulated key, then the ciphertext
-    /// of the zlib-compressed JSONL. tools/research/open_chunks.swift reverses it.
     static let magic = Data("GLYPHRC1".utf8)
     static let info = Data("glyph-research-chunk-v1".utf8)
 
@@ -49,7 +40,6 @@ enum ResearchUploader {
         return value > 0 ? Date(timeIntervalSince1970: value) : nil
     }
 
-    /// The bundled research public key (base64 of the raw X25519 key), nil when missing or malformed.
     static var publicKey: Curve25519.KeyAgreement.PublicKey? {
         guard let url = Bundle.main.url(forResource: "research-public-key", withExtension: "txt"),
               let text = try? String(contentsOf: url, encoding: .utf8),
@@ -64,8 +54,6 @@ enum ResearchUploader {
         return magic + sender.encapsulatedKey + ciphertext
     }
 
-    /// Uploads everything recorded so far, oldest chunk first, and removes each chunk from the
-    /// phone once CloudKit has it. Stops at the first failure; the rest waits for the next run.
     @discardableResult
     static func uploadPending() async -> Report {
         var report = Report()
@@ -90,7 +78,7 @@ enum ResearchUploader {
             do {
                 let plaintext = try Data(contentsOf: chunk, options: .mappedIfSafe)
                 let sealedURL = scratch.appendingPathComponent(name + ".grc")
-                try seal(plaintext, to: key).write(to: sealedURL, options: .atomic)   // already encrypted
+                try seal(plaintext, to: key).write(to: sealedURL, options: .atomic)
                 let record = CKRecord(recordType: recordType, recordID: CKRecord.ID(recordName: "\(install)-\(name)"))
                 record["install"] = install
                 record["chunk"] = name
@@ -101,7 +89,6 @@ enum ResearchUploader {
                 do {
                     _ = try await database.save(record)
                 } catch let error as CKError where error.code == .serverRecordChanged {
-                    // The same chunk was already saved by an earlier run that could not finish.
                 }
                 try? FileManager.default.removeItem(at: sealedURL)
                 if isDiagnostics {
@@ -122,8 +109,6 @@ enum ResearchUploader {
         return report
     }
 
-    /// Once a day, the keyboard's aggregate counters (latency, memory, per-key error counts;
-    /// no text) travel as one more chunk.
     private static func diagnosticsChunk(install: String) -> URL? {
         let last = KBSettings.sharedDefaults.double(forKey: lastDiagnosticsKey)
         guard Date().timeIntervalSince1970 - last > 86_400,
@@ -148,14 +133,10 @@ enum ResearchUploader {
         }
     }
 
-    // MARK: Background refresh (best effort: iOS decides when, and rarely for an app that is seldom opened)
-
     private static var refreshPermitted: Bool {
         (Bundle.main.object(forInfoDictionaryKey: "BGTaskSchedulerPermittedIdentifiers") as? [String])?.contains(refreshTaskID) == true
     }
 
-    /// Call once, before the app finishes launching. Registering an identifier the Info.plist
-    /// does not permit raises, so a build without it simply has no background upload.
     static func registerBackgroundRefresh() {
         guard refreshPermitted else { return }
         BGTaskScheduler.shared.register(forTaskWithIdentifier: refreshTaskID, using: nil) { task in

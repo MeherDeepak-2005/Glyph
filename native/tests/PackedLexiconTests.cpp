@@ -1,6 +1,3 @@
-// The unigram dictionary (KBLM v7): exact reads, the trie, the channel search, the blocked
-// bitset, every truncated prefix and corrupt field rejected, and the shipped langdata.bin.
-//   decoder-core-tests [langdata.bin]
 #include "../DecoderCore/include/PackedLexicon.hpp"
 #include "../DecoderCore/include/Personalization.hpp"
 #include <algorithm>
@@ -22,7 +19,6 @@ static void replace(Bytes& bytes, std::size_t offset, std::uint32_t value, unsig
     for (unsigned i = 0; i < width; ++i) bytes.at(offset + i) = std::byte((value >> (8 * i)) & 255);
 }
 constexpr std::uint32_t none = 0xffffffff;
-// Words a (11), bb (22), ccc (33); a BFS trie of seven nodes.
 constexpr std::size_t freqAt = 16, offsetsAt = freqAt + 3 * 4, trieAt = offsetsAt + 4 * 4, nodeSize = 14;
 static Bytes fixture() {
     Bytes b;
@@ -66,7 +62,6 @@ static void testFormat() {
     bounds = false;
     try { (void)view.trieRecord(7); } catch (const std::out_of_range&) { bounds = true; }
     assert(bounds);
-    // The channel search: exact, a doubled letter typed once (cc -> ccc, 0.3), nothing beyond the radius.
     auto exact = view.search("bb", 0);
     assert(exact.size() == 1 && exact[0].word == "bb" && exact[0].cost == 0 && exact[0].logFrequency == std::log(23.0));
     assert(found(view.search("cc", 0.3), "ccc") && !found(view.search("cc", 0.29), "ccc"));
@@ -74,27 +69,25 @@ static void testFormat() {
     bool radius = false;
     try { (void)view.search("bb", -1); } catch (const std::invalid_argument&) { radius = true; }
     assert(radius);
-    // Blocked words: excluded from the search once installed (once), still traversed.
     view.installBlocked(std::vector<std::string>{"bb", "zz"});
     assert(view.blocked(1) && !view.blocked(0) && view.blockedCount() == 1);
     assert(view.search("bb", 0).empty() && found(view.search("ccc", 0), "ccc"));
     view.installBlocked(std::vector<std::string>{"ccc"});
     assert(!view.blocked(2) && view.blockedCount() == 1);
     for (std::size_t cut = 0; cut < bytes.size(); ++cut) rejects(Bytes(bytes.begin(), bytes.begin() + std::ptrdiff_t(cut)));
-    auto bad = bytes; replace(bad, 0, 0); rejects(bad);                              // magic
-    bad = bytes; replace(bad, 4, 6); rejects(bad);                                   // the old v6 layout
+    auto bad = bytes; replace(bad, 0, 0); rejects(bad);
+    bad = bytes; replace(bad, 4, 6); rejects(bad);
     bad = bytes; replace(bad, 4, 8); rejects(bad);
-    bad = bytes; replace(bad, 8, 0xffffffff); rejects(bad);                          // word count
-    bad = bytes; replace(bad, 12, 8); rejects(bad);                                  // node count
-    bad = bytes; replace(bad, offsetsAt + 4, 100); rejects(bad);                     // offsets past the blob
-    bad = bytes; replace(bad, offsetsAt + 8, 0); rejects(bad);                       // nonmonotonic offsets
-    bad = bytes; replace(bad, trieAt + 2, 5); rejects(bad);                          // children past the trie
-    bad = bytes; replace(bad, trieAt + nodeSize * 2 + 2, 1); rejects(bad);           // a child before its parent
-    bad = bytes; replace(bad, trieAt + nodeSize * 1 + 6, 3); rejects(bad);           // terminal word ID
+    bad = bytes; replace(bad, 8, 0xffffffff); rejects(bad);
+    bad = bytes; replace(bad, 12, 8); rejects(bad);
+    bad = bytes; replace(bad, offsetsAt + 4, 100); rejects(bad);
+    bad = bytes; replace(bad, offsetsAt + 8, 0); rejects(bad);
+    bad = bytes; replace(bad, trieAt + 2, 5); rejects(bad);
+    bad = bytes; replace(bad, trieAt + nodeSize * 2 + 2, 1); rejects(bad);
+    bad = bytes; replace(bad, trieAt + nodeSize * 1 + 6, 3); rejects(bad);
     std::cout << "PASS KBLM v7: words, frequencies, trie, search, blocked words, shared bytes, bounds, "
               << bytes.size() << " truncated prefixes and corrupt fields\n";
 }
-// 32-bit word IDs: a terminal above 65535.
 static void testWideIDs() {
     constexpr unsigned words = 65538;
     Bytes b;
@@ -117,27 +110,26 @@ static void testSpatial() {
     assert(a && a->x == 0.5 && a->y == 1);
     assert(z && z->x == 1.5 && z->y == 2 && !kb::grid('\''));
     assert(kb::substitutionCost('q', 'q') == 0);
-    // Fitted constants (tools/evaluation/autocorrect, 27 Oct 2026): neighbour = 1/2 + substitutionBase 0.6.
     assert(std::abs(kb::substitutionCost('q', 'w') - 1.1) < 1e-12);
     assert(std::abs(kb::substitutionCost('q', 'w', kb::TouchOffset{-1, 0}) - 0.6) < 1e-12);
-    assert(std::abs(kb::substitutionCost('s', 'z') - 0.9) < 1e-12);   // sound-alike, cheaper than the neighbour's 1.1
-    assert(std::abs(kb::substitutionCost('c', 'k') - 0.9) < 1e-12);   // sound-alike, far apart on the keyboard
+    assert(std::abs(kb::substitutionCost('s', 'z') - 0.9) < 1e-12);
+    assert(std::abs(kb::substitutionCost('c', 'k') - 0.9) < 1e-12);
     assert(kb::substitutionCost('q', 'q', kb::TouchOffset{0, 0}) == 0);
     assert(kb::substitutionCost('q', 'q', kb::TouchOffset{INFINITY, 0}) == 3);
     assert(kb::substitutionCost('?', '?') == 0 && kb::substitutionCost('?', 'q') == 3);
-    assert(kb::substitutionCost('e', 'a') == kb::vowelSubstitutionCost);   // speach -> speech
-    assert(kb::deletionCostAt('s', 's', 's') == kb::doubledDeletionCost);    // posess -> possess
+    assert(kb::substitutionCost('e', 'a') == kb::vowelSubstitutionCost);
+    assert(kb::deletionCostAt('s', 's', 's') == kb::doubledDeletionCost);
     assert(kb::deletionCostAt('n', 'n', 'e') == kb::deletionCost && kb::deletionCostAt('s', 'o', 's') == kb::deletionCost);
-    assert(kb::insertionCostAt('l', 'l', 'l') == kb::doubledInsertionCost);   // excell -> excel
-    assert(kb::insertionCostAt('e', 'e', 'n') == kb::insertionCost);          // coeevitjkn is not connection's nn
+    assert(kb::insertionCostAt('l', 'l', 'l') == kb::doubledInsertionCost);
+    assert(kb::insertionCostAt('e', 'e', 'n') == kb::insertionCost);
     assert(kb::firstLetterPenalty(2, 'n', 'm') == 0);
     assert(kb::firstLetterPenalty(3, 'n', 'm') == 0.35);
     assert(kb::firstLetterPenalty(4, 'n', 'm') == 0.2);
-    assert(kb::firstLetterPenalty(5, 'n', 'm') == 1.0);             // neighbouring first key
-    assert(kb::firstLetterPenalty(5, 'p', 'a') == 2.0);             // distant first key
-    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c', 'o') == 0.75);  // ocokies -> cookies: first two swapped
-    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c', 'a') == 2.0);   // bcome -> come is not a swap
-    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c') == 2.0);        // candidate second letter unknown
+    assert(kb::firstLetterPenalty(5, 'n', 'm') == 1.0);
+    assert(kb::firstLetterPenalty(5, 'p', 'a') == 2.0);
+    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c', 'o') == 0.75);
+    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c', 'a') == 2.0);
+    assert(kb::firstLetterPenalty(5, 'c', 'o', 'c') == 2.0);
     assert(kb::firstLetterPenalty(20, 'm', 'm') == 0);
     assert(kb::personalLanguageBoost(2, 0.10) == 0);
     assert(std::abs(kb::personalLanguageBoost(3, 0.10) - 0.10 * std::log1p(1)) <= 1e-12);
@@ -158,7 +150,6 @@ int main(int argc, char** argv) {
             if (corpus.wordID(spelling) == std::int32_t(id)) ++terminals;
         }
         assert(terminals == corpus.wordCount());
-        // Word IDs follow descending frequency.
         for (std::uint32_t id = 1; id < corpus.wordCount(); ++id) assert(corpus.frequency(id - 1) >= corpus.frequency(id));
         auto recovery = corpus.search("coeevitjkn", 7.2);
         assert(std::any_of(recovery.begin(), recovery.end(), [](const auto& candidate) {

@@ -1,14 +1,3 @@
-// Research chunk keys and decryption (macOS 14+, CryptoKit HPKE). The app seals every uploaded
-// chunk to the research public key (keyboard/App/ResearchUploader.swift); this opens them.
-//
-//   swift tools/research/chunks.swift keys [--force]
-//       Makes a new X25519 key pair: the public key goes to keyboard/App/research-public-key.txt
-//       (bundled with the app), the private key to Config/research-private-key.txt (git-ignored).
-//       Chunks sealed to an older public key can only be opened with its private key: keep it.
-//   swift tools/research/chunks.swift open PRIVATE_KEY_FILE OUT_DIR CHUNK.grc...
-//       Decrypts and decompresses each chunk to OUT_DIR/<name>.jsonl.
-//   swift tools/research/chunks.swift seal PUBLIC_KEY_FILE IN.jsonl OUT.grc
-//       What the app does before uploading; for tests.
 import CryptoKit
 import Foundation
 

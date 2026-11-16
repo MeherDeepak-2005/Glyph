@@ -1,10 +1,6 @@
 import Foundation
 import Darwin
 
-/// Opt-in research data, separate from aggregate diagnostics (docs/typing-recorder.md).
-/// The keyboard extension and the app's practice screen write events here; nothing in this
-/// file transmits. The app's research uploader takes sealed chunks from `sealedChunks`.
-/// Commit events are observations, NEVER supervised labels by themselves.
 enum KBTypingRecorder {
     struct Candidate: Codable {
         var word: String
@@ -15,26 +11,16 @@ enum KBTypingRecorder {
         var typedWordMargin: Double?
         var source: String
     }
-    /// One letter of a word as it was typed: the key, its landing offset in key pitches
-    /// (clamped to ±1), and the gap to the previous key. Erased letters are removed, so a
-    /// committed word's keystrokes line up with its typed literal.
     struct Keystroke: Codable {
         var key: String
         var dx: Double?
         var dy: Double?
         var intervalMs: Double?
     }
-    /// One Glide gesture, whatever became of it.
     struct Glide: Codable {
-        /// Every touch sample, lift point included: [x, y, ms since the first sample, touch
-        /// radius], in keyboard-view points (the `layout` event gives the key rectangles).
         var path: [[Double]]
         var startKey: String?
-        /// committed | rejected (the decoder matched nothing) | cancelled (the system took the
-        /// touch) | dropped (the host text moved before the word could be inserted).
         var outcome: String
-        /// Which decode produced the committed word: preview (the word shown under the finger),
-        /// cache, session or final.
         var source: String?
         var previews: Int?
         var liftToInsertMs: Double?
@@ -44,8 +30,6 @@ enum KBTypingRecorder {
         var label: String
         var x: Double, y: Double, w: Double, h: Double
     }
-    /// The keyboard's geometry for one `layout` revision: taps and Glide paths are only
-    /// comparable within it.
     struct Layout: Codable {
         var width: Double, height: Double
         var xPitch: Double, yPitch: Double
@@ -54,9 +38,6 @@ enum KBTypingRecorder {
         var profile: String
         var screenWidth: Double, screenHeight: Double, screenScale: Double
     }
-    /// First line of every chunk: who and what produced it. `install` is a random ID made
-    /// when research was first enabled; `profile` is what the tester chose to say about
-    /// themselves (KBTypingRecorder.profile).
     struct Header: Codable {
         var install: String
         var appVersion: String
@@ -66,15 +47,12 @@ enum KBTypingRecorder {
         var locale: String
         var profile: [String: String]?
     }
-    /// A practice prompt shown by the app: `target` is what the tester was asked to enter.
     struct Prompt: Codable {
         var id: String
         var target: String
         var mode: String
         var result: String?
     }
-    /// Schema 3 (docs/typing-recorder.md) adds chunk headers, keyboard geometry, absolute
-    /// touch points, Glide gestures, correction outcomes and practice prompts to schema 2.
     struct Event: Codable {
         var schema = 3
         var id = UUID().uuidString
@@ -117,10 +95,10 @@ enum KBTypingRecorder {
     private static let queue = DispatchQueue(label: "keyboard.typing-records", qos: .utility)
     private static let admission = NSLock()
     private static var pending = 0
-    private static var buffer: [(Event, String, UInt64)] = [] // queue-owned
+    private static var buffer: [(Event, String, UInt64)] = []
     private static var scheduled = false
-    private static let chunkBytes = 1_024 * 1_024               // the active file is sealed at this size
-    private static let outboxBytes = 200 * 1_024 * 1_024        // sealed chunks waiting for upload
+    private static let chunkBytes = 1_024 * 1_024
+    private static let outboxBytes = 200 * 1_024 * 1_024
     private static let retention: TimeInterval = 30 * 86_400
     private static let enabledKey = "kb.typing.capture"
     private static let generationKey = "kb.typing.generation"
@@ -133,10 +111,7 @@ enum KBTypingRecorder {
     private static func outbox(_ dir: URL) -> URL { dir.appendingPathComponent("outbox", isDirectory: true) }
     private enum Failure: Error { case unavailable, lock, disabled }
 
-    /// A random ID for this install's research data. It exists only while research has been
-    /// enabled at least once, and "Delete all keyboard data" removes it.
     static var installID: String? { KBSettings.sharedDefaults.string(forKey: installKey) }
-    /// What the tester chose to tell us (nickname, handedness, thumbs); written into chunk headers.
     static var profile: [String: String] {
         get { KBSettings.sharedDefaults.dictionary(forKey: profileKey) as? [String: String] ?? [:] }
         set {
@@ -146,7 +121,6 @@ enum KBTypingRecorder {
         }
     }
 
-    /// File lock is fail-closed: reset/export/writes never proceed without serialization.
     private static func locked<T>(_ body: () throws -> T) throws -> T {
         guard let root = KBPersonalData.containerURL else { throw Failure.unavailable }
         let fd = open(root.appendingPathComponent(".typing-recordings.lock").path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)
@@ -277,13 +251,10 @@ enum KBTypingRecorder {
         (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
     }
 
-    /// Chunk names sort by sealing time: milliseconds since 1970, zero-padded, then a random suffix.
     private static func chunkName(at date: Date = Date()) -> String {
         String(format: "%014lld-%@.jsonl", Int64(date.timeIntervalSince1970 * 1_000), String(UUID().uuidString.prefix(8)))
     }
 
-    /// Moves the active file (and a schema-2 `previous.jsonl`) into the outbox, then enforces
-    /// the outbox's age and size limits, oldest chunk first. Call under `locked`.
     private static func seal(_ dir: URL) throws {
         let box = outbox(dir)
         try prepareDirectory(box)
@@ -292,7 +263,6 @@ enum KBTypingRecorder {
             guard fileSize(url) > 0 else { continue }
             try FileManager.default.moveItem(at: url, to: box.appendingPathComponent(chunkName(at: date)))
         }
-        // A shared export is a second copy of the text; it does not outlive the hour it was made in.
         let export = dir.appendingPathComponent("export.jsonl")
         if let made = try? export.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate,
            Date().timeIntervalSince(made) > 3_600 { try? FileManager.default.removeItem(at: export) }
@@ -334,7 +304,6 @@ enum KBTypingRecorder {
         try url.setResourceValues(values)
     }
 
-    /// Invalidates queued events before deletion. Removing records also stops collection.
     @discardableResult static func clear() -> Bool {
         do {
             try locked {
@@ -351,10 +320,6 @@ enum KBTypingRecorder {
         }
     }
 
-    // MARK: The uploader's side (the app)
-
-    /// Sealed chunks, oldest first. `sealingCurrent` first seals the active file, so everything
-    /// recorded so far is in the list; the next event starts a new file with its own header.
     static func sealedChunks(sealingCurrent: Bool) -> [URL] {
         queue.sync {
             writeBuffer()
@@ -371,7 +336,6 @@ enum KBTypingRecorder {
         }
     }
 
-    /// Removes one sealed chunk (after it was uploaded). False when it could not be removed.
     @discardableResult static func discard(chunk: URL) -> Bool {
         do {
             return try locked {
@@ -385,7 +349,6 @@ enum KBTypingRecorder {
         }
     }
 
-    /// Recorded data still on this device: sealed chunks and bytes, the active file included.
     static func stored() -> (chunks: Int, bytes: Int) {
         (try? locked { () -> (chunks: Int, bytes: Int) in
             guard let dir = directory else { return (0, 0) }
@@ -394,7 +357,6 @@ enum KBTypingRecorder {
         }) ?? (0, 0)
     }
 
-    /// Produces a snapshot separate from the live recording; sharing it requires an explicit ShareLink action.
     static func export(completion: @escaping (URL?) -> Void) {
         queue.async {
             writeBuffer()

@@ -22,7 +22,6 @@ A --tuning build reads constants at run time, which hides latency the production
 import argparse, concurrent.futures as cf, hashlib, itertools, json, os, subprocess, sys
 import evaluate as ev
 
-# The constants the NSS joint search reads: the channel's edit costs and the score weight.
 GRID = {
     'channelWeight': [2.0, 3.0, 4.0, 5.0],
     'insertionCost': [1.2, 1.6, 2.0],
@@ -31,7 +30,6 @@ GRID = {
     'substitutionBase': [0.4, 0.6, 0.8],
     'nssRawCommitMargin': [0.0, 1.0, 2.0],
 }
-# The constants as they are in SpatialModel.hpp, Ranking.hpp and Engine.hpp.
 DEFAULTS = {'deletionCost': 1.1, 'insertionCost': 1.6, 'transpositionCost': 0.65, 'substitutionBase': 0.6,
             'channelWeight': 4.0, 'nssRawCommitMargin': 0.0}
 META = json.loads((ev.CORPUS/'cases-meta.json').read_text())
@@ -39,9 +37,7 @@ META.update(json.loads((ev.CORPUS/'ext-cases-meta.json').read_text()))
 META.update(json.loads((ev.CORPUS/'keep-cases-meta.json').read_text()))
 CASES = ev.CORPUS/'quick.tsv'
 
-
 BINARY = 'ios-tune'
-
 
 def evaluate(setting):
     env = ev.bench_env(**{f'KB_{k}': str(v) for k, v in setting.items()})
@@ -54,7 +50,6 @@ def evaluate(setting):
                        env=env, check=True, stderr=subprocess.DEVNULL)
         os.replace(str(out) + '.part', out)
     return setting, ev.load(out)[0]
-
 
 def judge(rows, base):
     def flags(ids, pred, r): return [pred(r[i], META[i]) for i in ids]
@@ -75,7 +70,6 @@ def judge(rows, base):
     if rw_old > rw_new and ev.mcnemar(rw_new, rw_old) < 0.05: reasons.append(f'real-word +{rw_new}/-{rw_old}')
     hard = rate(by['hard'], changed, rows)
     if hard > 30: reasons.append(f'hard {hard:.1f}%')
-    # Unknown names the user meant (make_keep.py, tune half): never more changed than the reference.
     names = by.get('keep_name', []) + by.get('keep_name_ctx', [])
     if names and rate(names, changed, rows) > rate(names, changed, base):
         reasons.append(f'names {rate(names, changed, rows):.1f}% > {rate(names, changed, base):.1f}%')
@@ -85,7 +79,6 @@ def judge(rows, base):
                                     realword=rate(by['realword'], fixed, rows),
                                     **({'wiki': rate(by['ext_wikipedia'], fixed, rows)} if 'ext_wikipedia' in by else {}),
                                     **({'names': rate(names, changed, rows)} if names else {}))
-
 
 def main():
     ap = argparse.ArgumentParser()
@@ -139,7 +132,6 @@ def main():
                 print(f'pass {p} {name} -> {best[name]} (objective {best_score:.3f})', flush=True)
             if not improved: break
     print('best', json.dumps(best), round(best_score, 3), flush=True)
-
 
 if __name__ == '__main__':
     main()

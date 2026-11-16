@@ -20,7 +20,6 @@ from torch.nn import functional as F
 
 from .base import State, StreamingLM, keep_mask
 
-
 class LSTM(StreamingLM):
     arch = "lstm"
 
@@ -83,7 +82,6 @@ class LSTM(StreamingLM):
     def config(self):
         return {"arch": self.arch, "embed": self.embed, "hidden": self.hidden, "proj": self.proj,
                 "cifg": self.cifg, "layers": self.layers, "tied": self.tied}
-
 
 class GRU(StreamingLM):
     arch = "gru"

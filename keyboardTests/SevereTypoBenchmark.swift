@@ -2,9 +2,6 @@ import Foundation
 import Testing
 @testable import keyboard
 
-/// Replays the project's severe-typo golden through the shipped decoder: the neural search
-/// space over the repository's dictionary and model. No expected word is injected into
-/// candidate generation or scores.
 @MainActor
 struct SevereTypoBenchmark {
     @Test func coeevitjknThroughTheNeuralSearchSpace() async throws {
@@ -50,9 +47,6 @@ struct SevereTypoBenchmark {
             rows.append(row)
             print("SEVERE_BENCHMARK " + String(decoding: try JSONSerialization.data(withJSONObject: row,
                 options: [.sortedKeys]), as: UTF8.self))
-            // Raw NSS keeps a typed non-word unless a completed word outscores it; nothing
-            // near this severe typo does, in any of these contexts (the n-gram tier's broad
-            // recovery committed "correction").
             #expect(snapshots.allSatisfy { $0.correction == nil })
             #expect(snapshots.allSatisfy { $0.suggestions.first == "coeevitjkn" })
         }

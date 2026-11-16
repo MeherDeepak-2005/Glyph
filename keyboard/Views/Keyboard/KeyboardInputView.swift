@@ -1,7 +1,5 @@
 import UIKit
 
-/// Give UIKit an explicit fitting height even during host/rotation constraint transitions.
-/// Never derive this value from the host-assigned height (which can transiently be full screen).
 final class KeyboardInputView: UIInputView {
     var desiredHeight: CGFloat = 240 {
         didSet {

@@ -1,9 +1,4 @@
 #!/bin/bash
-# Engine speed and memory on a connected iPhone (keyboardTests/EnginePerformanceBenchmark.swift):
-# engine start, word-start prediction, per-keystroke decode, glide and live-swipe latency, footprint.
-#   tools/perf/device_perf.sh DEVICE_ID NAME [Release|Debug] [BUILD_SETTING=value ...]
-# Release (default) is the shipping optimisation, made testable for @testable import.
-# The phone must stay unlocked. Writes tools/perf/results/NAME.json.
 set -euo pipefail
 repo="$(cd "$(dirname "$0")/../.." && pwd)"
 device="$1"; name="$2"; config="${3:-Release}"; shift $(( $# < 3 ? $# : 3 ))

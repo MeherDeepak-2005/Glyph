@@ -67,8 +67,6 @@ PackedLexicon::PackedLexicon(std::span<const std::byte> bytes) : bytes_(bytes) {
     require(u32(4) == formatVersion, "unsupported KBLM version");
     words_ = u32(8); nodes_ = u32(12);
     require(words_ <= static_cast<std::uint32_t>(INT32_MAX), "word IDs exceed Int32");
-    // Add each section only after checked multiplication/subtraction. Corrupt counts
-    // must not wrap offsets, even on a platform with a smaller size_t.
     std::size_t cursor = headerSize_;
     auto section = [&](std::size_t width, std::size_t count) {
         require(count <= (bytes.size() - cursor) / width, "section exceeds backing");
@@ -118,8 +116,6 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
     if (maxDepth + 1 > SIZE_MAX / (n + 1)) throw std::length_error("search DP overflow");
     std::vector<double> dp((maxDepth + 1) * (n + 1));
     for (std::size_t i = 0; i <= n; ++i) dp[i] = double(i) * insertionCost;
-    // Each candidate label sees the same substitution cost at a typed column.
-    // Compute geometry once per column/label rather than once per visited cell.
     if (n > SIZE_MAX / 256) throw std::length_error("search substitution table overflow");
     std::vector<std::array<double, 256>> substitutions(n);
     std::array<bool, 256> substitutionReady{};
@@ -129,19 +125,15 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
         return std::to_integer<std::uint8_t>(bytes_[trie_ + nodeSize_ * node + offset]);
     };
     const auto typedFirst = std::uint8_t(typed.front()), typedSecondLetter = n > 1 ? std::uint8_t(typed[1]) : std::uint8_t(0);
-    // A dropped first letter (bove -> above) gets no first-letter discount: admitting that
-    // shape would lower the root bound of every first letter and open most of the trie.
     auto penaltyOf = [&](std::uint8_t candidateFirst, std::uint8_t candidateSecond) {
         if (candidateSecond == typedFirst && !(typedSecondLetter && candidateFirst == typedSecondLetter))
             candidateSecond = 0;
         return firstLetterPenalty(n, candidateFirst, typedFirst, typedSecondLetter, candidateSecond);
     };
-    // parentMin is the previous DP row's minimum: a transposition reaches back to it,
-    // so a branch may only be pruned when min(rowMin, parentMin + transposition) is over budget.
     auto visit = [&](auto&& self, std::size_t node, std::uint8_t letter, std::uint8_t previousLetter,
                      std::size_t depth, double firstPenalty, double parentMin) -> void {
         if (cancelled || depth > maxDepth) return;
-        const double rootPenalty = firstPenalty;   // best case below the root; exact from depth 2
+        const double rootPenalty = firstPenalty;
         ++visits;
         if ((visits & 127) == 0 && shouldCancel && shouldCancel()) { cancelled = true; return; }
         if (!substitutionReady[letter]) {
@@ -166,7 +158,6 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
         }
         auto offset = trie_ + nodeSize_ * node;
         const std::uint32_t id = u32(offset + 6);
-        // The root penalty assumed the best case for the candidate's second letter; settle it.
         if (depth == 1) firstPenalty = std::max(firstPenalty, firstLetterPenalty(n, letter, typedFirst, typedSecondLetter));
         if (depth == 2) firstPenalty = penaltyOf(previousLetter, letter);
         const double finalCost = dp[base + n] + firstPenalty;
@@ -191,7 +182,7 @@ std::vector<ChannelCandidate> PackedLexicon::search(std::string_view typed, doub
 }
 bool PackedLexicon::installModern(std::span<const std::byte> sidecar) const {
     constexpr std::string_view sidecarMagic = "KBMODERN";
-    constexpr std::size_t header = 56, digest = 32;   // magic, 4 x u32, dictionary SHA-256
+    constexpr std::size_t header = 56, digest = 32;
     if (!policies_.empty() || sidecar.size() < header + digest || sidecar.size() > 1'000'000) return false;
     auto field = [&](std::size_t at) {
         std::uint32_t value = 0;
@@ -200,7 +191,6 @@ bool PackedLexicon::installModern(std::span<const std::byte> sidecar) const {
     };
     for (std::size_t i = 0; i < sidecarMagic.size(); ++i) if (sidecar[i] != std::byte(sidecarMagic[i])) return false;
     const auto count = field(16);
-    // Version 1, this dictionary's word count, no context rows (they fed the n-gram strip).
     if (field(8) != 1 || field(12) != words_ || field(20) != 0 || count > 10'000 ||
         sidecar.size() != header + 8 * std::size_t(count) + digest) return false;
     const auto checksum = dictionarySHA256(sidecar.first(sidecar.size() - digest));
@@ -211,7 +201,6 @@ bool PackedLexicon::installModern(std::span<const std::byte> sidecar) const {
     policies.reserve(count);
     for (std::size_t i = 0; i < count; ++i) {
         const Policy policy{field(header + 8 * i), field(header + 8 * i + 4)};
-        // A preserved spelling is also never an automatic replacement (bit 0 implies bit 1).
         if (policy.word >= words_ || !policy.flags || (policy.flags & ~3u) || ((policy.flags & 1) && !(policy.flags & 2)) ||
             (!policies.empty() && policy.word <= policies.back().word)) return false;
         policies.push_back(policy);
@@ -236,4 +225,4 @@ bool PackedLexicon::allowsCorrection(std::string_view text) const {
     }
     return true;
 }
-} // namespace kb
+}

@@ -3,8 +3,6 @@ import Testing
 @testable import keyboard
 
 struct NativePackedLexiconTests {
-    /// A one-word KBLM v7 dictionary ("x", frequency 19): header, frequencies, offsets, the
-    /// root and one child trie node, then the word bytes.
     private func minimalV7(version: UInt32 = 7) -> Data {
         var bytes = Data()
         func put(_ value: UInt32) {
@@ -14,9 +12,9 @@ struct NativePackedLexiconTests {
         func node(label: UInt8, children: UInt8, first: UInt32, id: UInt32, maxFrequency: UInt32) {
             bytes.append(label); bytes.append(children); put(first); put(id); put(maxFrequency)
         }
-        for value: UInt32 in [0x4B424C4D, version, 1, 2] { put(value) }   // magic, version, words, nodes
-        put(19)                                                           // frequency of word 0
-        put(0); put(1)                                                    // its blob offsets
+        for value: UInt32 in [0x4B424C4D, version, 1, 2] { put(value) }
+        put(19)
+        put(0); put(1)
         node(label: 0, children: 1, first: 1, id: 0xFFFF_FFFF, maxFrequency: 19)
         node(label: UInt8(ascii: "x"), children: 0, first: 0, id: 0, maxFrequency: 19)
         bytes.append(UInt8(ascii: "x"))
@@ -29,7 +27,7 @@ struct NativePackedLexiconTests {
         for word in ["accommodative", "acetylcholine", "café", "naïve", "wi-fi"] {
             let id = try #require(reader.trieWordID(word))
             #expect(reader.word(Int(id)) == word)
-            #expect(reader.freq(Int(id)) >= 1)   // unigram-v1 re-estimated the CoreV4 forms' prior of 1
+            #expect(reader.freq(Int(id)) >= 1)
         }
         #expect(try #require(reader.trieWordID("accommodative")) > 65_535)
         for excluded in ["cant", "im", "lets", "wont"] {
@@ -48,7 +46,6 @@ struct NativePackedLexiconTests {
         #expect(throws: (any Error).self) {
             try KBPackedLexicon(backing: NSData(data: bytes.prefix(17)))
         }
-        // Formats before v7 carried n-gram sections; only the unigram-only v7 loads.
         #expect(throws: (any Error).self) {
             try KBPackedLexicon(backing: NSData(data: minimalV7(version: 6)))
         }

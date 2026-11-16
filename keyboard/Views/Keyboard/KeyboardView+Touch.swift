@@ -1,9 +1,5 @@
 import UIKit
 
-/// The press balloon, reused from press to press. Allocating it per keystroke cost a view, a
-/// shape layer and a label whose backing store is about 90 KB at 3x, freed 100 ms later; a
-/// reused label redraws into the backing store it already has. Theme colors are set once:
-/// a KeyboardView's theme never changes.
 final class KeyBalloonView: UIView {
 	let outline = CAShapeLayer()
 	let label = UILabel()
@@ -30,9 +26,7 @@ final class KeyBalloonView: UIView {
 }
 
 extension KeyboardView {
-	// MARK: Multi-touch — fire on contact, track every finger
 
-	/// Two thumbs, each balloon lingering 100 ms after its lift: three cover fast typing.
 	private static let balloonPoolLimit = 3
 
 	private func showPopup(for key: KeyButton, at point: CGPoint, touch: UITouch) {
@@ -45,10 +39,6 @@ extension KeyboardView {
 		poppedKeys[touch] = key
 	}
 
-	/// Stock-style balloon: a wide head carrying the character, joined by a neck to a
-	/// stem that is the pressed cap itself. The extension cannot draw above its own
-	/// bounds, so a top-row head borrows the suggestion strip and slides down over the
-	/// cap rather than growing the deck. Edge heads shift inward; the stem stays put.
 	func makeKeyPopup(for key: KeyButton, at point: CGPoint) -> UIView? {
 		guard let text = key.popupText else { return nil }
 		let keyFrame = key.frame
@@ -57,15 +47,12 @@ extension KeyboardView {
 		let preferredHeadHeight = max(keyFrame.height * 1.3, 54)
 		let headX = min(max(keyFrame.midX - headWidth / 2, edge),
 			max(edge, bounds.width - edge - headWidth))
-		// Lower rows: the head sits above the cap. Top row: pinned to the deck top, and
-		// with no strip above it the head may swallow the whole cap.
 		let headTop = max(edge, keyFrame.minY + 2 - preferredHeadHeight)
 		let headBottom = min(headTop + preferredHeadHeight, keyFrame.maxY)
 		let popupFrame = CGRect(x: min(headX, keyFrame.minX), y: headTop,
 			width: max(headX + headWidth, keyFrame.maxX) - min(headX, keyFrame.minX),
 			height: keyFrame.maxY - headTop)
 
-		// Local geometry. Every piece winds the same way, so nonzero fill unions them.
 		let head = CGRect(x: headX - popupFrame.minX, y: 0,
 			width: headWidth, height: headBottom - headTop)
 		let stem = CGRect(x: keyFrame.minX - popupFrame.minX, y: keyFrame.minY - headTop,
@@ -90,7 +77,6 @@ extension KeyboardView {
 
 		let balloon = balloonPool.popLast() ?? KeyBalloonView(theme: theme)
 		balloon.frame = popupFrame
-		// The outline is a standalone layer: without this a reused one animates to its new shape.
 		CATransaction.begin(); CATransaction.setDisableActions(true)
 		balloon.outline.frame = balloon.bounds
 		balloon.outline.path = path.cgPath
@@ -103,12 +89,8 @@ extension KeyboardView {
 	}
 	private func removePopup(for touch: UITouch, afterMinimumDuration: Bool = false) {
 		if afterMinimumDuration, let popup = touchPopups[touch], let shownAt = popupShownAt[touch] {
-			// Deferred edge touches can begin and end in the same display frame.
-			// Keep feedback visible without delaying the already-committed character.
 			let remaining = 0.10 - (ProcessInfo.processInfo.systemUptime - shownAt)
 			if remaining > 0 {
-				// Balloons are reused, so the same view may already show another press: match
-				// the press by its start time too, not by the view alone.
 				DispatchQueue.main.asyncAfter(deadline: .now() + remaining) { [weak self, weak popup] in
 					guard let self, let popup, self.touchPopups[touch] === popup,
 						  self.popupShownAt[touch] == shownAt else { return }
@@ -178,7 +160,6 @@ extension KeyboardView {
 
 	private func updateAlternativeSelection(for touch: UITouch, at point: CGPoint) {
 		guard let popup = alternativePopups[touch] else { return }
-		// Keep the originally committed base while the finger remains on the key.
 		guard point.y <= popup.frame.maxY + 16 else { return }
 		popup.select(atX: point.x - popup.frame.minX)
 	}
@@ -208,7 +189,6 @@ extension KeyboardView {
 		}
 	}
 
-
 	private func beginRepeat(_ key: KeyButton, touch: UITouch) {
 		endRepeat()
 		repeatKey = key
@@ -219,7 +199,7 @@ extension KeyboardView {
 			key.trigger()
 			self.isRepeatingKey = false
 		}
-		t.fireDate = Date().addingTimeInterval(0.4)     // hold ~0.4s before it starts repeating
+		t.fireDate = Date().addingTimeInterval(0.4)
 		RunLoop.main.add(t, forMode: .common)
 		repeatTimer = t
 	}
@@ -227,7 +207,6 @@ extension KeyboardView {
 		repeatTimer?.invalidate(); repeatTimer = nil
 		repeatTouch = nil; repeatKey = nil
 	}
-
 
 	private func beginCursorHold(_ key: KeyButton, touch: UITouch, point: CGPoint) {
 		endCursorHold()
@@ -271,22 +250,16 @@ extension KeyboardView {
 	}
 
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		// UIKit gives a Set. Sort simultaneous begins so multi-touch replay and fast
-		// thumb rollover commit in a deterministic order.
 		let ordered = touches.sorted {
 			if $0.timestamp != $1.timestamp { return $0.timestamp < $1.timestamp }
 			let a = $0.location(in: self), b = $1.location(in: self)
 			return a.x == b.x ? a.y < b.y : a.x < b.x
 		}
 		for touch in ordered {
-			// A classified glide owns the deck: other fingers are ignored.
 			if glide?.isGlide == true { continue }
 
 			let p = touch.location(in: self)
 			guard let key = key(at: p) else { continue }
-			// Sampled before the key acts, so the touch-down precedes its own key event and
-			// carries the word session it was typed in. Touches UIKit finished without an
-			// ended/cancelled callback must not hold the cap.
 			if recordedTouches.count >= 20 {
 				recordedTouches = recordedTouches.filter { $0.key.phase != .ended && $0.key.phase != .cancelled }
 			}
@@ -305,19 +278,15 @@ extension KeyboardView {
 				continue
 			}
 			if key.repeats {
-				key.trigger()                             // delete: immediate + auto-repeat
+				key.trigger()
 				performHaptic(for: key)
 				registerKey(key, at: p, for: touch)
 				beginRepeat(key, touch: touch)
 			} else {
-				// Commit on touch-down. If this becomes a glide, `onGlideBegan` retracts
-				// this one provisional start letter before any preview/final decode.
 				activeTap = keyTap(for: key, at: p)
 				key.trigger()
 				activeTap = nil
 				performHaptic(for: key)
-				// Popup allocation, highlighting, and long-press timers are deliberately
-				// after the host edit; they must never delay visible text insertion.
 				registerKey(key, at: p, for: touch)
 				if let base = key.committedText ?? key.popupText {
 					beginAlternatives(for: key, touch: touch, base: base,
@@ -329,7 +298,7 @@ extension KeyboardView {
 				if glideEnabled,
 				   glideTouch == nil,
 				   page == .letters,
-				   !isEmojiSearching,   // search queries are tapped, not glided
+				   !isEmojiSearching,
 				   key.letterBase != nil {
 					glideTouch = touch
 					lastGlidePreviewTime = 0
@@ -352,8 +321,6 @@ extension KeyboardView {
 			time: touch.timestamp, tap: tap, point: touch.location(in: self), radius: touch.majorRadius))
 	}
 
-	/// The recorder's copy of the tracked stroke: every coalesced sample UIKit delivered (the
-	/// decoder takes one per callback), bounded so a finger resting on the deck cannot grow it.
 	private func collectGlideSamples(_ touch: UITouch, with event: UIEvent?) {
 		guard collectsGlideSamples else { return }
 		for sample in event?.coalescedTouches(for: touch) ?? [touch] where glideSamples.count < 4_096 {
@@ -361,8 +328,6 @@ extension KeyboardView {
 		}
 	}
 
-	/// The finished gesture's samples and start key, handed over once (to the controller, when
-	/// the gesture ended or was cancelled).
 	func takeGlideSamples() -> (samples: [GlideSample], startKey: String?)? {
 		defer { glideSamples.removeAll(keepingCapacity: true); collectsGlideSamples = false }
 		return collectsGlideSamples && !glideSamples.isEmpty ? (glideSamples, glideSampleStartKey) : nil
@@ -379,8 +344,6 @@ extension KeyboardView {
 		}
 	}
 
-	/// The tap's offset from the pressed key's center, in key-grid units (the same
-	/// scale as the spatial model's key coordinates). Letter keys only.
 	private func keyTap(for key: KeyButton, at p: CGPoint) -> KeyTap? {
 		guard key.letterBase != nil, unitPitch > 0 else { return nil }
 		let dx = Double((p.x - key.frame.midX) / unitPitch)
@@ -388,8 +351,6 @@ extension KeyboardView {
 		return KeyTap(dx: min(max(dx, -1), 1), dy: min(max(dy, -1), 1))
 	}
 
-	/// Next-character priors for target resizing, refreshed by the controller after
-	/// each background suggestion pass. Empty = no bias (plain nearest-key).
 	func setKeyPriors(_ priors: [Character: Double]) { charPriors = priors }
 	override func touchesMoved(
 		_ touches: Set<UITouch>,
@@ -425,8 +386,6 @@ extension KeyboardView {
 				continue
 			}
 
-			// A non-glide tap already committed on touch-down. Sliding within the
-			// cancellation threshold does not silently change the inserted key.
 		}
 	}
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -443,8 +402,7 @@ extension KeyboardView {
 				clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 				continue
 			}
-			if touch == glideTouch, glide?.isGlide == true {   // a glide: decode, commit nothing
-				// The lift point, for the recorder only: the decoder's path ends at the last move.
+			if touch == glideTouch, glide?.isGlide == true {
 				if collectsGlideSamples, glideSamples.count < 4_096 {
 					glideSamples.append(GlideSample(point: touch.location(in: self), time: touch.timestamp, radius: touch.majorRadius))
 				}
@@ -456,7 +414,7 @@ extension KeyboardView {
 				onGlide?(pts, times, layout)
 				continue
 			}
-			if touch == repeatTouch {                          // delete: just stop
+			if touch == repeatTouch {
 				endRepeat()
 				clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 				continue
@@ -465,12 +423,6 @@ extension KeyboardView {
 			clearRegisteredKey(for: touch, keepingPopupBriefly: true)
 		}
 	}
-	/// Every touch dictionary here holds its UITouch strongly, and UITouch.view holds this view.
-	/// UIKit should cancel a view's touches when it leaves the window, but in the extension
-	/// some end with no callback at all (the stale-touch pruning in touchesBegan exists for
-	/// them). Such a touch keeps a replaced KeyboardView (buildKeyboard) alive with all its
-	/// keys, and leaves a reused one with a stuck balloon and a covered key. Off-window, no
-	/// finger is tracked: cancel whatever is left through the normal cancellation path.
 	override func didMoveToWindow() {
 		super.didMoveToWindow()
 		guard window == nil else { return }
@@ -479,7 +431,7 @@ extension KeyboardView {
 			.union(recordedTouches.keys)
 		for touch in [glideTouch, repeatTouch, cursorTouch] { if let touch { tracked.insert(touch) } }
 		if !tracked.isEmpty { touchesCancelled(tracked, with: nil) }
-		balloonPool.removeAll()   // nothing to press while hidden; rebuilt on the first press back
+		balloonPool.removeAll()
 	}
 
 	override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -494,7 +446,6 @@ extension KeyboardView {
 				let wasGlide = glide?.isGlide == true
 				glideTouch = nil; glide = nil; lastGlidePreviewTime = 0; clearTrail()
 				suggestionBar.setGlidePreview(nil)
-				// A cancelled tap is not a gesture: only a classified Glide keeps its samples.
 				if !wasGlide { collectsGlideSamples = false }
 				onGlideCancelled?()
 			}
@@ -503,7 +454,6 @@ extension KeyboardView {
 		}
 	}
 	
-	// So the deadzone touch doesn't register as Glide and pop up isn't deleted
 	private func visualLetterKey(at point: CGPoint) -> KeyButton? {
 		for row in rows {
 			for key in row {
@@ -526,9 +476,6 @@ extension KeyboardView {
 		return nil
 	}
 
-	/// Feed one movement sample into the tracked stroke; reclassify to a glide once it
-	/// travels past the threshold across ≥2 keys, then suppress its tap feedback and drop
-	/// retract its provisional touch-down letter before the swipe decodes on lift.
 	private func trackGlide(_ touch: UITouch) {
 		guard var glide = glide else { return }
 		let wasGlide = glide.isGlide
@@ -545,8 +492,6 @@ extension KeyboardView {
 		glide.points.append(point)
 		glide.times.append(touch.timestamp)
 
-		// Important: glide classification uses actual visible letter frames,
-		// not dynamically expanded tap regions.
 		if let letterKey = visualLetterKey(at: point) {
 			glide.keys.insert(ObjectIdentifier(letterKey))
 		}
@@ -610,8 +555,6 @@ extension KeyboardView {
 	}
 
 	func key(at p: CGPoint) -> KeyButton? {
-		// Resolve the visual row first. Language priors may arbitrate a horizontal
-		// gap, but can never pull a touch into a different row.
 		let row = rows.min { lhs, rhs in
 			func verticalDistance(_ keys: [KeyButton]) -> CGFloat {
 				guard let first = keys.first else { return .greatestFiniteMagnitude }
@@ -624,36 +567,19 @@ extension KeyboardView {
 		var bestDist = CGFloat.greatestFiniteMagnitude
 		for key in row {
 				let f = key.frame
-                // Modifier caps own their whole visible rectangle. Letter priors
-                // can arbitrate the gutters but cannot steal a deliberate Delete.
                 if key.widthKind == .modifier, f.contains(p) { return key }
-				// Authoritative inner core: a tap solidly inside a key ALWAYS returns it,
-				// so LM target-resizing can only ever affect edge and gap taps — the
-				// keyboard never feels like it's fighting a deliberate press.
 				if f.insetBy(dx: f.width * 0.28, dy: f.height * 0.28).contains(p) { return key }
 				let dx = max(f.minX - p.x, 0, p.x - f.maxX)
 				let dy = max(f.minY - p.y, 0, p.y - f.maxY)
-				var d = dx*dx + dy*dy                          // squared distance to the key rect
-				// LM bias: shrink the effective distance of a likely next letter, capped
-				// well under one key pitch so it only ever wins genuinely ambiguous taps.
+				var d = dx*dx + dy*dy
 				if let base = key.letterBase, let prior = charPriors[Character(base)] {
 					d -= CGFloat(prior) * unitPitch * unitPitch * 0.12
 				}
 				if d < bestDist { bestDist = d; best = key }
 		}
-		return best                                           // nearest key — gaps aren't dead zones
+		return best
 	}
 
-	// MARK: Glide typing (P1: trajectory capture + tap/glide classification)
-	//
-	// A glide is one continuous finger stroke across the letters. We keep fire-on-contact
-	// for taps (the start letter commits instantly), and only when a tracked finger
-	// wanders past a threshold do we RECLASSIFY it as a glide: suppress its popup /
-	// highlight / auto-repeat, ask the controller to remove the start letter it already
-	// inserted, draw a trail, and on lift hand the whole path to the decoder. Decoding
-	// itself is a later phase — `onGlide` is the seam.
-
-	/// Letter-key centers + pitches for the decoder's view→grid mapping.
 	func glideLayout() -> GlideLayout {
 		let centers: [(letter: Character, point: CGPoint)] = letterKeys.compactMap {
 			guard let ch = $0.base.first else { return nil }
@@ -665,13 +591,11 @@ extension KeyboardView {
 	struct GlideTrack {
 		var startKey: KeyButton?
 		var points: [CGPoint] = []
-		var times: [TimeInterval] = []          // per-sample touch timestamps (for velocity/dwell)
-		var length: CGFloat = 0                 // cumulative path length
-		var keys = Set<ObjectIdentifier>()      // distinct keys the path has entered
+		var times: [TimeInterval] = []
+		var length: CGFloat = 0
+		var keys = Set<ObjectIdentifier>()
 		var isGlide = false
 	}
 
-	/// Extra height for browsing overlays, without changing key geometry. The GIF and
-	/// sticker grid gets ~2.5 GIF rows / 3 sticker rows instead of a cramped 1.5.
 	static let mediaExpansion: CGFloat = 88
 }

@@ -36,7 +36,6 @@ SOURCES = {
     },
 }
 
-
 def digest(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as stream:
@@ -44,12 +43,10 @@ def digest(path: Path) -> str:
             h.update(block)
     return h.hexdigest()
 
-
 def verified(path: Path, expected: str) -> Path:
     if digest(path) != expected:
         raise ValueError(f"checksum mismatch: {path}")
     return path
-
 
 def fetch(source: dict, cache: Path) -> Path:
     cache.mkdir(parents=True, exist_ok=True)
@@ -68,7 +65,6 @@ def fetch(source: dict, cache: Path) -> Path:
         temporary.unlink(missing_ok=True)
     return path
 
-
 def cleanup(cache: Path) -> None:
     """Delete only this tool's recognized, hash-matched downloads, never a tree."""
     for source in SOURCES.values():
@@ -77,7 +73,6 @@ def cleanup(cache: Path) -> None:
             verified(path, source["sha256"]).unlink()
     if cache.is_dir() and not any(cache.iterdir()):
         cache.rmdir()
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -90,7 +85,6 @@ def main():
         for name, source in SOURCES.items():
             path = fetch(source, args.cache)
             print(f"{name}: {path.name}, {path.stat().st_size:,} bytes, SHA-256 verified", flush=True)
-
 
 if __name__ == "__main__":
     main()

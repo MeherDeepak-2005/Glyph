@@ -18,9 +18,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 KEY = {c: (x + (0, 0.5, 1.5)[y], float(y)) for y, r in enumerate(ROWS) for x, c in enumerate(r)}
 
-
 def nearest(x, y): return min(KEY, key=lambda k: (KEY[k][0] - x) ** 2 + (KEY[k][1] - y) ** 2)
-
 
 def align(typed, target):
     """Per typed letter: the target letter it stands for, or None for an inserted letter."""
@@ -38,18 +36,15 @@ def align(typed, target):
         else: j -= 1
     return out
 
-
 def tap(rng, typed, intended, sigma):
     if typed not in KEY: return '-'
     cx, cy = KEY[intended] if intended in KEY else KEY[typed]
     for _ in range(200):
         x, y = rng.gauss(cx, sigma), rng.gauss(cy, sigma)
         if nearest(x, y) == typed: return f'{x - KEY[typed][0]:.3f},{y - KEY[typed][1]:.3f}'
-    # Intended key too far for the typed key to be hit by a slip: an ordinary in-key tap.
     while True:
         x, y = rng.gauss(KEY[typed][0], sigma), rng.gauss(KEY[typed][1], sigma)
         if nearest(x, y) == typed: return f'{x - KEY[typed][0]:.3f},{y - KEY[typed][1]:.3f}'
-
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--sigma', type=float, default=0.35)
@@ -65,7 +60,6 @@ def main():
             out.append('\t'.join(cols))
         (src.parent/src.name.replace('cases.tsv', 'cases.taps.tsv')).write_text('\n'.join(out) + '\n')
         print(src.name, '->', src.name.replace('cases.tsv', 'cases.taps.tsv'))
-
 
 if __name__ == '__main__':
     main()

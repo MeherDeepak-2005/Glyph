@@ -15,7 +15,6 @@ from verify_release_artifacts import is_neural_artifact
 
 SCRIPT = ROOT / "verify_release_artifacts.py"
 
-
 def write_bundle(root: Path) -> None:
     """A minimal English extension: the binary, its resources and the NSS word model."""
     for name, payload in (("demo_keyboard", b"binary"), ("emoji.bin", b"emoji"),
@@ -24,13 +23,11 @@ def write_bundle(root: Path) -> None:
                           ("nss-english.nsslm", b"model"), ("safety.kbguard", b"safety")):
         (root / name).write_bytes(payload)
 
-
 def audit(root: Path, *flags: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(SCRIPT), str(root), "--output", str(root / "audit.json"), *flags],
         check=False, capture_output=True, text=True,
     )
-
 
 class ReleaseArtifactVerifierTests(unittest.TestCase):
     def test_recognizes_compiled_and_source_model_containers(self) -> None:
@@ -56,7 +53,6 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             self.assertEqual(valid.returncode, 0, valid.stdout + valid.stderr)
             self.assertEqual(json.loads((root / "audit.json").read_text())["gateBytes"], 25_000_000)
 
-            # The word model is a neural artifact: an audit without the flag fails.
             unflagged = audit(root)
             self.assertNotEqual(unflagged.returncode, 0)
             self.assertIn("unapproved neural model", unflagged.stdout + unflagged.stderr)
@@ -90,7 +86,6 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("empty API key", result.stdout + result.stderr)
             self.assertIn("Partner Panel", result.stdout + result.stderr)
-
 
 if __name__ == "__main__":
     unittest.main()

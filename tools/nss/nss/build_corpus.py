@@ -53,22 +53,18 @@ _names: frozenset[str] = frozenset()
 _vocab: Vocabulary | None = None
 _lexicon: Lexicon | None = None
 
-
 def bucket(key: str) -> int:
     return int.from_bytes(hashlib.sha256(key.encode("utf-8")).digest()[:4], "little")
-
 
 def split_of(key: str) -> str:
     slot = bucket(key) % 200
     return "valid" if slot == 0 else "test" if slot == 1 else "train"
-
 
 def _init(vocab_path: str, langdata_path: str, names: frozenset[str] = frozenset(), unk_share: float = 0.0) -> None:
     global _vocab, _lexicon, _names, name_unk
     _vocab = Vocabulary.load(Path(vocab_path))
     _lexicon = Lexicon.load(Path(langdata_path))
     _names, name_unk = names, unk_share
-
 
 def _encode(job: tuple[str, str, str]) -> tuple[str, np.ndarray, np.ndarray, dict]:
     """(source, key, text) -> (split, tokens, sentence lengths, stats)."""
@@ -98,7 +94,6 @@ def _encode(job: tuple[str, str, str]) -> tuple[str, np.ndarray, np.ndarray, dic
         lengths.append(len(encoded))
     return split_of(key), np.asarray(ids, np.uint16), np.asarray(lengths, np.int64), stats
 
-
 def _documents(source: str, chat: Path | None):
     seen: set[bytes] = set()
     if source == "tatoeba":
@@ -123,7 +118,6 @@ def _documents(source: str, chat: Path | None):
                 seen.add(digest)
                 yield source, key, text
 
-
 def name_set(selected: list[str], chat: Path | None, vocabulary: Vocabulary, sample: int = 20,
              minimum: int = 10, ratio: float = 0.9) -> dict[str, tuple[int, int]]:
     """Vocabulary words written capitalized inside sentences at least `ratio` of the time
@@ -140,7 +134,6 @@ def name_set(selected: list[str], chat: Path | None, vocabulary: Vocabulary, sam
                         count[0] += capitalized
                         count[1] += 1
     return {word: (c[0], c[1]) for word, c in counts.items() if c[1] >= minimum and c[0] >= ratio * c[1]}
-
 
 def build_source(source: str, out: Path, workers: int, chat: Path | None, names: frozenset[str] = frozenset()) -> dict:
     parts = {split: ([], []) for split in SPLITS}
@@ -167,7 +160,6 @@ def build_source(source: str, out: Path, workers: int, chat: Path | None, names:
               f"unk {summary[split]['unk_rate']:.2%}, lexicon share of unk "
               f"{summary[split]['unk_lexicon_share']:.2%}", flush=True)
     return summary
-
 
 def build_masc(out: Path, vocabulary: Vocabulary, lexicon: Lexicon) -> dict:
     """MASC held-out: test only. None (an unrepresentable token) becomes an unscored <unk>."""
@@ -202,7 +194,6 @@ def build_masc(out: Path, vocabulary: Vocabulary, lexicon: Lexicon) -> dict:
     print(f"masc.test: {stats['sentences']:,} sentences, {stats['words']:,} words, "
           f"unk {summary['unk_rate']:.2%}", flush=True)
     return {"test": summary}
-
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -249,7 +240,6 @@ def main(argv: list[str] | None = None) -> None:
     manifest["sources"]["masc"] = {"inputs": [{"path": sources.MASC_HELDOUT.name, "sha256": sha256(sources.MASC_HELDOUT)}],
                                    "splits": build_masc(args.out, vocabulary, lexicon)}
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
-
 
 if __name__ == "__main__":
     main()

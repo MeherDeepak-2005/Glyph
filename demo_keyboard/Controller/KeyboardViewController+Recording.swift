@@ -1,9 +1,6 @@
 import UIKit
 
 extension KeyboardViewController {
-    /// On-device personalization (learned words, touch profile): everything but secrets,
-    /// codes, account and contact fields. Wider than the recorder's allowlist below, which
-    /// guards text that can be exported. An undo is remembered wherever autocorrect ran.
     var permitsLearning: Bool {
         guard !isSecureField else { return false }
         switch textDocumentProxy.textContentType {
@@ -17,11 +14,8 @@ extension KeyboardViewController {
         }
     }
 
-    /// Only general prose; do not collect credentials, codes, addresses or numeric fields.
     var permitsTypingData: Bool {
         guard !isSecureField else { return false }
-        // Allowlist: an unlabelled field is prose; every labelled content type (names,
-        // addresses, URLs, codes, credentials, payment) is personal data and stays out.
         guard textDocumentProxy.textContentType == nil else { return false }
         switch textDocumentProxy.keyboardType ?? .default {
         case .default, .asciiCapable, .twitter: return true
@@ -29,8 +23,6 @@ extension KeyboardViewController {
         }
     }
 
-    /// A key in a general text field: per-key diagnostics, the word's trace, and a `key` event.
-    /// A letter that replaces one erased from the same word also records a `key-fix`.
     func traceKey(_ ch: String, tap: KeyTap?, at time: Double = ProcessInfo.processInfo.systemUptime) {
         guard permitsTypingData else { return }
         let interval = lastKeyUptime > 0 && time > lastKeyUptime ? (time - lastKeyUptime) * 1_000 : nil
@@ -52,7 +44,6 @@ extension KeyboardViewController {
         recordTyping("key-fix", text: erased, replacement: letter, evidence: "backspace-retype", tap: tap, at: time)
     }
 
-    /// A plain Backspace that removed `erased` (nil at the start of the field).
     func traceErase(_ erased: Character?) {
         guard permitsTypingData else { return }
         lastKeyUptime = ProcessInfo.processInfo.systemUptime
@@ -69,7 +60,6 @@ extension KeyboardViewController {
         recordTyping("backspace", text: erased.map(String.init), evidence: erasedLetter == nil ? nil : "in-word")
     }
 
-    /// A word was committed: its typed literal, keystrokes, time from first letter and Backspaces.
     func recordCommit(_ word: String, evidence: String) {
         guard KBTypingRecorder.enabled, permitsTypingData else { return }
         let now = ProcessInfo.processInfo.systemUptime
@@ -80,8 +70,6 @@ extension KeyboardViewController {
                      backspaces: typingTrace.backspaces, at: now)
     }
 
-    /// The keyboard's geometry, written before the first touch on a layout the recorder has
-    /// not described yet: a rotation or resize, a rebuilt deck, another page, a new appearance.
     func recordLayoutIfNeeded() {
         guard KBTypingRecorder.enabled, permitsTypingData, let keyboard else { return }
         let current = RecordedLayout(revision: layoutRevision, view: ObjectIdentifier(keyboard),
@@ -91,15 +79,12 @@ extension KeyboardViewController {
         recordTyping("layout", geometry: keyboard.recordedGeometry())
     }
 
-    /// Takes the finished gesture's samples from the view; they are recorded once its outcome is known.
     func holdGlideSamples(from keyboard: KeyboardView?, liftAt: Double) {
         guard let taken = keyboard?.takeGlideSamples() else { return }
         pendingGlideRecord = PendingGlideRecord(samples: taken.samples, startKey: taken.startKey,
                                                 previews: glidePreviewCount, liftAt: liftAt)
     }
 
-    /// One `glide` event per gesture: the full-rate path with its outcome, and for a committed
-    /// word the decoder's candidates (shape costs), margin and the decode that produced it.
     func recordGlide(outcome: String, word: String? = nil) {
         guard let pending = pendingGlideRecord else { return }
         pendingGlideRecord = nil
@@ -118,7 +103,6 @@ extension KeyboardViewController {
                     logLanguageProbability: nil, neuralLogProbability: nil, typedWordMargin: nil, source: "glide")
             }
         }
-        // A lone candidate has no runner-up: its margin is a sentinel, not a measurement.
         let margin = committed.flatMap { $0.margin.isFinite && $0.margin < 1e6 ? $0.margin : nil }
         let now = ProcessInfo.processInfo.systemUptime
         recordTyping("glide", text: word, evidence: outcome,
@@ -143,7 +127,6 @@ extension KeyboardViewController {
         guard KBTypingRecorder.enabled, permitsTypingData else { return }
         func finite(_ value: Double?) -> Double? { value?.isFinite == true ? value : nil }
         func tenth(_ value: CGFloat?) -> Double? { value.flatMap { finite((Double($0) * 10).rounded() / 10) } }
-        // Keep every individual event bounded, including paste and unusually long words.
         KBTypingRecorder.record(.init(uptime: at, process: KBTypingRecorder.processID,
             session: fieldRevision, word: wordSessionID, relatedWord: relatedWord, layout: layoutRevision, kind: kind,
             text: text.map { String($0.prefix(64)) },

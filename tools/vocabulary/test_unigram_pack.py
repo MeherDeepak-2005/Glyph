@@ -4,8 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import build_unigram_pack as pack  # noqa: E402
-
+import build_unigram_pack as pack
 
 class UnigramPackTests(unittest.TestCase):
     def test_ledger_order_and_manifest(self):
@@ -42,7 +41,6 @@ class UnigramPackTests(unittest.TestCase):
         for word in ("rizz", "delulu", "pookie", "ngl", "lowkey"):
             self.assertIn(word, words)
         self.assertNotIn("the", words)
-
 
 if __name__ == "__main__":
     unittest.main()

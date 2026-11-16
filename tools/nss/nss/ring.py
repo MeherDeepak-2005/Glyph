@@ -31,18 +31,15 @@ import torch
 from .models import State, StreamingLM
 from .vocab import BOS
 
-
 def _select(state: State) -> State:
     return tuple(part.detach().clone() for part in state)
-
 
 @dataclass
 class SyncResult:
     state: State
     features: torch.Tensor
-    reused: int      # context words served from the ring
-    stepped: int     # model steps this sync ran
-
+    reused: int
+    stepped: int
 
 class ContextRing:
     def __init__(self, model: StreamingLM, capacity: int = 64, window: int = 8):
@@ -54,8 +51,8 @@ class ContextRing:
         self.root = (features, _select(state))
         self.ids: list[int | None] = [None] * capacity
         self.slots: list[tuple[torch.Tensor, State] | None] = [None] * capacity
-        self.length = 0          # words of the cached sentence history
-        self.steps = 0           # total model steps (for tests and telemetry)
+        self.length = 0
+        self.steps = 0
 
     def _oldest(self) -> int:
         return max(1, self.length - self.capacity + 1)
@@ -72,14 +69,14 @@ class ContextRing:
         starts = [0] if n < self.window else range(self.length, -1, -1)
         best = (0, 0)
         for start in starts:
-            if start + 1 < oldest:          # history after `start` was overwritten
+            if start + 1 < oldest:
                 if start:
                     break
-                continue                    # sentence start evicted: only the root is usable
+                continue
             matched = 0
             while matched < n and start + matched < self.length and self._id(start + matched + 1) == context[matched]:
                 matched += 1
-            if matched > best[1]:           # most recent start wins ties
+            if matched > best[1]:
                 best = (start, matched)
         return best
 

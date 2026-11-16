@@ -32,7 +32,6 @@ from .models import build
 from .sources import masc_heldout
 from .vocab import BOS, UNK, Vocabulary
 
-
 @torch.no_grad()
 def masc_lexicon(model, vocab: Vocabulary, lexicon: Lexicon, policy: UnkPolicy, device) -> dict:
     log_share = math.log(policy.lexicon_share) - math.log(policy.oov_mass)
@@ -72,7 +71,6 @@ def masc_lexicon(model, vocab: Vocabulary, lexicon: Lexicon, policy: UnkPolicy, 
                         "nss_top1": t["nss_top1"] / n, "nss_top3": t["nss_top3"] / n}
     return report
 
-
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("checkpoint", type=Path)
@@ -109,7 +107,6 @@ def main(argv: list[str] | None = None) -> None:
         print("masc lexicon", name, json.dumps({k: round(v, 4) for k, v in row.items()}), flush=True)
     if args.out:
         args.out.write_text(json.dumps(results, indent=2) + "\n")
-
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,5 @@
 import UIKit
 
-// Suggestion bar (its own taps).
-
 enum KeyboardTool: String, CaseIterable {
     case clipboard, emoji, gifs, stickers
     var title: String {
@@ -52,8 +50,6 @@ final class SuggestionBar: UIView {
         addSubview(toolsSeparator)
         for tool in KeyboardTool.allCases {
             let button = UIButton(type: .system)
-            // Icon-only: a captioned icon needs ~31pt and crowds the keys in the 32pt
-            // strip. The title stays as the accessibility label.
             var config = UIButton.Configuration.plain()
             config.image = UIImage(systemName: tool.symbol,
                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .regular))
@@ -96,13 +92,10 @@ final class SuggestionBar: UIView {
 	override func layoutSubviews() {
 		super.layoutSubviews()
         let clipW = Self.toolsWidth
-        // Everything in the strip shares the suggestions' optical center line.
         toolsButton.frame = CGRect(x: 0, y: visualOffsetY, width: clipW, height: bounds.height)
         toolsSeparator.frame = CGRect(x: clipW - 0.5, y: 6 + visualOffsetY, width: 0.5,
             height: max(0, bounds.height - 12))
         let toolWidth = max(0, (bounds.width - clipW) / 4)
-        // Tool glyphs are taller than text; 1.5pt lower keeps their tops inside our
-        // view, since iOS clips anything drawn above it.
         for (index, button) in toolButtons.enumerated() {
             button.frame = CGRect(x: clipW + CGFloat(index) * toolWidth, y: visualOffsetY + 1.5,
                 width: toolWidth, height: bounds.height)
@@ -118,8 +111,6 @@ final class SuggestionBar: UIView {
 		sep2.frame = CGRect(x: clipW + w * 2, y: inset + visualOffsetY, width: 0.5, height: separatorHeight)
 	}
 
-	/// The strip visually sits close to QWERTY, but the last four points belong to the
-	/// nearest top-row key. VoiceOver keeps the complete strip as its semantic target.
 	override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if !UIAccessibility.isVoiceOverRunning, !showingTools, point.x >= Self.toolsWidth,
             point.y >= bounds.maxY - bottomPassThroughHeight { return false }
@@ -154,8 +145,6 @@ final class SuggestionBar: UIView {
 		renderSuggestions()
 	}
 
-	/// Immediate, zero-decoder-cost feedback while a glide is in progress. The path's
-	/// crossed letters occupy the primary (middle) slot until decoding replaces them.
 	func setGlidePreview(_ preview: String?, alternatives: [String] = [],
 		confident: Bool = true) {
 		guard let preview, !preview.isEmpty else {
@@ -174,8 +163,6 @@ final class SuggestionBar: UIView {
 		setPrimaryHighlighted(true)
 	}
 
-	/// Keep the word that was actually committed in the middle slot. The two
-	/// nearest alternatives remain available on either side for one-tap correction.
 	func setGlideResult(_ winner: String, alternatives: [String]) {
 		stableGlideResult = (winner, alternatives)
 		renderGlideResult(winner, alternatives: alternatives)
@@ -207,7 +194,6 @@ final class SuggestionBar: UIView {
 		let top = rankedSuggestions.indices.contains(0) ? rankedSuggestions[0] : ""
 		let second = rankedSuggestions.indices.contains(1) ? rankedSuggestions[1] : ""
 		let third = rankedSuggestions.indices.contains(2) ? rankedSuggestions[2] : ""
-		// Visual order follows the familiar keyboard convention: #2, #1, #3.
 		let displayed = [second, top, third]
 		for (i, b) in buttons.enumerated() {
 			let t = displayed[i]
@@ -238,7 +224,6 @@ final class SuggestionBar: UIView {
 	}
 
 	@objc private func tap(_ sender: UIButton) {
-		// Attributed titles don't populate title(for:), so read the label text.
 		if let t = sender.titleLabel?.text, !t.isEmpty { onPick?(t) }
 	}
 }

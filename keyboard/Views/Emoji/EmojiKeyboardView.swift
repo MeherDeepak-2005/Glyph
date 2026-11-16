@@ -1,16 +1,6 @@
 import UIKit
 import Darwin
 
-// MARK: - Emoji page (browse palette)
-//
-// A search pill on top, a HORIZONTALLY scrolling category-sectioned grid in the
-// middle (columns that fill the height, as the stock emoji keyboard), and a bottom bar
-// (ABC / input mode / category tabs / delete). Shown as an overlay by KeyboardView. The grid is a compositional layout whose columns hold an
-// exact row count, so every column but a category's last is full.
-//
-// Search itself does NOT live here: tapping the pill hands off to KeyboardView's
-// emoji-search mode, which reuses the REAL keyboard for typing (see EmojiSearchHeader)
-// instead of a cramped in-overlay keypad.
 final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
 	var onPick: ((String) -> Void)?
 	var onDelete: (() -> Void)?
@@ -24,7 +14,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 	private let showsGlobe: Bool
 	private var collection: UICollectionView!
 	private let emptyLabel = UILabel()
-	/// The name of the category at the grid's left edge, as the stock emoji keyboard shows it.
 	private let categoryLabel = UILabel()
 	private let header: PanelHeaderView
 	private let bottomBar = UIView()
@@ -33,9 +22,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 	private var searchRowHeight: CGFloat { header.height }
 	private let barHeight: CGFloat = 44
 
-	/// Recents come from UserDefaults; the catalog comes from the mmap'd EmojiStore.
-	/// If the bundled resource is missing, the view fails closed instead of shipping
-	/// a stale in-code emoji catalog.
 	private enum Section {
 		case recents([String])
 		case bundled(EmojiStore, Int)
@@ -71,8 +57,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		}
 	}
 
-	/// `store` and `atlas` are injectable for deterministic tests. `previous` is the
-	/// panel tab the user came from, so the switch thumb slides from it.
 	init(theme: KeyboardTheme, showsGlobe: Bool,
 		 store: EmojiStore? = EmojiStore.bundled, atlas: EmojiAtlas? = nil,
 		 from previous: PanelTab? = nil) {
@@ -81,7 +65,7 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		self.store = store
 		self.explicitAtlas = atlas
 		self.header = PanelHeaderView(theme: theme, selected: .emoji, from: previous,
-			searchEnabled: store != nil)            // no catalog → nothing to search
+			searchEnabled: store != nil)
 		super.init(frame: .zero)
 
 		let recents = KBEmojiRecents.all()
@@ -123,20 +107,10 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 	}
 	required init?(coder: NSCoder) { fatalError() }
 
-	/// The space between neighbouring emoji, as a fraction of what a full-width six-column
-	/// grid would leave.
 	private static let gapScale: CGFloat = 0.85
-	/// The strip above the grid that names the current category.
 	private static let categoryLabelHeight: CGFloat = 22
-	/// Space between the last column of one category and the first of the next.
 	private static let sectionSpacing: CGFloat = 12
 
-	/// Horizontal grid, as the stock emoji keyboard: each category is a run of columns that
-	/// fills the grid's height, the categories follow each other left to right, and the
-	/// grid never scrolls vertically. Cells are square, sized from the screen width so
-	/// neighbouring emoji sit `gapScale` as far apart as a full-width six-column grid would
-	/// put them, then adjusted so a whole number of rows fills the height. The first column
-	/// starts at the left edge. The current category is named once, above the grid.
 	private func makeLayout() -> UICollectionViewLayout {
 		let config = UICollectionViewCompositionalLayoutConfiguration()
 		config.scrollDirection = .horizontal
@@ -169,8 +143,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 								  height: max(0, bounds.height - searchRowHeight - labelHeight - barHeight))
 	}
 
-	// MARK: Collection data
-
 	func numberOfSections(in cv: UICollectionView) -> Int { sections.count }
 	func collectionView(_ cv: UICollectionView, numberOfItemsInSection s: Int) -> Int { emojiCount(in: s) }
 	func collectionView(_ cv: UICollectionView, cellForItemAt ip: IndexPath) -> UICollectionViewCell {
@@ -201,8 +173,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		KBEmojiRecents.add(emoji)
 	}
 
-	/// A tap owns selection immediately. Scrolling may change it only while the user is
-	/// genuinely dragging/decelerating, never as a side effect of a programmatic jump.
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		guard scrollView.isDragging || scrollView.isDecelerating,
 			  let section = sectionAtTop(), section != selectedSection else { return }
@@ -216,8 +186,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		if let section = sectionAtTop() { setSelectedSection(section) }
 	}
-
-	// MARK: Bottom bar — ABC | (input mode) | category tabs | delete
 
 	private func buildBottomBar() {
 		bottomBar.backgroundColor = theme.isDark ? UIColor(white: 1, alpha: 0.05) : UIColor(white: 0, alpha: 0.04)
@@ -243,15 +211,13 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		stack.axis = .horizontal
 		stack.spacing = 2
 		stack.alignment = .fill
-		nav.setContentHuggingPriority(.defaultLow, for: .horizontal)      // tabs take the slack
+		nav.setContentHuggingPriority(.defaultLow, for: .horizontal)
 		for b in leading + [del] {
 			b.setContentHuggingPriority(.required, for: .horizontal)
 			b.widthAnchor.constraint(equalToConstant: 44).isActive = true
 		}
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		bottomBar.addSubview(stack)
-		// Sub-required trailing: bottomBar is frame-laid, so its width is 0 on the first
-		// Auto Layout pass and required children cannot fit at the initial zero width.
 		let trailing = stack.trailingAnchor.constraint(equalTo: bottomBar.trailingAnchor, constant: -4)
 		trailing.priority = .required - 1
 		NSLayoutConstraint.activate([
@@ -266,7 +232,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		guard i < sections.count, emojiCount(in: i) > 0 else { return }
 		setSelectedSection(i)
 		collection.layoutIfNeeded()
-		// Land the section's first column at the left edge.
 		guard let first = collection.layoutAttributesForItem(at: IndexPath(item: 0, section: i)) else { return }
 		let maxX = max(0, collection.contentSize.width - collection.bounds.width)
 		collection.setContentOffset(CGPoint(x: min(first.frame.minX, maxX), y: 0), animated: false)
@@ -289,13 +254,9 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 			button.layer.cornerRadius = 8
 			button.layer.cornerCurve = .continuous
 		}
-		// Once per category crossed, not per scroll tick: cheap footprint samples so
-		// browsing the grid (glyph raster cache growth) is visible in health telemetry.
 		KBDiagnostics.recorder.sample()
 	}
 
-	/// The category whose columns are at the left edge. At the end of the grid, the last
-	/// category, even when it is too short to reach the left edge.
 	private func sectionAtTop() -> Int? {
 		guard !sections.isEmpty else { return nil }
 		collection.layoutIfNeeded()
@@ -312,8 +273,6 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 
 	private func barButton(title: String? = nil, symbol: String? = nil,
 						   pointSize: CGFloat = 16, action: @escaping () -> Void) -> UIButton {
-		// A custom button keeps iOS 26's automatic glass selection treatment from
-		// replacing the deliberately subtle category background.
 		let b = UIButton(type: .custom)
 		if let title {
 			b.setTitle(title, for: .normal)

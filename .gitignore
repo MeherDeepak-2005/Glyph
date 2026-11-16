@@ -1,5 +1,3 @@
-## --- Xcode ---
-## User settings and personal layouts that change constantly
 xcuserdata/
 *.xcuserstate
 *.pbxuser
@@ -11,29 +9,17 @@ xcuserdata/
 *.perspectivev3
 !default.perspectivev3
 
-## Xcode 13+ and Swift Playgrounds caches
 .ccache
 *.xcscmblueprint
 *.xccheckout
 
-## --- Build Artifacts ---
-## Where Xcode compiles your app; sharing this wastes space and causes conflicts
 build/
 DerivedData/
 Products/
 
-## --- Swift Package Manager ---
-## SPM downloads dependencies here automatically; no need to track them
 .build/
 .swiftpm/
 
-## --- Dependency Managers (Optional) ---
-## Un-comment these if you use CocoaPods or Carthage
-# Pods/
-# Carthage/Build/
-
-## --- Secrets and Configurations ---
-## Block environment files and configuration files holding sensitive API keys
 .env
 .env.*
 GoogleService-Info.plist
@@ -42,20 +28,15 @@ GoogleService-Info.plist
 Config/Secrets.xcconfig
 Config/Klipy.xcconfig
 
-## --- OS / System Files ---
-## Folder attributes created by macOS
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
 
-## --- Language-data build cache (tools/build_language_data.py) ---
 tools/.cache
-# Python caching
 __pycache__/
 *.pyc
 
-# ML Weights & Binaries
 *.pt
 *.bin
 !keyboard/emoji.bin
@@ -64,10 +45,8 @@ __pycache__/
 !keyboard/safety.kbguard
 *.mlpackage/
 
-# JetBrains IDE
 .idea/
 
-# graphify knowledge-graph output
 graphify-out/
 
 *.txt
@@ -75,23 +54,17 @@ graphify-out/
 !tools/data/google_profanity_en.txt
 !tools/data/google_profanity_shidouuu_en.txt
 
-# Reproducible imported vocabulary and integration report.
 !tools/data/corev4/**/*.txt
 !docs/corev4-import/*.txt
 
-# The research PUBLIC key ships with the app; the unigram dictionary's notices and word list are source.
 !keyboard/App/research-public-key.txt
 !tools/data/nss/unigram-v1/*.txt
 
-# Portable decoder build definitions are source, not generated text.
 !CMakeLists.txt
 
-# Editor settings
 .vscode/
 
-# NSS word LM workspace: tokenized corpora and training runs (tools/nss/README.md)
 tools/nss/data/
 tools/nss/runs/
 
-## The research private key opens every uploaded typing recording (tools/research/chunks.swift)
 Config/research-private-key.txt

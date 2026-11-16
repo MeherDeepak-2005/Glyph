@@ -55,10 +55,6 @@ enum KBStats {
 	private static var dirtyEvents = 0
 	private static let flushEvery = 10
 
-	/// The current stats. Only the keyboard extension records words; while it holds counts it
-	/// has not saved yet, those are the newest. Every other read decodes what was last saved:
-	/// the app used to keep its first read for the life of the process, so its Progress and
-	/// Achievements screens showed stale totals until it was relaunched.
 	static func load() -> KBStatsData {
 		lock.lock(); defer { lock.unlock() }
 		if let cached, dirtyEvents > 0 { return cached }
@@ -90,8 +86,6 @@ enum KBStats {
 		queue.async { persistIfNeeded(force: true) }
 	}
 
-	/// A cross-process reset can remove the persisted key while this process still has
-	/// cached state. Drop that cache before any later flush can recreate deleted data.
 	static func synchronizeAfterExternalReset() {
 		guard KBSettings.sharedDefaults.object(forKey: key) == nil else { return }
 		lock.lock()

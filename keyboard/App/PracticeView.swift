@@ -1,10 +1,6 @@
 #if RESEARCH_BETA
 import SwiftUI
 
-/// Prompted typing: the app shows a word or sentence and the tester enters it with Glyph.
-/// The keyboard records the touches as usual; the app adds `prompt-shown` / `prompt-done`
-/// events naming what was asked for, so every stroke between them has a known target
-/// (tools/research/build_datasets.py joins them by time). Only recorded while research is on.
 struct PracticeView: View {
     enum Mode: String, CaseIterable, Identifiable {
         case glide, tap, sentences
@@ -75,7 +71,6 @@ struct PracticeView: View {
                     .focused($focused)
                     .accessibilityIdentifier("practice.field")
                     .onChange(of: text) { _, entered in
-                        // The word (or sentence) and the space or full stop after it: move on by itself.
                         if matches(entered, current.target), entered.last.map({ !$0.isLetter && !$0.isNumber }) == true { advance() }
                     }
                 HStack {

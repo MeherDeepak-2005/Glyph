@@ -1,15 +1,8 @@
 import UIKit
 import Darwin
 
-// MARK: - EmojiSearchHeader (Gboard-style: search rides the REAL keyboard)
-//
-// Shown by KeyboardView above the normal letter deck while emoji search is active:
-// a back button, the live query in a pill (with blinking caret + inline clear), and
-// a horizontal strip of results. Typing goes through the real keys — KeyboardView
-// routes inserts/deletes into the query instead of the host document — so there is
-// no cramped mini keyboard, and every typing nicety (popups, multitouch) just works.
 final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
-	static let height: CGFloat = 92     // 44 search row + 48 results row
+	static let height: CGFloat = 92
 
 	var onCancel: (() -> Void)?
 	var onClear: (() -> Void)?
@@ -27,15 +20,13 @@ final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionV
 	private let pill = UIView()
 	private let queryLabel = UILabel()
 	private let caret = UIView()
-	// The caret rides the text: at the pill's start while the placeholder shows
-	// (nothing typed yet), after the query once there is one. Toggled in update().
 	private var caretAtStart: NSLayoutConstraint!
 	private var caretAfterText: NSLayoutConstraint!
 	private let clearButton = UIButton(type: .system)
 	private let resultsCollection: UICollectionView
 	private var results: [String] = []
 	private let statusLabel = UILabel()
-	private let resultCap = 60          // plenty to swipe through; keeps the strip cheap
+	private let resultCap = 60
 
 	init(theme: KeyboardTheme, store: EmojiStore? = EmojiStore.bundled,
 		 atlas: EmojiAtlas? = nil) {
@@ -50,7 +41,6 @@ final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionV
 		self.resultsCollection = UICollectionView(frame: .zero, collectionViewLayout: layout)
 		super.init(frame: .zero)
 
-		// Row 1: back chevron + query pill.
 		let back = UIButton(type: .system)
 		back.setImage(UIImage(systemName: "arrow.left",
 			withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)), for: .normal)
@@ -91,7 +81,6 @@ final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionV
 		clearButton.translatesAutoresizingMaskIntoConstraints = false
 		pill.addSubview(clearButton)
 
-		// Row 2: horizontal results strip (or a status line when there's nothing to show).
 		resultsCollection.backgroundColor = .clear
 		resultsCollection.showsHorizontalScrollIndicator = false
 		resultsCollection.dataSource = self
@@ -143,7 +132,7 @@ final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionV
 		])
 		caretAtStart = caret.trailingAnchor.constraint(equalTo: queryLabel.leadingAnchor, constant: -1)
 		caretAfterText = caret.leadingAnchor.constraint(equalTo: queryLabel.trailingAnchor, constant: 1)
-		caretAtStart.isActive = true                 // the query starts empty
+		caretAtStart.isActive = true
 	}
 	required init?(coder: NSCoder) { fatalError() }
 
@@ -157,15 +146,13 @@ final class EmojiSearchHeader: UIView, UICollectionViewDataSource, UICollectionV
 		}
 	}
 
-	/// Refresh the query text and results strip. Empty query shows recents (labeled),
-	/// so the strip is never a dead zone.
 	func update(query: String, results: [String], showingRecents: Bool) {
 		if query.isEmpty {
 			queryLabel.text = placeholder
 			queryLabel.textColor = theme.keyText.withAlphaComponent(0.45)
 			clearButton.isHidden = true
-			caretAfterText.isActive = false          // deactivate first — never both at once
-			caretAtStart.isActive = true             // caret blinks BEFORE the placeholder
+			caretAfterText.isActive = false
+			caretAtStart.isActive = true
 		} else {
 			queryLabel.text = query
 			queryLabel.textColor = theme.keyText

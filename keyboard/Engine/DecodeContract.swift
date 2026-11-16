@@ -1,7 +1,5 @@
 import Foundation
 
-/// Immutable identity for one decoder request. A result may be presented or committed
-/// only while every revision still matches the controller's current document state.
 struct DecodeRequest: Equatable {
 	let fieldRevision: UInt64
 	let documentRevision: UInt64
@@ -26,8 +24,6 @@ struct DecodeRequest: Equatable {
 	}
 }
 
-/// Where a candidate came from: the typed text itself, a dictionary word the joint search
-/// completed, or two words split at a missing space. The raw values are the engine's.
 enum DecodeCandidateSource: String, Codable, Equatable {
 	case typed
 	case fuzzyLexicon
@@ -58,9 +54,6 @@ struct DecodeCandidateEvidence: Equatable {
 	}
 }
 
-/// One authoritative answer for a request. `suggestions.first` is always the center
-/// suggestion. If `correction` is non-nil it is also `suggestions.first`, so a boundary
-/// can never commit a word different from the primary word the user just saw.
 struct DecodeSnapshot: Equatable {
 	let request: DecodeRequest
 	let suggestions: [String]
@@ -81,9 +74,6 @@ struct PresentedSuggestion: Equatable {
 	let isExactTypedCandidate: Bool
 }
 
-/// UI-facing projection of one canonical decoder result. Taps and boundary correction
-/// consume this same object, so case styling can never make the visible primary differ
-/// from the text committed to the host.
 struct PresentedDecodeSnapshot: Equatable {
 	let canonical: DecodeSnapshot
 	let suggestions: [PresentedSuggestion]
@@ -126,7 +116,6 @@ enum SuggestionCasePolicy {
 			return sentenceStart ? initialCapital(intrinsic) : intrinsic
 		}
 		if candidate.caseInsensitiveCompare(typedWord) == .orderedSame {
-			// Exact input remains exact except English's standalone pronoun forms.
 			return isIForm(candidate) ? intrinsic : typedWord
 		}
 		let letters = typedWord.filter(\.isLetter)

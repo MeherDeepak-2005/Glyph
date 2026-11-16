@@ -1,34 +1,30 @@
 import UIKit
 
-// KeyButton: a dumb key view (KeyboardView owns touches).
-
 final class KeyButton: UIView {
 	let widthKind: KeyWidth
 	let action: () -> Void
 	let repeats: Bool
-	let letterBase: String?          // lowercase base letter (for in-place shift relabelling)
+	let letterBase: String?
 	let committedText: String?
-	let isShift: Bool                // shift key → its glyph is swapped on shift changes
+	let isShift: Bool
 	let isInputModeSwitch: Bool
 	let isSpace: Bool
 	private(set) var alternatives: [String]
 	let role: KeyRole
-	private let canPopup: Bool       // show the character balloon on press
+	private let canPopup: Bool
 	private let dark: Bool
-	private let gradient: CAGradientLayer?        // non-nil for the accent (action) key
-	private let dim = UIView()                    // press-feedback overlay (works on any fill)
+	private let gradient: CAGradientLayer?
+	private let dim = UIView()
 	private let dimColor: UIColor
 	private let baseRadius: CGFloat
-	private var label: UILabel?                    // set for text keys — updated in place on shift
-	private var iconView: UIImageView?            // set for symbol keys (e.g. the shift glyph)
-	private var contentView: UIView?               // the glyph (label or icon) — hidden while covered
-	private let recessColor: UIColor               // cap fill while the balloon is floating
+	private var label: UILabel?
+	private var iconView: UIImageView?
+	private var contentView: UIView?
+	private let recessColor: UIColor
 	private let spokenLabelWasExplicit: Bool
 	private let foregroundColor: UIColor
 	private(set) var acceptsInput = true
 
-	/// Character to show in the press balloon (nil = no balloon). Reads the live label
-	/// so it always reflects the current shift/case.
 	var popupText: String? { canPopup ? label?.text : nil }
 
 	init(spec: KeySpec, theme: KeyboardTheme) {
@@ -46,8 +42,6 @@ final class KeyButton: UIView {
 		self.dark = theme.isDark
 		self.gradient = spec.role == .accent ? CAGradientLayer() : nil
 		self.dimColor = theme.pressedOverlay
-		// Recessed "empty slot" look while the balloon floats: darken in both themes so the
-		// cap reads as a blackish transparent well and only the raised balloon shows the glyph.
 		self.recessColor = theme.isDark ? UIColor(white: 0, alpha: 0.34) : UIColor(white: 0, alpha: 0.16)
 		self.baseRadius = theme.cornerRadius
 		self.spokenLabelWasExplicit = spec.accessibilityLabel != nil
@@ -60,7 +54,7 @@ final class KeyButton: UIView {
 			}
 		}()
 		super.init(frame: .zero)
-		isUserInteractionEnabled = false        // touches handled by KeyboardView
+		isUserInteractionEnabled = false
 		isAccessibilityElement = true
 		accessibilityLabel = spec.accessibilityLabel ?? spec.label ?? Self.spokenName(for: spec.symbol)
 		accessibilityTraits = .keyboardKey
@@ -68,7 +62,6 @@ final class KeyButton: UIView {
 
 		let fg = foregroundColor
 
-		// Background: a gradient for the action key, a flat fill otherwise.
 		if let gradient {
 			gradient.colors = [theme.accentStart.cgColor, theme.accentEnd.cgColor]
 			gradient.startPoint = CGPoint(x: 0, y: 0)
@@ -120,8 +113,6 @@ final class KeyButton: UIView {
 			layer.borderWidth = 1.25
 			layer.borderColor = foregroundColor.withAlphaComponent(0.48).cgColor
 		}
-		// Soft modern drop shadow. shadowPath is set in layoutSubviews so Core Animation
-		// never rasterizes an offscreen blur on the hot path.
 		layer.shadowColor = theme.shadowColor.cgColor
 		layer.shadowOpacity = theme.shadowOpacity
 		layer.shadowRadius = 2.5
@@ -153,9 +144,6 @@ final class KeyButton: UIView {
 	private var alternativeActivation: ((String) -> Void)?
 	private var builtCustomActions: [UIAccessibilityCustomAction]?
 
-	/// Stores the long-press values. Their VoiceOver actions are built when assistive
-	/// technology first asks: every shift change sets these on all letter keys, which used to
-	/// rebuild about 38 action objects each time, whether or not VoiceOver was running.
 	func setAlternatives(_ values: [String], activation: @escaping (String) -> Void) {
 		alternatives = values
 		alternativeActivation = values.isEmpty ? nil : activation
@@ -180,7 +168,7 @@ final class KeyButton: UIView {
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
-		let r = baseRadius                // every cap shares one radius, as stock does
+		let r = baseRadius
 		CATransaction.begin(); CATransaction.setDisableActions(true)
 		layer.cornerRadius = r
 		gradient?.cornerRadius = r
@@ -193,12 +181,10 @@ final class KeyButton: UIView {
 
 	private var covered = false
 	func setHighlighted(_ on: Bool) {
-		guard !covered else { return }            // covered wins — don't undo the recess with a highlight
+		guard !covered else { return }
 		dim.backgroundColor = on ? dimColor : .clear
 	}
 
-	/// While its press balloon floats, the key hides its own glyph and sinks to a recessed
-	/// slot, so only the raised balloon shows the character (Gboard / Apple behavior).
 	func setCovered(_ on: Bool) {
 		covered = on
 		contentView?.isHidden = on
@@ -222,8 +208,6 @@ final class KeyButton: UIView {
         iconView?.tintColor = text
     }
 
-	/// Relabel a text key in place (used to switch letters between lower/upper case on a
-	/// shift change, without rebuilding the view).
 	func setTitle(_ text: String) {
 		if label == nil {
 			let newLabel = UILabel()
@@ -239,7 +223,6 @@ final class KeyButton: UIView {
 		contentView = label
 		if !spokenLabelWasExplicit { accessibilityLabel = text }
 	}
-	/// Swap a symbol key's glyph in place (used for shift → shift.fill → capslock.fill).
 	func setSymbol(_ name: String) {
 		if iconView == nil {
 			let newIcon = UIImageView()

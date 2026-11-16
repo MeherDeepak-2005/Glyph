@@ -30,9 +30,8 @@ import argparse, csv, json, statistics, sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-PAUSE_MS = 5_000          # a longer gap between keys is a pause, not typing
-PROMPT_SLACK_S = 0.25     # touches may start a moment before the app stamps the prompt
-
+PAUSE_MS = 5_000
+PROMPT_SLACK_S = 0.25
 
 def read(root: Path) -> tuple[list[dict], list[dict]]:
     """Events (deduplicated, each tagged with its install) and diagnostics lines."""
@@ -61,13 +60,11 @@ def read(root: Path) -> tuple[list[dict], list[dict]]:
     events.sort(key=lambda e: (e["install"], e.get("process", ""), e.get("uptime", 0.0)))
     return events, diagnostics
 
-
 def dictionary(ledger: Path | None) -> set[str] | None:
     if ledger is None or not ledger.exists():
         return None
     with ledger.open(newline="", encoding="utf-8") as handle:
         return {row["word"] for row in csv.DictReader(handle, delimiter="\t")}
-
 
 def prompts(events: list[dict]) -> dict[str, list[dict]]:
     """Per install: the practice prompts as [start, end] intervals of device uptime."""
@@ -86,14 +83,11 @@ def prompts(events: list[dict]) -> dict[str, list[dict]]:
                                         "result": prompt.get("result"), "evidence": e.get("evidence")})
     return spans
 
-
 def prompt_for(spans: dict[str, list[dict]], event: dict) -> dict | None:
     for span in spans.get(event["install"], ()):
-        # Uptime restarts at boot: the wall-clock day must agree as well.
         if span["start"] <= event.get("uptime", -1) <= span["end"] and span["time"][:10] == event.get("time", "")[:10]:
             return span
     return None
-
 
 def write_tsv(path: Path, header: list[str], rows) -> None:
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -101,21 +95,19 @@ def write_tsv(path: Path, header: list[str], rows) -> None:
         writer.writerow(header)
         writer.writerows(rows)
 
-
 def build(root: Path, out: Path, ledger: Path | None) -> dict:
     events, diagnostics = read(root)
     out.mkdir(parents=True, exist_ok=True)
     known = dictionary(ledger)
     spans = prompts(events)
-    related = defaultdict(list)          # (install, process, word session) -> later events about it
-    by_word = defaultdict(list)          # (install, process, word session) -> its own events
+    related = defaultdict(list)
+    by_word = defaultdict(list)
     for e in events:
         scope = (e["install"], e.get("process"))
         if e.get("relatedWord") is not None:
             related[scope + (e["relatedWord"],)].append(e)
         by_word[scope + (e.get("word"),)].append(e)
 
-    # Words, bigrams, speed
     count, installs, glided, tapped = Counter(), defaultdict(set), Counter(), Counter()
     bigrams, previous = Counter(), {}
     speed = defaultdict(lambda: {"chars": 0, "words": 0, "active_ms": 0.0, "intervals": [], "glides": 0})
@@ -153,7 +145,6 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                 round(s["glides"] / s["words"], 3) if s["words"] else "")
                for install, s in sorted(speed.items())])
 
-    # Autocorrections and what happened to them
     outcomes = Counter()
     rows = []
     for e in events:
@@ -166,7 +157,7 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                        "correction-accepted": "accepted"}.get(later["kind"])
             if later["kind"] == "manual-replacement":
                 verdict = "undone-by-hand" if later.get("evidence") == "manual-autocorrect-undo" else "fixed-by-hand"
-            if verdict and (outcome in ("unknown", "accepted")):     # an undo after "accepted" still counts as undone
+            if verdict and (outcome in ("unknown", "accepted")):
                 outcome, since = verdict, later.get("sinceMs", "")
         commit = next((c for c in by_word.get(key, ()) if c["kind"] == "commit"), {})
         strokes = commit.get("keystrokes") or []
@@ -185,7 +176,6 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
               [(e["install"], e.get("text", ""), e.get("replacement", ""), e.get("dx", ""), e.get("dy", ""))
                for e in events if e["kind"] == "key-fix"])
 
-    # Glides
     labels, glide_outcomes = Counter(), Counter()
     with (out / "layouts.jsonl").open("w", encoding="utf-8") as handle:
         described = set()
@@ -242,7 +232,6 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
 
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("recordings", type=Path)
@@ -252,7 +241,6 @@ def main() -> None:
     if not args.recordings.is_dir():
         sys.exit(f"not a directory: {args.recordings}")
     print(json.dumps(build(args.recordings, args.out, args.ledger), indent=2))
-
 
 if __name__ == "__main__":
     main()

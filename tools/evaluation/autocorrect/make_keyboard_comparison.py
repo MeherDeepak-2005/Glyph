@@ -13,7 +13,6 @@ import hashlib, json, pathlib, random, re
 HERE = pathlib.Path(__file__).resolve().parent
 PER_BUCKET = 10
 
-
 def osa(a, b):
     d = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
     for i in range(len(a) + 1): d[i][0] = i
@@ -23,7 +22,6 @@ def osa(a, b):
             d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] != b[j - 1]))
             if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]: d[i][j] = min(d[i][j], d[i - 2][j - 2] + 1)
     return d[-1][-1]
-
 
 def main():
     meta = json.loads((HERE/'corpus/cases-meta.json').read_text())
@@ -75,7 +73,6 @@ def main():
         'let keyboardComparisonCases: [(kind: String, context: String, typed: String, intended: String)] = [\n'
         + body + ',\n]\n')
     print(len(cases), 'cases')
-
 
 if __name__ == '__main__':
     main()

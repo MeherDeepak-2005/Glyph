@@ -57,7 +57,6 @@ std::vector<ChannelCandidate> MutableTrie::search(std::string_view typed, double
     std::vector<double> dp((maxDepth + 1) * (n + 1));
     for (std::size_t i = 0; i <= n; ++i) dp[i] = double(i) * insertionCost;
     std::vector<ChannelCandidate> out;
-    // As in PackedLexicon::search: a transposition can reach back to the parent row.
     auto visit = [&](auto&& self, std::size_t index, std::uint8_t letter, std::uint8_t previousLetter,
                      std::size_t depth, double penalty, double parentMin) -> void {
         if (depth > maxDepth) return;
@@ -77,7 +76,6 @@ std::vector<ChannelCandidate> MutableTrie::search(std::string_view typed, double
             dp[base + column] = value; if (value < rowMin) rowMin = value;
         }
         const auto& item = nodes_[index];
-        // The root penalty assumed the best case for the candidate's second letter; settle it.
         const auto typedFirst = std::uint8_t(typed.front()), typedSecond = n > 1 ? std::uint8_t(typed[1]) : std::uint8_t(0);
         const auto bound = depth == 2 ? firstLetterPenalty(n, previousLetter, typedFirst, typedSecond, letter) : penalty;
         const auto settled = depth == 1 ? std::max(penalty, firstLetterPenalty(n, letter, typedFirst, typedSecond)) : bound;
@@ -98,4 +96,4 @@ bool GenerationLexicon::contains(std::string_view word) const {
     return (packed && packed->wordID(word)) || (base && base->contains(word)) ||
         (supplementary && supplementary->contains(word)) || (personal && personal->contains(word));
 }
-} // namespace kb
+}

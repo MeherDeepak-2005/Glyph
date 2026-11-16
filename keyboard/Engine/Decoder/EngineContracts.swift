@@ -1,4 +1,3 @@
-// Glide contracts the controller and the engine exchange.
 import Foundation
 
 nonisolated struct GlidePrediction {

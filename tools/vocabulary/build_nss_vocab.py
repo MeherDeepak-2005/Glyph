@@ -57,7 +57,7 @@ from pathlib import Path
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
-from verify_language_data import Pack  # noqa: E402
+from verify_language_data import Pack
 
 REPO = TOOLS.parent
 CACHE = TOOLS / ".cache"
@@ -69,7 +69,6 @@ DEFAULT_WIKITEXT = [CACHE / "wikitext-103-raw-train-00000-of-00002.parquet",
 DEFAULT_HELDOUT = TOOLS / "data" / "english-masc-heldout-v1.json.bz2"
 DEFAULT_OUT = TOOLS / "data" / "nss"
 
-# Pinned in ARTIFACTS.json (inputs of langdata.bin and nss-english.nsslm); a mismatch is fatal.
 EXPECTED_SHA256 = {
     "frequency-words": "7fea67ab954e2c01df6c608c9826e594cf36f8823b3243554f88245fb75dc506",
     "tatoeba": "bb3dcc28a8984a26dc466ee14eb53c4210b0dd9bb111b9d686d1efc83ecf091c",
@@ -101,14 +100,12 @@ _CONTRACTIONS = ("i i'm i'll i've i'd you're you'll you've you'd he's he'll he'd
                  "hasn't hadn't mustn't")
 FORCED = tuple(dict.fromkeys(" ".join((_CONTRACTIONS, _NUMBERS, _CALENDAR, _CHAT)).split()))
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
-
 
 def display(path: Path) -> str:
     """Repository-relative path for manifests, so they do not embed a local checkout."""
@@ -117,11 +114,9 @@ def display(path: Path) -> str:
     except ValueError:
         return path.name
 
-
 def tokens(text: str) -> list[str]:
     text = text.lower().replace("’", "'").replace("‘", "'").replace("`", "'")
     return TOKEN.findall(text)
-
 
 def load_lexicon(path: Path) -> tuple[set[str], int]:
     """Emittable [a-z'] lexicon words, plus how many other entries were skipped."""
@@ -129,7 +124,6 @@ def load_lexicon(path: Path) -> tuple[set[str], int]:
     decoded = [word.decode("utf-8") for word in words]
     lexicon = {word for word in decoded if LEXICON_WORD.fullmatch(word)}
     return lexicon, len(decoded) - len(lexicon)
-
 
 def count_lines(lines, lexicon: set[str]) -> tuple[Counter, int]:
     """In-lexicon word counts and the total number of running word tokens."""
@@ -140,7 +134,6 @@ def count_lines(lines, lexicon: set[str]) -> tuple[Counter, int]:
         counts.update(word for word in found if word in lexicon)
     return counts, total
 
-
 def tatoeba_lines(path: Path):
     with bz2.open(path, "rt", encoding="utf-8", errors="replace") as handle:
         for line in handle:
@@ -148,9 +141,8 @@ def tatoeba_lines(path: Path):
             if len(fields) == 3 and fields[1] == "eng":
                 yield fields[2]
 
-
 def wikitext_lines(paths):
-    import pyarrow.parquet as pq  # build-time only dependency
+    import pyarrow.parquet as pq
     for path in paths:
         parquet = pq.ParquetFile(path)
         for group in range(parquet.num_row_groups):
@@ -162,13 +154,11 @@ def wikitext_lines(paths):
                     text = text.replace(old, new)
                 yield WIKI_CONTRACTION.sub(r"\1'\2", text)
 
-
 def text_lines(paths):
     for path in paths:
         opener = bz2.open if path.suffix == ".bz2" else open
         with opener(path, "rt", encoding="utf-8", errors="replace") as handle:
             yield from handle
-
 
 def read_frequency_list(path: Path) -> list[tuple[str, int]]:
     rows = []
@@ -178,7 +168,6 @@ def read_frequency_list(path: Path) -> list[tuple[str, int]]:
             if len(parts) == 2 and parts[1].isdigit():
                 rows.append((parts[0].lower(), int(parts[1])))
     return rows
-
 
 def map_frequency_words(rows, lexicon: set[str], evidence: Counter) -> tuple[Counter, int]:
     """Map apostrophe-stripped FrequencyWords counts onto lexicon spellings.
@@ -207,7 +196,6 @@ def map_frequency_words(rows, lexicon: set[str], evidence: Counter) -> tuple[Cou
             counts[target] += count * share / whole
     return counts, total
 
-
 def score_words(sources: dict[str, tuple[Counter, int]], weights: dict[str, float],
                 lexicon: set[str], mix: str = "geometric") -> tuple[dict[str, float], dict[str, float]]:
     """Per-million rate of each word under the weighted source mix.
@@ -229,7 +217,6 @@ def score_words(sources: dict[str, tuple[Counter, int]], weights: dict[str, floa
                                         for name, (counts, total) in sources.items()))
     return scores, used
 
-
 def select(scores, sources, lexicon, size: int, min_count: float, min_sources: int,
            conversational_ppm: float, include=()) -> tuple[list[tuple[str, str]], Counter]:
     """Return [(word, admission rule)] in rank order and rule tallies."""
@@ -246,7 +233,6 @@ def select(scores, sources, lexicon, size: int, min_count: float, min_sources: i
         elif conversational and conversational[0][word] * 1e6 / max(conversational[1], 1) \
                 >= conversational_ppm:
             ranked.append((word, "conversational"))
-    # Forced words always fit; every other slot goes to the best-scoring eligible word.
     forced_rows = [(word, rule) for word, rule in ranked if rule == "forced"]
     if len(forced_rows) > size:
         raise ValueError(f"{len(forced_rows)} forced words exceed the vocabulary size {size}")
@@ -256,10 +242,9 @@ def select(scores, sources, lexicon, size: int, min_count: float, min_sources: i
     chosen.sort(key=lambda row: (-scores[row[0]], row[0]))
     return chosen, Counter(rule for _, rule in chosen)
 
-
 def heldout_coverage(path: Path, vocabulary: set[str], lexicon: set[str]) -> dict:
     data = json.load(bz2.open(path, "rt", encoding="utf-8"))
-    tallies = defaultdict(lambda: [0, 0, 0])  # running, in lexicon, in vocabulary
+    tallies = defaultdict(lambda: [0, 0, 0])
     for sentence in data["sentences"]:
         parts = sentence.get("document", "").split("/")
         family = parts[1] if len(parts) > 2 else "all"
@@ -276,7 +261,6 @@ def heldout_coverage(path: Path, vocabulary: set[str], lexicon: set[str]) -> dic
                   "vocabulary_coverage_of_lexicon_tokens": round(in_vocab / max(in_lexicon, 1), 5)}
             for key, (running, in_lexicon, in_vocab) in sorted(tallies.items())}
 
-
 def source_coverage(sources, vocabulary: set[str]) -> dict:
     report = {}
     for name, (counts, total) in sources.items():
@@ -287,14 +271,12 @@ def source_coverage(sources, vocabulary: set[str]) -> dict:
                         "vocabulary_coverage_of_lexicon_tokens": round(in_vocab / max(in_lexicon, 1), 5)}
     return report
 
-
 def verify(path: Path, key: str, skip: bool) -> str:
     actual = sha256(path)
     expected = EXPECTED_SHA256.get(key)
     if expected and actual != expected and not skip:
         sys.exit(f"checksum mismatch for {path}: expected {expected}, got {actual}")
     return actual
-
 
 def parse_weights(text: str | None) -> dict[str, float]:
     weights = dict(DEFAULT_WEIGHTS)
@@ -304,7 +286,6 @@ def parse_weights(text: str | None) -> dict[str, float]:
             raise SystemExit(f"unknown source in --weights: {name}")
         weights[name] = float(value)
     return weights
-
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
@@ -330,7 +311,6 @@ def parse_args(argv=None):
     parser.add_argument("--skip-hash-check", action="store_true",
                         help="research inputs only; the manifest still records actual hashes")
     return parser.parse_args(argv)
-
 
 def main(argv=None) -> None:
     args = parse_args(argv)
@@ -397,9 +377,6 @@ def main(argv=None) -> None:
     vocab_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     review_path = args.out_dir / f"{stem}.review.tsv"
-    # Rank the excluded words the same way the cutoff did, eligible ones first, so
-    # "cutoff-outside" shows the real runners-up; single-source words follow as a
-    # separate section for curation through --include.
     eligible = {word for word in lexicon
                 if sum(1 for counts, _ in sources.values() if counts[word] >= args.min_count)
                 >= args.min_sources}
@@ -451,7 +428,6 @@ def main(argv=None) -> None:
         overall = manifest["heldout"]["coverage"]["all"]
         print(f"  held-out MASC: {overall['vocabulary_coverage']:.2%} of tokens "
               f"({overall['vocabulary_coverage_of_lexicon_tokens']:.2%} of in-lexicon tokens)")
-
 
 if __name__ == "__main__":
     main()

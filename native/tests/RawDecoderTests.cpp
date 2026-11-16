@@ -1,8 +1,3 @@
-// The decoder's graph and decision: NeuralFst's exact scores must equal the model's
-// distribution (with <unk> shared outside the vocabulary), its lookaheads must bound its
-// word scores, best() must equal a brute-force top k, UnigramModel must score text outside
-// the lexicon by its context-free unigram mass, and the decision must be the plain argmax.
-//   raw-decoder-tests model.nsslm langdata.bin
 #include "../DecoderCore/include/Engine.hpp"
 #include "../DecoderCore/include/NssRules.hpp"
 #include <cassert>
@@ -39,8 +34,6 @@ int main(int argc, char** argv) {
     auto packed = std::make_shared<PackedLexicon>(pack);
     auto lex = std::make_shared<NeuralLexicon>(*packed);
 
-    // 1. UnigramModel: (frequency + 1) / (sum of frequency + 1 over the dictionary); half a
-    // count for text outside it.
     UnigramModel unigram(*packed);
     double total = 0;
     for (std::uint32_t w = 0; w < packed->wordCount(); ++w) total += double(packed->frequency(w)) + 1;
@@ -52,7 +45,6 @@ int main(int argc, char** argv) {
     const std::vector<std::string> context{"one"};
     const auto of = std::uint32_t(*packed->wordID("of")), the = std::uint32_t(*packed->wordID("the"));
 
-    // 2. NeuralFst::best equals a brute-force top k over both paths.
     NeuralFst neural(model, lex);
     for (std::vector<std::string> c : std::vector<std::vector<std::string>>{{}, {"can", "you"}, {"thank"}}) {
         neural.update(c, true);
@@ -60,9 +52,6 @@ int main(int argc, char** argv) {
         for (std::size_t i = 0; i < 5; ++i) assert(best[i].first == brute[i].first && std::abs(best[i].second - brute[i].second) < 1e-6);
     }
 
-    // 3. Exact scores: each vocabulary word scores its model log-probability, also below the
-    // arc threshold; a lexicon word outside the vocabulary scores
-    // P(<unk>) * share * u(w) / (sum of u outside the vocabulary), u = frequency + 1.
     NeuralFst exact(model, lex, NeuralFst::Options{true});
     std::vector<std::int32_t> inside(lex->unigram.size(), -1);
     for (std::int32_t id = 4; id < std::int32_t(model->vocabularySize()); ++id)
@@ -93,7 +82,6 @@ int main(int argc, char** argv) {
             }
             total += std::exp(score); published += std::exp(neural.wordScore(0, w)); ++exactChecked;
         }
-        // The lexicon gets the vocabulary words' mass plus the lexicon's share of <unk>.
         assert(std::abs(total - expected) < 1e-4);
         std::cout << "  context \"";
         for (std::size_t i = 0; i < c.size(); ++i) std::cout << (i ? " " : "") << c[i];
@@ -103,10 +91,9 @@ int main(int argc, char** argv) {
         for (std::size_t i = 0; i < 5; ++i) assert(best[i].first == brute[i].first && std::abs(best[i].second - brute[i].second) < 1e-6);
     }
     assert(belowThreshold > 0);
-    // ExtendLM states score exactly too: "one of" then "the".
     exact.update(context, true);
     const auto ofState = exact.transitions(0, of);
-    assert(ofState.size() == 1 && ofState.front().next > 1);   // above the threshold: its own state, no fallback path
+    assert(ofState.size() == 1 && ofState.front().next > 1);
     exact.extend(ofState.front().next);
     {
         ContextRing ring(model);
@@ -118,8 +105,6 @@ int main(int argc, char** argv) {
     }
     admissible(exact, *lex, ofState.front().next);
 
-    // The floor variant: a vocabulary word scores the better of its model probability and the
-    // published fallback P(<unk>) x unigram; words outside the vocabulary as without it.
     NeuralFst floored(model, lex, NeuralFst::Options{true, true});
     for (std::vector<std::string> c : std::vector<std::vector<std::string>>{{"will"}, {"i", "live", "in"}}) {
         floored.update(c, true); exact.update(c, true);
@@ -145,9 +130,6 @@ int main(int argc, char** argv) {
         for (std::size_t i = 0; i < 5; ++i) assert(best[i].first == brute[i].first && std::abs(best[i].second - brute[i].second) < 1e-6);
     }
 
-    // Flattened unknown-word frequencies: inside the <unk> share a word outside the vocabulary
-    // weighs u^a (a = 0: 1 + ln u), still a distribution over those words; typed text outside
-    // the lexicon gets the rest of <unk>, half a count on the same scale.
     for (double a : {0.5, 0.0}) {
         NeuralFst flat(model, lex, NeuralFst::Options{true, true, a});
         auto scale = [&](double u) { return a > 0 ? std::pow(u, a) : 1 + std::log(u); };
@@ -169,19 +151,15 @@ int main(int argc, char** argv) {
             assert(std::abs(flat.wordScore(0, w) - expected) < 1e-5);
             outside += std::exp(flat.wordScore(0, w) - unk - std::log(share));
         }
-        assert(std::abs(outside - 1) < 1e-3);   // every outside word has a trie entry here
+        assert(std::abs(outside - 1) < 1e-3);
         const double half = a > 0 ? std::pow(0.5, a) : 1.0;
         assert(std::abs(flat.typedUnknown() - (unk + std::log(1 - share) + std::log(half / flatMass))) < 1e-9);
         admissible(flat, *lex, 0);
         auto best = flat.best(0, 5), brute = bruteForce(flat, *lex, 5);
         for (std::size_t i = 0; i < 5; ++i) assert(best[i].first == brute[i].first && std::abs(best[i].second - brute[i].second) < 1e-6);
     }
-    assert(!std::isfinite(neural.typedUnknown()));   // the published graph has no such score
+    assert(!std::isfinite(neural.typedUnknown()));
 
-    // 4. Decoding: deterministic, and the commit is the best completed word when it scores above
-    // the typed text (a typed non-word: above it minus nssRawCommitMargin). Variant 1 is the
-    // shipped configuration (EngineOptions{}): exact scores with the floor, typed text outside
-    // the lexicon scored from P(<unk>).
     std::size_t literals = 0;
     for (int variant = 0; variant < 4; ++variant) {
     EngineOptions options; options.nssExact = variant != 2; options.nssUnigramFloor = variant == 1 || variant == 3;
@@ -198,36 +176,29 @@ int main(int argc, char** argv) {
             auto one = engine->createSession()->decode(in, state->view()), two = engine->createSession()->decode(in, state->view());
             assert(one.status == EngineStatus::ok && one.suggestions == two.suggestions && one.correction.word == two.correction.word);
             const auto typedRow = std::find_if(one.candidates.begin(), one.candidates.end(), [&](const auto& c) { return c.ranked.key == typed; });
-            const double margin = packed->wordID(typed) ? 0 : nssRawCommitMargin;   // all lowercase: no capitalized margin
+            const double margin = packed->wordID(typed) ? 0 : nssRawCommitMargin;
             if (one.correction.word) {
                 assert(one.correction.margin > -margin && one.suggestions.front() == *one.correction.word);
                 for (const auto& c : one.candidates) if (c.ranked.key == *one.correction.word) assert(c.typedMargin > -margin);
             } else if (typedRow != one.candidates.end()) {
-                // NssRules split margin: a split that outscored the typed text but not by nssSplitMargin
-                // was set aside, and the typed text may stand although a strip word outscores it.
                 const bool splitSetAside = nssRuleOn(nssRuleSplitMargin) && std::any_of(one.candidates.begin(), one.candidates.end(),
                     [](const auto& c) { return c.typedMargin > 0 && c.ranked.key.find(' ') != std::string::npos; });
                 if (!splitSetAside) for (const auto& c : one.candidates) if (c.ranked.key.size() == std::strlen(typed) && c.ranked.channel.cost > 0) assert(c.typedMargin <= 0 || c.ranked.key.find(' ') != std::string::npos);
             }
-            // Text outside the lexicon scores its unigram mass, unless the model's P(<unk>) does
-            // (the typed row is among the 24 candidates kept when it ranks well enough).
             if (!packed->wordID(typed) && !options.nssTypedUnknown && typedRow != one.candidates.end()) {
                 assert(std::abs(typedRow->ranked.language - unigram.logProbability(typed)) < 1e-12);
                 ++literals;
             }
         }
-        // A non-word written with a capital after the first word (a name) uses
-        // nssCapitalizedCommitMargin: it is replaced only by a word scoring above that margin.
         for (const char* typed : {"Recieve", "Ahmet", "Teh"}) {
             DecodeInput in; in.word = typed; in.normalized = typed; in.normalized[0] = char(std::tolower(static_cast<unsigned char>(in.normalized[0])));
             in.context = {"i", "will", "send", "you"}; in.identity.fieldRevision = 4; in.identity.wordSessionID = 11;
             auto out = engine->createSession()->decode(in, state->view());
             if (out.correction.word && !packed->wordID(in.normalized)) assert(out.correction.margin > -nssCapitalizedCommitMargin);
-            in.context.clear(); in.identity.wordSessionID = 12;   // the sentence's first word: its own margin
+            in.context.clear(); in.identity.wordSessionID = 12;
             out = engine->createSession()->decode(in, state->view());
             if (out.correction.word && !packed->wordID(in.normalized)) assert(out.correction.margin > -nssStartCommitMargin);
         }
-        // A word the user kept (undid its correction) is never corrected again.
         DecodeInput kept; kept.word = kept.normalized = "teh"; kept.context = {"i", "will", "send", "you"};
         kept.identity.fieldRevision = 3; kept.identity.wordSessionID = 9;
         assert(engine->createSession()->decode(kept, state->view()).correction.word);

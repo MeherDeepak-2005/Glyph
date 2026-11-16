@@ -10,14 +10,13 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_nss_vocab as nss
 
-
 class NSSVocabularyTests(unittest.TestCase):
     def test_frequency_words_apostrophes_map_back_to_lexicon_spellings(self):
         lexicon = {"don't", "ill", "i'll", "hello"}
         evidence = Counter({"i'll": 3, "ill": 1})
         counts, total = nss.map_frequency_words(
             [("dont", 10), ("ill", 40), ("hello", 5), ("zzz", 7), ("123", 9)], lexicon, evidence)
-        self.assertEqual(total, 62)                      # digits are not word tokens
+        self.assertEqual(total, 62)
         self.assertEqual(counts["don't"], 10)
         self.assertAlmostEqual(counts["i'll"], 40 * 3.5 / 5)
         self.assertAlmostEqual(counts["ill"], 40 * 1.5 / 5)
@@ -36,9 +35,9 @@ class NSSVocabularyTests(unittest.TestCase):
         rule = dict(chosen)
         self.assertEqual(rule["the"], "multi-source")
         self.assertEqual(rule["quark"], "multi-source")
-        self.assertEqual(rule["frodo"], "conversational")   # 50 ppm clears the 20 ppm bar
+        self.assertEqual(rule["frodo"], "conversational")
         self.assertEqual(rule["lol"], "forced")
-        self.assertEqual(rule["monday"], "forced")          # absent from every corpus
+        self.assertEqual(rule["monday"], "forced")
         chosen, _ = nss.select(scores, sources, lexicon, size=10, min_count=3,
                                min_sources=2, conversational_ppm=100)
         self.assertNotIn("frodo", dict(chosen))
@@ -104,7 +103,6 @@ class NSSVocabularyTests(unittest.TestCase):
             manifest = json.loads((root / "out0" / "english-nss-vocab-4.json").read_text())
             self.assertEqual(manifest["vocabulary"]["model_vocab_size"], 8)
             self.assertEqual(set(manifest["weights_used"]), {"chat", "frequency-words", "tatoeba"})
-
 
 if __name__ == "__main__":
     unittest.main()

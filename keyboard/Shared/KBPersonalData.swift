@@ -17,9 +17,6 @@ enum KBPersonalData {
 		)
 	}
 
-	/// A monotonically increasing generation for learned data. Every persisted model
-	/// carries this value. A writer from an old keyboard process cannot resurrect data
-	/// after reset because it is rejected before replacing the current generation.
 	static var currentEpoch: UInt64 {
 		let stored = KBSettings.sharedDefaults.object(forKey: epochKey) as? NSNumber
 		if let stored { return max(1, stored.uint64Value) }
@@ -51,8 +48,6 @@ enum KBPersonalData {
 		containerURL?.appendingPathComponent("kb_model.json")
 	}
 
-	/// Serializes reset against extension writes across processes. The lock file has no
-	/// user content and remains after reset so both processes coordinate on one inode.
 	@discardableResult
 	static func withExclusiveStoreLock<T>(_ body: () throws -> T) rethrows -> T {
 		guard let lockURL = containerURL else { return try body() }
@@ -69,8 +64,6 @@ enum KBPersonalData {
 		return try body()
 	}
 
-	/// Deletes learned language and Glide state while preserving appearance and
-	/// keyboard preferences. The generation advances before files are removed.
 	static func resetLearning() {
 		let deleted = withExclusiveStoreLock {
 			let next = currentEpoch &+ 1
@@ -90,8 +83,6 @@ enum KBPersonalData {
 		postReset()
 	}
 
-	/// Deletes all user-generated content. Install state remains so an enabled user is
-	/// not forced through onboarding again; functional preferences return to defaults.
 	static func resetAll() {
 		let deleted = withExclusiveStoreLock {
 			let next = currentEpoch &+ 1

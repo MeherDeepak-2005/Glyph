@@ -10,11 +10,9 @@ runs = [(pathlib.Path(p).stem, json.loads(pathlib.Path(p).read_text())) for p in
 if not runs:
     sys.exit(__doc__)
 
-
 def row(label, values, unit):
     cells = ''.join(f'{v:>14.2f}' if isinstance(v, (int, float)) else f'{"-":>14}' for v in values)
     print(f'{label:<34}{cells}  {unit}')
-
 
 print(f'{"":<34}' + ''.join(f'{name[:13]:>14}' for name, _ in runs))
 row('engine start', [r.get('initMs') for _, r in runs], 'ms')

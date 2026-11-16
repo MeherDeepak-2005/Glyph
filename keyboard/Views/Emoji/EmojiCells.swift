@@ -1,8 +1,6 @@
 import UIKit
 import Darwin
 
-// MARK: - Cells
-
 final class EmojiCell: UICollectionViewCell {
 	let label = UILabel()
 	private let imageView = UIImageView()

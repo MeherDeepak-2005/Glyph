@@ -41,11 +41,9 @@ INT8, FLOAT32, VOCABULARY = 1, 2, 3
 EMBEDDING, OUTPUT, OUTPUT_BIAS, GRU_PROJECTION, VOCAB_SECTION = 1, 2, 3, 9, 100
 HEADER_BYTES, RECORD_BYTES, ALIGN = 256, 32, 64
 
-
 def layer_id(layer: int, part: int) -> int:
     """part 0: gate weights, 1: gate bias, 2: LSTM projection."""
     return 10 + 4 * layer + part
-
 
 def quantize(matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     matrix = np.asarray(matrix, np.float32)
@@ -54,10 +52,8 @@ def quantize(matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     q = np.clip(np.rint(matrix / scales[:, None]), -127, 127).astype(np.int8)
     return q, scales.astype(np.float32)
 
-
 def dequantize(q: np.ndarray, scales: np.ndarray) -> np.ndarray:
     return q.astype(np.float32) * scales[:, None]
-
 
 def tensors(model) -> list[tuple[int, int, np.ndarray]]:
     """(section id, kind, array) in file order; matrices are fp32 here, quantized on write."""
@@ -78,7 +74,6 @@ def tensors(model) -> list[tuple[int, int, np.ndarray]]:
     if model.arch == "gru" and model.proj:
         out.append((GRU_PROJECTION, INT8, model.w_proj[0].detach().cpu().numpy()))
     return out
-
 
 def quantized_copy(model):
     """The model the runtime will run: every exported int8 matrix replaced by q * scale."""
@@ -105,10 +100,8 @@ def quantized_copy(model):
                     clone.w_proj[layer].copy_(restored)
     return clone
 
-
 def pad_to(buffer: bytearray, alignment: int) -> None:
     buffer.extend(b"\0" * (-len(buffer) % alignment))
-
 
 @torch.no_grad()
 def unk_log_center(model, data: Path, sentences: int = 4000) -> float:
@@ -127,7 +120,6 @@ def unk_log_center(model, data: Path, sentences: int = 4000) -> float:
             total += float(values.sum())
             count += int(values.numel())
     return total / count
-
 
 def write(model, vocab: Vocabulary, unk_share: float, langdata_sha: str, path: Path, unk_center: float = 0.0) -> dict:
     if model.arch not in ARCH_IDS:
@@ -171,7 +163,6 @@ def write(model, vocab: Vocabulary, unk_share: float, langdata_sha: str, path: P
     path.write_bytes(payload)
     return {"bytes": len(payload), "max_abs_quantization_error": errors}
 
-
 def goldens(model, vocab: Vocabulary, unk_share: float, lexicon, unk_center: float = 0.0) -> dict:
     """Reference values from the dequantized model, for the C++ parity tests."""
     from .lexicon import UnkPolicy
@@ -197,7 +188,6 @@ def goldens(model, vocab: Vocabulary, unk_share: float, lexicon, unk_center: flo
     return {"unk_lexicon_share": unk_share, "unk_log_center": unk_center, "oov_mass": policy.oov_mass,
             "oov_words": policy.oov_words, "tolerance": 2e-3, "cases": cases}
 
-
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("checkpoint", type=Path)
@@ -214,9 +204,6 @@ def main(argv: list[str] | None = None) -> None:
     model = build(checkpoint["config"]["model"], len(vocab))
     model.load_state_dict(checkpoint["model"])
     model.eval()
-    # The share of <unk> that belongs to lexicon words depends on the lexicon, not on the
-    # weights: when the dictionary changed after training, take it from a corpus recounted
-    # against the current one (build_corpus; the tokens do not depend on the lexicon).
     share = float(checkpoint["unk_lexicon_share"])
     if checkpoint["langdata_sha256"] != lexicon.sha256:
         corpus = json.loads((args.data / "corpus.json").read_text())
@@ -247,7 +234,6 @@ def main(argv: list[str] | None = None) -> None:
     args.out.with_suffix(".manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     args.out.with_suffix(".goldens.json").write_text(json.dumps(goldens(reference, vocab, share, lexicon, center), indent=1) + "\n")
     print(f"wrote {args.out} ({info['bytes']:,} bytes)")
-
 
 if __name__ == "__main__":
     main()

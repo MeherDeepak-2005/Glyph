@@ -1,16 +1,3 @@
-// iOSKeyboard side of the autocorrect/suggestion comparison (27 Oct 2026), on the shipped
-// decoder: the neural search space over langdata.bin (EngineOptions{}: exact scores with the
-// unigram floor), safety.kbguard penalties via EngineState. Context words follow
-// KeyboardViewController.contextWords(_:max: 8): word characters are letters and
-// apostrophes, stop at . ! ? or newline, lowercased like DecodeContract.
-// No personalization. Simulated taps come from an optional sixth column (make_taps.py).
-//
-// KB_NSS=model.nsslm (required) is mapped read-only like langdata.bin. Variants of the graph
-// for experiments: KB_NSS_PAPER=1 the published graph's fallback and arc-only scores,
-// KB_NSS_FLOOR=0 exact scores without the unigram floor, KB_NSS_ALPHA=a unknown-word
-// frequencies as u^a, KB_NSS_TYPED=1 typed text outside the lexicon scored from P(<unk>).
-//
-// Same TSV/JSONL contract as CoreBench.cpp.
 #include <string>
 #include <vector>
 #include <iterator>
@@ -56,7 +43,7 @@ static std::vector<std::size_t> boundaries(std::string_view text) {
 static bool wordChar(unsigned char c) { return std::isalpha(c) || c == '\'' || c >= 0x80; }
 static std::vector<std::string> contextWords(const std::string& s, std::size_t max = 8) {
     std::vector<std::string> words; std::size_t end = s.size();
-    while (end && wordChar(s[end - 1])) --end;   // drop trailing partial (none: context ends before the word)
+    while (end && wordChar(s[end - 1])) --end;
     while (words.size() < max) {
         while (end && !wordChar(s[end - 1])) { char c = s[end - 1]; if (c == '.' || c == '!' || c == '?' || c == '\n') return words; --end; }
         if (!end) break;
@@ -70,7 +57,6 @@ static DecodeInput makeInput(const std::string& typed, const std::vector<std::st
     in.identity = {1, word, word, gen, 1, 0, 0};
     return in;
 }
-// Same rule as CoreBench.cpp: rank among the first three non-literal entries.
 static int rankOf(const std::vector<std::string>& list, const std::string& prefix, const std::string& target) {
     int slot = 0;
     for (const auto& w : list) {
@@ -89,14 +75,11 @@ static void processRecord(std::ostream& out, const char* label) {
     rusage usage{}; getrusage(RUSAGE_SELF, &usage);
     task_vm_info_data_t info{}; mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
     task_info(mach_task_self(), TASK_VM_INFO, reinterpret_cast<task_info_t>(&info), &count);
-    // heap_in_use = live malloc bytes; footprint minus it is allocator-retained and other dirty memory.
     malloc_statistics_t heap{}; malloc_zone_statistics(nullptr, &heap);
     out << "{\"kind\":\"process\",\"at\":" << quote(label) << ",\"peak_rss_bytes\":" << usage.ru_maxrss
         << ",\"footprint_bytes\":" << info.phys_footprint << ",\"heap_in_use_bytes\":" << heap.size_in_use
         << ",\"heap_allocated_bytes\":" << heap.size_allocated << "}\n";
 }
-// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
-// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
 static void installPolicies(const PackedLexicon& lexicon, std::string path) {
     if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
     std::ifstream in(path + ".kbmodern", std::ios::binary);
@@ -108,7 +91,6 @@ int main(int argc, char** argv) {
     if (argc < 5) { std::cerr << "langdata.bin safety.kbguard cases.tsv output.jsonl\n"; return 2; }
     std::ofstream out(argv[4]);
     auto initStart = Clock::now();
-    // Mapped read-only, as the extension maps it.
     int fd = open(argv[1], O_RDONLY); struct stat st{}; fstat(fd, &st);
     void* data = mmap(nullptr, std::size_t(st.st_size), PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
     if (data == MAP_FAILED) { std::cerr << "cannot map " << argv[1] << "\n"; return 3; }
@@ -135,8 +117,6 @@ int main(int argc, char** argv) {
     while (std::getline(f, line)) {
         std::vector<std::string> p; std::size_t s = 0;
         for (std::size_t i = 0; i <= line.size(); ++i) if (i == line.size() || line[i] == '\t') { p.push_back(line.substr(s, i - s)); s = i + 1; }
-        // Optional sixth column: one simulated tap per typed character, "dx,dy" in key widths
-        // from that key's centre, ';'-separated ("-" = none); see make_taps.py.
         if (p.size() != 5 && p.size() != 6) continue;
         std::vector<std::optional<TouchOffset>> taps;
         if (p.size() == 6) for (std::size_t at = 0; at <= p[5].size();) {
@@ -147,17 +127,16 @@ int main(int argc, char** argv) {
         }
         const std::string &id = p[0], &kind = p[1], &raw = p[2], &typed = p[3], target = lower(p[4]);
         if (events && events % 10000 == 0) processRecord(out, ("after_" + std::to_string(events)).c_str());
-        ++events; ++wordID; auto context = contextWords(raw + " ");   // the word starts after a space
+        ++events; ++wordID; auto context = contextWords(raw + " ");
         if (kind == "ac") {
             auto view = state->view(); auto t = Clock::now();
             auto in = makeInput(typed, context, wordID, ++gen);
-            if (taps.size() + 1 == boundaries(in.normalized).size()) in.taps = taps;   // one tap per character
+            if (taps.size() + 1 == boundaries(in.normalized).size()) in.taps = taps;
             auto r = session->decode(in, view);
             double elapsed = ms(t, Clock::now());
             out << "{\"id\":" << quote(id) << ",\"s\":"; words(out, r.suggestions);
             out << ",\"c\":" << (r.correction.word ? quote(*r.correction.word) : "null") << ",\"ms\":" << elapsed
                 << ",\"ok\":" << (r.status == EngineStatus::ok ? 1 : 0);
-            // KB_DUMP=1: the ranked rows (word, channel cost, language, log frequency, score) for offline reranking.
             if (dump) {
                 out << ",\"rows\":[";
                 for (std::size_t i = 0; i < r.candidates.size(); ++i) {
@@ -180,8 +159,6 @@ int main(int argc, char** argv) {
             int rank = k < target.size() ? rankOf(r.suggestions, target.substr(0, k), target) : -1;
             if (k == 0) { r0 = rank; ms0 = elapsed; first = r.suggestions; } else lat.push_back(elapsed);
             if (rank >= 0 && kfound < 0) kfound = int(k);
-            // Fixed-prefix latency replay must not stop at a decoder-dependent
-            // suggestion rank. Default quality/keystroke-savings replay is unchanged.
             if (kfound >= 0 && k >= 1 && !std::getenv("KB_FULL_PREFIXES")) break;
         }
         if (kfound < 0) kfound = int(target.size());

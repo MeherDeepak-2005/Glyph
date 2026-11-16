@@ -27,12 +27,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
-import build_language_data as builder  # noqa: E402
+import build_language_data as builder
 
 LEDGER = ROOT / "tools/data/nss/unigram-v1/unigrams.tsv"
 CATALOG = Path(__file__).with_name("modern_catalog.json")
 OUTPUT = ROOT / "keyboard/langdata.bin"
-
 
 def ledger(path: Path) -> list[tuple[str, int]]:
     with path.open(newline="", encoding="utf-8") as handle:
@@ -42,7 +41,6 @@ def ledger(path: Path) -> list[tuple[str, int]]:
     if any(not word or weight < 0 or weight > 0xFFFFFFFF for word, weight in rows):
         raise ValueError("invalid ledger row")
     return sorted(rows, key=lambda row: (-row[1], row[0]))
-
 
 def policies(vocab: list[tuple[str, int]], catalog: Path = CATALOG) -> list[tuple[int, int]]:
     ids = {word: index for index, (word, _) in enumerate(vocab)}
@@ -54,16 +52,14 @@ def policies(vocab: list[tuple[str, int]], catalog: Path = CATALOG) -> list[tupl
         if row["preserve"] and row["autocorrect"]:
             raise ValueError(f"a preserved spelling cannot be an automatic replacement: {row['word']}")
         flags = int(row["preserve"]) | (int(not row["autocorrect"]) << 1)
-        if flags and row["word"] in ids:   # phrases and words outside the dictionary carry no policy
+        if flags and row["word"] in ids:
             records.append((ids[row["word"]], flags))
     return sorted(records)
-
 
 def sidecar(pack: bytes, words: int, records: list[tuple[int, int]]) -> bytes:
     data = struct.pack("<8s4I32s", b"KBMODERN", 1, words, len(records), 0, hashlib.sha256(pack).digest())
     data += b"".join(struct.pack("<2I", *record) for record in records)
     return data + hashlib.sha256(data).digest()
-
 
 def build(ledger_path: Path, output: Path) -> dict:
     vocab = ledger(ledger_path)
@@ -77,7 +73,6 @@ def build(ledger_path: Path, output: Path) -> dict:
             "sidecar_sha256": hashlib.sha256(side).hexdigest(),
             "ledger_sha256": hashlib.sha256(ledger_path.read_bytes()).hexdigest(),
             "catalog_sha256": hashlib.sha256(CATALOG.read_bytes()).hexdigest()}
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -96,7 +91,6 @@ def main() -> None:
             if not installed.exists() or built.read_bytes() != installed.read_bytes():
                 raise SystemExit(f"stale artifact: {installed} does not match the ledger and catalog")
     print("langdata.bin and langdata.kbmodern match the ledger and catalog")
-
 
 if __name__ == "__main__":
     main()

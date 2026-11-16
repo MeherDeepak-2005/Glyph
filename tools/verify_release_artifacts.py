@@ -9,7 +9,7 @@ import json
 import plistlib
 from pathlib import Path
 
-LANGDATA_CAP = 10_000_000  # tools/build_language_data.py LANGDATA_CAP
+LANGDATA_CAP = 10_000_000
 NO_NEURAL_EXTENSION_CAP = 14_000_000
 NEURAL_EXTENSION_CAP = 25_000_000
 NEURAL_CONTAINER_SUFFIXES = (
@@ -20,14 +20,11 @@ NEURAL_RESOURCE_NAMES = {
     "tokenizer.bin", "tokenizer.json", "tokenizer.model",
     "spm.model", "spm.vocab", "sentencepiece.model", "pytorch_model.bin",
 }
-# The English keyboard's resources. nss-english.nsslm is its only language model, a neural
-# artifact, so a release audit passes --allow-neural.
 REQUIRED_RELEASE_RESOURCES = {
     "emoji.bin", "english_layout.kbpack", "langdata.bin", "langdata.kbmodern", "nss-english.nsslm",
     "safety.kbguard",
 }
 RESOURCE_CAPS = {"langdata.bin": LANGDATA_CAP}
-
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -36,18 +33,15 @@ def sha256(path: Path) -> str:
             digest.update(block)
     return digest.hexdigest()
 
-
 def is_neural_artifact(relative_path: str) -> bool:
     parts = tuple(part.lower() for part in Path(relative_path).parts)
     return any(part.endswith(NEURAL_CONTAINER_SUFFIXES) for part in parts) \
         or bool(parts and parts[-1] in NEURAL_RESOURCE_NAMES)
 
-
 def plist_bool(value) -> bool:
     if isinstance(value, bool):
         return value
     return str(value or "").strip().lower() in {"1", "yes", "true"}
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -110,7 +104,6 @@ def main() -> None:
     print(f"manifest: {args.output}")
     if failures:
         raise SystemExit("release artifact verification failed: " + "; ".join(failures))
-
 
 if __name__ == "__main__":
     main()

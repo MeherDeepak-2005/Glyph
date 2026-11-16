@@ -1,8 +1,3 @@
-// The engine and its host state: the installed letter grid, personalization (unigram counts,
-// keep/undo, adoption), the safety pack, blocked words, deterministic and cancellable
-// decoding, Glide, and the 132 decode and 60 Glide goldens (tools/evaluation/fixtures/shared-engine,
-// written by tools/evaluation/autocorrect/GenGolden.cpp).
-//   shared-engine-tests langdata.bin model.nsslm [REPO FIXTURES]
 #include <string>
 #include <vector>
 #include "../DecoderCore/include/Engine.hpp"
@@ -35,7 +30,6 @@ static GlideLayout qwerty() {
     for (int y = 0; y < 3; ++y) for (int x = 0; rows[y][x]; ++x) layout.centers.emplace_back(std::uint8_t(rows[y][x]), Point{x + shifts[y], double(y)});
     return layout;
 }
-// The engine's own goldens: the same inputs must decode and glide exactly as recorded.
 static void replayGoldens(const std::shared_ptr<Engine>& engine, const std::string& root, const std::string& fixtures) {
     auto state = engine->createState();
     state->setSafety(parseSafetyPenalties(slurp(root + "/keyboard/safety.kbguard")));
@@ -53,8 +47,6 @@ static void replayGoldens(const std::shared_ptr<Engine>& engine, const std::stri
         bool same = actual.status == EngineStatus::ok && actual.suggestions == suggestions
             && (expected["correction"].null() ? !actual.correction.word : actual.correction.word == expected["correction"].text())
             && actual.candidates.size() == expected["candidates"].array().size();
-        // Scores carry the float32 model's rounding, which differs by optimization level (up to
-        // ~3e-6 between -O1 and -O3); channel costs are exact.
         for (std::size_t j = 0; same && j < actual.candidates.size(); ++j) {
             const auto& a = actual.candidates[j]; const auto& b = expected["candidates"].array()[j];
             same = a.ranked.channel.word == b["word"].text() && b["source"].text() == sourceName(a.source)
@@ -78,8 +70,6 @@ static void replayGoldens(const std::shared_ptr<Engine>& engine, const std::stri
     assert(mismatches == 0);
     std::cout << "Engine matches its 132 decode goldens and 60 Glide goldens\n";
 }
-// The bundled safety pack through kb::SafetyLexicon: the same cases as the Swift
-// KBSafetyLexicon test, on input the platform has already normalized.
 static void testSafety(const std::string& root) {
     const auto blob = slurp(root + "/keyboard/safety.kbguard");
     SafetyLexicon safety(blob);
@@ -88,23 +78,21 @@ static void testSafety(const std::string& root) {
     assert(safety.language("దెంగు") == SafetyLanguage::telugu);
     assert(safety.action("కుక్క") == SafetyAction::demote && safety.penalty("కుక్క") == 4 && !safety.blocked("కుక్క"));
     for (const char* word : {"class", "meher", "telangana", "prolly", "kukka", ""}) assert(safety.action(word) == SafetyAction::allow && safety.penalty(word) == 0);
-    assert(!safety.blocked("FUCK"));   // case folding belongs to the platform boundary
+    assert(!safety.blocked("FUCK"));
     auto table = safety.penalties(); assert(table == parseSafetyPenalties(blob) && table.size() == 997);
     for (const auto& [word, value] : table) assert(safety.penalty(word) == value);
     auto blocked = safety.blockedTerms(); assert(blocked.size() == 991 && std::is_sorted(blocked.begin(), blocked.end()));
     for (std::size_t n = 0; n < blob.size(); ++n) { bool rejected = false; try { SafetyLexicon cut(std::string_view(blob).substr(0, n)); } catch (const std::invalid_argument&) { rejected = true; } assert(rejected); }
     auto expectRejected = [](std::string bytes) { bool rejected = false; try { SafetyLexicon bad(bytes); } catch (const std::invalid_argument&) { rejected = true; } assert(rejected); };
-    { auto bad = blob; std::swap_ranges(bad.begin() + 24, bad.begin() + 32, bad.begin() + 48); expectRejected(bad); }   // hash order
-    { auto bad = blob; bad[24] = char(bad[24] ^ 1); expectRejected(bad); }                                            // hash != FNV-1a(term)
+    { auto bad = blob; std::swap_ranges(bad.begin() + 24, bad.begin() + 32, bad.begin() + 48); expectRejected(bad); }
+    { auto bad = blob; bad[24] = char(bad[24] ^ 1); expectRejected(bad); }
     std::cout << "Safety lexicon: 997 entries, lookups, penalties, ordering/hash validation and truncation passed\n";
 }
-// After setSafety installs the blocked bitset, no search, decode, prediction or glide emits a
-// blocked dictionary word.
 static void testBlockedWords(const std::shared_ptr<Engine>& engine, const std::shared_ptr<const PackedLexicon>& reader, const std::string& root) {
     const auto blob = slurp(root + "/keyboard/safety.kbguard");
     SafetyLexicon safety(blob);
     auto state = engine->createState();
-    state->setSafety(parseSafetyPenalties(blob));   // installs the bitset (once per reader)
+    state->setSafety(parseSafetyPenalties(blob));
     std::size_t inDictionary = 0;
     for (const auto& term : safety.blockedTerms()) if (auto id = reader->wordID(term)) { ++inDictionary; assert(reader->blocked(std::uint32_t(*id))); }
     assert(inDictionary == 297 && reader->blockedCount() == 297);
@@ -112,7 +100,7 @@ static void testBlockedWords(const std::shared_ptr<Engine>& engine, const std::s
     for (const auto& term : safety.blockedTerms()) if (reader->wordID(term))
         for (const auto& hit : reader->search(term, 2.8)) assert(!isBlockedWord(hit.word));
     auto session = engine->createSession(); auto view = state->view();
-    assert(view.penalties && view.penalties->empty());   // no in-dictionary demote terms: no per-row lookups
+    assert(view.penalties && view.penalties->empty());
     std::uint64_t generation = 100;
     for (std::uint32_t id = 0; id < 120; ++id) {
         auto predicted = session->decode(input("", ++generation, {std::string(reader->word(id))}), view);
@@ -126,15 +114,14 @@ static void testBlockedWords(const std::shared_ptr<Engine>& engine, const std::s
     }
     std::cout << "Blocked words: 297 dictionary words excluded from search, decoding, predictions and corrections\n";
 }
-// The app installs its layout pack's grid; a bad grid is refused and the current one kept.
 static void testInstalledGrid() {
     using Rows = std::array<std::string_view, 3>; using Offsets = std::array<double, 3>;
     const Rows qwertyRows{"qwertyuiop", "asdfghjkl", "zxcvbnm"}; const Offsets offsets{0.0, 0.5, 1.5};
     assert(gridLetters() == "qwertyuiopasdfghjklzxcvbnm");
     assert(installGrid(qwertyRows, offsets) && grid('a')->x == 0.5 && grid('z')->x == 1.5);
-    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbn"}, offsets));          // 25 letters
-    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbnmq"}, offsets));        // repeated q
-    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbnM"}, offsets));         // not lowercase
+    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbn"}, offsets));
+    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbnmq"}, offsets));
+    assert(!installGrid(Rows{"qwertyuiop", "asdfghjkl", "zxcvbnM"}, offsets));
     assert(!installGrid(qwertyRows, std::array<double, 2>{0.0, 0.5}));
     assert(gridLetters() == "qwertyuiopasdfghjklzxcvbnm" && grid('m')->x == 7.5);
     const Rows azerty{"azertyuiop", "qsdfghjklm", "wxcvbn"};
@@ -145,38 +132,33 @@ static void testPersonalization(const std::shared_ptr<const PackedLexicon>& read
     Personalization user; user.reset(4);
     user.learn("word"); auto old = user.counts();
     user.learn("word");
-    assert(old->uni("word") == 1 && user.counts()->uni("word") == 2);   // snapshots are copy-on-write
+    assert(old->uni("word") == 1 && user.counts()->uni("word") == 2);
     user.demote("word"); assert(user.counts()->uni("word") == 1);
     user.demote("word"); assert(!user.counts()->uni("word") && !user.counts()->unigram.contains("word"));
     user.learn("word");
     user.confirm("word"); assert(user.kept("word") && user.confirmations("word") == 1); user.releaseKeep("word"); assert(!user.kept("word"));
     auto snapshot = user.exportSnapshot(); assert(snapshot.epoch == 4 && snapshot.counts.uni("word") == 1 && snapshot.confirmed.at("word") == 1);
     Personalization restored; restored.install(snapshot); assert(restored.epoch() == 4 && restored.counts()->uni("word") == 1 && restored.confirmations("word") == 1);
-    // Oversized or empty words are not stored.
     std::string longWord(1100, 'x');
     user.learn(longWord); user.learn(""); user.confirm(""); user.confirm(longWord);
     assert(!user.counts()->uni(longWord) && !user.counts()->unigram.contains("") && user.confirmations(longWord) == 0);
     user.reset(5); assert(user.counts()->unigram.empty() && old->uni("word") == 1 && !user.kept("word") && user.epoch() == 5);
     for (int i = 0; i < 4100; ++i) user.learn("word" + std::to_string(i));
-    assert(user.prune() && user.counts()->unigram.empty() && !user.prune());   // single uses halve to nothing
+    assert(user.prune() && user.counts()->unigram.empty() && !user.prune());
     for (int i = 0; i < 4100; ++i) { user.learn("w" + std::to_string(i)); user.learn("w" + std::to_string(i)); user.learn("w" + std::to_string(i)); }
     assert(user.prune() && user.counts()->unigram.size() == 4000);
-    // The boost: three uses or more, dictionary or adopted words only.
     GenerationSnapshot generation; MutableTrie supplementary, adopted;
     const GenerationLexicon lexicon{reader.get(), nullptr, &supplementary, &adopted, &generation};
     PersonalCounts counts; counts.unigram = {{"hello", 5}, {"zorblat", 5}, {"world", 2}};
     assert(std::abs(personalBoost("hello", counts, lexicon) - 0.10 * std::log1p(3)) < 1e-12);
     assert(personalBoost("world", counts, lexicon) == 0 && personalBoost("zorblat", counts, lexicon) == 0);
     adopted.insert("zorblat", 5); assert(personalBoost("zorblat", counts, lexicon) > 0);
-    // Adoption: an unknown spelling needs 8 uses and a confirmation, or 16 uses; never a
-    // one-edit neighbour of a dictionary word.
     Personalization adoption; adoption.reset(1);
     assert(!adoption.allowsAdoption("blorptastic", 7, lexicon) && !adoption.allowsAdoption("blorptastic", 15, lexicon));
     assert(adoption.allowsAdoption("blorptastic", 16, lexicon));
     adoption.confirm("blorptastic"); assert(adoption.allowsAdoption("blorptastic", 8, lexicon));
-    assert(!adoption.allowsAdoption("helllo", 40, lexicon));   // a repeated typo of hello
-    assert(adoption.allowsAdoption("hello", 8, lexicon));       // a dictionary word is always kept
-    // EngineState: learning adopts at the threshold, a reset drops it.
+    assert(!adoption.allowsAdoption("helllo", 40, lexicon));
+    assert(adoption.allowsAdoption("hello", 8, lexicon));
     EngineState state(reader);
     for (int i = 0; i < 15; ++i) state.apply({UserEventKind::learn, "blorptastic"});
     assert(!state.view().lexicon.contains("blorptastic"));
@@ -188,8 +170,6 @@ static void testPersonalization(const std::shared_ptr<const PackedLexicon>& read
     assert(state.view().lexicon.contains("meherdeepak"));
     std::cout << "Personalization: unigram counts, copy-on-write snapshots, keep/undo, limits, prune, boost, adoption and reset passed\n";
 }
-// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
-// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
 static void installPolicies(const PackedLexicon& lexicon, std::string path) {
     if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
     std::ifstream in(path + ".kbmodern", std::ios::binary);
@@ -217,7 +197,6 @@ int main(int argc, char** argv) {
     auto engine = std::make_shared<Engine>(reader, model); auto session = engine->createSession();
     GenerationSnapshot generation; MutableTrie supplemental, personal; PersonalCounts counts;
     EngineView view{{reader.get(), nullptr, &supplemental, &personal, &generation}, &counts, {}, 0, 0};
-    // Deterministic: a retained session decodes each keystroke as a fresh one does.
     std::uint64_t n = 0;
     for (const auto& word : {"t", "teh", "the", "hello", "hell", "helo", "coeevitjkn", "alot", "avlot", "cant", "id", "qzvaxon"}) {
         auto in = input(word, ++n, {"i", "think"});
@@ -228,10 +207,8 @@ int main(int argc, char** argv) {
             assert(actual.candidates[i].ranked.channel.word == fresh.candidates[i].ranked.channel.word);
             assert(actual.candidates[i].ranked.score == fresh.candidates[i].ranked.score);
         }
-        // The middle of the strip is what Space commits.
         assert(actual.suggestions.front() == (actual.correction.word ? *actual.correction.word : std::string(word)));
     }
-    // A retained session reuses its search across keystrokes of one word: same results as one-shot.
     for (const char* prefix : {"h", "he", "hel", "hell"}) (void)session->decode(input(prefix, 50), view);
     auto retained = session->decode(input("hello", 50), view), oneShot = engine->createSession()->decode(input("hello", 50), view);
     assert(retained.suggestions == oneShot.suggestions && retained.correction.word == oneShot.correction.word);
@@ -254,7 +231,6 @@ int main(int argc, char** argv) {
     assert(!kept.correction.word && kept.suggestions.front() == "teh");
     session->memoryPressure();
     assert(session->decode(input("hello", 66), view).suggestions == engine->createSession()->decode(input("hello", 66), view).suggestions);
-    // Glide: an ideal swipe of a word ranks that word first; a user's adopted word is reachable.
     const auto layout = qwerty();
     auto glide = engine->createSession();
     for (const char* word : {"the", "thanks", "something"}) {

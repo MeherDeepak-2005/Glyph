@@ -4,11 +4,8 @@ import unittest
 
 import build_safety_lexicon as safety
 
-
 class SafetyLexiconArtifactTests(unittest.TestCase):
     def expected_terms(self):
-        # Mirrors build_safety_lexicon.main() exactly — both pinned English lists then
-        # the reviewed TSVs — so the packed-artifact equality test stays authoritative.
         terms = {}
         safety.load_pinned_english(terms, safety.GOOGLE_EN_SOURCE,
                                    safety.GOOGLE_EN_SHA256, safety.SOURCE_GOOGLE_EN)
@@ -54,8 +51,6 @@ class SafetyLexiconArtifactTests(unittest.TestCase):
         )
 
     def test_every_shidouuu_term_is_suppressed_in_artifact(self):
-        # The legal guarantee: every term on the requested list resolves, in the shipped
-        # binary, to a suppress action — so it can never be suggested or corrected TO.
         actions = self.packed_actions()
         suppress = {safety.ACTIONS["suppress_suggest"], safety.ACTIONS["suppress_always"]}
         not_suppressed = []
@@ -114,7 +109,6 @@ class SafetyLexiconArtifactTests(unittest.TestCase):
             self.assertEqual(row["review_status"], "candidate")
             normalized = safety.normalize(row["term"], safety.LANG_TENGLISH)
             self.assertNotIn(normalized, expected)
-
 
 if __name__ == "__main__":
     unittest.main()

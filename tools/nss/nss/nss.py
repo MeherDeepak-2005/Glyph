@@ -23,10 +23,8 @@ from .models import StreamingLM
 from .ring import ContextRing
 from .vocab import UNK, Vocabulary
 
-
 def ascii_lower(word: str) -> str:
     return "".join(c.lower() if c.isascii() else c for c in word)
-
 
 class NeuralSearchSpace:
     def __init__(self, model: StreamingLM, vocab: Vocabulary, lexicon: Lexicon, policy: UnkPolicy,

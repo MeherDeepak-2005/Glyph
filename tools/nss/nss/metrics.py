@@ -21,7 +21,6 @@ from .vocab import BOS, EOS, PAD, UNK
 
 SPECIAL_MASK = (PAD, BOS, EOS)
 
-
 def sentence_batches(shard: Shard, max_tokens: int = 16384, scored: np.ndarray | None = None):
     """Sentences grouped by length: (inputs [B, L], targets [B, L], score mask [B, L])."""
     offsets = shard.offsets
@@ -38,7 +37,6 @@ def sentence_batches(shard: Shard, max_tokens: int = 16384, scored: np.ndarray |
     if group:
         yield _pack(tokens, offsets, group, scored)
 
-
 def _pack(tokens, offsets, group, scored):
     width = max(int(offsets[i + 1] - offsets[i]) - 1 for i in group)
     inputs = np.full((len(group), width), PAD, np.int64)
@@ -51,13 +49,11 @@ def _pack(tokens, offsets, group, scored):
         mask[row, :n] = True if scored is None else scored[offsets[i] + 1:offsets[i + 1]]
     return inputs, targets, mask
 
-
 def word_log_probs(logits: torch.Tensor) -> torch.Tensor:
     """The decoder's distribution: specials other than <unk> removed, renormalized."""
     masked = logits.clone()
     masked[..., list(SPECIAL_MASK)] = float("-inf")
     return torch.log_softmax(masked, -1)
-
 
 @dataclass
 class Totals:
@@ -78,7 +74,6 @@ class Totals:
                 "unk_pred": self.unk_pred / max(self.count_word, 1), "unk_rate": self.unk_seen / max(self.count_word, 1),
                 "tokens": self.count_all}
 
-
 @torch.no_grad()
 def evaluate(model, shard: Shard, device, scored: np.ndarray | None = None, max_tokens: int = 16384,
              logits_fn=None) -> dict:
@@ -90,8 +85,6 @@ def evaluate(model, shard: Shard, device, scored: np.ndarray | None = None, max_
         m = torch.from_numpy(mask).to(device)
         features, _ = model(x)
         rows, wanted = features[m], y[m]
-        # 512 rows: each [rows, 30k] logits copy is ~60 MB, so validation fits beside
-        # training on an 8 GB machine (2048 rows peaked near 1.5 GB).
         for start in range(0, rows.shape[0], 512):
             f, t = rows[start:start + 512], wanted[start:start + 512]
             logits = (logits_fn or model.logits)(f)
@@ -105,8 +98,6 @@ def evaluate(model, shard: Shard, device, scored: np.ndarray | None = None, max_
             totals.count_word += tw.numel()
             totals.unk_pred += lp[:, UNK].exp().sum().item()
             totals.unk_seen += (tw == UNK).sum().item()
-            # Rank of each in-vocabulary target among words (<unk> is never suggested):
-            # the number of words scored above it. No top-k sort (slow on MPS).
             known = (tw != UNK).float()
             ranked = lp.clone()
             ranked[:, UNK] = float("-inf")

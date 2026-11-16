@@ -15,14 +15,12 @@ from . import DEFAULT_VOCAB
 SPECIALS = ("<pad>", "<unk>", "<bos>", "<eos>")
 PAD, UNK, BOS, EOS = range(4)
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with open(path, "rb") as handle:
         for block in iter(lambda: handle.read(1 << 20), b""):
             digest.update(block)
     return digest.hexdigest()
-
 
 @dataclass
 class Vocabulary:

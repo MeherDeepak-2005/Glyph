@@ -20,14 +20,12 @@ EXPECTED_COMMIT = "1e5b7d3a72f47a71da5d28686c1dd4b397178485"
 EXPECTED_SIZE60_SHA256 = "45a4dd29b86234fbabce26f33272466bb5572db6fdca1470c4f218e6b666a56d"
 EXPECTED_SIZE70_SHA256 = "8363339af936f7a0c5100993915d55d3dd1523700b921647b59feae2957cf67b"
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
-
 
 def normalized_words(path: Path) -> set[str]:
     result: set[str] = set()
@@ -37,7 +35,6 @@ def normalized_words(path: Path) -> set[str]:
         if WORD.fullmatch(word) and not word.startswith("'") and not word.endswith("'"):
             result.add(word)
     return result
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -68,7 +65,6 @@ def main() -> None:
         handle.writelines(rows)
     print(f"{args.output}: {len(size60)} size-60, "
           f"{len(size70) - len(size60)} size-70, sha256={sha256(args.output)}")
-
 
 if __name__ == "__main__":
     main()

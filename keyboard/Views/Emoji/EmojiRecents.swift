@@ -1,8 +1,6 @@
 import UIKit
 import Darwin
 
-// MARK: - Recents (App Group-backed, shared across the frequent extension relaunches)
-
 enum KBEmojiRecents {
 	private static let key = "kb.emoji.recents"
 	private static let cap = 30

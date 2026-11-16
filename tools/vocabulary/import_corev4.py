@@ -104,8 +104,6 @@ def main():
             f=getattr(codec,name);f.argtypes=[ctypes.c_void_p];f.restype=ctypes.c_size_t
         codec.qlz_decompress.argtypes=[ctypes.c_void_p]*3;codec.qlz_decompress.restype=ctypes.c_size_t
         for original in audit:
-            # Audit paths identify the original checkout; prefer a relative path
-            # under the supplied root so relocating that checkout remains possible.
             old=pathlib.Path(original['path']);parts=old.parts
             relative=pathlib.Path(*parts[parts.index('CoreV4')+1:]);source=core/relative
             if sha(source)!=original['sha256']:raise ValueError('original changed since integrity audit: '+str(relative))

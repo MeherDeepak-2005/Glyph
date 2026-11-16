@@ -36,12 +36,10 @@ DEFAULT_TRAIN = {"batch": 128, "bptt": 48, "tokens": 150_000_000, "lr": 3e-3, "m
                  "warmup": 1000, "clip": 1.0, "weight_decay": 0.01, "eval_every": 1000, "log_every": 50,
                  "seed": 1234, "valid": ["tatoeba", "wikitext"], "chunk": 1024, "eval_device": "cpu"}
 
-
 def device_of(name: str | None) -> torch.device:
     if name:
         return torch.device(name)
     return torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-
 
 def unigram_bias(mixture: Mixture, vocab_size: int) -> torch.Tensor:
     """Initial output bias = log unigram of the training targets (faster, calmer start)."""
@@ -52,19 +50,16 @@ def unigram_bias(mixture: Mixture, vocab_size: int) -> torch.Tensor:
     probabilities = (counts + 0.5) / (counts + 0.5).sum()
     return torch.tensor(np.log(probabilities), dtype=torch.float32)
 
-
 def learning_rate(step: int, total: int, cfg: dict) -> float:
     if step < cfg["warmup"]:
         return cfg["lr"] * (step + 1) / cfg["warmup"]
     progress = min(1.0, (step - cfg["warmup"]) / max(1, total - cfg["warmup"]))
     return cfg["lr"] * (cfg["min_lr_ratio"] + (1 - cfg["min_lr_ratio"]) * 0.5 * (1 + math.cos(math.pi * progress)))
 
-
 def save(path: Path, model, optimizer, step: int, epoch: int, config: dict, extra: dict) -> None:
     torch.save({"model": model.state_dict(), "optimizer": optimizer.state_dict(), "step": step, "epoch": epoch,
                 "arch": model.config(), "config": config, **extra}, path.with_suffix(".tmp"))
     path.with_suffix(".tmp").replace(path)
-
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -140,7 +135,7 @@ def main(argv: list[str] | None = None) -> None:
         batches_this_epoch = 0
         for inputs, targets in mixture.batches(cfg["batch"], cfg["bptt"], epoch):
             batches_this_epoch += 1
-            if skip > 0:  # resuming: skip the batches this epoch already trained on
+            if skip > 0:
                 skip -= 1
                 continue
             if step >= total_steps:
@@ -173,8 +168,6 @@ def main(argv: list[str] | None = None) -> None:
                 log.flush()
                 window_loss, window_tokens = 0.0, 0
             if step % cfg["eval_every"] == 0 or step == total_steps:
-                # Validation runs on a CPU copy: MPS recompiles kernels for every new batch
-                # shape of the length-sorted sentences, which made one pass take minutes.
                 evaluator = copy.deepcopy(model).to(cfg["eval_device"])
                 results = {name: evaluate(evaluator, shard, torch.device(cfg["eval_device"])) for name, shard in valid.items()}
                 del evaluator
@@ -191,7 +184,6 @@ def main(argv: list[str] | None = None) -> None:
         if batches_this_epoch == 0:
             break
     save(last, model, optimizer, step, epoch, config, {**extra, "best": best})
-
 
 if __name__ == "__main__":
     main()

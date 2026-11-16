@@ -3,7 +3,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 def load(name: str):
     spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(f"{name}.py"))
     module = importlib.util.module_from_spec(spec)
@@ -11,10 +10,8 @@ def load(name: str):
     spec.loader.exec_module(module)
     return module
 
-
 LANGUAGE_DATA = load("build_language_data")
 Pack = load("verify_language_data").Pack
-
 
 class EnglishVocabularySourceTests(unittest.TestCase):
     def test_esdb_snapshot_has_expected_tiers_and_coverage(self):
@@ -34,7 +31,6 @@ class EnglishVocabularySourceTests(unittest.TestCase):
         self.assertGreaterEqual(len(vocab), 60_000)
         for word, _ in vocab:
             self.assertTrue(word in tiers or word in supplemental, word)
-
 
 class PackLayoutTests(unittest.TestCase):
     def test_v7_round_trip(self):
@@ -59,14 +55,13 @@ class PackLayoutTests(unittest.TestCase):
         for word_id, (word, _) in enumerate(vocab):
             self.assertEqual(node(word)[3], word_id)
         self.assertEqual(node("th")[3], LANGUAGE_DATA.EMPTY)
-        self.assertEqual(node("th")[4], 100)        # subtree maximum frequency
+        self.assertEqual(node("th")[4], 100)
         self.assertEqual(node("then")[4], 40)
 
     def test_committed_pack_is_v7(self):
         pack = Pack(LANGUAGE_DATA.OUT)
         self.assertEqual(pack.version, 7)
         self.assertGreater(pack.words, 100_000)
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -20,7 +20,6 @@ SLANG = ['ew', 'kk', 'gn', 'ig', 'yw', 'ui', 'ux', 'ev', 'hbd', 'tbh', 'imo', 'i
          'nah', 'yep', 'yup', 'nope', 'omg', 'lol', 'haha', 'hahaha', 'lmk', 'ttyl', 'np', 'thx', 'pls', 'plz',
          'u', 'ur', 'r', 'b4', 'gr8', '2nite', '2day']
 
-
 def main():
     vocab = {line.split('\t')[0].lower() for line in open(CORPUS/'corpus-ios-vocab.tsv')}
     rows, meta = [], {}
@@ -38,7 +37,6 @@ def main():
     (CORPUS/'keep-cases.tsv').write_text(''.join(rows))
     (CORPUS/'keep-cases-meta.json').write_text(json.dumps(meta))
     print(len(rows), 'rows')
-
 
 if __name__ == '__main__':
     main()

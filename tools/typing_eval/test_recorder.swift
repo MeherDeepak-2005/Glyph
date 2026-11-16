@@ -1,6 +1,5 @@
 import Foundation
 
-// Standalone storage fixtures; the harness compiles the production recorder unchanged.
 enum KBSettings { static let sharedDefaults = UserDefaults(suiteName: UUID().uuidString)! }
 enum KBPersonalData {
     static var currentEpoch: UInt64 = 1
@@ -37,12 +36,10 @@ func events(_ url: URL) throws -> [KBTypingRecorder.Event] {
         let dir = KBPersonalData.containerURL!.appendingPathComponent("typing-recordings")
         let current = dir.appendingPathComponent("current.jsonl")
 
-        // Off by default: nothing is written and no install ID exists.
         KBTypingRecorder.record(sample())
         check(export() == nil && KBTypingRecorder.installID == nil, "default must be off")
         check(KBTypingRecorder.sealedChunks(sealingCurrent: true).isEmpty)
 
-        // Enabled: a header line, then the events in order.
         KBTypingRecorder.profile = ["hand": "right", "thumbs": "two"]
         KBTypingRecorder.setEnabled(true)
         let install = KBTypingRecorder.installID
@@ -53,7 +50,6 @@ func events(_ url: URL) throws -> [KBTypingRecorder.Event] {
         check(first[0].header?.install == install && first[0].header?.profile?["hand"] == "right")
         check(first.dropFirst().map(\.text) == (0..<35).map { "w\($0)" })
 
-        // Schema 3 payloads round-trip; out-of-bounds ones are refused.
         var glide = sample("hello", kind: "glide")
         glide.glide = .init(path: [[1, 2, 0, 9.5], [3.5, 4, 8.3, 10]], startKey: "h", outcome: "committed", source: "preview",
                             previews: 4, liftToInsertMs: 2.5, truncated: nil)
@@ -79,19 +75,16 @@ func events(_ url: URL) throws -> [KBTypingRecorder.Event] {
         check(KBDiagnostics.events == Array(repeating: "capture-invalid-event-drop", count: 4))
         check(try events(export()!).count == 39, "invalid events must not be written")
 
-        // Delete: queued text never comes back, recording stops, the files are gone.
         KBTypingRecorder.record(sample("queued-before-clear"))
         check(KBTypingRecorder.clear())
         check(export() == nil && !KBTypingRecorder.enabled, "queued text must not resurrect")
         check(!FileManager.default.fileExists(atPath: dir.path))
 
-        // A personal-data reset (new epoch) invalidates what was queued before it.
         KBTypingRecorder.setEnabled(true)
         KBTypingRecorder.record(sample("old-epoch"))
         KBPersonalData.currentEpoch += 1
         check(export() == nil, "old model epoch must not write")
 
-        // Chunks: a full active file is sealed into the outbox and a new one starts with a header.
         KBTypingRecorder.record(sample("before-seal"))
         _ = export()
         let handle = try FileHandle(forWritingTo: current)
@@ -103,7 +96,6 @@ func events(_ url: URL) throws -> [KBTypingRecorder.Event] {
         check(fresh.map(\.kind) == ["header", "key"] && fresh[1].text == "after-seal")
         check(KBTypingRecorder.stored().chunks == 1)
 
-        // The uploader seals the active file, takes chunks oldest first and discards them.
         chunks = KBTypingRecorder.sealedChunks(sealingCurrent: true)
         check(chunks.count == 2 && chunks.map(\.lastPathComponent) == chunks.map(\.lastPathComponent).sorted())
         check(!FileManager.default.fileExists(atPath: current.path))
@@ -114,7 +106,6 @@ func events(_ url: URL) throws -> [KBTypingRecorder.Event] {
         let next = try events(export()!)
         check(next.filter { $0.kind == "header" }.count == 2 && next.last?.text == "next-chunk", "export joins the outbox and the active file")
 
-        // Disabled again: nothing more is written, what exists stays until deleted.
         KBTypingRecorder.setEnabled(false)
         KBTypingRecorder.record(sample("while-off"))
         check(try events(export()!).last?.text == "next-chunk")

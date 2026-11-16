@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 namespace kb {
-using TouchStatistics = std::array<double,5>; // count, mean x/y, M2 x/y
+using TouchStatistics = std::array<double,5>;
 TouchStatistics observeTouch(TouchStatistics state,TouchOffset tap);
 TouchOffset adjustTouch(const TouchStatistics& state,TouchOffset tap);
 std::array<double,3> observeGlide(std::array<double,3> state,double cost);

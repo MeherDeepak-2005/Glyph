@@ -1,7 +1,3 @@
-// Spelling policies (langdata.kbmodern): the sidecar is accepted only intact and only for the
-// dictionary it was built with, a preserved spelling is never autocorrected, a word marked
-// never-automatic is never committed for the user, and words without a policy are untouched.
-//   modern-vocabulary-tests langdata.bin langdata.kbmodern model.nsslm
 #include "../DecoderCore/include/Engine.hpp"
 #include "../DecoderCore/include/DictionaryDigest.hpp"
 #include <cassert>
@@ -20,15 +16,12 @@ int main(int argc, char** argv) {
     const auto pack = read(argv[1]), sidecar = read(argv[2]), modelBytes = read(argv[3]);
     std::size_t checked = 0;
 
-    // 1. The digest is SHA-256 (FIPS 180-4 "abc").
     const char abc[] = {'a', 'b', 'c'};
     const auto digest = dictionarySHA256(std::as_bytes(std::span(abc)));
     constexpr unsigned char expected[]{0xba,0x78,0x16,0xbf,0x8f,0x01,0xcf,0xea,0x41,0x41,0x40,0xde,0x5d,0xae,0x22,0x23,
         0xb0,0x03,0x61,0xa3,0x96,0x17,0x7a,0x9c,0xb4,0x10,0xff,0x61,0xf2,0x00,0x15,0xad};
     for (int i = 0; i < 32; ++i) assert(digest[std::size_t(i)] == std::byte(expected[i]));
 
-    // 2. A damaged or truncated sidecar is refused: magic, version, word count, context
-    // count, dictionary digest, a policy row, the trailing checksum.
     for (std::size_t at : {std::size_t(0), std::size_t(8), std::size_t(12), std::size_t(20), std::size_t(24),
                            std::size_t(56), std::size_t(60), sidecar.size() - 1}) {
         auto bad = sidecar; bad[at] ^= std::byte(0xff);
@@ -40,7 +33,6 @@ int main(int argc, char** argv) {
         assert(!lexicon.installModern(std::span(sidecar).first(length)) && !lexicon.hasModern()); ++checked;
     }
 
-    // 3. Installed once; the policies read back.
     auto packed = std::make_shared<PackedLexicon>(pack);
     assert(!packed->hasModern() && !packed->preserves("rizz") && packed->allowsCorrection("rizz"));
     assert(packed->installModern(sidecar) && packed->hasModern());
@@ -51,11 +43,9 @@ int main(int argc, char** argv) {
     }
     assert(!packed->allowsCorrection("hello rizz") && !packed->allowsCorrection("rizz hello") && packed->allowsCorrection("hello there"));
 
-    // 4. Decoding: every preserved spelling stays as typed and leads the strip, with and
-    // without context; nothing is ever corrected into a never-automatic word.
     auto model = NeuralWordModel::load(modelBytes);
     auto engine = std::make_shared<Engine>(packed, model);
-    auto bare = std::make_shared<Engine>(std::make_shared<PackedLexicon>(pack), model);   // same dictionary, no policies
+    auto bare = std::make_shared<Engine>(std::make_shared<PackedLexicon>(pack), model);
     auto state = engine->createState(), bareState = bare->createState();
     std::uint64_t wordSession = 0;
     auto decode = [&](Engine& with, EngineState& view, const std::string& text, std::vector<std::string> context = {}) {
@@ -75,15 +65,12 @@ int main(int argc, char** argv) {
         }
     }
     assert(preserved >= 40);
-    // Prefixes and near misses of protected words decode normally and never commit one.
     for (const char* text : {"pook", "pooki", "rizzz", "delul", "nggl", "lowky", "risk", "rich", "best", "beast", "pocket",
                              "cooking", "said", "this", "miss", "teh", "recieve", "definately"}) {
         const auto out = decode(*engine, *state, text);
         assert(out.status == EngineStatus::ok && (!out.correction.word || packed->allowsCorrection(*out.correction.word))); ++checked;
     }
-    // The policy only removes corrections: ordinary misspellings are still fixed.
     for (const char* text : {"teh", "recieve"}) { assert(decode(*engine, *state, text).correction.word); ++checked; }
-    // A cancelled request stays cancelled.
     CancellationToken token; token.cancel();
     DecodeInput cancelled; cancelled.word = cancelled.normalized = "rizz";
     assert(engine->createSession()->decode(cancelled, state->view(), &token).status == EngineStatus::cancelled);

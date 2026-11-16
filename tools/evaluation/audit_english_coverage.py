@@ -89,7 +89,6 @@ PHRASES = ["thank you", "thank you for your consideration", "kind regards",
     "statistically significant", "peer reviewed", "be right back", "on my way",
     "talk to you later", "no worries", "load shedding", "pin code", "cape town"]
 
-
 def main():
     pack_path = ROOT / "keyboard/langdata.bin"
     pack = Pack(pack_path)
@@ -152,7 +151,6 @@ def main():
         "phrase_probes": {"note": "Component-word membership only; it does not test phrase prediction or establish tone awareness.", "rows": phrase_rows},
     }
     print(json.dumps(result, indent=2, ensure_ascii=False))
-
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,4 @@
 #pragma once
-// Test-only JSON reader for the shared-engine fixtures (objects, arrays, strings with
-// \uXXXX escapes, numbers, true/false/null). Not a general or hardened parser.
 #include <cstdlib>
 #include <map>
 #include <memory>

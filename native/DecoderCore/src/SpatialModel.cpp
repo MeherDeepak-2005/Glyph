@@ -7,12 +7,10 @@
 #include <cmath>
 #include <string_view>
 namespace kb {
-// Key centres in key widths. Looked up per trie node, so a grid is an immutable table read
-// through one atomic pointer; an installed grid is kept for the life of the process.
 namespace {
 struct KeyGrid {
     std::array<std::optional<GridPoint>, 256> table{};
-    std::array<char, 27> letters{};   // row by row, NUL-terminated
+    std::array<char, 27> letters{};
 };
 constexpr KeyGrid makeGrid(std::span<const std::string_view> rows, std::span<const double> offsets) {
     KeyGrid out{};
@@ -50,7 +48,6 @@ bool installGrid(std::span<const std::string_view> rows, std::span<const double>
     const auto* current = activeGrid.load(std::memory_order_acquire);
     const auto next = makeGrid(rows, offsets);
     if (next.letters == current->letters && next.table == current->table) return true;
-    // Leaked on purpose: a decode on another thread may still hold the previous table.
     activeGrid.store(new KeyGrid(next), std::memory_order_release);
     return true;
 }
@@ -66,8 +63,6 @@ bool neighbouringKeys(std::uint8_t a, std::uint8_t b) noexcept {
     const auto p = grid(a), q = grid(b);
     return a != b && p && q && (p->x - q->x) * (p->x - q->x) + (p->y - q->y) * (p->y - q->y) <= 1.3;
 }
-// Spelling (not keyboard) confusions: one vowel for another (definatly, absense) and the
-// sound-alike consonants c/k/s/z (brasillian). Their cost does not depend on key distance.
 static double spellingSubstitution(std::uint8_t intended, std::uint8_t typed, double vowelCost) noexcept {
     constexpr std::string_view vowels = "aeiou";
     if (vowels.find(char(intended)) != vowels.npos && vowels.find(char(typed)) != vowels.npos) return vowelCost;
@@ -122,20 +117,13 @@ double firstLetterPenalty(std::size_t typedLength, std::uint8_t candidateFirst, 
         std::uint8_t candidateSecond, bool spelling) noexcept {
     if (candidateFirst == typedFirst || typedLength <= 2) return 0;
     const bool swapped = typedSecond && candidateFirst == typedSecond && candidateSecond == typedFirst;
-    // A dropped first letter (bove -> above, nstead -> instead): the candidate's second letter
-    // is the typed first. The search already charges the deleted letter, so only a small
-    // penalty is added; a swap (waay -> away) keeps its own.
     if (typedLength >= 4 && !swapped && candidateSecond == typedFirst)
         return typedLength == 4 ? missingFirstLetterPenalty4 : missingFirstLetterPenalty;
     if (typedLength == 3) return firstLetterPenalty3;
     if (typedLength == 4) return firstLetterPenalty4;
-    // Only a swap of the first two letters is discounted. Discounting any candidate that starts
-    // with the typed second letter read the first letter as junk (bcome -> come, adress -> dress),
-    // and discounting neighbouring first keys turned qorrwctuon into affection
-    // (CoreV4 analysis/autocorrect-comparison-2026-10-27).
     if (swapped) return swappedFirstLetterPenalty;
     const double other = spelling && spellingConfusion(candidateFirst, typedFirst)
         ? std::min(otherFirstLetterPenalty, spellingFirstLetterPenalty) : otherFirstLetterPenalty;
     return neighbouringKeys(candidateFirst, typedFirst) ? std::min(adjacentFirstLetterPenalty, other) : other;
 }
-} // namespace kb
+}

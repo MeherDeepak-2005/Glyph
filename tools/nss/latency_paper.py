@@ -36,7 +36,6 @@ BENCH = ROOT / 'tools/evaluation/autocorrect'
 PAPER = 'd77aa92d8937b871ffb36515a11647853d8e22ff'
 ARTIFACTS = ROOT / 'tools/nss/artifacts'
 
-
 def build_commit(commit, binary):
     harness = subprocess.run(['git', 'show', f'{PAPER}:tools/evaluation/autocorrect/IOSBench.cpp'],
                              check=True, cwd=ROOT, capture_output=True, text=True).stdout
@@ -56,11 +55,9 @@ def build_commit(commit, binary):
     pack = subprocess.run(['git', 'show', f'{commit}:keyboard/langdata.bin'], check=True, cwd=ROOT, capture_output=True).stdout
     binary.with_name(binary.name + '.langdata.bin').write_bytes(pack)
 
-
 def quantiles(values):
     values = sorted(values)
     return {f'p{int(p*100)}': values[min(len(values)-1, int(p*len(values)))] for p in (.5, .95, .99)} if values else None
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -145,7 +142,6 @@ def main():
         print(f"{name:14} typed word p50 {s['typed_word']['p50']:7.3f} p95 {s['typed_word']['p95']:7.3f}"
               f" | next word p50 {s['next_word']['p50']:7.3f} | keystroke p50 {s['keystroke']['p50']:6.3f} p95 {s['keystroke']['p95']:6.3f}"
               f" | peak RSS {s['peak_rss_mib']:5.1f} MiB")
-
 
 if __name__ == '__main__':
     main()

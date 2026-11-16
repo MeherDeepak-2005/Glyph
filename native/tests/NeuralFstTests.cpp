@@ -35,16 +35,14 @@ int main(int argc, char** argv) {
         const bool kept = probs[id] >= nssUpdateThreshold;
         assert(edges.size() == (kept ? 2u : 1u));
         if (kept) { ++expectedArcs; assert(std::abs(edges[1].logProbability - probs[id]) < 1e-6); }
-        // Every prefix lookahead is an admissible bound on this word's graph score.
         auto node = indexed->terminal[std::size_t(*w)];
         for (;;) { assert(graph.lookahead(0, node) + 1e-6 >= graph.wordScore(0, std::uint32_t(*w))); if (!node) break; node = indexed->parent[node]; }
     }
-    assert(graph.stats().arcs == expectedArcs); // no 1024-word cap
+    assert(graph.stats().arcs == expectedArcs);
     auto word = lex->wordID("you"); assert(word);
     auto edges = graph.transitions(0, std::uint32_t(*word)); assert(edges.size() == 2);
     const auto destination = edges[1].next;
     assert(!graph.expanded(destination));
-    // Before ExtendLM, the following word has contextless unigram scores (Fig.3).
     assert(std::abs(graph.wordScore(destination, std::uint32_t(*word)) - indexed->unigram[std::size_t(*word)]) < 1e-6);
     graph.extend(destination); assert(graph.stats().extensions == 1);
     graph.extend(destination); assert(graph.stats().extensions == 1);
@@ -80,7 +78,6 @@ int main(int argc, char** argv) {
     for (const auto& row : rows) assert(std::isfinite(row.score));
     assert(search.decode("hello", {}, [] { return true; }).empty());
     assert(search.decode("é", {}).empty());
-    // Field identity is part of cache invalidation, even when visible windows match.
     auto engine = std::make_shared<Engine>(lex, model);
     auto state = engine->createState(); auto session = engine->createSession();
     DecodeInput in; in.word = in.normalized = "you";
@@ -96,12 +93,9 @@ int main(int argc, char** argv) {
     auto fresh = engine->createSession()->decode(in, state->view());
     assert(reset.suggestions == fresh.suggestions && reset.candidates.size() == fresh.candidates.size());
     for (std::size_t i = 0; i < reset.candidates.size(); ++i) assert(std::abs(reset.candidates[i].ranked.score - fresh.candidates[i].ranked.score) < 1e-6);
-    // Taps scored against the key they landed on (touchSubstitutionCost): the typed key costs
-    // nothing however far off-centre, and a tap on the s|d border makes d cost only the base.
     assert(touchSubstitutionCost('s', 's', TouchOffset{0.45, 0.4}, 0.7) == 0);
     const auto border = touchSubstitutionCost('d', 's', TouchOffset{0.5, 0}, 0.7), centre = touchSubstitutionCost('d', 's', TouchOffset{0, 0}, 0.7);
     assert(std::abs(border - substitutionBase) < 1e-9 && centre > border + 0.9);
-    // A typo aimed at a blocked word is never committed as that word.
     state->setSafety({{"bitch", std::numeric_limits<double>::infinity()}});
     DecodeInput aimed; aimed.word = aimed.normalized = "biitch"; aimed.identity.fieldRevision = 3; aimed.identity.wordSessionID = 1001;
     auto decoded = session->decode(aimed, state->view());

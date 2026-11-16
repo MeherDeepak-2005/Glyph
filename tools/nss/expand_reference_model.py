@@ -13,7 +13,6 @@ import json
 from pathlib import Path
 import struct
 
-
 def expand(source: bytes) -> bytes:
     if source[:4] != b'NSLM':
         raise ValueError('not NSLM')
@@ -39,9 +38,9 @@ def expand(source: bytes) -> bytes:
     bias = struct.unpack('<'+'f'*(3*hidden), data)
     expanded_bias = tuple(-x for x in bias[:hidden]) + bias
     sections[11] = (kind, 1, 4*hidden, struct.pack('<'+'f'*(4*hidden), *expanded_bias))
-    sections[2] = sections[1]  # separate output, initially identical to embedding
+    sections[2] = sections[1]
     header = bytearray(source[:256])
-    struct.pack_into('<I', header, 12, 4)  # projection only, no CIFG or tying
+    struct.pack_into('<I', header, 12, 4)
     struct.pack_into('<I', header, 64, len(sections))
     out = header + bytearray(32*len(sections))
     for i, (ident, (kind, rows, cols, data)) in enumerate(sorted(sections.items())):
@@ -50,7 +49,6 @@ def expand(source: bytes) -> bytes:
         struct.pack_into('<4I2Q', out, 256+32*i, ident, kind, rows, cols, offset, len(data))
         out += data
     return bytes(out)
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

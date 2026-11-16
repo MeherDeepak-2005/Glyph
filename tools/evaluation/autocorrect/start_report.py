@@ -13,7 +13,6 @@ import argparse, json
 import evaluate as ev
 from context_report import context_words
 
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('base'); ap.add_argument('runs', nargs='+'); ap.add_argument('--split', default='held', choices=('held', 'tune', 'all'))
@@ -53,7 +52,6 @@ def main():
             cells.append(f'{g:>6}/{l:<5}{p:7.1e}{"!" if worse and p < .05 else "*" if p < .05 else " "}')
         print(f'{label:36}{len(ids):>6}' + ''.join(f'{100 * sum(val[n]) / len(ids):>12.2f}%' for n in names) + ''.join(cells))
     print('\n* better with p < 0.05; ! worse with p < 0.05')
-
 
 if __name__ == '__main__':
     main()

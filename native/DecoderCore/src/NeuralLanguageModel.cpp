@@ -22,20 +22,8 @@ float f32(std::span<const std::byte> bytes, std::size_t at) { float v; std::memc
 std::size_t layerSection(std::size_t layer, std::size_t part) { return 10 + 4 * layer + part; }
 float sigmoid(float x) { return 1.0f / (1.0f + std::exp(-x)); }
 
-// The model's arithmetic is int8 weight rows . activation vectors. Each activation vector is
-// quantized once per use to int16 in blocks of 16 values, one scale per block (|q| <= 32767;
-// llama.cpp quantizes activations on the fly in blocks the same way for its Q8_0 dot
-// products). Each block's dot product is an exact integer sum, int8 x int16 multiply-
-// accumulates into int32 lanes (NEON vmull/vmlal, every arm64 iPhone including A12), then one
-// float multiply-add by its scale: ~12 instructions per 16 weights instead of 19 for widening
-// every weight to float. M1, -Os, the shipped model: output layer + log-softmax 325 -> 194 µs,
-// one CIFG step 50 -> 40 µs; goldens max |error| 4.0e-4 -> 7.2e-4 (tolerance 2e-3).
-// Rejected on 16 Nov 2026: one int16 scale per vector (the hidden vector's peak is ~5x its
-// RMS: errors reached 3.4e-3), int8 activations with SDOT (2.7e-2 error, only 18% faster), a
-// two-part int16 split (exact but slower per step), and four rows at a time (-Os spills).
 constexpr std::size_t block = 16;
 struct Activations { std::vector<std::int16_t> q; std::vector<float> scale; };
-// x must be finite (it is: embeddings, tanh/sigmoid products and their projections).
 void quantize(const float* x, std::size_t n, Activations& out) {
     out.q.resize(n);
     out.scale.resize((n + block - 1) / block);
@@ -48,7 +36,6 @@ void quantize(const float* x, std::size_t n, Activations& out) {
         out.scale[b] = peak / 32767.0f;
     }
 }
-// int8 row . x (n values), in x's units (multiply by the row's scale).
 __attribute__((always_inline)) inline float dot(const std::int8_t* q, const Activations& x, std::size_t n) {
     const std::int16_t* v = x.q.data();
     std::size_t k = 0;
@@ -75,8 +62,6 @@ __attribute__((always_inline)) inline float dot(const std::int8_t* q, const Acti
 }
 
 #if defined(__ARM_NEON)
-// e^x for x <= 0 (Cephes expf: range reduction by ln 2, degree-5 polynomial; ~2 ulp).
-// Values below -87 flush to e^-87, which no longer moves a float sum of >= 1.
 inline float32x4_t expNonPositive(float32x4_t x) {
     x = vmaxq_f32(x, vdupq_n_f32(-87.0f));
     const float32x4_t n = vrndnq_f32(vmulq_n_f32(x, 1.44269504088896341f));
@@ -93,12 +78,10 @@ inline float32x4_t expNonPositive(float32x4_t x) {
     return vmulq_f32(p, vreinterpretq_f32_s32(power));
 }
 #endif
-// sum of e^(v - best) over all values (-inf entries contribute 0).
 double sumExp(std::span<const float> values, float best) {
     std::size_t k = 0;
     double sum = 0;
 #if defined(__ARM_NEON)
-    // Float lanes for at most 512 values at a time, then double: the float sums stay short.
     const float32x4_t shift = vdupq_n_f32(best);
     while (k + 8 <= values.size()) {
         float32x4_t s0 = vdupq_n_f32(0), s1 = vdupq_n_f32(0);
@@ -247,7 +230,7 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
             for (std::size_t r = 0; r < w.rows; ++r) gates[r] = w.scale[r] * dot(w.q + r * w.cols, x, w.cols) + layer.bias[r];
             const float* c = h + recurrent_;
             cell.resize(hidden_);
-            std::vector<float>& m = input;   // reused: the gate input is no longer needed
+            std::vector<float>& m = input;
             m.assign(hidden_, 0.0f);
             for (std::size_t j = 0; j < hidden_; ++j) {
                 float value, gate;
@@ -297,8 +280,6 @@ void NeuralWordModel::step(std::int32_t token, std::span<const float> state, std
     } else std::copy(input.begin(), input.begin() + std::ptrdiff_t(features_), features.begin());
 }
 
-// The output layer (vocabulary x features, ~30k rows) is ~85% of the model's cost: it runs
-// once per context change and once per later word of a multi-word candidate.
 void NeuralWordModel::wordLogProbabilities(std::span<const float> features, std::span<float> out) const {
     if (features.size() != features_ || out.size() != vocabulary_) throw std::invalid_argument("NSS output size");
     thread_local Activations x;
@@ -351,7 +332,7 @@ ContextRing::Sync ContextRing::sync(std::span<const std::int32_t> context) {
     const auto n = context.size(), first = oldest();
     std::size_t bestStart = 0, bestMatched = 0;
     for (std::size_t start = n < window_ ? 0 : length_;; --start) {
-        if (start + 1 < first) {   // the history after `start` was overwritten
+        if (start + 1 < first) {
             if (start) break;
         } else {
             std::size_t matched = 0;
@@ -429,4 +410,4 @@ double NeuralSearchSpace::sequence(std::span<const std::string> words, const std
     }
     return total;
 }
-} // namespace kb
+}

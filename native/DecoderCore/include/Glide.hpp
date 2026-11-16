@@ -19,4 +19,4 @@ std::vector<ChannelCandidate> decodeGlide(std::span<const Point> observed, const
     std::size_t width, int band, double frequency, double direction, double seedRadius, std::size_t window,
     const std::function<bool()>& cancel,
     const std::function<double(std::size_t)>& languageLookahead = {});
-} // namespace kb
+}

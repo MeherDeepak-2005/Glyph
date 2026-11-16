@@ -1,12 +1,7 @@
 import UIKit
 
 extension KeyboardViewController {
-	// MARK: Glide typing
 
-	/// The swipe lifted: decode → rerank → commit the winner (word + trailing space, with
-	/// auto-space after letters and sentence-start capitalization), learn it, and leave the
-	/// runner-up shapes on the bar as one-tap swaps. A single Backspace removes the whole
-	/// glided word (`Correction` with empty original). Nothing commits on a rejected swipe.
 	func handleGlide(_ path: [CGPoint], _ times: [TimeInterval], _ layout: GlideLayout) {
         let liftDocument = readHostDocument()
 		let liftAt = ProcessInfo.processInfo.systemUptime
@@ -31,18 +26,13 @@ extension KeyboardViewController {
 			guard addedArc <= materialThreshold, endpointDelta <= materialThreshold else { return nil }
 			return shown.prediction
 		}()
-		// Context cannot change while this finger is down. Reuse the one snapshot taken
-		// when Glide began instead of making another host XPC read on lift. Never inspect
-		// document text for a secure field.
 		let secure = isSecureField
 		let before = secure ? "" : activeGlideDocumentContext ?? textDocumentProxy.documentContextBeforeInput ?? ""
 		let context = activeGlideDocumentContext == nil ? contextWords(before, max: 8) : activeGlideContext
-		// Cancel any tap decode the provisional start letter triggered. The engine's
-		// generation ticket also cooperatively stops a trie walk already in progress.
 		invalidateSuggestionRequests(cancelEngineWork: true)
 		resetEraseTracking()
 		wordTaps.removeAll(keepingCapacity: true)
-		guard !secure else { pendingGlideRecord = nil; return }   // no gliding passwords
+		guard !secure else { pendingGlideRecord = nil; return }
 		resolveCorrectionAsAccepted()
 		resolveGlideUnverified()
 		if publishedPrediction == nil, let sessionID {
@@ -77,8 +67,6 @@ extension KeyboardViewController {
         }
         beginKeyboardEdit()
         defer { endKeyboardEdit() }
-        // An empty field reports nil here while the glide began with "": compare the text, or the
-        // field's first glided word was never committed.
         if let documentContext,
             (textDocumentProxy.documentContextBeforeInput ?? "") != documentContext {
             KBDiagnostics.noteIntegrityEvent("glide-context-moved")
@@ -94,10 +82,6 @@ extension KeyboardViewController {
 		noteProxyEdit()
 		KBDiagnostics.logGlideCommit(ms: (ProcessInfo.processInfo.systemUptime - liftAt) * 1_000)
 
-		// Everything below is bookkeeping after the visible insertion.
-		// A glide finalizes a whole word from the one touch-down tap already counted in
-		// handleInsert — so it is not re-counted as a tap here, which is exactly what drops
-		// keystrokes-per-character below 1.0.
 		recordCommitMetrics(word, autocorrected: false, source: "glide-unverified")
 		recordGlide(outcome: "committed", word: word)
 		learnCommittedWord(word)
@@ -117,7 +101,6 @@ extension KeyboardViewController {
 	func beginGlidePreview() {
         beginKeyboardEdit()
         defer { endKeyboardEdit() }
-		// Starting another gesture leaves the previous result unlabelled.
 		resolveGlideUnverified()
 		invalidateSuggestionRequests(cancelEngineWork: true)
 		glidePreviewGeneration &+= 1
@@ -132,14 +115,10 @@ extension KeyboardViewController {
 			keyboard?.setGlidePreview(nil)
 			return
 		}
-		// Letter taps commit on touch-down for sub-frame latency. Crossing the Glide
-		// threshold reclassifies that touch, so retract exactly that provisional start
-		// letter before capturing context or decoding the path.
 		textDocumentProxy.deleteBackward()
 		noteProxyEdit()
 		if !wordTaps.isEmpty { wordTaps.removeLast() }
 		if !currentWordBuffer.isEmpty { currentWordBuffer.removeLast() }
-		// The gesture replaces the word being typed: its letters and timing are not the glide's.
 		typingTrace = TypingTrace()
 		glidePreviewCount = 0
 		recordTyping("glide-began", evidence: "retract-provisional-letter")
@@ -179,8 +158,6 @@ extension KeyboardViewController {
 				self.startNextGlidePreviewIfNeeded()
 				return
 			}
-			// A newer path snapshot may have arrived while this decode was running.
-			// Never flash the older winner; move directly to the newest queued path.
 			if request.sequence == self.glidePreviewSequence,
 			   let update, update.sessionID == self.activeGlideSessionID {
 				let prediction = update.prediction

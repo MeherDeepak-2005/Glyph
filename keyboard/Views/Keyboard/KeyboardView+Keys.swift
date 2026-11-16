@@ -1,7 +1,6 @@
 import UIKit
 
 extension KeyboardView {
-	// MARK: Build keys
 
 	func reload() {
 		let oldRowCount = rows.count
@@ -18,7 +17,6 @@ extension KeyboardView {
 				return b
 			}
 		}
-		// Cache the keys a shift change touches, so applyShiftState can relabel in place.
 		let all = rows.flatMap { $0 }
 		letterKeys = all.compactMap { k in k.letterBase.map { (base: $0, key: k) } }
 		for key in all where !key.alternatives.isEmpty {
@@ -33,14 +31,13 @@ extension KeyboardView {
 		actionKey = all.first { $0.role == .accent }
 		applyActionKeyState()
 		var orderedAccessibilityElements: [Any] = [suggestionBar]
-		// A search types on this deck: its header and results come first.
 		let searchViews: [UIView?] = [emojiSearchHeader, mediaSearchHeader, mediaSearchStrip]
 		orderedAccessibilityElements.append(contentsOf: searchViews.compactMap { $0 })
 		for row in rows { orderedAccessibilityElements.append(contentsOf: row) }
 		accessibilityElements = orderedAccessibilityElements
 		bringSubviewToFront(suggestionBar)
-		touchPopups.values.forEach { bringSubviewToFront($0) }   // page-reload mid-press
-		layer.addSublayer(trailLayer)          // keep the glide feedback above freshly-added keys
+		touchPopups.values.forEach { bringSubviewToFront($0) }
+		layer.addSublayer(trailLayer)
 		layer.addSublayer(trailHeadLayer)
 		setNeedsLayout()
 		if oldRowCount > 0, oldRowCount != rows.count {
@@ -48,8 +45,6 @@ extension KeyboardView {
 		}
 	}
 
-	/// Test seam for keeping visual centers and the decoder's normalized QWERTY grid
-	/// in lockstep. A mismatch here directly creates systematic tap and Glide errors.
 	func letterCenter(for letter: Character) -> CGPoint? {
 		guard let frame = letterKeys.first(where: { $0.base.first == letter })?.key.frame else { return nil }
 		return CGPoint(x: frame.midX, y: frame.midY)
@@ -61,8 +56,6 @@ extension KeyboardView {
 
     func keyLabelForTesting(at point: CGPoint) -> String? { key(at: point)?.accessibilityLabel }
 
-	/// The deck as the finger sees it, for the typing recorder: every key's label and rectangle
-	/// in this view's points, the letter pitches the decoder uses, and the screen it is on.
 	func recordedGeometry() -> KBTypingRecorder.Layout {
 		func tenth(_ value: CGFloat) -> Double { (Double(value) * 10).rounded() / 10 }
 		let keys = rows.joined().prefix(128).map { key in
@@ -83,10 +76,8 @@ extension KeyboardView {
 
 	func shifted(_ c: String) -> String { shift == .off ? c : c.uppercased() }
 
-	/// The Latin layout pack the deck is built from (pages, long-press variants, field keys).
 	var latinLayout: LatinLayoutPack { .english }
 
-	/// Long-press variants for a key, from the layout pack; a letter's follow shift.
 	func accentAlternatives(for base: String) -> [String] {
 		let values = latinLayout.alternatives[base.lowercased()] ?? []
 		return shift == .off ? values : values.map { $0.uppercased() }
@@ -100,7 +91,7 @@ extension KeyboardView {
 				alternatives: accentAlternatives(for: text)) { [weak self] in
 				guard let self else { return }
 				self.routeInsert(self.shifted(text), self.activeTap)
-				if self.shift == .on { self.applyShiftState(.off) }   // in place — no rebuild
+				if self.shift == .on { self.applyShiftState(.off) }
 			}
 		}
 		return KeySpec(label: text, accessibilityLabel: accessibilityLabel, width: keyWidth(width),
@@ -141,11 +132,10 @@ extension KeyboardView {
 		case .symbols:
 			return pageSpecs(latinLayout.symbols)
 		case .emoji, .media, .clipboard:
-			return []   // these use a full-bounds overlay, not a key grid
+			return []
 		}
 	}
 
-	/// A layout page's rows, then its bottom row (the number pad has none).
 	private func pageSpecs(_ layoutPage: LayoutPage) -> [[KeySpec]] {
 		let currency = LatinLayoutPack.currencySymbol(for: latinLayout.locale)
 		func specs(_ row: [LayoutKey]) -> [KeySpec] {
@@ -184,8 +174,6 @@ extension KeyboardView {
 			}]
 		case .page:
 			guard let target, let label else { return [] }
-			// Bottom-row page switches (123/ABC) are utility width; the #+= / 123 key in
-			// the third symbol row matches delete across from it, as stock does.
 			let surface: KeyboardSurfacePage
 			let spoken: String
 			switch target {
@@ -229,7 +217,7 @@ extension KeyboardView {
 		KeySpec(label: spaceTitle, accessibilityLabel: "Space", width: .flex,
 			isSpace: true) { [weak self] in
 			self?.routeInsert(" ", nil)
-			self?.returnToLettersFromSymbolPage()   // stock: space snaps back to ABC from 123/#+=
+			self?.returnToLettersFromSymbolPage()
 		}
 	}
 
@@ -248,7 +236,7 @@ extension KeyboardView {
 			} else {
 				next = self.shift == .off ? .on : .off
 			}
-			self.applyShiftState(next)                              // in place — no rebuild
+			self.applyShiftState(next)
 		}
 	}
 }

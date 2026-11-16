@@ -14,17 +14,14 @@ import re
 import unicodedata
 
 SENTENCE_END = re.compile(r"[.!?\n]+")
-# A letter is a word character that is neither a digit nor "_" (Unicode-aware).
 WORD = re.compile(r"(?:[^\W\d_]|['’ʼ])+")
 APOSTROPHES = str.maketrans({"’": "'", "ʼ": "'"})
-
 
 def canonical(word: str) -> str:
     word = word.translate(APOSTROPHES)
     if not word.isascii():
         word = unicodedata.normalize("NFKC", word)
     return word.lower()
-
 
 def words(fragment: str) -> list[str]:
     """Words of one sentence fragment, canonical apostrophes, lowercased.
@@ -33,7 +30,6 @@ def words(fragment: str) -> list[str]:
     runtime skips such context words the same way.
     """
     return [canonical(match) for match in WORD.findall(fragment) if match.strip("'’ʼ")]
-
 
 def cased_sentences(text: str) -> list[list[tuple[str, bool]]]:
     """sentences(text), each word paired with whether the source writes it capitalized: a
@@ -48,7 +44,6 @@ def cased_sentences(text: str) -> list[list[tuple[str, bool]]]:
         if found:
             out.append(found)
     return out
-
 
 def sentences(text: str) -> list[list[str]]:
     """Non-empty sentences of `text`, each a list of lowercase words."""

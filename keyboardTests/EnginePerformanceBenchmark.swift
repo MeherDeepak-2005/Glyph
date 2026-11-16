@@ -4,15 +4,8 @@ import Testing
 import UIKit
 @testable import keyboard
 
-/// Speed and memory of the English engine as the keyboard drives it, with the extension's own
-/// bundled dictionary and NSS model: one word session per word, a word-start prediction, one
-/// decode per keystroke with tap offsets, then the same word glided twice: through the one-shot
-/// API and as a live swipe (previews while the finger moves, the decision at lift). Every call
-/// is awaited, so each latency is the full cost of that step. Opt-in (about a minute on a
-/// phone): tools/perf/device_perf.sh sets TEST_RUNNER_KB_PERF=1 and parses the `KB_PERF` line.
 @Suite(.enabled(if: ProcessInfo.processInfo.environment["KB_PERF"] == "1"))
 struct EnginePerformanceBenchmark {
-	/// Everyday chat and email English with a few typical slips, so decodes exercise corrections.
 	static let sentences = [
 		"hey are you free for lunch tomorrow or should we move it to friday",
 		"i will send you the report as soon as i get back to my desk",
@@ -59,7 +52,6 @@ struct EnginePerformanceBenchmark {
 
 	private struct Pass: Encodable {
 		let prediction: Stats, keystroke: Stats, glide: Stats
-		/// A live swipe: its first preview, every preview, and the decision at lift.
 		let swipeFirstPreview: Stats, swipePreview: Stats, swipeFinish: Stats
 		let footprintAfterMB: Double
 	}
@@ -70,7 +62,6 @@ struct EnginePerformanceBenchmark {
 		let cold: Pass, warm: Pass
 	}
 
-	/// SplitMix64: deterministic tap noise, so every run decodes the same touches.
 	private struct Noise {
 		var state: UInt64
 		mutating func next() -> Double {
@@ -101,7 +92,6 @@ struct EnginePerformanceBenchmark {
 		return (ProcessInfo.processInfo.systemUptime - started) * 1_000
 	}
 
-	/// A swipe through the word's key centers with hand noise, sampled every 8 ms.
 	private func swipe(_ word: String, layout: GlideLayout, noise: inout Noise) -> ([CGPoint], [TimeInterval])? {
 		let points = word.compactMap { letter in layout.centers.first { $0.letter == letter }?.point }
 		guard points.count == word.count, points.count >= 2 else { return nil }
@@ -131,8 +121,6 @@ struct EnginePerformanceBenchmark {
 		return (ProcessInfo.processInfo.systemUptime - started) * 1_000
 	}
 
-	/// The keyboard's live path: one session per swipe, a preview every 5 samples (40 ms of
-	/// finger travel, the deck's 35 ms preview interval), then the decision at lift.
 	private func streamedSwipe(_ engine: KeyboardEngine, word: String, context: [String],
 							   layout: GlideLayout, noise: inout Noise) async -> (previews: [Double], finish: Double)? {
 		guard let (path, times) = swipe(word, layout: layout, noise: &noise), path.count > 5 else { return nil }
@@ -155,7 +143,6 @@ struct EnginePerformanceBenchmark {
 	}
 
 	@Test func typingReplaySpeedAndMemory() async throws {
-		// An idle phone dims and locks partway through; a dimming phone stalls the host for ~0.3 s.
 		await MainActor.run { UIApplication.shared.isIdleTimerDisabled = true }
 		defer { Task { @MainActor in UIApplication.shared.isIdleTimerDisabled = false } }
 		let baseline = KBDiagnostics.footprintBytes()
@@ -182,7 +169,6 @@ struct EnginePerformanceBenchmark {
 				generation: generation, layoutRevision: 1, currentWord: word, context: context,
 				taps: taps)
 		}
-		// The keyboard slides up before its first word: decode once it is on screen.
 		try await Task.sleep(nanoseconds: 300_000_000)
 		session &+= 1
 		let firstDecodeMs = await decode(engine, request("", [], nil))
@@ -231,7 +217,6 @@ struct EnginePerformanceBenchmark {
 		print("KB_PERF " + String(decoding: try encoder.encode(report), as: UTF8.self))
 	}
 
-	/// The key deck the extension builds on the main thread before it can show anything.
 	@MainActor @Test func keyboardViewBuildTime() throws {
 		var samples: [Double] = []
 		let before = KBDiagnostics.footprintBytes()

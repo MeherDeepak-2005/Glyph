@@ -2,8 +2,6 @@ import UIKit
 import ImageIO
 import UniformTypeIdentifiers
 
-/// The three browse panels. Emoji, GIFs and Stickers share one header so switching
-/// between them never moves the search field or the switch.
 enum PanelTab: Int, CaseIterable {
 	case emoji, gifs, stickers
 
@@ -13,23 +11,12 @@ enum PanelTab: Int, CaseIterable {
 	init(_ kind: KlipyKind) { self = kind == .gifs ? .gifs : .stickers }
 }
 
-/// The panels' shared header, in the A/B arm `KBExperiments.panelHeader` picks:
-///
-/// - `.unified` (C): one capsule, the search on the left and a compact
-///   smiley · GIF · sticker switch inside its right end.
-/// - `.stacked` (A): a full-width search capsule over an equal-thirds
-///   Emoji · GIFs · Stickers switch.
-///
-/// In both, the switch's thumb slides to the chosen tab, and the tabs keep the names
-/// Emoji, GIFs and Stickers for VoiceOver.
 final class PanelHeaderView: UIView {
-	/// The header's height in each arm: 3 + 38 capsule + 3, or 6 + 36 search + 6 + 32 switch + 6.
 	static func height(for style: PanelHeaderStyle) -> CGFloat { style == .unified ? 44 : 86 }
 
 	private struct Metrics {
 		let searchY, searchHeight: CGFloat
 		let switchHeight, switchRadius, thumbRadius: CGFloat
-		/// The unified switch's width inside the capsule; nil spans the header (stacked).
 		let switchWidth: CGFloat?
 	}
 	private static func metrics(for style: PanelHeaderStyle) -> Metrics {
@@ -40,7 +27,6 @@ final class PanelHeaderView: UIView {
 				switchWidth: nil)
 	}
 	private static let inset: CGFloat = 8
-	/// The gap between the unified switch and the capsule's right end.
 	private static let capsulePadding: CGFloat = 3
 
 	var onSelect: ((PanelTab) -> Void)?
@@ -55,8 +41,6 @@ final class PanelHeaderView: UIView {
 	private let track = UIView()
 	private let thumb = UIView()
 	private var tabButtons: [UIButton] = []
-	/// Where the thumb starts on first layout, so a panel that replaces another
-	/// still shows the thumb sliding from the previous tab.
 	private var slideFrom: PanelTab?
 	private let query: String?
 
@@ -77,7 +61,6 @@ final class PanelHeaderView: UIView {
 		cfg.imagePadding = 7
 		cfg.attributedTitle = searchTitle(for: selected)
 		cfg.baseForegroundColor = theme.keyText.withAlphaComponent(0.45)
-		// The unified capsule's text stops short of the switch inside it.
 		let trailing = metrics.switchWidth.map { $0 + Self.capsulePadding + 8 } ?? 12
 		cfg.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: trailing)
 		cfg.titleLineBreakMode = .byTruncatingTail
@@ -101,7 +84,7 @@ final class PanelHeaderView: UIView {
 			: UIColor(white: 0, alpha: 0.06)
 		track.layer.cornerRadius = metrics.switchRadius
 		track.layer.cornerCurve = .continuous
-		addSubview(track)                              // above the capsule, so its taps reach the tabs
+		addSubview(track)
 
 		thumb.backgroundColor = theme.isDark ? UIColor(white: 1, alpha: 0.20) : .white
 		thumb.layer.cornerRadius = metrics.thumbRadius
@@ -141,8 +124,6 @@ final class PanelHeaderView: UIView {
 			]))
 	}
 
-	/// The unified switch's icons: a smiley for Emoji and a peeled sticker for Stickers
-	/// (SF Symbols has no sticker). GIFs is the word "GIF".
 	private static func compactIcon(for tab: PanelTab) -> UIImage? {
 		switch tab {
 		case .emoji:
@@ -155,8 +136,6 @@ final class PanelHeaderView: UIView {
 			return UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { _ in
 				let c = side / 2, r: CGFloat = 6.75
 				let corner = CGPoint(x: c + 2.6, y: c + 2.6)
-				// A circle whose lower-right quarter is folded back: the arc from the bottom
-				// round to the right, then the fold's two edges.
 				let outline = UIBezierPath(arcCenter: CGPoint(x: c, y: c), radius: r,
 					startAngle: .pi / 2, endAngle: 0, clockwise: true)
 				outline.addLine(to: corner)
@@ -202,7 +181,6 @@ final class PanelHeaderView: UIView {
 		}
 	}
 
-	/// Moves the thumb (the header is kept; used for GIFs ↔ Stickers inside one panel).
 	func setSelected(_ tab: PanelTab, animated: Bool) {
 		guard tab != selected else { return }
 		selected = tab
@@ -284,7 +262,6 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 	private var topHeight: CGFloat { header.height }
 	private let footerHeight: CGFloat = 36
 
-	/// `previous` is the tab the user came from, so the switch thumb slides from it.
 	init(theme: KeyboardTheme, showsGlobe: Bool, hasFullAccess: Bool,
 		kind: KlipyKind, query: String? = nil, from previous: PanelTab? = nil) {
 		self.theme = theme
@@ -319,9 +296,6 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 		displayLink?.invalidate()
 	}
 
-	/// Called before the panel leaves the hierarchy. This deterministically drops
-	/// decoded frames, mapped ImageIO sources, network work, and metadata rather than
-	/// waiting for a memory warning or collection-view deallocation.
 	func prepareForDismissal() {
 		guard !released else { return }
 		released = true
@@ -388,8 +362,6 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 		loadGeneration &+= 1
 		items.removeAll(keepingCapacity: true)
 		collection.reloadData()
-		// No query loads the trending feed (browse on open); a query searches. Both
-		// still require Full Access and a configured, content-filter-approved key.
 		guard hasFullAccess else {
 			setStatus("Full Access is required only for GIFs and stickers.")
 			return
@@ -452,8 +424,6 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 		}
 	}
 
-	/// Fetch the sendable GIF and put it on the pasteboard (keyboards can't insert
-	/// images into the host directly). Shared by the panel and the search strip.
 	static func copyToPasteboard(_ item: KlipyMediaItem, completion: @escaping (Bool) -> Void) {
 		KBMediaCache.fetch(item.sendURL) { file in
 			guard let file,
@@ -528,9 +498,6 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 	}
 }
 
-/// Live results row for GIF/sticker search. Sits in the search header's second row
-/// while the real letter deck types the query: results refresh as you type (debounced),
-/// a tap copies that item, and the Search key opens the full grid for the query.
 final class MediaSearchStrip: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
 	static let debounce: TimeInterval = 0.35
 
@@ -576,11 +543,9 @@ final class MediaSearchStrip: UIView, UICollectionViewDataSource, UICollectionVi
 		statusLabel.frame = bounds.insetBy(dx: 10, dy: 0)
 	}
 
-	/// Debounced: each keystroke restarts the timer, so a typed word costs one request.
 	func search(_ next: String) {
 		guard !released else { return }
 		let trimmed = next.trimmingCharacters(in: .whitespacesAndNewlines)
-		// A trailing space doesn't change the query; let any in-flight search finish.
 		guard trimmed != query || (items.isEmpty && pending == nil && request == nil) else { return }
 		pending?.cancel()
 		query = trimmed

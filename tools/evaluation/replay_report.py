@@ -14,24 +14,19 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
-
 ENGINES = ("engine", "baseline")
-
 
 class SchemaError(ValueError):
     pass
 
-
 def normalized(value: str) -> str:
     return unicodedata.normalize("NFC", value).casefold()
-
 
 def require_string(row: dict[str, Any], key: str, line: int) -> str:
     value = row.get(key)
     if not isinstance(value, str) or not value:
         raise SchemaError(f"line {line}: {key!r} must be a non-empty string")
     return value
-
 
 def validate_result(value: Any, key: str, line: int) -> dict[str, Any]:
     if not isinstance(value, dict):
@@ -64,7 +59,6 @@ def validate_result(value: Any, key: str, line: int) -> dict[str, Any]:
     ):
         raise SchemaError(f"line {line}: {key}.keystrokes_saved must be non-negative")
     return value
-
 
 def load_rows(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
@@ -101,11 +95,9 @@ def load_rows(path: Path) -> list[dict[str, Any]]:
         raise SchemaError("input contains no events")
     return rows
 
-
 def resolved_word(row: dict[str, Any], engine: str) -> str:
     correction = row[engine].get("correction")
     return correction if correction else row["typed"]
-
 
 def event_metrics(row: dict[str, Any], engine: str) -> dict[str, float]:
     intended = normalized(row["intended"])
@@ -133,11 +125,9 @@ def event_metrics(row: dict[str, Any], engine: str) -> dict[str, float]:
                         if confidence is not None else math.nan),
     }
 
-
 def mean(values: Iterable[float]) -> float:
     values = [value for value in values if not math.isnan(value)]
     return sum(values) / len(values) if values else math.nan
-
 
 def percentile(values: list[float], fraction: float) -> float:
     if not values:
@@ -150,7 +140,6 @@ def percentile(values: list[float], fraction: float) -> float:
         return ordered[lower]
     return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
 
-
 def aggregate(rows: list[dict[str, Any]], engine: str) -> dict[str, float]:
     metrics = [event_metrics(row, engine) for row in rows]
     result = {key: mean(metric[key] for metric in metrics) for key in metrics[0]}
@@ -161,7 +150,6 @@ def aggregate(rows: list[dict[str, Any]], engine: str) -> dict[str, float]:
         latency_p99_ms=percentile(latencies, 0.99),
     )
     return result
-
 
 def clustered_interval(
     rows: list[dict[str, Any]], metric: str, samples: int, seed: int
@@ -186,7 +174,6 @@ def clustered_interval(
         deltas.append(engine_value - baseline_value)
     return percentile(deltas, 0.025), percentile(deltas, 0.975)
 
-
 def mcnemar_exact(rows: list[dict[str, Any]]) -> tuple[int, int, float]:
     engine_only = 0
     baseline_only = 0
@@ -202,14 +189,11 @@ def mcnemar_exact(rows: list[dict[str, Any]]) -> tuple[int, int, float]:
     probability = 2 * sum(math.comb(discordant, k) for k in range(tail + 1)) / (2**discordant)
     return engine_only, baseline_only, min(1.0, probability)
 
-
 def percentage(value: float) -> str:
     return "n/a" if math.isnan(value) else f"{value * 100:.2f}%"
 
-
 def milliseconds(value: float) -> str:
     return "n/a" if math.isnan(value) else f"{value:.2f}"
-
 
 def report(rows: list[dict[str, Any]], split: str, bootstrap: int, seed: int) -> str:
     engine = aggregate(rows, "engine")
@@ -295,7 +279,6 @@ def report(rows: list[dict[str, Any]], split: str, bootstrap: int, seed: int) ->
     )
     return "\n".join(lines) + "\n"
 
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="paired JSONL capture")
@@ -304,7 +287,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=20260719)
     parser.add_argument("--output", type=Path, help="write Markdown report to this path")
     return parser.parse_args()
-
 
 def main() -> int:
     args = parse_args()
@@ -322,7 +304,6 @@ def main() -> int:
     else:
         print(text, end="")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

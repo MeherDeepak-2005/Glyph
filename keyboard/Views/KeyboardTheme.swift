@@ -1,15 +1,13 @@
 import UIKit
 
-// Theme + key model enums + KeySpec.
-
 struct KeyboardTheme {
 	let name: String
 	let backgroundTop, backgroundBottom: UIColor
 	let fallbackBackgroundTop, fallbackBackgroundBottom: UIColor
 	let usesSystemTransparency: Bool
 	let key, keyText, specialKey, specialKeyText, accentKeyText: UIColor
-	let accentStart, accentEnd: UIColor             // action-button gradient stops (full accent)
-	let accentSoft, accentSoftText: UIColor         // optional soft accent colors
+	let accentStart, accentEnd: UIColor
+	let accentSoft, accentSoftText: UIColor
 	let pressedOverlay: UIColor
 	let popupFill, popupText: UIColor
 	let shadowColor: UIColor
@@ -18,8 +16,6 @@ struct KeyboardTheme {
 	let isDark: Bool
     var isSystemAppearance: Bool = false
 
-    /// The default System appearance follows light/dark traits with neutral keys.
-    /// Explicit accents and enabled Theme Studio designs keep their saved colors.
 	static func system(dark: Bool) -> KeyboardTheme {
 		if KBSettings.customThemeEnabled, let c = KBSettings.customTheme(dark: dark) {
 			return custom(c)
@@ -27,9 +23,6 @@ struct KeyboardTheme {
 		return accentTheme(dark: dark, accent: KBSettings.accent)
 	}
 
-	/// Pure resolver used by the companion app's live editor. It deliberately does
-	/// not read or mutate App Group settings, so an uncommitted draft cannot leak into
-	/// the running extension.
 	static func preview(dark: Bool, accent: KBAccent,
 		customTheme: KBCustomTheme?) -> KeyboardTheme {
 		if let customTheme { return custom(customTheme) }
@@ -42,7 +35,6 @@ struct KeyboardTheme {
 		let accentHSL = KBHSL(g.endColor)
 		let highContrast = UIAccessibility.isDarkerSystemColorsEnabled
 		let specialFill = system
-            // Dark: the same tone as letter keys over the system material, as stock iOS 26.
             ? UIColor(white: dark ? 0.32 : 0.67, alpha: highContrast ? 1 : 0.65)
             : accentHSL.color(
 			saturation: accentHSL.saturation * (dark ? 0.58 : 0.48),
@@ -67,10 +59,6 @@ struct KeyboardTheme {
 		let actionText = bestContrastingText(over: [proposedActionStart, proposedActionEnd])
         let actionStart = ensuringContrast(system ? g.startColor : proposedActionStart, against: actionText)
         let actionEnd = ensuringContrast(system ? g.endColor : proposedActionEnd, against: actionText)
-		// The deck paints no tint of its own. iOS draws its keyboard material behind
-		// the extension AND in a strip above it that the extension can't cover; any
-		// tint here makes that strip read as a separate band over the suggestions.
-		// Accessibility settings replace it with the opaque fallback below.
 		if dark {
 			return KeyboardTheme(name: "Dark",
 				backgroundTop: .clear,
@@ -106,15 +94,10 @@ struct KeyboardTheme {
 		}
 	}
 
-	/// Build the deck look from a Theme Studio design. Keys go SOLID (translucency is
-	/// the stock glass look; over a chosen gradient/photo, solid role colors read as
-	/// intended).
 	static func custom(_ c: KBCustomTheme) -> KeyboardTheme {
 		let text = UIColor(hex: c.text)
 		let keyFill = UIColor(hex: c.keys)
 		let specialFill = UIColor(hex: c.special)
-		// Glyph on the action key: follow the accent's own brightness, not the theme's
-		// dark flag — a pale mint action key needs dark text even in a dark theme.
 		let proposedAccentStart = UIColor(hex: c.accentStart)
 		let proposedAccentEnd = UIColor(hex: c.accentEnd)
 		let accentGlyph = bestContrastingText(over: [proposedAccentStart, proposedAccentEnd])
@@ -139,7 +122,6 @@ struct KeyboardTheme {
 				shadowOpacity: 0, cornerRadius: 8, isDark: c.dark)
 	}
 
-	/// WCAG relative luminance of a hex RGB (0…1), including sRGB linearization.
 	static func luminance(_ hex: UInt32) -> Double {
 		func linear(_ encoded: Double) -> Double {
 			encoded <= 0.04045 ? encoded / 12.92 : pow((encoded + 0.055) / 1.055, 2.4)
@@ -157,8 +139,6 @@ struct KeyboardTheme {
 	}
 
 	private static func bestContrastingText(over fills: [UIColor]) -> UIColor {
-		// Pure endpoints guarantee that one choice reaches WCAG 4.5:1 for every
-		// opaque sRGB fill. Near-black/near-white leave a small mid-luminance gap.
 		let black = UIColor.black
 		let white = UIColor.white
 		func worstContrast(_ foreground: UIColor) -> Double {
@@ -210,9 +190,6 @@ struct KeyboardTheme {
 	}
 }
 
-/// Small HSL utility used to derive coherent role colors from every user-selected
-/// accent. HSL is preferable here because changing lightness does not also shift the
-/// hue, so action, modifier, and mode keys remain recognizably related.
 private struct KBHSL {
 	let hue: CGFloat
 	let saturation: CGFloat
@@ -265,8 +242,6 @@ private struct KBHSL {
 	}
 }
 
-// MARK: - Model
-
 enum KeyboardSurfacePage { case letters, numbers, symbols, emoji, media, clipboard }
 enum KeyboardInputKind: Equatable {
 	case standard, email, url, webSearch, twitter
@@ -277,14 +252,10 @@ enum KeyboardInputKind: Equatable {
 	}
 }
 enum ShiftState   { case off, on, locked }
-enum KeyRole      { case normal, special, accent, accentSoft }   // optional soft accent role
+enum KeyRole      { case normal, special, accent, accentSoft }
 enum KeyWidth     {
 	case unit, modifier, utility, ret, flex
 
-	/// Widths in letter-key units, matched to the stock iOS deck. Shift/delete
-	/// (and #+=) sit at the 44pt tap-target minimum; the bottom row's
-	/// 123/ABC, globe and emoji keys are a touch narrower; return is wide
-	/// enough for its "send"/"search" labels.
 	static let modifierUnits: CGFloat = 1.35
 	static let utilityUnits: CGFloat = 1.3
 	static let returnUnits: CGFloat = 2.8
@@ -296,11 +267,11 @@ struct KeySpec {
 	var accessibilityLabel: String? = nil
 	var role: KeyRole = .normal
 	var width: KeyWidth = .unit
-	var repeats: Bool = false        // fires continuously while held (delete)
-	var popup: Bool = false          // show the stock-style character balloon on press
-	var letterBase: String? = nil    // lowercase base letter → enables in-place shift relabelling
-	var committedText: String? = nil // literal inserted before a long-press replacement
-	var isShift: Bool = false        // the shift key, whose glyph updates on shift changes
+	var repeats: Bool = false
+	var popup: Bool = false
+	var letterBase: String? = nil
+	var committedText: String? = nil
+	var isShift: Bool = false
 	var isInputModeSwitch: Bool = false
 	var isSpace: Bool = false
 	var alternatives: [String] = []

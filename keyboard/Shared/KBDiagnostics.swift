@@ -1,66 +1,46 @@
 import Foundation
 import os
 
-// Diagnostics: extension measures, app displays (App Group).
-
 enum KBDiagnostics {
 
-	/// Everything the app displays. All sizes in MB; times in seconds.
 	struct Snapshot: Codable {
 		var updated = Date.distantPast
 		var warningCount = 0
 		var criticalCount = 0
-		var peakFootprintMB = 0.0   // highest phys_footprint seen (what jetsam watches)
-		var minAvailableMB = 0.0    // lowest headroom seen (0 = never sampled)
-		var limitMB = 0.0           // inferred kill ceiling = footprint + headroom, at the tightest moment
-		var footprintNowMB: Double? // the latest sample: what the keyboard holds now (the peak never falls)
-		var surfaceLog: [String]?   // recent surface changes and the footprint each left behind, oldest first
+		var peakFootprintMB = 0.0
+		var minAvailableMB = 0.0
+		var limitMB = 0.0
+		var footprintNowMB: Double?
+		var surfaceLog: [String]?
 		var integrityEvents: [String: Int]?
 		var storageFailureCount: Int?
 		var lastStorageOperation: String?
-		// Fixed buckets contain counts only. No text, context, file paths, or identifiers.
 		var hostInsertLatencyBins: [Int]?
 		var tapDecodeLatencyBins: [Int]?
 		var glidePreviewLatencyBins: [Int]?
 		var glideFinalLatencyBins: [Int]?
 		var glideCommitLatencyBins: [Int]?
-		// Word-start search-space setup latency (Gboard's UpdateLM analog): the decode that
-		// builds the prediction/context search space when a new word begins.
 		var initLatencyBins: [Int]?
 
-		// MARK: Typing-quality benchmark metrics (aggregate counters only — never any text).
-		// These let the keyboard be measured against Gboard's TypingTester pillars. Each is a
-		// running total; the app derives the published ratios (WMR, NWP accuracy, WPM, KPC)
-		// from them. All optional so snapshots written before this field existed still decode.
-		//
-		// Accuracy pillar:
-		var wordsCommitted: Int?          // words finalized (space / punctuation / return / pick / glide)
-		var wordsModified: Int?           // committed words the user went back and edited → WMR numerator
-		var wordsAutocorrected: Int?      // commits where the engine changed the typed word
-		var correctionsReverted: Int?     // engine autocorrects the user undid (over-correction signal)
-		var nwpOpportunities: Int?        // next-word predictions shown at a word start (in-context)
-		var nwpHits: Int?                 // the committed word was among the shown top-3 → NWP numerator
-		// Speed pillar:
-		var activeTypingMs: Double?       // idle-capped active typing time → WPM denominator
-		var committedChars: Int?          // characters committed → KPC denominator
-		var physicalTaps: Int?            // key taps incl. backspaces (a pick / glide is one tap) → KPC numerator
-		// System pillar:
-		var peakCPUPercent: Double?       // highest process CPU% seen during a dynamic search
-		// Per-key error pillar (letters a–z only, general text fields only). Counts, never
-		// sequences: they show which keys a user misses, not what was typed.
-		var keyTaps: [String: Int]?       // letter → taps
-		var keyErasures: [String: Int]?   // letter → erased by Backspace inside the word it was typed in
-		var keyConfusions: [String: Int]? // "typed>retyped" → a letter erased and replaced by another
-		var backspaceTaps: Int?           // every Backspace, including undo of a correction
-		var interKeyIntervalBins: [Int]?  // gap to the previous key, interKeyThresholds buckets
-		// Panel header A/B test: "arm.event" → count, e.g. "C.open", "A.pick". Counts only.
+		var wordsCommitted: Int?
+		var wordsModified: Int?
+		var wordsAutocorrected: Int?
+		var correctionsReverted: Int?
+		var nwpOpportunities: Int?
+		var nwpHits: Int?
+		var activeTypingMs: Double?
+		var committedChars: Int?
+		var physicalTaps: Int?
+		var peakCPUPercent: Double?
+		var keyTaps: [String: Int]?
+		var keyErasures: [String: Int]?
+		var keyConfusions: [String: Int]?
+		var backspaceTaps: Int?
+		var interKeyIntervalBins: [Int]?
 		var panelEvents: [String: Int]?
 	}
 
 	static let key = "kb.diag"
-	/// The App Group the keyboard and the app share. Unit tests and benchmarks run the engine
-	/// inside the app, so a test host keeps its own store: its samples never reach the
-	/// keyboard's numbers (a benchmark once set the keyboard's peak footprint to 98 MB).
 	static var store: UserDefaults { isTestHost ? testHostStore : KBSettings.sharedDefaults }
 	private static let isTestHost = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
 		|| NSClassFromString("XCTestCase") != nil
@@ -71,16 +51,12 @@ enum KBDiagnostics {
 	private static let performanceLog = OSLog(subsystem: KBSettings.appGroup,
 		category: .pointsOfInterest)
 	private static let latencyThresholds: [Double] = [1, 2, 4, 8, 16, 32, 50, 75, 120, 250]
-	/// Inter-key gaps in ms. Gaps above the idle cap are pauses, not typing speed.
 	static let interKeyThresholds: [Double] = [60, 90, 120, 160, 200, 260, 350, 500, 800, 1500]
 
 	enum LatencyOperation: Sendable {
 		case hostInsert, tapDecode, glidePreview, glideFinal, glideCommit, initialization
 	}
 
-	/// Record the word-start search-space setup latency (UpdateLM analog). Called by the
-	/// engine only for the decode that opens a new word, so it never double-counts an
-	/// ordinary mid-word tap decode.
 	static func recordInitializationLatency(milliseconds: Double) {
 		recordLatency(.initialization, milliseconds: milliseconds)
 	}
@@ -126,19 +102,11 @@ enum KBDiagnostics {
 		metricsQueue.async { Recorder.shared.recordLatency(operation, milliseconds: milliseconds) }
 	}
 
-	// MARK: Typing-quality metric events (extension side, off the host-insert path)
-	// Every entry hops onto metricsQueue so nothing here can delay a visible keystroke.
-
-	/// A fixed integrity code (host edit diverged, stale decode, …). Never user text.
 	static func noteIntegrityEvent(_ code: String) {
 		metricsQueue.async { Recorder.shared.noteIntegrityEvent(code) }
 	}
 
-	/// The keyboard's footprint as it runs, for Keyboard health to follow live: [megabytes,
-	/// seconds since 1970], written about once a second while the keyboard is on screen.
 	static let liveKey = "kb.diag.live"
-	/// Debug and internal builds call this every second while the keyboard is visible. It also
-	/// keeps the peak honest between decodes (scrolling GIFs runs no decode, so no sample).
 	static func noteLiveFootprint() {
 		metricsQueue.async {
 			let bytes = footprintBytes()
@@ -146,18 +114,13 @@ enum KBDiagnostics {
 			store.set([Double(bytes) / 1_048_576, Date().timeIntervalSince1970], forKey: liveKey)
 		}
 	}
-	/// True in the keyboard extension, false in the app.
 	static var isExtensionProcess: Bool { Bundle.main.bundleURL.pathExtension == "appex" }
 
-	/// The keyboard's latest live reading and when it was taken, or nil before the first one.
 	static func liveFootprint() -> (megabytes: Double, at: Date)? {
 		guard let reading = store.array(forKey: liveKey) as? [Double], reading.count == 2 else { return nil }
 		return (reading[0], Date(timeIntervalSince1970: reading[1]))
 	}
 
-	/// Records the footprint when the visible surface changes (letters, emoji, GIFs, stickers,
-	/// clipboard), and again a second later, once the previous surface's memory is released.
-	/// Extension only: the app builds keyboard views for previews in its own, roomier process.
 	static func noteSurface(_ surface: String) {
 		guard isExtensionProcess else { return }
 		let bytes = footprintBytes()
@@ -171,52 +134,35 @@ enum KBDiagnostics {
 		metricsQueue.async { Recorder.shared.finishTypingSession() }
 	}
 
-	/// What a user did with the Emoji, GIF and Sticker panels, counted per header arm.
 	enum PanelEvent: String, CaseIterable, Sendable {
-		/// A panel opened from the letters.
 		case open
-		/// The search field tapped.
 		case search
-		/// Another tab chosen in the header's switch.
 		case tabSwitch = "switch"
-		/// An emoji inserted, or a GIF or sticker copied.
 		case pick
 	}
 
-	/// Counts a panel event against the header arm this keyboard shows. Extension only.
 	static func notePanelEvent(_ event: PanelEvent) {
 		guard isExtensionProcess else { return }
 		let key = KBExperiments.panelHeader.arm + "." + event.rawValue
 		metricsQueue.async { Recorder.shared.notePanelEvent(key) }
 	}
 
-	/// A key in a general text field. `letter` is a lowercased a–z key or nil for any other
-	/// key; `intervalMs` is the gap to the previous key (nil for the first key of a session).
 	static func noteKeystroke(letter: String?, intervalMs: Double?) {
 		metricsQueue.async { Recorder.shared.noteKeystroke(letter: letter, intervalMs: intervalMs) }
 	}
 
-	/// A Backspace. `erasedLetter` is the a–z letter it removed from the word being typed.
 	static func noteBackspace(erasedLetter: String?) {
 		metricsQueue.async { Recorder.shared.noteBackspace(erasedLetter: erasedLetter) }
 	}
 
-	/// A letter erased inside its word and the different letter typed in its place.
 	static func noteKeyConfusion(typed: String, retyped: String) {
 		metricsQueue.async { Recorder.shared.noteKeyConfusion(typed: typed, retyped: retyped) }
 	}
 
-	/// One physical screen tap (letter, space, punctuation, backspace, suggestion pick, or
-	/// a whole glide gesture). `atUptime` is `ProcessInfo.systemUptime` at the tap; the
-	/// recorder derives active typing time from the gaps between consecutive taps.
 	static func noteTap(atUptime uptime: Double) {
 		metricsQueue.async { Recorder.shared.noteTap(atUptime: uptime) }
 	}
 
-	/// A word was finalized. `chars` counts the committed characters (word + its boundary),
-	/// `autocorrected` is true when the engine changed the typed word, and the prediction
-	/// pair records whether an in-context next-word suggestion was shown and whether the
-	/// committed word was among that shown top-3.
 	static func noteWordCommitted(chars: Int, autocorrected: Bool,
 		predictionShown: Bool, predictionHit: Bool) {
 		metricsQueue.async {
@@ -225,8 +171,6 @@ enum KBDiagnostics {
 		}
 	}
 
-	/// The user went back and edited an already-committed word (WMR numerator). Pass
-	/// `revertedCorrection: true` when the edit specifically undid an engine autocorrect.
 	static func noteWordModified(revertedCorrection: Bool) {
 		metricsQueue.async { Recorder.shared.noteWordModified(revertedCorrection: revertedCorrection) }
 	}
@@ -251,8 +195,6 @@ enum KBDiagnostics {
 		return nil
 	}
 
-	// MARK: App side — read + reset
-
 	static func read() -> Snapshot {
 		guard let data = store.data(forKey: key),
 			  let s = try? JSONDecoder().decode(Snapshot.self, from: data) else { return Snapshot() }
@@ -264,12 +206,6 @@ enum KBDiagnostics {
 		store.removeObject(forKey: liveKey)
 		Recorder.shared.clear()
 	}
-
-	// MARK: Live decoder log
-	//
-	// When `verbose` is on, Debug builds log autocorrect decisions, suggestion picks and
-	// glide traces to the unified log (category "ranking"). Watch it live while typing:
-	//   log stream --predicate 'subsystem == "group.com.meherdeepak.glyph"' --level info
 
 	static let defaultVerbose = false
 	#if DEBUG
@@ -285,7 +221,6 @@ enum KBDiagnostics {
 	#endif
 	private static let rankLog = Logger(subsystem: KBSettings.appGroup, category: "ranking")
 
-	/// The autocorrect margin-gate outcome for the word just committed.
 	static func logDecision(typed: String, best: String?, margin: Double, threshold: Double, corrected: Bool) {
 		#if DEBUG
 		guard verbose else { return }
@@ -293,10 +228,6 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// Suggestion-pick trace (#3): the bar mode, the word being replaced, the picked
-	/// suggestion, the document tail, and how many deleteBackward calls the replace
-	/// transaction actually issued — so a "picking deletes the whole word" report
-	/// captures the exact replace that misfired instead of relying on a live repro.
 	static func logPick(mode: String, replacing: String, with picked: String,
 		contextTail: String, deletes: Int, inserted: Bool) {
 		#if DEBUG
@@ -305,8 +236,6 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// Glide preprocessing trace: how many points survived resampling, how many pivots,
-	/// and which letters those pivots land on (the decoder's raw signal).
 	static func logGlide(points: Int, pivots: Int, letters: String, margin: Double = -1) {
 		#if DEBUG
 		guard verbose else { return }
@@ -315,8 +244,6 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// End-to-end device latency from finger lift through the host `insertText` call.
-	/// Emitted after insertion, so diagnostics can never delay the visible commit.
 	static func logGlideCommit(ms: Double) {
 		recordLatency(.glideCommit, milliseconds: ms)
 		#if DEBUG
@@ -325,20 +252,11 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// The App Group file real glide strokes are appended to (for offline calibration).
 	static var glideCaptureURL: URL? {
 		FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: KBSettings.appGroup)?
 			.appendingPathComponent("glide_capture.jsonl")
 	}
 
-	/// Append one glide record as a JSONL line, when KBSettings.glideCapture is on, for fitting
-	/// a swipe noise model to real strokes offline. Best-effort; never blocks typing.
-	///
-	/// `path` is the RAW grid trajectory aligned 1:1 with `times` (seconds), NOT the resampled
-	/// path — resampling to even arc length erases the velocity that dwell/pivot calibration
-	/// needs. `dwell` are the letters the finger lingered on; `margin` is the reranked top-1/top-2
-	/// gap (commit confidence). A commit is deliberately not a training label. An
-	/// explicit alternative pick appends a separate label event for the same opaque ID.
 	static func captureGlide(id: String, path: [(Double, Double)], times: [Double], dwell: [Character],
 							 candidates: [String], committed: String?, margin: Double) {
 		#if DEBUG
@@ -358,7 +276,6 @@ enum KBDiagnostics {
 		#endif
 	}
 
-	/// Add ground truth only when the user explicitly chooses a different Glide word.
 	static func captureGlideLabel(id: String, intended: String) {
 		#if DEBUG
 		guard KBSettings.glideCapture, !intended.isEmpty else { return }
@@ -386,9 +303,6 @@ enum KBDiagnostics {
 	}
 	#endif
 
-	// MARK: Measurement primitives (only meaningful INSIDE the memory-limited extension)
-
-	/// The process's physical footprint in bytes — the exact quantity jetsam meters.
 	static func footprintBytes() -> UInt64 {
 		var info = task_vm_info_data_t()
 		var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<natural_t>.size)
@@ -400,18 +314,11 @@ enum KBDiagnostics {
 		return kr == KERN_SUCCESS ? UInt64(info.phys_footprint) : 0
 	}
 
-	/// Bytes remaining before THIS process is jetsam-killed. Returns the extension's
-	/// tight budget when called there; ~0 / large in the roomy host app, so only the
-	/// extension records it.
 	static func availableBytes() -> UInt64 {
 		let a = os_proc_available_memory()
 		return a > 0 ? UInt64(a) : 0
 	}
 
-	/// Instantaneous process CPU load as a percentage (summed over non-idle threads; can
-	/// exceed 100 on multiple cores). Sampled during background decodes to characterize
-	/// "CPU during dynamic searches" — the cost Gboard optimizes for battery / low-end
-	/// devices. Reads live thread info only; retains nothing.
 	static func cpuUsagePercent() -> Double {
 		var threads: thread_act_array_t?
 		var count: mach_msg_type_number_t = 0
@@ -440,13 +347,8 @@ enum KBDiagnostics {
 		return total
 	}
 
-	// MARK: Extension side — the accumulator
-
 	static var recorder: Recorder { Recorder.shared }
 
-	/// Owns the running snapshot in the extension. Cheap (a few counters); persists to
-	/// the App Group only on state transitions and every 16th sample, so it never adds
-	/// disk churn to the typing path.
 	final class Recorder {
 		static let shared = Recorder()
 		private let lock = NSLock()
@@ -540,11 +442,7 @@ enum KBDiagnostics {
 			lock.unlock()
 		}
 
-		// MARK: Typing-quality accumulators
-
 		private var lastTapUptime = 0.0
-		/// Gaps longer than this are treated as "stopped typing", not typing time, so a
-		/// paused-then-resumed session does not inflate the WPM denominator.
 		private static let idleCapSeconds = 5.0
 
 		func noteTap(atUptime uptime: Double) {
@@ -556,7 +454,6 @@ enum KBDiagnostics {
 					snap.activeTypingMs = (snap.activeTypingMs ?? 0) + delta * 1_000
 				}
 			}
-			// Letter taps arrive via main.async, other keys synchronously: never move back.
 			lastTapUptime = max(lastTapUptime, uptime)
 			tick += 1
 			if tick % 32 == 0 { persistLocked() }
@@ -573,7 +470,7 @@ enum KBDiagnostics {
 				snap.nwpOpportunities = (snap.nwpOpportunities ?? 0) + 1
 				if predictionHit { snap.nwpHits = (snap.nwpHits ?? 0) + 1 }
 			}
-			persistLocked()          // commits are infrequent relative to taps — persist each
+			persistLocked()
 			lock.unlock()
 		}
 
@@ -624,8 +521,6 @@ enum KBDiagnostics {
 			return bins
 		}
 
-		/// Non-content persistence health. `operation` is a fixed code selected by the
-		/// caller (for example `personal-model-read`), never a path or user string.
 		func storageFailure(operation: String) {
 			lock.lock(); synchronizeResetLocked()
 			snap.storageFailureCount = (snap.storageFailureCount ?? 0) + 1
@@ -635,7 +530,6 @@ enum KBDiagnostics {
 			KBDiagnostics.log.error("storage operation failed: \(operation, privacy: .public)")
 		}
 
-		/// Cheap footprint/headroom sample. Call from the background suggestion pass.
 		func sample() {
 			lock.lock(); synchronizeResetLocked()
 			sampleLocked()
@@ -651,10 +545,8 @@ enum KBDiagnostics {
 			snap.footprintNowMB = foot
 			if avail > 0, snap.minAvailableMB == 0 || avail < snap.minAvailableMB {
 				snap.minAvailableMB = avail
-				snap.limitMB = foot + avail        // the ceiling, inferred at the tightest point
+				snap.limitMB = foot + avail
 			}
-			// sample() fires at the head of a background decode, so this reads CPU while a
-			// dynamic search is actually running.
 			let now = ProcessInfo.processInfo.systemUptime
 			if now - lastCPUSampleUptime >= 1 {
 				lastCPUSampleUptime = now

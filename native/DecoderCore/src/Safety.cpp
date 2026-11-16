@@ -31,7 +31,6 @@ SafetyLexicon::SafetyLexicon(std::string_view blob) : blob_(blob) {
         auto at = headerSize + i * entrySize;
         auto offset = u32(blob, at + 8), length = u16(blob, at + 12);
         if (offset > size || length > size - offset) throw std::invalid_argument("safety range overflow");
-        // Binary search needs ascending hashes; each hash must be the builder's FNV-1a of its term.
         if (i && hash(i - 1) > hash(i)) throw std::invalid_argument("safety index unsorted");
         if (hash(i) != fnv1a(term(i))) throw std::invalid_argument("safety hash mismatch");
     }

@@ -1,14 +1,3 @@
-// CoreV4 side of the autocorrect/suggestion comparison (27 Oct 2026).
-// Engine construction and the suggestion request are copied from
-// ../corev4-smoothing-v2-2026-10-26/CoreEval.cpp (itself from
-// ../laptop-comparison/CoreMain.cpp) minus the smoothing hook, so the pristine
-// CAdaptexTextInterface path runs. Learning is disabled and every request starts
-// from ResetToString, so results do not depend on request order.
-//
-// Input TSV rows: id <TAB> kind <TAB> context <TAB> typed <TAB> target
-//   kind "ac": one request with the full typed word after the raw context text.
-//   kind "nw": type target one character at a time after context; record the
-//              suggestions at k=0 (next-word) and the first k with target in the top 3.
 #include "stdafx.h"
 #include "adaptextextinterface.h"
 #include "atxdictdetail.h"
@@ -75,8 +64,6 @@ static Result suggest(CAdaptexTextInterface& e, const std::string& context, cons
     }
     return r;
 }
-// Rank among the first three entries that are not the verbatim typed prefix (CoreV4
-// always lists the literal first; iOSKeyboard appends it only without a correction).
 static int rankOf(const std::vector<std::string>& list, const std::string& prefix, const std::string& target) {
     int slot = 0;
     for (const auto& w : list) {
@@ -176,8 +163,6 @@ int main(int argc, char** argv) {
         double ms0 = 0;
         std::vector<double> lat;
         Result first;
-        // k = 0 (next word) and k = 1 always run; stop at the first k < len with the
-        // target offered. Not offered before the last letter: kf = len (no savings).
         for (size_t k = 0; k < target.size() || k < 2; ++k) {
             if (k > target.size()) break;
             Result r = suggest(engine, context, target.substr(0, k));

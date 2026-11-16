@@ -6,8 +6,6 @@
 	<false/>
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>
-	<!-- Typing Research (opt-in, RESEARCH_BETA builds): typed text, touches and Glide paths,
-	     keyboard diagnostics and a random install ID, uploaded encrypted by the app. -->
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
 		<dict>

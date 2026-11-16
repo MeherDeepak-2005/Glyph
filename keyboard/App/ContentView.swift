@@ -3,13 +3,6 @@ import Combine
 import StoreKit
 import os
 
-// ⚠️ This file must be a member of the APP target ONLY — never the keyboard
-// extension. It uses UIApplication, which app extensions are not allowed to call.
-// The settings here are written to the shared App Group (see KBSettings) and read
-// by the keyboard extension on launch.
-
-// MARK: - SwiftUI helpers on the shared accent model
-
 extension KBAccent {
 	func colors(dark: Bool) -> [Color] {
 		let g = gradient(dark: dark)
@@ -20,8 +13,6 @@ extension KBAccent {
 	}
 	func representative(dark: Bool) -> Color { Color(uiColor: tint(dark: dark)) }
 }
-
-// MARK: - Settings store (publishes the shared App Group values to SwiftUI)
 
 final class SettingsStore: ObservableObject {
     private var reloading = false
@@ -43,8 +34,6 @@ final class SettingsStore: ObservableObject {
 	var accent: KBAccent { KBPalette.accent(id: accentID) }
 }
 
-// MARK: - Main page
-
 struct ContentView: View {
 	@StateObject private var store = SettingsStore()
 	@StateObject private var commercial = CommercialStore()
@@ -54,8 +43,6 @@ struct ContentView: View {
 	@State private var showResetConfirm = false
 	@State private var showDeleteAllConfirm = false
 	@State private var hasUsedKeyboard = KBSettings.hasUsedKeyboard
-	/// Leaving onboarding must not wait for the keyboard's first host connection: a user who
-	/// enabled Glyph in Settings but has not typed with it yet was stuck on the steps screen.
 	@AppStorage("kb.onboarding.continued") private var continuedPastOnboarding = false
 
 	var body: some View {
@@ -176,8 +163,6 @@ struct ContentView: View {
 		.environmentObject(store)
 		.tint(Color(uiColor: .systemBlue))
 		.task(id: displayScale) {
-			// CoreText retains every rendered color glyph. Generate the immutable atlas
-			// in the host app, then let the extension map its clean file-backed pages.
 			let scale = displayScale
 			_ = await Task.detached(priority: .utility) {
 				EmojiAtlas.generateIfNeeded(scale: scale)
@@ -188,7 +173,6 @@ struct ContentView: View {
 		.onChange(of: scenePhase) { _, phase in
 			if phase == .active { refreshInstallState() }
 			#if RESEARCH_BETA
-			// Recordings go up when the app is opened and when it is left (research on only).
 			if phase == .active || phase == .background, KBTypingRecorder.installID != nil {
 				Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }
 				ResearchUploader.scheduleBackgroundRefresh()
@@ -464,13 +448,10 @@ private struct ThirdPartyNoticesView: View {
 	}
 }
 
-// MARK: - Keyboard health (reads the extension's App Group telemetry)
-
 struct DiagnosticsView: View {
 	@State private var snap = KBDiagnostics.read()
 	@State private var verbose = KBDiagnostics.verbose
 	@State private var glideCapture = KBSettings.glideCapture
-	/// "" follows the random assignment; otherwise a pinned PanelHeaderStyle raw value.
 	@State private var panelHeaderPin = KBExperiments.panelHeaderOverride?.rawValue ?? ""
 	@State private var typingCapture = KBTypingRecorder.enabled
 	@State private var typingExport: URL?
@@ -481,7 +462,6 @@ struct DiagnosticsView: View {
 	var body: some View {
 		List {
 			Section {
-				// Re-read every second: the keyboard writes a reading a second while on screen.
 				TimelineView(.periodic(from: .now, by: 1)) { context in
 					row("Keyboard memory now", keyboardMemory(at: context.date))
 						.accessibilityElement(children: .combine)
@@ -671,14 +651,11 @@ struct DiagnosticsView: View {
 		snap = KBDiagnostics.read()
 		log.notice("diag peakMB=\(Int(snap.peakFootprintMB)) limitMB=\(Int(snap.limitMB)) warn=\(snap.warningCount) crit=\(snap.criticalCount)")
 	}
-	/// Live while the keyboard is on screen (a reading every second), otherwise its latest
-	/// reading and how long ago it was taken.
 	private func panelHeaderArmDescription() -> String {
 		let style = KBExperiments.panelHeader
 		return style.displayName + (KBExperiments.panelHeaderOverride == nil ? " (assigned)" : " (pinned)")
 	}
 
-	/// "12 opens · 3 searches · 5 switches · 20 picks (1.7 / open)".
 	private func panelEventSummary(for style: PanelHeaderStyle) -> String {
 		let events = snap.panelEvents ?? [:]
 		func count(_ event: KBDiagnostics.PanelEvent) -> Int { events[style.arm + "." + event.rawValue] ?? 0 }
@@ -704,8 +681,6 @@ struct DiagnosticsView: View {
 		HStack { Text(title); Spacer(); Text(value).foregroundStyle(.secondary) }
 	}
 	private func mb(_ v: Double) -> String { String(format: "%.1f MB", v) }
-	/// A "hits / total" ratio rendered as a percentage with its raw counts, or a dash
-	/// when no data has been collected yet.
 	private func ratio(_ numerator: Int?, _ denominator: Int?) -> String {
 		guard let denominator, denominator > 0 else { return "\u{2014}" }
 		let n = numerator ?? 0
@@ -724,7 +699,6 @@ struct DiagnosticsView: View {
 		KBDiagnostics.percentile(snap.interKeyIntervalBins, fraction: fraction,
 			thresholds: KBDiagnostics.interKeyThresholds) ?? "—"
 	}
-	/// The five keys erased most often relative to their taps.
 	private func errorProneKeys() -> [(key: String, value: String)] {
 		let taps: [String: Int] = snap.keyTaps ?? [:], erased: [String: Int] = snap.keyErasures ?? [:]
 		var rows: [(key: String, rate: Double, taps: Int)] = []
@@ -744,7 +718,6 @@ struct DiagnosticsView: View {
 	private func latency(_ bins: [Int]?, _ fraction: Double) -> String {
 		KBDiagnostics.percentile(bins, fraction: fraction) ?? "—"
 	}
-	/// Human-readable size of the glide capture file, or nil if it doesn't exist / is empty.
 	private func glideCaptureSize(_ url: URL) -> String? {
 		guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
 			  let bytes = attrs[.size] as? Int, bytes > 0 else { return nil }
@@ -752,9 +725,6 @@ struct DiagnosticsView: View {
 	}
 }
 
-// MARK: - Reusable rows
-
-/// Icon chip + title, no trailing content. Used as a Toggle's label.
 func iconLabel(_ icon: String, tint: Color, title: String) -> some View {
 	HStack(spacing: 12) {
 		Image(systemName: icon)
@@ -791,8 +761,6 @@ struct SettingRow: View {
 		}
 	}
 }
-
-// MARK: - Enable-keyboard onboarding (app target only — uses UIApplication)
 
 private struct FirstRunView: View {
 	@Environment(\.colorScheme) private var scheme

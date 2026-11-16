@@ -28,7 +28,6 @@ EMITTABLE = re.compile(r"[a-z']+")
 MAGIC = 0x4B424C4D
 UNKNOWN_MASS = 0.5
 
-
 def read_pack(path: Path) -> tuple[list[str], list[int]]:
     """Stored forms and unigram frequencies of a KBLM v7 pack (tools/build_language_data.py)."""
     data = Path(path).read_bytes()
@@ -42,7 +41,6 @@ def read_pack(path: Path) -> tuple[list[str], list[int]]:
     offsets = struct.unpack_from(f"<{count + 1}I", data, offsets_base)
     words = [data[blob + offsets[i]:blob + offsets[i + 1]].decode("utf-8") for i in range(count)]
     return words, list(frequencies)
-
 
 @dataclass
 class Lexicon:
@@ -65,12 +63,11 @@ class Lexicon:
         found = self.frequency.get(word)
         return UNKNOWN_MASS if found is None else found + 1.0
 
-
 @dataclass
 class UnkPolicy:
     """Everything the runtime needs to spread P(<unk>|context) over lexicon words."""
-    lexicon_share: float          # pi
-    oov_mass: float               # sum of u(w) over emittable lexicon words outside V
+    lexicon_share: float
+    oov_mass: float
     oov_words: int
 
     def log_word_given_unk(self, mass: float) -> float:

@@ -1,8 +1,6 @@
 import UIKit
 import Darwin
 
-// Shared settings + theming model (App Group).
-
 enum KBWordCase {
 	static func sentenceDisplay(_ word: String, capitalized: Bool) -> String {
 		guard capitalized, !word.isEmpty else { return word }
@@ -17,8 +15,6 @@ struct KBGradient: Hashable {
 	var endColor: UIColor { UIColor(hex: end) }
 }
 
-/// An accent the user can pick. Each has a Light and Dark gradient so it sits well
-/// on either background. Drives the action button + active accents.
 struct KBAccent: Identifiable, Hashable {
 	let id: String
 	let name: String
@@ -26,13 +22,9 @@ struct KBAccent: Identifiable, Hashable {
 	let dark: KBGradient
 
 	func gradient(dark: Bool) -> KBGradient { dark ? self.dark : self.light }
-	/// A single representative colour for small UI (swatch border, tints).
 	func tint(dark: Bool) -> UIColor { gradient(dark: dark).endColor }
 }
 
-/// The palette for the Themes page. Each accent ships a Light and a Dark gradient; the
-/// keyboard (and the Themes preview) automatically render the variant for the user's
-/// current Light/Dark mode. Grouped by colour family for easy browsing.
 enum KBPalette {
 	static let `default` = system
 
@@ -108,19 +100,15 @@ enum KBPalette {
 	static func accent(id: String) -> KBAccent { all.first { $0.id == id } ?? `default` }
 }
 
-/// Theme Studio custom theme — ROLE-based colors (letters / special keys / action
-/// key / text / background), not per-individual-key: that maps 1:1 onto KeyRole,
-/// reads coherently, and keeps the blob a few dozen bytes. Background is a vertical
-/// gradient (set start == end for a solid).
 struct KBCustomTheme: Codable, Equatable {
-	var keys: UInt32        = 0xFFFFFF   // letter-key fill
-	var special: UInt32     = 0xDDE1EA   // shift / delete / 123 / globe fill
-	var accentStart: UInt32 = 0x37C26B   // action-key gradient
+	var keys: UInt32        = 0xFFFFFF
+	var special: UInt32     = 0xDDE1EA
+	var accentStart: UInt32 = 0x37C26B
 	var accentEnd: UInt32   = 0x1E9E5A
-	var text: UInt32        = 0x1B1B1D   // key glyphs + suggestions
-	var bgStart: UInt32     = 0xF2F0F4   // background gradient (top → bottom)
+	var text: UInt32        = 0x1B1B1D
+	var bgStart: UInt32     = 0xF2F0F4
 	var bgEnd: UInt32       = 0xE4E1E9
-	var dark = false                     // dark-surface treatment (popups, highlights)
+	var dark = false
 }
 
 struct KBCustomThemePair: Codable, Equatable {
@@ -150,9 +138,6 @@ struct KBCustomThemePair: Codable, Equatable {
 
 enum KBSettings {
 	nonisolated static let appGroup = "group.com.meherdeepak.glyph"
-	/// Open the App Group preference suite once per process. Reconstructing it at every
-	/// read causes unnecessary CFPreferences container attachment work in the extension
-	/// and can repeat Apple's `kCFPreferencesAnyUser` diagnostic.
 	nonisolated(unsafe) static let sharedDefaults = UserDefaults(suiteName: appGroup) ?? .standard
 	private static var store: UserDefaults { sharedDefaults }
 	private static let configurationNotification = CFNotificationName(
@@ -168,16 +153,10 @@ enum KBSettings {
 		static let fullAccess = "kb.fullaccess"
 		static let fullAccessObservedAt = "kb.fullaccess.observedAt"
 	}
-	/// KLIPY mobile client key injected through the extension's `KLIPY_API_KEY`
-	/// build setting. It is intentionally treated as a public, rotatable client
-	/// identifier; no secret is hardcoded in source or user preferences.
 	static var klipyAPIKey: String {
 		let value = Bundle.main.object(forInfoDictionaryKey: "KLIPYAPIKey") as? String ?? ""
 		return value.contains("$(") ? "" : value.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
-	/// KLIPY applies content filtering in its Partner Panel, per API key. Remote
-	/// media fails closed until Release engineering records that review in the build
-	/// setting; supplying a key alone is intentionally insufficient.
 	static var klipyContentFilterApproved: Bool {
 		let value = Bundle.main.object(forInfoDictionaryKey: "KLIPYContentFilterApproved")
 		if let enabled = value as? Bool { return enabled }
@@ -195,12 +174,10 @@ enum KBSettings {
 		get { resolvedAccentID(in: store) }
 		set { store.set(newValue, forKey: Key.accent) }
 	}
-    /// Read-only fallback: loading settings never turns a default into a selection.
     static func resolvedAccentID(in defaults: UserDefaults) -> String {
         KBPalette.accent(id: defaults.string(forKey: Key.accent) ?? "system").id
     }
 	static var accent: KBAccent { KBPalette.accent(id: accentID) }
-	/// Haptic tap on each key press. Default on; availability is controlled by iOS.
 	static var haptics: Bool {
 		get { store.object(forKey: Key.haptics) as? Bool ?? true }
 		set {
@@ -208,8 +185,6 @@ enum KBSettings {
 			postConfigurationChange()
 		}
 	}
-	/// Set by the extension after it is presented at least once. iOS does not expose a
-	/// reliable API for checking whether this specific third-party keyboard is enabled.
 	static var hasUsedKeyboard: Bool {
 		get { store.bool(forKey: Key.hasUsed) }
 		set { store.set(newValue, forKey: Key.hasUsed) }
@@ -225,8 +200,6 @@ enum KBSettings {
 		store.set(fullAccess, forKey: Key.fullAccess)
 		store.set(now, forKey: Key.fullAccessObservedAt)
 	}
-	/// Last Full Access state observed by the extension after a real host connection.
-	/// The containing app cannot query this directly, so it presents this cached state.
 	static var lastFullAccess: Bool {
 		get { store.bool(forKey: Key.fullAccess) }
 		set {
@@ -238,27 +211,17 @@ enum KBSettings {
 		let value = store.double(forKey: Key.fullAccessObservedAt)
 		return value > 0 ? Date(timeIntervalSince1970: value) : nil
 	}
-	/// DEBUG capture: append each glide's grid path + decoded words to a JSONL file in the
-	/// App Group, for fitting a swipe noise model to real strokes offline. OFF by default;
-	/// on-device only; never leaves the device.
 	static var glideCapture: Bool {
 		get { store.object(forKey: Key.glideCap) as? Bool ?? false }
 		set { store.set(newValue, forKey: Key.glideCap) }
 	}
 
-
-	// MARK: Theme Studio
-
-	/// The saved custom theme (nil = never designed one). Enabling is a SEPARATE
-	/// flag so switching back to a stock accent keeps the design for later.
 	static var customThemes: KBCustomThemePair? {
 		get {
 			guard let data = store.data(forKey: "kb.customtheme") else { return nil }
 			if let pair = try? JSONDecoder().decode(KBCustomThemePair.self, from: data) {
 				return pair
 			}
-			// One-time migration from the old single-appearance editor. Preserve the
-			// authored side and provide a contrast-safe counterpart for system switching.
 			guard let legacy = try? JSONDecoder().decode(KBCustomTheme.self, from: data) else { return nil }
 			var pair = KBCustomThemePair.defaults(accent: accent)
 			if legacy.dark { pair.dark = legacy } else { pair.light = legacy }
@@ -280,8 +243,6 @@ enum KBSettings {
 		get { store.bool(forKey: "kb.customtheme.on") }
 		set { store.set(newValue, forKey: "kb.customtheme.on") }
 	}
-	/// Atomic user-facing appearance commit. The extension observes the Darwin
-	/// notification and rebuilds once, rather than seeing a half-written group of keys.
 	static func applyAppearance(accentID: String, customThemes: KBCustomThemePair?, enabled: Bool) {
 		store.set(accentID, forKey: Key.accent)
 		if let customThemes, let data = try? JSONEncoder().encode(customThemes) {

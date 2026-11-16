@@ -1,21 +1,18 @@
 import UIKit
 
 extension KeyboardView {
-	// MARK: Emoji page (overlay collection view, not a key grid)
 
 	func showEmoji() {
-		// From the letters (not back from a search or another panel): an open, for the A/B counts.
 		let opening = page == .letters && !isEmojiSearching && !isMediaSearching
-		if isEmojiSearching { tearDownEmojiSearch() }   // emoji key pressed mid-search
+		if isEmojiSearching { tearDownEmojiSearch() }
 		guard page != .emoji else { return }
-		// Coming from the GIF/sticker panel: the switch thumb slides back from that tab.
 		let previous = mediaView.map { PanelTab($0.kind) }
 		discardMediaPanel()
 		page = .emoji
 		rows.forEach { $0.forEach { $0.removeFromSuperview() } }
 		rows = []
-		letterKeys = []                               // the removed keys are freed now, not when the panel closes (reload refills it)
-		accessibilityElements = nil                   // the panel, not the removed keys
+		letterKeys = []
+		accessibilityElements = nil
 		suggestionBar.isHidden = true
 		let ev = EmojiKeyboardView(theme: theme, showsGlobe: showsGlobe, from: previous)
 		ev.onPick = { [weak self] in self?.onInsert?($0, nil) }
@@ -27,10 +24,10 @@ extension KeyboardView {
 		ev.onStickers = { [weak self] in self?.onOpenMedia?(.stickers) }
 		addSubview(ev)
 		emojiView = ev
-		onHeightChange?(true)                         // the taller browse height
+		onHeightChange?(true)
 		setNeedsLayout()
-		if previous != nil { returnPanelMemory() }    // the GIF/sticker panel just went
-		KBDiagnostics.recorder.sample()               // emoji page footprint shows up in health telemetry
+		if previous != nil { returnPanelMemory() }
+		KBDiagnostics.recorder.sample()
 		KBDiagnostics.noteSurface("emoji")
 		if opening { KBDiagnostics.notePanelEvent(.open) }
 	}
@@ -38,10 +35,10 @@ extension KeyboardView {
 		emojiView?.removeFromSuperview()
 		emojiView = nil
 		page = .letters
-		shift = .on                                   // sentences resume capitalized
+		shift = .on
 		suggestionBar.isHidden = !showsSuggestions
 		reload()
-		onHeightChange?(true)                             // expansion released
+		onHeightChange?(true)
 		returnPanelMemory()
 		KBDiagnostics.noteSurface("letters")
 	}
@@ -57,8 +54,8 @@ extension KeyboardView {
 		page = .media
 		rows.forEach { $0.forEach { $0.removeFromSuperview() } }
 		rows = []
-		letterKeys = []                               // the removed keys are freed now, not when the panel closes (reload refills it)
-		accessibilityElements = nil                   // the panel, not the removed keys
+		letterKeys = []
+		accessibilityElements = nil
 		suggestionBar.isHidden = true
 		let panel = MediaPanelView(theme: theme, showsGlobe: showsGlobe,
 			hasFullAccess: hasFullAccess, kind: kind, query: query, from: previous)
@@ -70,7 +67,7 @@ extension KeyboardView {
 		mediaView = panel
 		onHeightChange?(true)
 		setNeedsLayout()
-		returnPanelMemory()                           // the emoji page or previous panel just went
+		returnPanelMemory()
 		KBDiagnostics.noteSurface(kind.rawValue)
 		if opening { KBDiagnostics.notePanelEvent(.open) }
 	}
@@ -86,8 +83,6 @@ extension KeyboardView {
 		KBDiagnostics.noteSurface("letters")
 	}
 
-	// MARK: Clipboard panel (overlay at deck height — the emoji-page pattern)
-
 	func showClipboard(hasFullAccess: Bool) {
 		if isEmojiSearching { tearDownEmojiSearch() }
 		if isMediaSearching { tearDownMediaSearch() }
@@ -97,8 +92,8 @@ extension KeyboardView {
 		page = .clipboard
 		rows.forEach { $0.forEach { $0.removeFromSuperview() } }
 		rows = []
-		letterKeys = []                               // the removed keys are freed now, not when the panel closes (reload refills it)
-		accessibilityElements = nil                   // the panel, not the removed keys
+		letterKeys = []
+		accessibilityElements = nil
 		suggestionBar.isHidden = true
 		let panel = ClipboardPanelView(theme: theme, showsGlobe: showsGlobe, hasFullAccess: hasFullAccess)
 		panel.onPick = { [weak self] in self?.onClipboardPick?($0) }
@@ -136,7 +131,6 @@ extension KeyboardView {
 		suggestionBar.isHidden = true
 		let header = EmojiSearchHeader(theme: theme)
 		header.placeholder = kind == .gifs ? "Search GIFs" : "Search stickers"
-		// The header's own emoji results row stays empty; the media strip owns that row.
 		header.emptyStatus = ""
 		header.noResultsStatus = ""
 		header.onCancel = { [weak self] in self?.exitMediaSearch(submit: false) }
@@ -167,9 +161,6 @@ extension KeyboardView {
 		mediaView = nil
 	}
 
-	/// Once a panel has gone, hand the memory its views and images freed back to iOS. The
-	/// allocator otherwise keeps those pages for reuse, and jetsam still counts them against
-	/// the keyboard. Off the main thread, after the panel's deferred releases have run.
 	private func returnPanelMemory() {
 		DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 0.5) {
 			_ = malloc_zone_pressure_relief(nil, 0)
@@ -185,8 +176,6 @@ extension KeyboardView {
 			hasFullAccess: mediaHasFullAccess)
 	}
 
-	// MARK: Emoji search — the real deck types into a query (no mini keyboard)
-
 	private func showEmojiSearch() {
 		guard page == .emoji, !isEmojiSearching else { return }
 		emojiView?.removeFromSuperview()
@@ -194,7 +183,7 @@ extension KeyboardView {
 		isEmojiSearching = true
 		emojiQuery = ""
 		page = .letters
-		shift = .off                                  // emoji keywords are lowercase
+		shift = .off
 		suggestionBar.isHidden = true
 		let header = EmojiSearchHeader(theme: theme)
 		header.onCancel = { [weak self] in self?.exitEmojiSearch(backToEmoji: true) }
@@ -204,7 +193,6 @@ extension KeyboardView {
 			refreshEmojiSearch()
 		}
 		header.onPick = { [weak self] e in
-			// Insert into the HOST document (stays in search, Gboard-style).
 			KBDiagnostics.notePanelEvent(.pick)
 			self?.onInsert?(e, nil)
 			KBEmojiRecents.add(e)
@@ -217,7 +205,6 @@ extension KeyboardView {
 		setNeedsLayout()
 	}
 
-	/// Remove the search chrome without deciding what comes next (caller picks the page).
 	private func tearDownEmojiSearch() {
 		emojiSearchHeader?.removeFromSuperview()
 		emojiSearchHeader = nil
@@ -229,7 +216,7 @@ extension KeyboardView {
 		guard isEmojiSearching else { return }
 		tearDownEmojiSearch()
 		if backToEmoji {
-			showEmoji()                               // fires onHeightChange itself
+			showEmoji()
 		} else {
 			suggestionBar.isHidden = !showsSuggestions
 			reload()
@@ -238,10 +225,6 @@ extension KeyboardView {
 		}
 	}
 
-	/// The user touched the host document directly (tapped the input field, moved the
-	/// cursor): snap the emoji page or emoji search back to
-	/// the letter deck, stock-style. Returns true when something was actually dismissed
-	/// (the controller refreshes the suggestion bar only then).
 	@discardableResult
 	func dismissOverlaysIfActive() -> Bool {
 		if isEmojiSearching { exitEmojiSearch(backToEmoji: false); return true }
@@ -252,15 +235,11 @@ extension KeyboardView {
 		return false
 	}
 
-	/// Keyboard extensions can be terminated without a recoverable warning. If one
-	/// does arrive, remove media immediately and release the clean atlas mapping; the
-	/// next emoji open remaps the already-generated file.
 	func releaseTransientMediaForMemoryPressure() {
 		_ = dismissOverlaysIfActive()
 		EmojiAtlas.purgeShared()
 		balloonPool.removeAll()
 	}
-
 
 	func refreshEmojiSearch() {
 		guard let header = emojiSearchHeader else { return }
@@ -270,8 +249,6 @@ extension KeyboardView {
 		header.update(query: emojiQuery, results: results, showingRecents: emojiQuery.isEmpty)
 	}
 
-	// While emoji search is active the deck's keys edit the query; otherwise they
-	// pass straight through to the controller. All key actions route through these.
 	func routeInsert(_ s: String, _ tap: KeyTap?) {
         suggestionBar.dismissTools()
 		if isEmojiSearching {
@@ -289,10 +266,7 @@ extension KeyboardView {
 	func routeDelete() {
         suggestionBar.dismissTools()
 		if isEmojiSearching {
-			// A live query: delete edits the query, never the host document.
 			if !emojiQuery.isEmpty { emojiQuery.removeLast(); refreshEmojiSearch(); return }
-			// Empty query: fall through to the host — the emoji just inserted from the
-			// results strip stays erasable without leaving search.
 		}
 		if isMediaSearching, !mediaQuery.isEmpty {
 			mediaQuery.removeLast(); refreshMediaSearch(); return
@@ -306,8 +280,6 @@ extension KeyboardView {
 		onReturn?()
 	}
 
-	/// After a space on the numbers/symbols page, snap back to letters (stock behavior).
-	/// Guarded so it is a no-op — and never rebuilds — during ordinary letter typing.
 	func returnToLettersFromSymbolPage() {
 		guard page == .numbers || page == .symbols else { return }
 		page = .letters

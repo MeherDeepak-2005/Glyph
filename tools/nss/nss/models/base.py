@@ -18,7 +18,6 @@ from ..vocab import BOS
 
 State = tuple[torch.Tensor, ...]
 
-
 class StreamingLM(nn.Module):
     arch = "base"
 
@@ -69,15 +68,12 @@ class StreamingLM(nn.Module):
     def parameter_count(self) -> int:
         return sum(p.numel() for p in self.parameters())
 
-
 def detach(state: State) -> State:
     return tuple(part.detach() for part in state)
-
 
 def keep_mask(reset: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
     """[B] reset flags -> [B, 1] multiplier that zeroes reset rows."""
     return (~reset).to(dtype).unsqueeze(-1)
-
 
 class RMSNorm(nn.Module):
     def __init__(self, dim: int, eps: float = 1e-6):
@@ -87,7 +83,6 @@ class RMSNorm(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps) * self.weight
-
 
 class SwiGLU(nn.Module):
     def __init__(self, dim: int, hidden: int):

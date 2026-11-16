@@ -1,14 +1,7 @@
-// Tracked extension defaults. Local partner credentials and research-model paths
-// belong in the ignored Secrets.xcconfig file beside this one.
 KLIPY_API_KEY =
 KLIPY_CONTENT_FILTER_APPROVED = NO
 KLIPY_MEDIA_ENABLED = NO
 
-// Word-level neural search space LM (tools/nss, an .nsslm file): the English decoder, and its
-// only language model. NSS_ENABLED bundles NSS_MODEL as nss-english.nsslm; the shared C++
-// engine decodes with it over langdata.bin (exact scores with the dictionary's unigram
-// distribution as a floor, KBDecoderBridge.mm). Without the model the keyboard types without
-// suggestions or autocorrect.
 NSS_MODEL = $(SRCROOT)/keyboard/nss-english.nsslm
 NSS_ENABLED = YES
 

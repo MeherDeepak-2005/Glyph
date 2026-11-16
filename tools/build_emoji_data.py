@@ -30,7 +30,7 @@ import unicodedata
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "keyboard" / "emoji.bin"
-MAGIC = 0x4B42454D  # "KBEM" (as a little-endian u32 constant, mirror of EmojiStore)
+MAGIC = 0x4B42454D
 
 CATEGORIES = [
     ("Smileys & People", "face.smiling",
@@ -49,10 +49,6 @@ CATEGORIES = [
      "❤️ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 ❣️ 💕 💞 💓 💗 💖 💘 💝 💯 ✅ ❌ ❎ ➕ ➖ ➗ ✖️ ♾ 💲 ™️ ©️ ®️ 〰️ ➰ ➿ 🔚 🔙 🔛 🔝 🔜 ✔️ ☑️ 🔘 🔴 🟠 🟡 🟢 🔵 🟣 ⚫️ ⚪️ 🟤 🔺 🔻 🔸 🔹 🔶 🔷 🔳 🔲 ▪️ ▫️ ◼️ ◻️ ⬛️ ⬜️ 🟥 🟧 🟨 🟩 🟦 🟪 ⭐️ 🌟 ❓ ❗️ ‼️ ⁉️ 💤 🎵 🎶"),
 ]
 
-# Word -> emoji aliases, surfaced in the suggestion bar's last slot on an exact
-# word match (SwiftKey / stock QuickType behavior) and scanned by emoji search.
-# First emoji wins. Deliberately conservative: a wrong emoji suggestion is worse
-# than none.
 WORD_EMOJI = {
     "love": "❤️", "heart": "❤️", "like": "👍", "yes": "👍", "no": "👎", "ok": "👌",
     "okay": "👌", "thanks": "🙏", "thank": "🙏", "please": "🙏", "pray": "🙏",
@@ -99,14 +95,11 @@ KEYWORD_STOPWORDS = {
     "mark", "selector", "sign", "small", "symbol", "variation", "with",
 }
 
-
 def normalized_keyword(s: str) -> str:
     return "".join(ch for ch in s.lower() if ch.isalnum())
 
-
 def catalog_emojis() -> list[str]:
     return [emoji for _, _, emojis in CATEGORIES for emoji in emojis.split(" ")]
-
 
 def unicode_keywords(emoji: str) -> list[str]:
     keywords: list[str] = []
@@ -124,7 +117,6 @@ def unicode_keywords(emoji: str) -> list[str]:
             keywords.append("".join(tokens))
     return keywords
 
-
 def keyword_pairs() -> list[tuple[str, str]]:
     pairs: list[tuple[str, str]] = []
     seen: set[tuple[str, str]] = set()
@@ -139,8 +131,6 @@ def keyword_pairs() -> list[tuple[str, str]]:
         seen.add(pair)
         pairs.append(pair)
 
-    # Manual aliases come first. When a word maps to several emoji, exact word->emoji
-    # suggestions use the first entry, while search can still show the rest.
     for word, emoji in WORD_EMOJI.items():
         add(word, emoji)
 
@@ -149,7 +139,6 @@ def keyword_pairs() -> list[tuple[str, str]]:
             add(keyword, emoji)
 
     return sorted(pairs, key=lambda pair: pair[0].encode())
-
 
 def main() -> None:
     strings: list[str] = []
@@ -162,9 +151,6 @@ def main() -> None:
         start = len(strings); strings.extend(items)
         cats.append((name_idx, icon_idx, start, len(items)))
 
-    # Word->emoji map entries as (wordIdx, emojiIdx) into the string table, sorted by
-    # the word's utf8 bytes so the reader can binary-search. Emoji strings are
-    # interned (reused if already present as a catalog item or an earlier map value).
     interned: dict[str, int] = {}
 
     def intern(s: str) -> int:
@@ -192,7 +178,6 @@ def main() -> None:
     total = sum(c[3] for c in cats)
     print(f"wrote {OUT} ({OUT.stat().st_size} B): {len(cats)} categories, "
           f"{total} emoji, {len(map_pairs)} word->emoji")
-
 
 if __name__ == "__main__":
     main()

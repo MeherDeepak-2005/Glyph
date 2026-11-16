@@ -12,7 +12,6 @@ from nss.models import build
 from nss.nss import NeuralSearchSpace
 from nss.vocab import UNK, Vocabulary
 
-
 class NeuralSearchSpaceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -36,13 +35,11 @@ class NeuralSearchSpaceTests(unittest.TestCase):
     def test_unknown_words_share_the_unk_mass(self):
         space = self.space()
         space.update(["the"])
-        word = "abandoned"   # a lexicon word outside the 200-word vocabulary
+        word = "abandoned"
         self.assertEqual(self.vocab.exact(word), UNK)
         expected = space.unk_log_probability() + math.log(0.3) + math.log(self.lexicon.unigram_mass(word)) \
             - math.log(self.policy.oov_mass)
         self.assertAlmostEqual(space.log_probability(word), expected, places=9)
-        # Summed over every lexicon word outside the vocabulary, the fallback spends
-        # exactly share * P(<unk>).
         total = sum(math.exp(space.log_probability(w)) for w in self.lexicon.frequency if self.vocab.exact(w) == UNK)
         self.assertAlmostEqual(total, 0.3 * math.exp(space.unk_log_probability()), places=6)
 
@@ -63,7 +60,6 @@ class NeuralSearchSpaceTests(unittest.TestCase):
         reader = self.space()
         reader.update(["can", "you", "send"])
         self.assertAlmostEqual(phrase, first + reader.log_probability("the"), places=5)
-
 
 class ExportTests(unittest.TestCase):
     def test_quantization_error_is_half_a_step(self):
@@ -89,7 +85,6 @@ class ExportTests(unittest.TestCase):
         reference = quantized_copy(model)
         tokens = torch.tensor([[2, 5, 6, 7]])
         self.assertLess(float((reference(tokens)[0] - model(tokens)[0]).abs().max()), 0.05)
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,6 @@ from pathlib import Path
 
 import replay_report
 
-
 class ReplayReportTests(unittest.TestCase):
     def row(self, case_id: str, user_id: str, intended: str = "hello") -> dict:
         return {
@@ -68,7 +67,6 @@ class ReplayReportTests(unittest.TestCase):
         metrics = replay_report.aggregate([clean, typo], "engine")
         self.assertEqual(metrics["false_correction"], 1.0)
         self.assertEqual(metrics["missed_correction"], 0.0)
-
 
 if __name__ == "__main__":
     unittest.main()

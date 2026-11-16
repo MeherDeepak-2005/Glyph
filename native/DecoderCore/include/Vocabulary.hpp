@@ -4,8 +4,6 @@
 #include <unordered_set>
 
 namespace kb {
-// Mutable words have one authority. Swift owns learning/persistence and sends
-// ordered insert/bump/reset events; all trie storage and traversal live here.
 class MutableTrie final {
     struct Node {
         std::vector<std::pair<std::uint8_t, std::size_t>> children;
@@ -21,20 +19,14 @@ public:
     std::optional<std::int32_t> wordID(std::string_view word) const;
     std::optional<double> logFrequency(std::string_view word) const;
     void bump(std::string_view word);
-    // As PackedLexicon::search, over these words.
     std::vector<ChannelCandidate> search(std::string_view typed, double maxCost,
         std::span<const std::optional<TouchOffset>> taps = {}) const;
 };
 
-// Borrowed only for a synchronous call. Platform locks keep mutable tries/boosts
-// stable; mapped bytes are retained by the bridge's lexicon owner.
 struct GenerationSnapshot {
     std::unordered_map<std::string, std::int64_t> boosts;
     std::unordered_set<std::string> blocked;
 };
-// The vocabulary a decode reads: the shipped dictionary (packed, or base without one),
-// the platform's supplementary words (contacts, text replacements), the user's adopted
-// words, and the safety-blocked words.
 struct GenerationLexicon {
     const PackedLexicon* packed = nullptr;
     const MutableTrie* base = nullptr;
@@ -44,4 +36,4 @@ struct GenerationLexicon {
     bool isBlocked(std::string_view word) const;
     bool contains(std::string_view word) const;
 };
-} // namespace kb
+}

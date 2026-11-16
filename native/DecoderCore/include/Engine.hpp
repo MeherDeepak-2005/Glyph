@@ -10,7 +10,6 @@
 #include <stdexcept>
 
 namespace kb {
-// Cancellation is independently thread safe. Session operations use one host lane.
 class CancellationToken final {
     std::atomic<bool> cancelled_{false};
 public:
@@ -21,11 +20,9 @@ enum class EngineStatus { ok, cancelled };
 enum class CandidateSource { typed, fuzzyLexicon, splitCorrection };
 struct DecodeInput {
     RequestIdentity identity;
-    // As typed, and normalized (lowercased) for the dictionary.
     std::string word, normalized;
     std::vector<std::string> context;
     std::vector<std::optional<TouchOffset>> taps;
-    // The user undid a correction of this word in this session: it stays as typed.
     bool kept = false;
 };
 struct CandidateEvidence {
@@ -40,10 +37,6 @@ struct DecodeOutput {
     std::vector<CandidateEvidence> candidates;
     CorrectionResult correction;
 };
-// Views are borrowed synchronously; adapter snapshot owners must outlive the call.
-// They point directly into native COW lexicons/counts, never platform callbacks.
-// `penalties` holds only residual, non-blocking safety penalties (in-dictionary demote
-// terms). Blocked words are excluded from the search and never reach ranking.
 struct EngineView {
     GenerationLexicon lexicon;
     const PersonalCounts* personal = nullptr;
@@ -51,44 +44,16 @@ struct EngineView {
     std::uint64_t personalizationRevision = 0, vocabularyRevision = 0;
     double penalty(std::string_view word) const;
 };
-// Decoding commits the best completed word for a typed non-word when it scores above the
-// typed text minus this margin (0: only when it outscores it); a typed dictionary word needs a
-// better score. Larger commits more of the corrections the strip already shows, and changes
-// more unknown words (names, rare words, Tenglish). 2 (15 Nov 2026, tuned on the benchmark's
-// tune half with nssTypedUnknown): misspellings fixed up about 2 points, rare and hard words
-// unchanged; removing the rule (a very large margin) changed every name and Tenglish word.
 KB_TUNABLE(nssRawCommitMargin, 2.0);
-// The margin instead for a typed non-word written with a capital after the sentence's first
-// word ("talking to Ahmet"): the host does not capitalize there, so the user did, and the
-// word is most likely a name.
 KB_TUNABLE(nssCapitalizedCommitMargin, 0.0);
-// The sentence's first word (no context words). Without context the model knows only which
-// words open sentences, and a misspelled first word is seldom one of them. Its P(w) is mixed
-// with the dictionary's context-free unigram P(w) at this weight, and the margin for a typed
-// non-word is this one. 0.25 and 1.5 (15 Nov 2026, tune half, sentence-start rows): every
-// set better or equal than the plain model with the ordinary margin; at 0.5 and above the
-// dictionary's low counts for contractions lost "i'll"/"we're" as first words.
 KB_TUNABLE(nssStartUnigramWeight, 0.25);
 KB_TUNABLE(nssStartCommitMargin, 1.5);
-// The neural search space (NeuralFst, Zhang et al. EMNLP Industry 2024) over the dictionary.
 struct EngineOptions {
-    // NeuralFst::Options::exact: exact vocabulary scores and <unk> shared outside the
-    // vocabulary. false reproduces the published graph.
     bool nssExact = true;
-    // NeuralFst::Options::unigramFloor (with nssExact): vocabulary words keep the
-    // published unigram fallback path as a floor.
     bool nssUnigramFloor = true;
-    // NeuralFst::Options::unknownExponent (with nssExact).
     double nssUnknownExponent = 1;
-    // nssExact: typed text outside the lexicon is scored by NeuralFst::typedUnknown (the
-    // model's P(<unk>) in context) instead of UnigramModel's context-free half count: where
-    // the context expects a name or an unknown word, the typed text is harder to replace.
-    // On with nssRawCommitMargin 2 (15 Nov 2026).
     bool nssTypedUnknown = true;
 };
-// The dictionary's context-free unigram distribution, P(w) = (frequency + 1) / (sum of
-// frequency + 1 over the dictionary); text outside it counts half. It scores what the NSS
-// graph cannot: typed text outside the lexicon and the words the user added.
 class UnigramModel final {
     const PackedLexicon& packed_;
     double total_;
@@ -103,8 +68,6 @@ struct UserEvent {
     std::uint64_t epoch = 0;
     bool learnable = true;
 };
-// The platform-neutral host state: personal counts, the adopted and supplementary words and
-// the safety penalties. The iOS adapter keeps its own equivalents; harnesses use this one.
 class EngineState final {
     std::shared_ptr<const PackedLexicon> packed_;
     Personalization personal_;
@@ -131,19 +94,15 @@ class Engine final : public std::enable_shared_from_this<Engine> {
     EngineOptions options_;
     std::shared_ptr<const NeuralLexicon> neuralLexicon_;
     UnigramModel unigram_;
-    // The NSS graph tables every session's graph shares, built once on first use.
     mutable std::once_flag neuralTablesOnce_;
     mutable std::shared_ptr<const NeuralFst::Tables> neuralTables_;
     std::shared_ptr<const NeuralFst::Tables> neuralTables() const;
 public:
-    // Throws std::invalid_argument without a dictionary or a model.
     Engine(std::shared_ptr<const PackedLexicon> packed, std::shared_ptr<const NeuralWordModel> neural, EngineOptions options = {});
     std::unique_ptr<EngineSession> createSession();
     std::unique_ptr<EngineState> createState() const { return std::make_unique<EngineState>(packed_); }
     const PackedLexicon* dictionary() const { return packed_.get(); }
 };
-// One typing lane (or one Glide gesture): the NSS graph for the current context and the
-// joint search (C o L o G) for the current word, retained across keystrokes.
 class EngineSession final {
     std::shared_ptr<Engine> engine_;
     std::unique_ptr<NeuralFst> graph_;
@@ -160,10 +119,8 @@ public:
     std::vector<RankedRow> updateGlide(std::span<const Point> path, const GlideLayout&, const EngineView&,
         std::span<const std::string> dynamicWords, const CancellationToken* = nullptr);
     void endGlide() { glideContext_.clear(); }
-    // Builds the NSS graph ahead of the first decode, which otherwise pays for it.
     void prepareNeural() { graph(); }
     void memoryPressure() { search_.reset(); graph_.reset(); identityReady_ = false; endGlide(); }
-    // Model steps the session's NSS context ring has run.
     std::uint64_t neuralSteps() const noexcept { return graph_ ? graph_->modelSteps() : 0; }
 };
-} // namespace kb
+}

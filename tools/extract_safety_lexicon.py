@@ -12,14 +12,12 @@ HEADER = "term\tlanguage\taction\tsource\tlicense\treview_status\n"
 LANGUAGES = {1: "en", 2: "te", 3: "tenglish"}
 ACTIONS = {0: "allow", 1: "demote", 2: "suppress_suggest", 3: "suppress_always"}
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
-
 
 def read_rows(path: Path) -> list[tuple[str, str, str]]:
     data = path.read_bytes()
@@ -42,7 +40,6 @@ def read_rows(path: Path) -> list[tuple[str, str, str]]:
         rows.append((term, LANGUAGES[language], ACTIONS[action]))
     return sorted(rows, key=lambda row: (row[1], row[0]))
 
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("artifact", type=Path)
@@ -62,7 +59,6 @@ def main() -> None:
                 "internal-reviewed-policy\tapproved\n"
             )
     print(f"wrote {args.output}: {len(rows)} reviewed rows; source sha256={actual}")
-
 
 if __name__ == "__main__":
     main()

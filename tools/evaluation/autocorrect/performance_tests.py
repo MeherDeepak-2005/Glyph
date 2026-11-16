@@ -39,12 +39,10 @@ SECTIONS = [
         'GUARD Tenglish words changed', 'GUARD correct plurals stripped', 'GUARD real-word errors fixed']),
 ]
 
-
 def meta():
     m = json.loads((E.CORPUS/'cases-meta.json').read_text())
     for extra in sorted(E.CORPUS.glob('*-cases-meta.json')): m.update(json.loads(extra.read_text()))
     return m
-
 
 def binary(tuning):
     """Release (app constants) or tuning build, rebuilt only when DecoderCore or the harness changed."""
@@ -54,7 +52,6 @@ def binary(tuning):
     if not path.exists() or max(s.stat().st_mtime for s in sources) > path.stat().st_mtime:
         print(f'building {name} ...', flush=True); E.build(name, tuning)
     return path
-
 
 def shards(m, size=300):
     """Held-half decode rows (no next-word rows), in shards; longest first so the cores finish together."""
@@ -66,18 +63,15 @@ def shards(m, size=300):
         for k in range(0, len(rows), size): (out/f'{k // size:04d}.tsv').write_text(''.join(rows[k:k + size]))
     return sorted(out.glob('*.tsv'), key=lambda p: -sum(len(l.split('\t')[3]) for l in open(p)))
 
-
 def decode(path, env, cases, out):
     subprocess.run([str(path), str(E.REPO/'keyboard/langdata.bin'), str(E.REPO/'keyboard/safety.kbguard'), str(cases), str(out)],
                    env=E.bench_env(**env), check=True, stderr=subprocess.DEVNULL)
-
 
 def run(env, jobs):
     m = meta(); path = binary(bool(env)); parts = shards(m)
     stamp = datetime.datetime.now().strftime('%Y-%m-%d-%H%M'); name = f'prod-{stamp}'
     tmp = OUT/f'.{name}'; tmp.mkdir(parents=True, exist_ok=True)
     start = time.time()
-    # caffeinate keeps the Mac from idling the workers (a background job's processes were slowed 5x on 15 Nov).
     awake = subprocess.Popen(['caffeinate', '-ims', '-w', str(os.getpid())])
     try:
         with cf.ThreadPoolExecutor(jobs) as pool:
@@ -93,7 +87,6 @@ def run(env, jobs):
     (OUT/f'{name}.env.json').write_text(json.dumps({'env': env, 'binary': path.name, 'decode_s': decoded}) + '\n')
     return name
 
-
 def latency(path, env, m, cases=1000):
     """One process alone on the first `cases` held ECPS words with taps: the uncontended per-word latency."""
     rows = [l for l in open(E.CORPUS/'cases.taps.tsv') if (i := l.split('\t', 1)[0]) in m and m[i]['set'] == 'ecps' and E.half(m[i]) == 'held'][:cases]
@@ -104,7 +97,6 @@ def latency(path, env, m, cases=1000):
     lat = {json.loads(l)['id']: json.loads(l)['ms'] for l in open(out) if '"ms"' in l}; out.unlink()
     (OUT/'.latest-latency.json').write_text(json.dumps(lat))
     return time.time() - t
-
 
 def report(name):
     m = {i: x for i, x in meta().items() if x['set'] in ('hard', 'apos') or E.half(x) == 'held'}
@@ -153,7 +145,6 @@ def report(name):
     DOC.write_text(DOC_HEAD + body + '\n')
     print(text)
 
-
 DOC_HEAD = '''# Performance tests
 
 "Performance tests" is the name for the keyboard's accuracy and latency benchmark:
@@ -172,7 +163,6 @@ python3 performance_tests.py report prod-<stamp>   # re-score a stored run
 ```
 
 '''
-
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()

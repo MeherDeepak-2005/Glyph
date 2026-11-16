@@ -1,6 +1,3 @@
-// NSS word-model runtime vs the Python reference (tools/nss/nss/export.py goldens):
-//   neural-language-model-tests model.nsslm model.goldens.json langdata.bin
-// Also checks the ring buffer's step accounting and that malformed files are rejected.
 #include "../DecoderCore/include/NeuralLanguageModel.hpp"
 #include "../DecoderCore/include/PackedLexicon.hpp"
 #include "MiniJson.hpp"
@@ -55,7 +52,6 @@ int main(int argc, char** argv) {
         const auto& scores = std::get<std::shared_ptr<json::Object>>(item["scores"].data);
         for (const auto& [word, value] : *scores) { assert(near(space.logProbability(word, mass(lexicon, word)), value.number())); ++checked; }
         const auto& arcs = space.arcs(-15.0f, 100000);
-        // Words near the threshold may cross it under float rounding.
         assert(std::abs(double(arcs.size()) - item["arc_count"].number()) <= 2);
         const auto& top = item["top"].array();
         for (std::size_t i = 0; i < top.size() && i < 5; ++i) {
@@ -71,7 +67,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Ring accounting: one model step per committed word, none per keystroke or backspace.
     ContextRing ring(model, 6, 4);
     auto id = [&](const char* word) { return model->contextID(word); };
     std::vector<std::int32_t> a{id("i"), id("am")};
@@ -79,18 +74,17 @@ int main(int argc, char** argv) {
     std::vector<std::int32_t> b{id("i"), id("am"), id("going")};
     assert(ring.sync(b).stepped == 1 && ring.sync(a).stepped == 0 && ring.sync(b).stepped == 1);
     std::vector<std::int32_t> sentence{id("can"), id("you"), id("send"), id("me"), id("the"), id("photos")};
-    for (std::size_t end = 1; end <= sentence.size(); ++end) {   // the host sends a sliding 4-word window
+    for (std::size_t end = 1; end <= sentence.size(); ++end) {
         auto from = end > 4 ? end - 4 : 0;
         assert(ring.sync(std::span(sentence).subspan(from, end - from)).stepped == 1);
     }
-    { // The slid window's state equals reading the whole sentence from <bos>.
+    {
         std::vector<float> state(model->stateSize()), scratch(model->featureSize());
         model->step(model->sentenceStart(), state, state, scratch);
         for (auto word : sentence) model->step(word, state, state, scratch);
         for (std::size_t k = 0; k < scratch.size(); ++k) assert(std::abs(scratch[k] - ring.features()[k]) < 1e-6);
     }
 
-    // Malformed models are rejected, never read out of bounds.
     assert(rejects({}));
     auto truncated = modelBytes; truncated.resize(truncated.size() / 2); assert(rejects(truncated));
     auto magic = modelBytes; magic[0] = std::byte{'X'}; assert(rejects(magic));

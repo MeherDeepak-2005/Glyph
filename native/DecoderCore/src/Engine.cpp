@@ -9,8 +9,6 @@ namespace kb {
 namespace {
 const PersonalCounts emptyCounts;
 const PersonalCounts& counts(const EngineView& view) { return view.personal ? *view.personal : emptyCounts; }
-// The middle of the strip is what Space commits: the correction, or else the typed word (the
-// typed word is committed whenever no completed word outscores it).
 void placeDecision(DecodeOutput& out, const DecodeInput& input) {
     if (out.correction.word) {
         std::erase(out.suggestions, *out.correction.word); out.suggestions.insert(out.suggestions.begin(), *out.correction.word);
@@ -22,8 +20,6 @@ void placeDecision(DecodeOutput& out, const DecodeInput& input) {
 }
 }
 double EngineView::penalty(std::string_view word) const {
-    // Blocked words are excluded from the search (PackedLexicon blocked bitset, learn-time
-    // refusal), so only the residual non-blocking penalties remain to apply.
     if (penalties && !penalties->empty()) if (auto it = penalties->find(std::string(word)); it != penalties->end()) return it->second;
     return 0;
 }
@@ -47,7 +43,6 @@ Engine::Engine(std::shared_ptr<const PackedLexicon> packed, std::shared_ptr<cons
       neuralLexicon_(std::make_shared<NeuralLexicon>(require(packed_, neural_))), unigram_(*packed_) {}
 std::unique_ptr<EngineSession> Engine::createSession() { return std::make_unique<EngineSession>(shared_from_this()); }
 std::shared_ptr<const NeuralFst::Tables> Engine::neuralTables() const {
-    // Sessions run on different queues (typing, each Glide gesture); call_once builds it once.
     std::call_once(neuralTablesOnce_, [&] {
         neuralTables_ = std::make_shared<NeuralFst::Tables>(neural_, neuralLexicon_,
             NeuralFst::Options{options_.nssExact, options_.nssUnigramFloor, options_.nssUnknownExponent});
@@ -58,11 +53,6 @@ NeuralFst& EngineSession::graph() {
     if (!graph_) graph_ = std::make_unique<NeuralFst>(engine_->neuralTables());
     return *graph_;
 }
-// Decoding: the joint search (C o L o G) over the neural search space G, with the channel's
-// key geometry and uniform edit costs (no spelling rules, no candidate heuristics). The best
-// completed word is committed when its score (log P - channelWeight x cost) beats the typed
-// text's: a lexicon word scores by G, any other string by its unigram mass (literal decoding).
-// Blocked words stay excluded; residual safety demotions and personal history are not applied.
 DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& view, const CancellationToken* token) {
     DecodeOutput out; out.identity = input.identity;
     auto cancelled = [&] { return token && token->cancelled(); };
@@ -83,7 +73,6 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
     if (cancelled()) { out.status = EngineStatus::cancelled; return out; }
     auto blocked = [&](const RankedRow& row) { return view.lexicon.isBlocked(row.key); };
     if (typed.empty()) {
-        // Next-word prediction: the graph's best words in context.
         for (const auto& [id, language] : g.best(0, 16)) {
             (void)language;
             std::string word(engine_->packed_->word(id));
@@ -109,8 +98,6 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
     RankedRow typedRow{{typed, 0, 0}, typed, 0, literal, literal, {}};
     std::erase_if(ranked, [&](const auto& row) { return row.key == typed; });
     std::erase_if(complete, [&](const auto& row) { return row.key == typed; });
-    // NssRules.hpp: a candidate whose first letter differs from the typed one pays
-    // nssFirstLetterCost on its channel cost.
     if (nssRuleOn(nssRuleFirstLetter)) for (auto* rows : {&ranked, &complete}) for (auto& row : *rows)
         if (const double extra = nssFirstLetterCost(typed, row.key); extra > 0) { row.channel.cost += extra; row.score -= channelWeight * extra; }
     if (nssRuleOn(nssRuleFrequency)) {
@@ -125,18 +112,14 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
         for (auto& row : complete) prior(row);
         prior(typedRow);
     }
-    // The sentence's first word: without context the model only knows which words open
-    // sentences, so a word that seldom opens one is overruled by one that often does. There,
-    // P(w) mixes the model with the dictionary's context-free unigram P(w) (weight
-    // nssStartUnigramWeight), for the typed text and every single-word candidate alike.
     const bool start = input.context.empty();
     if (start && nssStartUnigramWeight > 0) {
         const double w = nssStartUnigramWeight;
         const auto rescore = [&](RankedRow& row) {
-            if (row.key.find(' ') != std::string::npos) return;   // a split ("of the") keeps its sequence score
+            if (row.key.find(' ') != std::string::npos) return;
             const double unigram = engine_->unigram_.logProbability(row.key);
             const double hi = std::max(row.language, unigram), lo = std::min(row.language, unigram);
-            const double a = row.language >= unigram ? 1 - w : w;   // the larger term's weight
+            const double a = row.language >= unigram ? 1 - w : w;
             const double mixed = hi + std::log(a + (1 - a) * std::exp(lo - hi));
             row.score += mixed - row.language;
             row.language = mixed;
@@ -147,16 +130,11 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
     }
     const auto higher = [](const auto& a, const auto& b) { return a.score == b.score ? a.key > b.key : a.score < b.score; };
     auto best = std::max_element(complete.begin(), complete.end(), higher);
-    // NssRules.hpp split margin: a two-word best that does not clear it gives way to the best single word.
     if (nssRuleOn(nssRuleSplitMargin) && best != complete.end() && best->key.find(' ') != std::string::npos && best->score - typedRow.score <= nssSplitMargin) {
         best = complete.end();
         for (auto it = complete.begin(); it != complete.end(); ++it)
             if (it->key.find(' ') == std::string::npos && (best == complete.end() || higher(*best, *it))) best = it;
     }
-    // A kept word (the user undid a correction of it) stays as typed. A typed non-word may be
-    // replaced below its own score by nssRawCommitMargin, nssStartCommitMargin as the sentence's
-    // first word, or nssCapitalizedCommitMargin when written capitalized after the first word
-    // (a name); a typed dictionary word only by a better-scoring word.
     const auto upper = [](char c) { return c >= 'A' && c <= 'Z'; };
     const bool capitalized = !input.context.empty() && !input.word.empty() && upper(input.word[0]) &&
         !std::all_of(input.word.begin(), input.word.end(), [&](char c) { return upper(c) || !std::isalpha(static_cast<unsigned char>(c)); });
@@ -169,8 +147,6 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
     }
     if (best != complete.end() && best->score > typedRow.score - allowance && !input.kept)
         out.correction = {best->key, best->score - typedRow.score};
-    // Spelling policy (langdata.kbmodern): a preserved spelling stays as typed, and a word
-    // marked never-automatic is offered on the strip but not committed for the user.
     if (out.correction.word && (engine_->packed_->preserves(typed) || !engine_->packed_->allowsCorrection(*out.correction.word)))
         out.correction = {};
     ranked.push_back(typedRow);
@@ -186,8 +162,6 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
 void EngineSession::beginGlide(std::vector<std::string> context) {
     search_.reset(); graph_.reset(); identityReady_ = false; glideContext_ = std::move(context);
 }
-// Glide: shape candidates from the trie, steered by the graph's lookahead, ranked by shape and
-// the graph's score in context (a word outside the dictionary by its unigram mass).
 std::vector<RankedRow> EngineSession::updateGlide(std::span<const Point> path, const GlideLayout& layout, const EngineView& view,
         std::span<const std::string> dynamic, const CancellationToken* token) {
     if (token && token->cancelled()) return {};
@@ -213,7 +187,7 @@ std::vector<RankedRow> EngineSession::updateGlide(std::span<const Point> path, c
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) { return a.score == b.score ? a.key < b.key : a.score > b.score; });
     return stop() ? std::vector<RankedRow>{} : result;
 }
-} // namespace kb
+}
 
 namespace kb {
 namespace {
@@ -225,7 +199,6 @@ EngineView EngineState::view() const {
 void EngineState::setSafety(std::unordered_map<std::string,double> penalties){
     penalties_=std::move(penalties);residual_.clear();std::unordered_set<std::string> blocked;
     for(const auto&[word,cost]:penalties_){if(!std::isfinite(cost))blocked.insert(word);else if(packed_&&packed_->wordID(word))residual_.emplace(word,cost);}
-    // Blocked dictionary words are excluded from the search from now on (installed once).
     if(packed_){std::vector<std::string> terms(blocked.begin(),blocked.end());packed_->installBlocked(terms);}
     vocabulary_.setBlocked(std::move(blocked));++vocabularyRevision_;}
 void EngineState::note(const std::string&word,std::int64_t count){auto lexicon=view().lexicon;bool allow=personal_.allowsAdoption(word,count,lexicon);if(vocabulary_.noteUse(lexicon,adopted_,word,count,allow,8,glideWord(word)))++vocabularyRevision_;}

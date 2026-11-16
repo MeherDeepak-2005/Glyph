@@ -1,9 +1,3 @@
-//
-//  keyboardApp.swift
-//  keyboard
-//
-//  Created by Meher Deepak on 21/06/26.
-//
 
 import SwiftUI
 
@@ -17,7 +11,6 @@ struct keyboardApp: App {
 		if ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {
 			KBSettings.hasUsedKeyboard = true
 		}
-		// UI tests pin a panel-header arm ("unified", "stacked") or clear the pin ("random").
 		let arguments = ProcessInfo.processInfo.arguments
 		if let flag = arguments.firstIndex(of: "-panel-header"), arguments.indices.contains(flag + 1) {
 			KBExperiments.panelHeaderOverride = PanelHeaderStyle(rawValue: arguments[flag + 1])
@@ -45,7 +38,6 @@ private struct KeyboardRuntimeHostView: View {
 	@State private var text = ""
 	@State private var contextIndex = 0
 	@FocusState private var isFocused: Bool
-	/// Sentences the keyboard comparison places before each typed word (KB_RUNTIME_CONTEXTS, JSON).
 	private let contexts: [String] = ProcessInfo.processInfo.environment["KB_RUNTIME_CONTEXTS"]
 		.flatMap { try? JSONDecoder().decode([String].self, from: Data($0.utf8)) } ?? []
 

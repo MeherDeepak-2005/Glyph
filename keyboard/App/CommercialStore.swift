@@ -105,18 +105,12 @@ enum CommercialPolicyError: Error {
 	case invalidReward
 }
 
-/// Implemented by the authenticated companion-app backend. Implementations mint a
-/// click token only after the user explicitly opens an offer; no keyboard event or
-/// installed-app inventory is accepted by this boundary.
 protocol CommercialBackend: Sendable {
 	func beginAffiliateClick(campaignID: String) async throws -> AuthenticatedOfferClick
 	func cashbackLedger() async throws -> [CashbackLedgerEntry]
 	func verifyRewardedTheme(nonce: String) async throws -> RewardedThemeEntitlement
 }
 
-/// Companion-app commercial state. This intentionally uses the app's standard
-/// container, not the keyboard App Group, so neither the extension nor its typed-text
-/// process can read or write marketing preferences.
 @MainActor
 final class CommercialStore: ObservableObject {
 	static let productIDs: Set<String> = [
@@ -184,9 +178,6 @@ final class CommercialStore: ObservableObject {
 		}
 	}
 
-	/// Accept only policy-compatible, server-issued campaigns. A future network client
-	/// may call this with a feed personalized from explicit interests, saved merchants,
-	/// and confirmed prior offers. There is deliberately no keyboard-data parameter.
 	func applyServerCampaigns(_ value: [CommercialCampaign]) {
 		serverCampaigns = value.filter(\.isPolicyCompatible)
 		refreshVisibleCampaigns()

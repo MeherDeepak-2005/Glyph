@@ -14,7 +14,6 @@ from torch.nn import functional as F
 
 from .base import RMSNorm, StreamingLM, SwiGLU
 
-
 def rotary(x: torch.Tensor, positions: torch.Tensor, base: float = 10000.0) -> torch.Tensor:
     """x [B, H, T, D], positions [B, T]."""
     half = x.shape[-1] // 2
@@ -23,7 +22,6 @@ def rotary(x: torch.Tensor, positions: torch.Tensor, base: float = 10000.0) -> t
     cos, sin = angles.cos().to(x.dtype), angles.sin().to(x.dtype)
     a, b = x[..., :half], x[..., half:]
     return torch.cat([a * cos - b * sin, a * sin + b * cos], -1)
-
 
 class Block(nn.Module):
     def __init__(self, dim: int, heads: int, ffn: int):
@@ -43,7 +41,6 @@ class Block(nn.Module):
         x = x + self.out(attended.transpose(1, 2).reshape(B, T, D))
         return x + self.mlp(self.mlp_norm(x)), keys, values
 
-
 class Transformer(StreamingLM):
     arch = "transformer"
 
@@ -60,15 +57,14 @@ class Transformer(StreamingLM):
         head = self.dim // self.heads
         empty = torch.zeros(self.layers, batch, self.heads, self.window, head, device=device)
         return (empty, empty.clone(),
-                torch.full((batch, self.window), -1, dtype=torch.long, device=device),   # segment per slot
-                torch.zeros(batch, self.window, dtype=torch.long, device=device),        # position per slot
-                torch.zeros(batch, dtype=torch.long, device=device),                     # current segment
-                torch.zeros(batch, dtype=torch.long, device=device))                     # next position
+                torch.full((batch, self.window), -1, dtype=torch.long, device=device),
+                torch.zeros(batch, self.window, dtype=torch.long, device=device),
+                torch.zeros(batch, dtype=torch.long, device=device),
+                torch.zeros(batch, dtype=torch.long, device=device))
 
     def sequence(self, x, reset, state):
         cache_k, cache_v, cache_seg, cache_pos, segment, position = state
         B, T, _ = x.shape
-        # Segment ids rise at every reset; positions restart from 0 inside each segment.
         seg = segment[:, None] + torch.cumsum(reset.long(), 1)
         steps = torch.arange(T, device=x.device).expand(B, T)
         last_reset = torch.cummax(torch.where(reset, steps, torch.full_like(steps, -1)), 1).values

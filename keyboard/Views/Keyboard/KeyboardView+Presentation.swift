@@ -1,6 +1,5 @@
 import UIKit
 
-/// Host-facing surface: appearance, the suggestion strip, shift and the action key.
 extension KeyboardView {
 	@objc func reduceTransparencyDidChange() {
 		updateBackdrop()
@@ -31,22 +30,15 @@ extension KeyboardView {
 		suggestionBar.setGlideResult(word, alternatives: alternatives)
 	}
 
-	/// Auto-capitalization driven by the controller (field start / after ". ").
-	/// Never touches caps lock. Relabels in place — no view rebuild on the type path.
-	/// Ignored during emoji search: the query is case-insensitive and the host
-	/// document context that drives auto-shift is irrelevant to it.
 	func setAutoShift(_ on: Bool) {
 		guard shift != .locked, !isEmojiSearching else { return }
 		applyShiftState(on ? .on : .off)
 	}
 
-	/// Change shift state WITHOUT rebuilding the keys. The hot path used to call reload()
-	/// here — recreating all ~33 key views on every auto-shift (each sentence start, each
-	/// shifted letter). Now we just relabel the letter keys and swap the shift glyph.
 	func applyShiftState(_ new: ShiftState) {
 		guard shift != new else { return }
 		shift = new
-		guard page == .letters else { return }   // shift only affects the letters layout
+		guard page == .letters else { return }
 		for (base, key) in letterKeys {
 			key.setTitle(shifted(base))
 			key.setAlternatives(accentAlternatives(for: base)) { [weak self] value in
@@ -58,22 +50,17 @@ extension KeyboardView {
 		shiftKey?.setSymbol(shiftSymbol)
 	}
 
-	/// Set the contextual label on the action (return) key. Pass nil for a plain
-	/// newline glyph. Only rebuilds when it actually changes.
 	func setActionTitle(_ title: String?) {
 		guard title != actionTitle else { return }
 		actionTitle = title
 		applyActionKeyState()
 	}
 
-	/// Every host callback asks (updateActionKey); re-styling an unchanged key each time
-	/// reset its title, font and gradient for nothing. A new key gets its state from reload().
 	func setActionEnabled(_ enabled: Bool) {
 		guard enabled != actionEnabled else { return }
 		actionEnabled = enabled
 		applyActionKeyState()
 	}
-
 
 	func applyActionKeyState() {
 		guard let actionKey else { return }

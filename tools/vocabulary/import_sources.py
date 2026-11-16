@@ -36,10 +36,8 @@ RAW_TOKEN = re.compile(r"\w+(?:'\w+)*", re.UNICODE)
 SENTENCE_BREAK = re.compile(r"[.!?]+(?:[\"'’”)]*)\s+|\r?\n+")
 CURATED = Path(__file__).with_name("curated_terms.tsv")
 
-
 def normalized(word: str) -> str:
     return unicodedata.normalize("NFC", word).replace("’", "'").replace("‘", "'").lower()
-
 
 def eligible(word: str, *, curated=False) -> bool:
     return bool(builder.WORD.fullmatch(word)) and not word.startswith("'") \
@@ -47,26 +45,21 @@ def eligible(word: str, *, curated=False) -> bool:
         and (len(word) >= (2 if curated else 3)) and len(word) <= 32 \
         and (curated or "'" not in word)
 
-
 def tokenize(text: str) -> list[str | None]:
     """Unsupported lexical spans stay boundaries; never join across 2026/URLs/etc."""
     text = unicodedata.normalize("NFC", text).replace("’", "'").replace("‘", "'")
-    # Hide URLs/addresses and compound/digit tokens as one unknown lexical span.
     text = re.sub(r"(?:https?://|www\.)\S+|\S+@\S+|\w+(?:[-/]\w+)+", " UNKNOWN_BOUNDARY ", text)
     return [key if builder.WORD.fullmatch(key) and len(key) <= 32 else None
             for raw in RAW_TOKEN.findall(text) if (key := normalized(raw))]
-
 
 def document_family(name: str) -> str:
     path = PurePosixPath(name)
     stem = re.sub(r"(?:[-_]\d+)+$", "", path.stem)
     return str(path.parent / stem)
 
-
 def document_split(name: str) -> str:
     value = int(hashlib.sha256(document_family(name).encode()).hexdigest()[:8], 16)
     return "test" if value % 5 == 0 else "train"
-
 
 def masc_documents(archive: Path):
     """Read archive members directly; never extract source-controlled paths."""
@@ -77,13 +70,10 @@ def masc_documents(archive: Path):
                 raise ValueError(f"unsafe corpus member: {name}")
             if not name.endswith(".txt"):
                 continue
-            # Each physical line/sentence is an independent boundary. No dialogue
-            # joins between lines, files, contributors or document train/test splits.
             text = z.read(name).decode("utf-8-sig", errors="strict")
             genre = path.parts[2] if len(path.parts) > 3 else "unknown"
             yield name, genre, [tokens for sentence in SENTENCE_BREAK.split(text)
                                 if len(tokens := tokenize(sentence)) >= 2]
-
 
 def add_evidence(catalog: dict, form: str, source: str, **metadata):
     entry = catalog.setdefault(form, {"word": form, "sources": set(), "locales": set(), "pos": set(), "tier": 99})
@@ -94,7 +84,6 @@ def add_evidence(catalog: dict, form: str, source: str, **metadata):
         entry["pos"].add(metadata["pos"])
     if "tier" in metadata:
         entry["tier"] = min(entry["tier"], metadata["tier"])
-
 
 def import_esdb(archive: Path, catalog: dict) -> dict:
     stats = {}
@@ -116,8 +105,6 @@ def import_esdb(archive: Path, catalog: dict) -> dict:
                 accepted = 0
                 for raw in result.stdout.splitlines():
                     word = normalized(raw)
-                    # Proper-name casing, accents and unsupported forms are not
-                    # destroyed to create apparently valid ASCII candidates.
                     if raw != raw.lower() or not eligible(word):
                         continue
                     add_evidence(catalog, word, "esdb", locale=locale, tier=tier)
@@ -132,7 +119,6 @@ def import_esdb(archive: Path, catalog: dict) -> dict:
         finally:
             db.close()
     return stats
-
 
 def import_wordnet(path: Path, catalog: dict) -> int:
     count = 0
@@ -153,19 +139,16 @@ def import_wordnet(path: Path, catalog: dict) -> int:
             entry.clear()
     return count
 
-
 def load_frequencies(path: Path) -> dict[str, int]:
     frequencies = {}
     with path.open(encoding="utf-8") as stream:
         for line in stream:
             fields = line.split()
             if len(fields) == 2 and fields[1].isdigit():
-                # Never transliterate or merge incompatible Unicode spellings.
                 word = normalized(fields[0])
                 if builder.WORD.fullmatch(word):
                     frequencies[word] = max(frequencies.get(word, 0), int(fields[1]))
     return frequencies
-
 
 def curated_terms() -> dict:
     entries = {}
@@ -181,7 +164,6 @@ def curated_terms() -> dict:
             raise ValueError(f"invalid curated term row {index}: {word}")
         entries[word] = {"register": register, "frequency_prior": int(prior)}
     return entries
-
 
 def select_entries(catalog, base, frequency, corpus_counts, document_counts, limit):
     curated = curated_terms()
@@ -199,8 +181,6 @@ def select_entries(catalog, base, frequency, corpus_counts, document_counts, lim
             prior = curated[word]["frequency_prior"]
             register = curated[word]["register"]
         else:
-            # Source validity and independent usage evidence are separate gates.
-            # WordNet-only forms need stronger evidence than tier-60 spellings.
             threshold = 100 if evidence["tier"] <= 60 else 500
             if raw < threshold and not (observed >= 5 and documents >= 3):
                 continue
@@ -208,8 +188,6 @@ def select_entries(catalog, base, frequency, corpus_counts, document_counts, lim
             priority = 1 if regional and raw >= 500 else 2
             prior = min(20_000, max(50, raw))
             register = "regional" if regional else "general"
-        # No source raw count is added to the enormous subtitle scale. Corpus
-        # evidence helps admission only; new unigram priors are explicitly capped.
         candidates.append({"word": word, "frequency_prior": prior, "register": register,
             "sources": sorted(evidence["sources"]), "locales": sorted(evidence["locales"]),
             "pos": sorted(p for p in evidence["pos"] if p),
@@ -220,12 +198,10 @@ def select_entries(catalog, base, frequency, corpus_counts, document_counts, lim
                                    -e["masc_train_count"], e["word"]))
     return candidates[:limit], len(candidates)
 
-
 def write_json_bz2(path: Path, value) -> dict:
     payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode() + b"\n"
     path.write_bytes(bz2.compress(payload, compresslevel=9))
     return {"path": str(path.relative_to(ROOT)), "sha256": digest(path), "bytes": path.stat().st_size}
-
 
 def prepare(cache: Path, output: Path, limit: int):
     paths = {name: verified(cache / source["file"], source["sha256"]) for name, source in SOURCES.items()}
@@ -234,8 +210,6 @@ def prepare(cache: Path, output: Path, limit: int):
     if not frequency_cache.exists():
         shutil.copyfile(paths["frequency"], frequency_cache)
     verified(frequency_cache, SOURCES["frequency"]["sha256"])
-    # This reconstructs the original source selection, regardless of which pack
-    # is currently installed. It never uses a previously expanded pack as input.
     base_vocab = builder.merge_contractions(builder.build_vocab())
     base = dict(base_vocab)
     catalog = {}
@@ -303,7 +277,6 @@ def prepare(cache: Path, output: Path, limit: int):
     print(json.dumps({"manifest": str(path), "additional_words": len(selected),
                       "source_statistics": manifest["source_statistics"]}, indent=2))
 
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, default=ROOT / "tools/.cache/vocabulary")
@@ -313,7 +286,6 @@ def main():
     if not 1 <= args.limit <= 4000:
         parser.error("--limit must be between 1 and 4000")
     prepare(args.cache, args.output, args.limit)
-
 
 if __name__ == "__main__":
     main()

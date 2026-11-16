@@ -1,35 +1,21 @@
-//
-//  keyboardUITests.swift
-//  keyboardUITests
-//
-//  Created by Meher Deepak on 21/06/26.
-//
 
 import XCTest
 
 final class keyboardUITests: XCTestCase {
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
 
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
 
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
     @MainActor
     func testExample() throws {
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // XCUIAutomation Documentation
-        // https://developer.apple.com/documentation/xcuiautomation
     }
 
 	@MainActor
@@ -104,7 +90,6 @@ final class keyboardUITests: XCTestCase {
 			: app.keys[label == label.lowercased() ? label.uppercased() : label.lowercased()]
 	}
 
-	/// A straight swipe between two letter keys: the decoder sees every key it crosses.
 	@MainActor
 	private func glide(_ from: String, to: String, in app: XCUIApplication) {
 		let centre = CGVector(dx: 0.5, dy: 0.5)
@@ -113,7 +98,6 @@ final class keyboardUITests: XCTestCase {
 				withVelocity: XCUIGestureVelocity(300), thenHoldForDuration: 0.05)
 	}
 
-	/// The field's text, with an empty field (which reports its placeholder) as "".
 	@MainActor
 	private func fieldText(_ field: XCUIElement) -> String {
 		let value = field.value as? String ?? ""
@@ -131,12 +115,9 @@ final class keyboardUITests: XCTestCase {
 		return fieldText(field)
 	}
 
-	/// Regression: in an empty field the host reports no context (nil) while the glide began
-	/// with "", so the lift-time check refused to commit the field's first glided word.
 	@MainActor
 	func testGlideCommitsTheFirstWordOfAnEmptyField() throws {
 		let host = launchRuntimeHost()
-		// The extension's first launch after an install can take several seconds.
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
 			throw XCTSkip("Glyph is not the active software keyboard")
 		}
@@ -153,13 +134,9 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertTrue(second.count > first.count + 1, "The second glided word was not committed: [\(second)]")
 	}
 
-	/// What the strip shows in the middle for a contraction typed without its apostrophe must
-	/// be what Space commits, and the intended word; "she lets" keeps the verb.
-	/// Logs CONTRACTION lines with the strip and the committed word.
 	@MainActor
 	func testContractionsCommitWhatTheStripShows() throws {
 		let host = launchRuntimeHost()
-		// The extension's first launch after an install can take several seconds.
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
 			throw XCTSkip("Glyph is not the active software keyboard")
 		}
@@ -171,7 +148,6 @@ final class keyboardUITests: XCTestCase {
 		for (typed, intended) in cases {
 			for ch in typed { tapLetter(String(ch), in: host) }
 			let primary = host.descendants(matching: .any)["suggestion.primary"]
-			// Let the strip settle on the last letter's decode before reading it.
 			RunLoop.current.run(until: Date().addingTimeInterval(0.4))
 			let shown = primary.exists ? primary.label : ""
 			host.keys["Space"].tap()
@@ -186,17 +162,9 @@ final class keyboardUITests: XCTestCase {
 			}
 			if committed.lowercased() != intended { NSLog("CONTRACTION-MISS %@ committed=[%@] want=[%@]", typed, committed, intended) }
 		}
-		// Which word the model picks is accuracy (logged as CONTRACTION-MISS); the strip's middle
-		// differing from what Space commits is a bug.
 		XCTAssertEqual(mismatches, [], "Space must commit the strip's middle word")
 	}
 
-	/// A Backspace right after an autocorrection restores the typed word, the strip then shows
-	/// that word in the middle, and the next Space keeps it: the undo must stick. Dictionary
-	/// words only, so the undo it teaches leaves nothing new in the phone's learned words.
-	/// Logs UNDO lines with non-ASCII characters spelled out.
-	/// Keyboard health's "Keyboard memory now" is live while the keyboard is open on that screen,
-	/// and keeps the latest reading, with its age, once the keyboard has gone.
 	@MainActor
 	func testKeyboardHealthFollowsMemoryLive() throws {
 		let app = XCUIApplication()
@@ -214,16 +182,13 @@ final class keyboardUITests: XCTestCase {
 		}
 		expectation(for: NSPredicate(format: "label CONTAINS ' · live'"), evaluatedWith: memory)
 		waitForExpectations(timeout: 6)
-		app.navigationBars.buttons.firstMatch.tap()   // back: the keyboard goes with the field
+		app.navigationBars.buttons.firstMatch.tap()
 		RunLoop.current.run(until: Date().addingTimeInterval(4))
 		health.tap()
 		XCTAssertTrue(memory.waitForExistence(timeout: 5))
 		XCTAssertTrue(memory.label.contains(" ago"), memory.label)
 	}
 
-	/// Types, then opens emoji, GIFs and stickers and returns to the letters, three times, so the
-	/// keyboard's "Memory by surface" log (Keyboard health) shows what each surface leaves behind.
-	/// Opt-in, as it scrolls live GIFs: TEST_RUNNER_KB_MEMORY_TOUR=1.
 	@MainActor
 	func testMemoryAcrossSurfaces() throws {
 		try XCTSkipUnless(ProcessInfo.processInfo.environment["KB_MEMORY_TOUR"] == "1",
@@ -296,7 +261,6 @@ final class keyboardUITests: XCTestCase {
 			let afterRetry = waitForText(field, toDifferFrom: afterUndo)
 			NSLog("UNDO %@ space=[%@] backspace=[%@] strip=[%@] space=[%@]", typed,
 				spelled(afterSpace), spelled(afterUndo), shown, spelled(afterRetry))
-			// Whether the model corrects is accuracy; once it has, the undo must stick.
 			guard folded(lastWord(afterSpace)) != typed else {
 				NSLog("UNDO-SKIP %@ was not corrected (want %@)", typed, corrected)
 				continue
@@ -316,16 +280,13 @@ final class keyboardUITests: XCTestCase {
 
 	private enum ComparedKeyboard: String, CaseIterable { case glyph, apple, gboard }
 
-	/// The name each keyboard has in the globe key's long-press menu (testProbeEnabledKeyboards).
 	private func menuName(_ keyboard: ComparedKeyboard) -> String {
 		switch keyboard { case .glyph: return "Glyph"; case .apple: return "English"; case .gboard: return "Gboard" }
 	}
 
-	/// Selects a keyboard by name from the globe key's long-press menu.
 	@MainActor
 	private func activate(_ keyboard: ComparedKeyboard, in app: XCUIApplication) -> Bool {
 		app.buttons["Next keyboard"].firstMatch.press(forDuration: 1.2)
-		// The menu's rows report element type 75; match a row by its label.
 		let row = XCUIElement.ElementType(rawValue: 75) ?? .any
 		let item = app.descendants(matching: row).matching(NSPredicate(format: "label BEGINSWITH %@", menuName(keyboard))).firstMatch
 		guard item.waitForExistence(timeout: 2) else { return false }
@@ -336,8 +297,6 @@ final class keyboardUITests: XCTestCase {
 		return true
 	}
 
-	/// Regression: switching to Glyph with the globe key in a focused field left its keys
-	/// disabled and the strip empty until the field was tapped again.
 	@MainActor
 	func testGlyphTypesRightAfterGlobeSwitch() throws {
 		let host = launchRuntimeHost()
@@ -354,8 +313,6 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertFalse(primary.exists ? primary.label.isEmpty : true, "The strip stayed empty after the switch")
 	}
 
-	/// Gboard exposes no keys, so it is tapped at key centres measured on the iPhone 17's
-	/// screenshot (fractions of the window; QWERTY, default theme, portrait).
 	private static let gboardKeys: [Character: CGVector] = {
 		var keys: [Character: CGVector] = [:]
 		let rows: [(String, [CGFloat], CGFloat)] = [
@@ -369,9 +326,6 @@ final class keyboardUITests: XCTestCase {
 		return keys
 	}()
 
-	/// Where each key is, measured once per keyboard: Glyph's and Apple's from their keys' frames,
-	/// Gboard's (which exposes none) from its screenshot. Tapping positions skips the per-tap
-	/// accessibility search that made the first run take 13 s a word.
 	@MainActor
 	private func keyPoints(for keyboard: ComparedKeyboard, in app: XCUIApplication) -> [Character: CGPoint] {
 		let window = app.windows.firstMatch.frame
@@ -387,13 +341,10 @@ final class keyboardUITests: XCTestCase {
 		return points
 	}
 
-	/// Types keyboardComparisonCases into an empty field through Glyph, Apple's keyboard and
-	/// Gboard (each enabled in Settings) and logs COMPARE lines; reports, never fails on accuracy.
 	@MainActor
 	func testCompareKeyboards() throws {
 		let host = XCUIApplication()
 		host.launchArguments = ["-keyboard-runtime-host"]
-		// TEST_RUNNER_KB_COMPARE_PER_BUCKET=n types the first n cases of every kind.
 		let perBucket = Int(ProcessInfo.processInfo.environment["KB_COMPARE_PER_BUCKET"] ?? "") ?? .max
 		var taken: [String: Int] = [:]
 		let cases = keyboardComparisonCases.filter { c in
@@ -409,7 +360,6 @@ final class keyboardUITests: XCTestCase {
 		let origin = host.coordinate(withNormalizedOffset: .zero)
 		func tap(_ point: CGPoint) { origin.withOffset(CGVector(dx: point.x, dy: point.y)).tap() }
 		func pause(_ seconds: TimeInterval) { RunLoop.current.run(until: Date().addingTimeInterval(seconds)) }
-		// Places the next case's context (or empties the field): every keyboard reads it from the document.
 		let nextFrame = host.buttons["runtime.next"].frame
 		let next = CGPoint(x: nextFrame.midX, y: nextFrame.midY)
 		pause(2)
@@ -431,10 +381,9 @@ final class keyboardUITests: XCTestCase {
 				pause(0.2)
 				let before = fieldText(field)
 				for letter in c.typed { tap(points[letter]!) }
-				pause(0.3)   // a typist's pause before Space; lets each keyboard's strip settle
+				pause(0.3)
 				tap(points[" "]!)
 				let text = waitForText(field, toDifferFrom: before, timeout: 1.5)
-				// Everything after the context: a split ("julian to") is one wrong commit, not "to".
 				let typed = text.hasPrefix(before) ? String(text.dropFirst(before.count)) : String(text.split(separator: " ").last ?? "")
 				let committed = typed.trimmingCharacters(in: .whitespaces)
 					.replacingOccurrences(of: "\u{2019}", with: "'").lowercased()
@@ -457,8 +406,6 @@ final class keyboardUITests: XCTestCase {
 		attachment.name = "keyboard comparison"; attachment.lifetime = .keepAlways; add(attachment)
 	}
 
-	/// Logs the globe key's long-press menu (KBMENU lines): the names it offers for each enabled
-	/// keyboard, which testCompareKeyboards selects by.
 	@MainActor
 	func testProbeEnabledKeyboards() throws {
 		let host = launchRuntimeHost()
@@ -477,18 +424,11 @@ final class keyboardUITests: XCTestCase {
 
     @MainActor
     func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
             XCUIApplication().launch()
         }
     }
 
-	/// The re-added clipboard icon sits in the suggestion strip and is tappable — proving
-	/// The tools row exposes Clipboard with a direct, labelled action. The panel
-	/// it opens is an extension overlay whose accessibility subtree XCUITest does not
-	/// reliably snapshot, so its rendering is covered by the `renderClipboardPanel` unit
-	/// test instead; here we only assert the entry point and that the tap does not crash
-	/// the keyboard (the strip is still queryable afterward).
 	@MainActor
 	func testClipboardToolsArePresentAndTappable() throws {
 		let host = launchRuntimeHost()
@@ -502,7 +442,6 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertTrue(clip.waitForExistence(timeout: 3), "Clipboard action missing from tools row")
 		XCTAssertTrue(clip.isHittable, "Clipboard icon is not hittable")
 		clip.tap()
-		// The keyboard survived opening the panel: the deck is still there to type on.
 		XCTAssertTrue(host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 3),
 			"Keyboard disappeared after opening the clipboard panel")
 	}
@@ -574,24 +513,19 @@ final class keyboardUITests: XCTestCase {
         XCTAssertTrue(primary.waitForExistence(timeout: 3))
         let oldWord = primary.label
         XCTAssertFalse(oldWord.isEmpty)
-        host.buttons["runtime.clear"].tap() // programmatic host edit; keyboard inserts no boundary
+        host.buttons["runtime.clear"].tap()
         let refreshed = NSPredicate { _, _ in
             let field = host.textFields["runtime.text"].value as? String ?? ""
             return (field.isEmpty || field == "Type") && !primary.label.isEmpty && primary.label != oldWord
         }
         expectation(for: refreshed, evaluatedWith: host)
         waitForExpectations(timeout: 3)
-        // Copying must not replace any of the suggestion controls with a Paste banner.
         host.buttons["runtime.copy"].tap()
         XCTAssertTrue(primary.exists)
         XCTAssertFalse(host.buttons["suggestion.paste"].exists)
         add(XCTAttachment(screenshot: host.screenshot()))
     }
 
-	/// Probes the emoji page end-to-end: opens the palette, taps specific cells (early
-	/// section, then a far section reached via a category tab), and verifies the exact
-	/// tapped emoji landed in the host field — hunting the "emoji selection bug" noted
-	/// in commit c9ff326. Reports what was inserted via NSLog EMOJI-PROBE lines.
 	@MainActor
 	func testEmojiSelectionProbe() throws {
 		let host = launchRuntimeHost()
@@ -626,7 +560,6 @@ final class keyboardUITests: XCTestCase {
 		tapCellAndVerify(0, label: "first-cell")
 		tapCellAndVerify(5, label: "sixth-cell")
 
-		// Jump to a later category via its bottom-bar tab, then pick a visible cell.
 		let tab = host.descendants(matching: .any)["emoji.category.4"]
 		if tab.waitForExistence(timeout: 2) {
 			tab.tap()
@@ -642,7 +575,6 @@ final class keyboardUITests: XCTestCase {
 			}
 		}
 
-		// Scroll the grid and pick again (scroll-tracking selection interplay).
 		grid.swipeLeft()
 		if let visible = grid.cells.allElementsBoundByIndex.first(where: { $0.isHittable }) {
 			let expected = visible.label
@@ -656,11 +588,6 @@ final class keyboardUITests: XCTestCase {
 		}
 	}
 
-	/// End-to-end autocorrect battery: types spatially-plausible QWERTY slips on the
-	/// REAL extension key-by-key, reads the suggestion strip before each space, and the
-	/// committed text after. Words flow as sentences so context scoring is exercised.
-	/// The test never fails on a miss — it reports measured quality via attachment
-	/// and NSLog lines prefixed TYPO-BATTERY so the host log can be grepped.
 	@MainActor
 	func testTypoCorrectionBattery() throws {
 		let host = launchRuntimeHost()
@@ -668,7 +595,6 @@ final class keyboardUITests: XCTestCase {
 			throw XCTSkip("Glyph is not the active software keyboard on this simulator")
 		}
 
-		// (typed, intended). intended == typed means "must NOT be falsely corrected".
 		let cases: [(typed: String, intended: String)] = [
 			("i", "I"), ("am", "am"), ("goinf", "going"), ("to", "to"), ("the", "the"), ("store", "store"),
 			("can", "can"), ("you", "you"), ("sebd", "send"), ("me", "me"), ("thw", "the"), ("file", "file"),

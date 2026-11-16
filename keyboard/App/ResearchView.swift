@@ -1,8 +1,6 @@
 #if RESEARCH_BETA
 import SwiftUI
 
-/// The beta's typing-research controls: an opt-in that is off until the tester turns it on,
-/// what is on the phone and when it last went up, practice sessions, and stop-and-delete.
 struct ResearchView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var recording = KBTypingRecorder.enabled
@@ -145,7 +143,6 @@ struct ResearchView: View {
     }
 }
 
-/// Shown every time research is switched on: what is recorded, where it goes, how to stop.
 private struct ResearchConsentView: View {
     let done: (Bool) -> Void
 

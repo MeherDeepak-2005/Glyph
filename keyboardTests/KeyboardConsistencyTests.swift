@@ -20,7 +20,6 @@ struct KeyboardConsistencyTests {
         tracker.endKeyboardEdit(typed)
         #expect(tracker.observe(typed) == .unchanged)
         #expect(tracker.observe(typed) == .unchanged)
-        // No clock advance between the keyboard edit and the host's Send action.
         #expect(tracker.observe(state(nil, after: nil, hasText: false, id: id)) == .cleared)
         #expect(!tracker.needsRecovery)
         #expect(tracker.observe(state("", hasText: false, id: id)) == .unchanged)
@@ -97,7 +96,7 @@ struct KeyboardConsistencyTests {
         }
         monitor.setEnabled(tracker.needsRecovery)
         #expect(monitor.isRunning)
-        host = state(nil, after: nil, hasText: false, id: id) // deliberately no callback
+        host = state(nil, after: nil, hasText: false, id: id)
         try await Task.sleep(for: .milliseconds(450))
         #expect(changes == 1)
         #expect(checks >= 1)
@@ -302,7 +301,6 @@ struct KeyboardConsistencyTests {
         #expect(abs(numbers.frame.width - unit * KeyWidth.utilityUnits) < 0.001)
         #expect(abs(emoji.frame.width - unit * KeyWidth.utilityUnits) < 0.001)
         #expect(abs(ret.frame.width - unit * KeyWidth.returnUnits) < 0.001)
-        // 393pt deck: 123 and emoji ≈ 42.5, space ≈ 186, return ≈ 91.6 — stock's split.
         #expect(abs(numbers.frame.width - 42.5) < 1)
         #expect(abs(space.frame.width - 186.4) < 1.5)
         #expect(abs(ret.frame.width - 91.6) < 1)
@@ -314,7 +312,7 @@ struct KeyboardConsistencyTests {
         keyboard.frame = CGRect(x: 0, y: 0, width: 393, height: keyboard.keyboardHeight)
         keyboard.layoutIfNeeded()
         let lettersHeight = keyboard.keyboardHeight
-        keyboard.setActionEnabled(false)              // empty host field: return disabled
+        keyboard.setActionEnabled(false)
 
         keyboard.showMedia(kind: .gifs, hasFullAccess: false)
         #expect(keyboard.keyboardHeight == lettersHeight + 88)
@@ -354,7 +352,7 @@ struct KeyboardConsistencyTests {
         root.desiredHeight = 240
         #expect(root.intrinsicContentSize.height == 240)
         #expect(root.sizeThatFits(CGSize(width: 393, height: 800)).height == 240)
-        root.desiredHeight = 328 // media expansion remains supported
+        root.desiredHeight = 328
         #expect(root.sizeThatFits(CGSize(width: 700, height: 1000)).height == 328)
     }
 
@@ -389,19 +387,16 @@ struct KeyboardConsistencyTests {
                     let height = keyboard.keyboardHeight
                     for letter in ["q", "p", "a", "l", "z", "m"] {
                         let key = try #require(keyboard.letterKeys.first { $0.base == letter }?.key)
-                        // Include taps just outside the cap in its expanded target.
                         for x in [key.frame.midX, key.frame.minX - 2, key.frame.maxX + 2] {
                             let popup = try #require(keyboard.makeKeyPopup(for: key,
                                 at: CGPoint(x: x, y: key.frame.midY)))
                             #expect(keyboard.bounds.insetBy(dx: 1, dy: 1).contains(popup.frame))
                             let label = try #require(popup.subviews.first as? UILabel)
-                            // The stem is the cap: the balloon ends exactly at its bottom.
                             #expect(popup.frame.maxY == key.frame.maxY)
                             #expect(popup.frame.width >= 55.5)
                             #expect(!popup.isUserInteractionEnabled)
                             #expect(label.text == key.popupText)
                             if suggestions {
-                                // Room above the cap: a full-size head and glyph.
                                 #expect(label.frame.height >= 50)
                                 #expect(label.font.pointSize == 38)
                                 if letter == "q" || letter == "p" { #expect(popup.frame.minY == 2) }

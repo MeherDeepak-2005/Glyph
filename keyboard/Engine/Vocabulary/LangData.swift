@@ -1,27 +1,17 @@
-// LangData: the memory-mapped English dictionary, langdata.bin (KBLM v7, built by
-// tools/build_language_data.py; layout in native/DecoderCore/include/PackedLexicon.hpp):
-// unigram frequencies and the spelling trie. The native reader (KBPackedLexicon) validates
-// it and shares the one mapping; Swift reads the trie in place for lookups and key priors.
 import Foundation
 
 nonisolated final class LangData {
 	let data: Data
-	/// The native reader over the same immutable mapping; the shared engine decodes with it.
 	let nativeCandidateLexicon: KBPackedLexicon
 	let wordCount: Int
 	private let trieNodeCount: Int
 	private let freqBase, offsBase, trieBase, blobBase: Int
 	private static let headerSize = 16, trieNodeSize = 14
-	static let empty = 0xFFFFFFFF          // a trie node without a word
+	static let empty = 0xFFFFFFFF
 
 	init?(url: URL) {
-		// One immutable backing shared by Swift and native readers, kept alive by both.
-		// Data(referencing:) avoids a second mapped allocation. The native reader rejects
-		// anything but a valid v7 dictionary.
 		guard let backing = try? NSData(contentsOf: url, options: .alwaysMapped),
 			let reader = try? KBPackedLexicon(backing: backing) else { return nil }
-		// Spelling policies for modern vocabulary ride beside the dictionary; a missing or
-		// mismatched sidecar is refused natively and decoding runs without them.
 		if let sidecar = try? Data(contentsOf: url.deletingPathExtension().appendingPathExtension("kbmodern")),
 		   !reader.installModernData(sidecar) {
 			KBDiagnostics.recorder.storageFailure(operation: "kbmodern-load")
@@ -46,10 +36,6 @@ nonisolated final class LangData {
 		return String(decoding: data[a..<b], as: UTF8.self)
 	}
 
-	// MARK: The trie, read in place: BFS order, node 0 the root, each node's children
-	// contiguous and label-sorted (label u8, childCount u8, firstChild u32, wordID u32,
-	// maxFreq u32).
-
 	private func nodeByte(_ node: Int, _ off: Int) -> Int {
 		Int(data.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: trieBase + Self.trieNodeSize * node + off, as: UInt8.self) })
 	}
@@ -57,7 +43,6 @@ nonisolated final class LangData {
 		UInt32(littleEndian: data.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: trieBase + Self.trieNodeSize * node + off, as: UInt32.self) })
 	}
 
-	/// Walk the exact byte path from the root; nil when it leaves the trie.
 	private func trieNode(for word: [UInt8]) -> Int? {
 		guard trieNodeCount > 0 else { return nil }
 		var idx = 0
@@ -80,9 +65,6 @@ nonisolated final class LangData {
 		return id == UInt32(Self.empty) ? nil : Int32(bitPattern: id)
 	}
 
-	/// Children (label byte, subtree max frequency) of the node at `prefix` — the
-	/// next-character distribution that key-target resizing feeds on. Empty prefix =
-	/// root = word-initial letters. A handful of clean-page reads, nothing more.
 	func trieChildren(after prefix: String) -> [(label: UInt8, maxFreq: UInt32)] {
 		guard let n = trieNode(for: Array(prefix.utf8)) else { return [] }
 		let first = Int(nodeU32(n, 2)), count = nodeByte(n, 1)

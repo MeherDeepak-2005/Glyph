@@ -70,7 +70,6 @@ def add(set_, kind, context, typed, target, **extra):
 
 def clean(s): return s.replace('\r', '').replace('\t', ' ').strip()
 
-# --- ECPS real misspellings
 good = (INPUT/'ECPS/ENGGB_CorrectSentences.txt').read_text(encoding='utf-8-sig', errors='replace').splitlines()
 bad = (INPUT/'ECPS/ENGGB_MisspelledSentences.txt').read_text(encoding='utf-8-sig', errors='replace').splitlines()
 seen = set()
@@ -89,7 +88,6 @@ for g, b in zip(good, bad):
         seen.add((gw[0].lower(), target.lower()))
         add('ecps_ok', 'ac', gw[0], target, target)
 
-# --- MacKenzie phrases
 phrases = [clean(l) for l in (INPUT/'MacPhrases.txt').read_text(errors='replace').splitlines() if clean(l)]
 for p in phrases:
     words = p.split(' ')
@@ -105,12 +103,11 @@ for p in phrases:
                 t = op(lw)
                 if t and t != lw and t not in ANY and re.fullmatch(r"[a-z']+", t): made = t; break
             if made: add('syn', 'ac', ctx, made, w, error=name, length=len(lw))
-        for _ in range(25):   # real-word error, when one exists
+        for _ in range(25):
             t = rng.choice([sub, omit, insert, transpose])(lw)
             if t and t != lw and t in ALL and len(t) > 1:
                 add('realword', 'ac', ctx, t, w, error='realword'); break
 
-# --- contractions without apostrophes, in and out of context
 contractions = ["don't", "can't", "won't", "isn't", "it's", "i'm", "i've", "i'll", "i'd", "you're", "we're", "they're",
                 "didn't", "doesn't", "wasn't", "aren't", "couldn't", "wouldn't", "shouldn't", "haven't", "hasn't", "that's",
                 "what's", "there's", "let's", "he's", "she's", "you'll", "we'll", "they'll", "you've", "we've", "they've",
@@ -119,7 +116,6 @@ for c in contractions:
     for ctx in ('', 'I think'):
         add('apos', 'ac', ctx, c.replace("'", ''), c, ambiguous=c.replace("'", '') in ALL)
 
-# --- valid inputs that must not be changed
 HARD = {
     'name': 'Priya Deepak Meher Siobhan Nguyen Krzysztof Aarav Saoirse Joaquin Xiomara Oluwaseun Zoey Aditi Raghav Tanvi Ishaan Niamh Dmitri Bjorn Yusuf',
     'brand_tech': 'iPhone GitHub Xcode kubernetes json npm wifi PyTorch TensorFlow Spotify Zomato Swiggy Paytm Figma Postgres nginx regex localhost async webhook',

@@ -21,12 +21,10 @@ SHARDS = E.HERE/'corpus'/'shards'
 SETS = ('cases.taps.tsv', 'ext-cases.taps.tsv', 'keep-cases.taps.tsv', 'contraction-cases.tsv', 'tenglish-cases.tsv')
 RULES = ('nssRuleVowelSwap', 'nssRuleApostrophe', 'nssRuleDoubledLetters', 'nssRuleFirstLetter')
 
-
 def meta():
     m = json.loads((E.CORPUS/'cases-meta.json').read_text())
     for extra in sorted(E.CORPUS.glob('*-cases-meta.json')): m.update(json.loads(extra.read_text()))
     return m
-
 
 def shards(split, size=600):
     """The split's decode rows, cut into shards of about `size` rows (cached under corpus/shards)."""
@@ -43,7 +41,6 @@ def shards(split, size=600):
         p = out/f'{k // size:04d}.tsv'; p.write_text(''.join(rows[k:k + size])); paths.append(p)
     return paths
 
-
 def parse(specs):
     configs = {}
     for spec in specs:
@@ -51,20 +48,17 @@ def parse(specs):
         configs[name] = dict(kv.split('=') for kv in env.split(',') if kv)
     return configs
 
-
 def decode(binary, env, cases, out):
     t = time.time()
     subprocess.run([str(binary), str(E.REPO/'keyboard/langdata.bin'), str(E.REPO/'keyboard/safety.kbguard'), str(cases), str(out)],
                    env=E.bench_env(**{f'KB_{k}': v for k, v in env.items()}), check=True, stderr=subprocess.DEVNULL)
     return time.time() - t
 
-
 def run(configs, jobs, split):
     paths = shards(split)
-    work = [(name, env, p) for p in paths for name, env in configs.items()]   # shard-major: every config progresses together
+    work = [(name, env, p) for p in paths for name, env in configs.items()]
     tmp = E.RESULTS/'shards'; tmp.mkdir(parents=True, exist_ok=True)
     start = time.time(); done = 0
-    # caffeinate: without it a background job's workers were idled (12.6 min instead of ~5 on 15 Nov).
     awake = subprocess.Popen(['caffeinate', '-ims', '-w', str(os.getpid())])
     with cf.ThreadPoolExecutor(jobs) as pool:
         futures = [pool.submit(decode, BIN, env, p, tmp/f'{name}.{p.stem}.jsonl') for name, env, p in work]
@@ -79,7 +73,6 @@ def run(configs, jobs, split):
                 out.write(part.read_text()); part.unlink()
         print(E.RESULTS/f'{name}.jsonl')
     print(f'{len(configs)} configurations x {len(paths)} shards in {time.time() - start:.0f} s on {jobs} workers')
-
 
 def latency(configs, cases, rounds):
     m = meta()
@@ -99,7 +92,6 @@ def latency(configs, cases, rounds):
         report[name] = q
         print(f'{name:24}{q[50]:9.2f}{q[95]:9.2f}{q[99]:9.2f}')
     return report
-
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()

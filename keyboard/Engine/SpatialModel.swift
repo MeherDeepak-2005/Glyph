@@ -1,16 +1,10 @@
 import Foundation
 
-// Spatial model + per-tap coordinates.
-
 nonisolated struct KeyTap: Equatable {
 	let dx: Double
 	let dy: Double
 }
 
-/// Bounded on-device personalization of tap-center means and diagonal covariance.
-/// Only aggregate sufficient statistics are persisted; no text or raw touch sequence
-/// leaves the decoder. Three row clusters provide enough data to adapt without the
-/// severe overfitting of one model per key.
 final class TouchSpatialProfile {
 	private struct Bucket: Codable, Equatable {
 		var count = 0
@@ -88,15 +82,9 @@ final class TouchSpatialProfile {
 }
 
 nonisolated enum KB {
-	/// Letter rows and their visual offsets in key pitches, from the English layout pack:
-	/// the UIKit deck centres the nine-key home row by half a pitch and shift places Z
-	/// one-and-a-half pitches after Q. The native decoder is given the same grid
-	/// (`KeyboardEngine.nativeKeyGridInstalled`), so the keys drawn and the keys decoded
-	/// cannot disagree.
 	static let rows = LatinLayoutPack.english.gridRows
 	static let rowOffset = LatinLayoutPack.english.gridRowOffsets
 	static let apostrophe = UInt8(ascii: "'")
-	/// Grid position (column + row offset, row) of each letter key.
 	static let pos: [UInt8: (Double, Double)] = {
 		var m: [UInt8: (Double, Double)] = [:]
 		for (r, row) in rows.enumerated() {

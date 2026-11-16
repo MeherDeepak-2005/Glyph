@@ -32,7 +32,6 @@ V2 = WORKSPACE / "data-v2"
 SETS = [("soda", V2, "soda"), ("tatoeba-v2", V2, "tatoeba"), ("wikitext", V2, "wikitext"),
         ("tatoeba-v1", DATA, "tatoeba"), ("masc", V2, "masc")]
 
-
 def main() -> None:
     out = Path(sys.argv[1])
     device = torch.device("cpu")
@@ -60,7 +59,6 @@ def main() -> None:
             print(name, "masc-lexicon", register, json.dumps({k: round(v, 4) for k, v in row.items()}), flush=True)
         report[name] = entry
         out.write_text(json.dumps(report, indent=2) + "\n")
-
 
 if __name__ == "__main__":
     main()

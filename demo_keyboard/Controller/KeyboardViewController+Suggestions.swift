@@ -1,24 +1,10 @@
 import UIKit
 
 extension KeyboardViewController {
-	// MARK: Universal suggestion strip
-	// Keep the same strip and tools available in every host field. Prediction and
-	// automatic replacement are separate: secure text is never decoded or learned,
-	// and showing suggestions must not start rewriting URLs, addresses or numbers.
 
-
-
-
-	/// Resolve once per presentation so the strip and tools retain stable geometry.
 	func resolveSuggestionModeIfNeeded() {
 		guard !suggestionModeResolved else { return }
 		suggestionModeResolved = true
-
-		// Previous field-based hiding, retained for future reference:
-		// let allowed = autocorrectionAllowed
-		// suggestionsVisible = allowed
-		// keyboard?.setShowsSuggestions(allowed)
-		// if !allowed { setSuggestionBar([]) }
 
 		suggestionsVisible = true
 		keyboard?.setShowsSuggestions(true)
@@ -52,8 +38,6 @@ extension KeyboardViewController {
 		return true
 	}
 
-
-	/// Map the host text field's Return key style to a label. nil → plain newline glyph.
 	private func actionTitle(for type: UIReturnKeyType) -> String? {
 		switch type {
 		case .go:                       return "go"
@@ -65,12 +49,10 @@ extension KeyboardViewController {
 		case .done:                     return "done"
 		case .continue:                 return "continue"
 		case .emergencyCall:            return "SOS"
-		case .default:                  return nil   // plain return → newline glyph
+		case .default:                  return nil
 		@unknown default:               return nil
 		}
 	}
-
-	// MARK: Suggestions — versioned, background-computed
 
 	func scheduleSuggestions() {
 		generation &+= 1

@@ -21,7 +21,6 @@ from pathlib import Path
 
 HOST = "https://api.apple-cloudkit.com"
 
-
 def signed(path: str, body: bytes, key_id: str, key_file: Path) -> dict[str, str]:
     date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     message = f"{date}:{base64.b64encode(hashlib.sha256(body).digest()).decode()}:{path}".encode()
@@ -30,7 +29,6 @@ def signed(path: str, body: bytes, key_id: str, key_file: Path) -> dict[str, str
     return {"Content-Type": "application/json", "X-Apple-CloudKit-Request-KeyID": key_id,
             "X-Apple-CloudKit-Request-ISO8601Date": date,
             "X-Apple-CloudKit-Request-SignatureV1": base64.b64encode(signature).decode()}
-
 
 def records(container: str, environment: str, key_id: str, key_file: Path):
     path = f"/database/1/{container}/{environment}/public/records/query"
@@ -48,7 +46,6 @@ def records(container: str, environment: str, key_id: str, key_file: Path):
         marker = page.get("continuationMarker")
         if not marker:
             return
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -86,7 +83,6 @@ def main() -> None:
     print(f"{seen} records, {new} new chunks in {sealed}, {failed} failed")
     if failed:
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

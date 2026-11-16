@@ -3,9 +3,6 @@ import Testing
 import UIKit
 @testable import keyboard
 
-/// The English deck is built from keyboard/english_layout.kbpack (source:
-/// tools/language_packs/sources/en-US/qwerty.json). These pin what each page shows, and
-/// that the keys on screen, `KB` and the native decoders share one letter grid.
 @MainActor
 struct LatinLayoutPackTests {
 	private let pack = LatinLayoutPack.english
@@ -22,7 +19,6 @@ struct LatinLayoutPackTests {
 		return view
 	}
 
-	/// Each row's spoken labels; letters lowercased (the deck starts shifted).
 	private func rows(_ view: KeyboardView) -> [[String]] {
 		view.rows.map { row in
 			row.map { key in key.letterBase ?? key.accessibilityLabel ?? "?" }
@@ -57,7 +53,7 @@ struct LatinLayoutPackTests {
 			["Numbers", "Emoji", "Space", "Return"],
 		])
 		let e = try? #require(view.rows[0].first { $0.letterBase == "e" })
-		#expect(e?.alternatives == ["É", "È", "Ê", "Ë"])          // shifted at a sentence start
+		#expect(e?.alternatives == ["É", "È", "Ê", "Ë"])
 	}
 
 	@Test func fieldKeysAndGlobeFollowTheField() {
@@ -94,7 +90,7 @@ struct LatinLayoutPackTests {
 		let phone = keyboard(.phonePad, page: .numbers)
 		#expect(rows(phone).last == ["Letters", "+", "0", "Delete", "Return"])
 		#expect(rows(keyboard(.numberPad, page: .numbers)).last == ["Letters", "0", "Delete", "Return"])
-		#expect(phone.rows.flatMap { $0 }.allSatisfy { $0.alternatives.isEmpty })   // no long-press on the pad
+		#expect(phone.rows.flatMap { $0 }.allSatisfy { $0.alternatives.isEmpty })
 	}
 
 	@Test func currencyFollowsTheLayoutLocale() {
@@ -107,7 +103,7 @@ struct LatinLayoutPackTests {
 		var document = try #require(try PropertyListSerialization.propertyList(
 			from: Data(contentsOf: url), format: nil) as? [String: Any])
 		var grid = try #require(document["letterGrid"] as? [String: Any])
-		grid["rows"] = ["qwertyuiop", "asdfghjkl", "zxcvbn"]                // grid ≠ letters page
+		grid["rows"] = ["qwertyuiop", "asdfghjkl", "zxcvbn"]
 		document["letterGrid"] = grid
 		let damaged = try PropertyListSerialization.data(fromPropertyList: document, format: .binary, options: 0)
 		#expect(throws: LatinLayoutError.invalidGrid) { try LatinLayoutPack.decode(damaged) }

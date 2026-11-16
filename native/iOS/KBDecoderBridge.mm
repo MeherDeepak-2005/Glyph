@@ -16,7 +16,6 @@
 #include <string_view>
 #include <vector>
 
-// Native accessors for other bridge classes; not visible to Swift.
 @interface KBNativeSafetyLexicon ()
 - (const kb::SafetyLexicon *)nativeLexicon;
 @end
@@ -29,13 +28,6 @@ static void KBSetError(NSError **error, const std::exception& failure) {
         userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithUTF8String:failure.what()] ?: @"Native read failed"}];
 }
 
-// The two string crossings every bridge call makes. They are total functions on purpose:
-// a C++ exception thrown here would unwind through Swift frames and terminate the keyboard.
-//
-// NSString -> UTF-8 in one allocation and one pass (-dataUsingEncoding: made an autoreleased
-// NSData copy, then std::string copied it again). Swift strings are always valid UTF-16, so
-// the lossy option only matters for an unpaired surrogate from Foundation, which becomes '?'.
-// The engine validates the UTF-8 of every decode request itself.
 static std::string KBText(NSString *text) {
     const NSUInteger length = text.length;
     if (!length) return {};
@@ -46,9 +38,6 @@ static std::string KBText(NSString *text) {
     out.resize(used);
     return out;
 }
-// UTF-8 -> NSString, never nil (a nil element raises in NSArray, and the properties that
-// carry these strings are nonnull in Swift). Engine output is lexicon text or validated
-// input, so the Latin-1 fallback, which maps every byte, is unreachable in practice.
 static NSString *KBString(std::string_view text) {
     return [[NSString alloc] initWithBytes:text.data() length:text.size() encoding:NSUTF8StringEncoding]
         ?: [[NSString alloc] initWithBytes:text.data() length:text.size() encoding:NSISOLatin1StringEncoding];
@@ -56,7 +45,6 @@ static NSString *KBString(std::string_view text) {
 static std::vector<std::string> KBTexts(NSArray<NSString *> *values) {
     std::vector<std::string> out; for (NSString *value in values) out.push_back(KBText(value)); return out;
 }
-// Read numeric buffers with memcpy: caller alignment is deliberately unspecified.
 static std::vector<std::optional<kb::TouchOffset>> KBTaps(NSData *offsets, NSData *validity, std::size_t count) {
     if (!offsets && !validity) return {};
     if (!offsets || !validity || count > SIZE_MAX / (2 * sizeof(double)) ||
@@ -83,7 +71,6 @@ static std::vector<std::optional<kb::TouchOffset>> KBTaps(NSData *offsets, NSDat
 }
 - (instancetype)initWithBacking:(NSObject *)backing error:(NSError **)error {
     if ((self = [super init])) {
-        // A mutable object would permit pointer invalidation after validation.
         if (![backing isKindOfClass:[NSData class]] || [backing isKindOfClass:[NSMutableData class]]) {
             if (error) *error = [NSError errorWithDomain:@"KBDecoderCore" code:2
                 userInfo:@{NSLocalizedDescriptionKey: @"Packed vocabulary backing must be immutable"}];
@@ -309,7 +296,6 @@ static kb::GlideLayout KBGlideLayout(NSData *keys, NSData *centers, double x, do
 @implementation KBEngineResult
 - (instancetype)initWithOutput:(const kb::DecodeOutput&)output {
     if ((self = [super init])) {
-        // Indexed by kb::CandidateSource; the raw values of Swift's DecodeCandidateSource.
         static NSString *const sourceNames[] = {@"typed", @"fuzzyLexicon", @"splitCorrection"};
         NSMutableArray *suggestions = [NSMutableArray arrayWithCapacity:output.suggestions.size()];
         NSMutableArray *rows = [NSMutableArray arrayWithCapacity:output.candidates.size()];
@@ -326,7 +312,7 @@ static kb::GlideLayout KBGlideLayout(NSData *keys, NSData *centers, double x, do
 }
 @end
 @implementation KBNativeSafetyLexicon {
-    NSData *_bytes; // Retains the exact bytes the lexicon views.
+    NSData *_bytes;
     std::unique_ptr<const kb::SafetyLexicon> _lexicon;
 }
 - (instancetype)initWithData:(NSData *)data error:(NSError **)error {
@@ -374,28 +360,20 @@ static kb::GlideLayout KBGlideLayout(NSData *keys, NSData *centers, double x, do
     KBPackedLexicon *_resourceOwner;
     std::shared_ptr<kb::Engine> _engine;
     std::unique_ptr<kb::EngineSession> _session;
-    // Immutable after init; Glide sessions share it rather than copying per gesture.
     std::shared_ptr<const std::unordered_map<std::string, double>> _penalties;
 }
 - (instancetype)initWithLexicon:(KBGenerationLexicon *)lexicon neural:(KBNeuralWordModel *)neural
     safety:(KBNativeSafetyLexicon *)safety {
     if (!(self = [super init])) return nil;
-    // kb::Engine throws for a missing or corrupt dictionary or model. Escaping, the exception
-    // unwinds through Swift and terminates the extension on every launch; nil lets the
-    // keyboard keep running (KeyboardEngine records "native-engine" in Keyboard health).
     try {
         _resourceOwner = [lexicon packedOwner];
         const auto view = [lexicon nativeLexicon];
-        // The engine borrows the mapped dictionary; this deleter only keeps its owner alive.
-        // EngineSession retains Engine. The model keeps its own mapping alive.
         std::shared_ptr<const kb::PackedLexicon> packed(view.packed, [owner = _resourceOwner](const kb::PackedLexicon *) { (void)owner; });
         _engine = std::make_shared<kb::Engine>(packed, [neural nativeModel]);
         _session = _engine->createSession();
-        // Blocked words are excluded from the search (the dictionary's blocked bitset is
-        // installed at load), so ranking only applies residual in-dictionary demote penalties.
         auto residual = std::make_shared<std::unordered_map<std::string, double>>();
         if (safety) {
-            view.packed->installBlocked([safety nativeLexicon]->blockedTerms());   // no-op if already installed
+            view.packed->installBlocked([safety nativeLexicon]->blockedTerms());
             for (const auto& [term, penalty] : [safety nativeLexicon]->penalties())
                 if (std::isfinite(penalty) && view.packed->wordID(term)) residual->emplace(term, penalty);
         }
@@ -407,7 +385,7 @@ static kb::GlideLayout KBGlideLayout(NSData *keys, NSData *centers, double x, do
     return self;
 }
 - (void)prepareNeuralSearchSpace {
-    try { _session->prepareNeural(); } catch (const std::exception&) {}   // the first decode reports it
+    try { _session->prepareNeural(); } catch (const std::exception&) {}
 }
 - (KBEngineResult *)decodeWord:(NSString *)word normalized:(NSString *)normalized context:(NSArray<NSString *> *)context
     identity:(NSData *)identity tapOffsets:(NSData *)offsets tapValidity:(NSData *)validity

@@ -1,7 +1,5 @@
 import Foundation
 
-/// Numeric buffers consumed synchronously by the Objective-C++ bridge. Missing
-/// tap rows and missing individual taps retain distinct existing Swift semantics.
 nonisolated struct NativeTapBuffers {
     let offsets: Data
     let validity: Data

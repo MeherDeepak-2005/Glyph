@@ -1,10 +1,5 @@
 import UIKit
 
-// Clipboard panel — the full history/pins overlay. Shown by KeyboardView OVER the key
-// deck at the SAME height (the emoji-page pattern), so the keyboard never grows. Rows
-// insert on tap and the panel stays up (multi-paste, Gboard-style); swipe left to pin,
-// per-row ✕ to delete. Text only.
-
 final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelegate {
 	var onPick: ((String) -> Void)?
 	var onPasteCurrent: (() -> Void)?
@@ -14,7 +9,6 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 	private let theme: KeyboardTheme
 	private let showsGlobe: Bool
 	private let hasFullAccess: Bool
-	/// Injectable for tests; nil → live KBClipboard store (mutations enabled).
 	private let injectedItems: [KBClipboardItem]?
 	private var pinnedItems: [KBClipboardItem] = []
 	private var recentItems: [KBClipboardItem] = []
@@ -74,8 +68,6 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 								 width: bounds.width, height: barHeight)
 	}
 
-	/// `current`: the list a delete or pin just wrote, so the panel shows it without decoding
-	/// the whole file again (up to 60 items of 10,000 characters).
 	private func reload(_ current: [KBClipboardItem]? = nil) {
 		let items = hasFullAccess ? (current ?? injectedItems ?? KBClipboard.all()) : []
 		pinnedItems = items.filter(\.pinned)
@@ -91,16 +83,6 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 		table.reloadData()
 	}
 
-	// MARK: Table
-
-	/// Collapse newlines and runs of whitespace so a multi-line, indented, or
-	/// whitespace-padded copy (an address, a code block, formatted text) shows as one
-	/// clean line instead of ragged wrapped rows. Insertion still uses the RAW text —
-	/// only the row label is normalized.
-	///
-	/// A row shows two lines, and an item can be 10,000 characters, so this stops at the
-	/// first word boundary past `limit` scalars: exactly the start of the fully collapsed
-	/// text, without splitting the rest into words that are never drawn.
 	nonisolated static func displayText(_ text: String, limit: Int = 400) -> String {
 		let separators = CharacterSet.whitespacesAndNewlines
 		var out = String.UnicodeScalarView()
@@ -113,7 +95,7 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 			}
 			if pendingSpace { out.append(" "); length += 1; pendingSpace = false }
 			out.append(scalar); length += 1
-			if length >= limit * 4 { break }   // one enormous word, far past two lines
+			if length >= limit * 4 { break }
 		}
 		return String(out)
 	}
@@ -142,12 +124,8 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 		cell.backgroundColor = theme.isDark ? UIColor(white: 1, alpha: 0.08) : UIColor(white: 1, alpha: 0.65)
 		cell.selectionStyle = .none
 		cell.isAccessibilityElement = true
-		// The shown text, not all 10,000 characters: VoiceOver reads the whole label on focus.
 		cell.accessibilityLabel = (item.pinned ? "Pinned clipboard item. " : "Clipboard item. ") + shown
 		cell.accessibilityHint = "Inserts this text"
-		// Per-row delete: a VISIBLE affordance on every clip. Swipe-to-delete alone was
-		// undiscoverable, and one global "clear" is the wrong granularity — each item
-		// gets its own ✕. Pin stays on swipe (a secondary, rarer action).
 		cell.accessoryView = rowButton(symbol: "xmark.circle.fill",
 			tint: theme.keyText.withAlphaComponent(0.35), accessibilityLabel: "Delete clipboard item") {
 			[weak self] in
@@ -157,8 +135,6 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 		return cell
 	}
 
-	/// A 28pt tap target for a row accessory. Frame-based on purpose: `accessoryView`
-	/// is sized by its frame, not Auto Layout.
 	private func rowButton(symbol: String, tint: UIColor, accessibilityLabel: String,
 						   action: @escaping () -> Void) -> UIButton {
 		let b = UIButton(type: .system)
@@ -187,8 +163,6 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 		return UISwipeActionsConfiguration(actions: [pin])
 	}
 
-	// MARK: Bottom bar — ABC | (input mode) | title
-
 	private func buildBottomBar() {
 		bottomBar.backgroundColor = theme.isDark ? UIColor(white: 1, alpha: 0.05) : UIColor(white: 0, alpha: 0.04)
 		var leading: [UIButton] = [barButton(title: "ABC") { [weak self] in self?.onABC?() }]
@@ -204,18 +178,13 @@ final class ClipboardPanelView: UIView, UITableViewDataSource, UITableViewDelega
 		stack.axis = .horizontal
 		stack.spacing = 2
 		stack.alignment = .fill
-		title.setContentHuggingPriority(.defaultLow, for: .horizontal)   // title takes the slack
+		title.setContentHuggingPriority(.defaultLow, for: .horizontal)
 		for b in leading {
 			b.setContentHuggingPriority(.required, for: .horizontal)
 			b.widthAnchor.constraint(equalToConstant: 40).isActive = true
 		}
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		bottomBar.addSubview(stack)
-		// bottomBar is frame-laid (layoutSubviews), so its autoresizing width is 0 on the
-		// FIRST Auto Layout pass — pinning the stack to both edges while its children
-		// carry required 40pt widths is unsatisfiable at width 0 and logs "Unable to
-		// simultaneously satisfy constraints". Sub-required trailing lets that one pass
-		// resolve silently; at real width it binds exactly as before.
 		let trailing = stack.trailingAnchor.constraint(equalTo: bottomBar.trailingAnchor, constant: -4)
 		trailing.priority = .required - 1
 		NSLayoutConstraint.activate([

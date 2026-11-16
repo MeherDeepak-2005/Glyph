@@ -38,25 +38,17 @@ T_ENGLISH_SOURCE = ROOT / "data" / "safety_tenglish_candidates.tsv"
 GOOGLE_EN_SOURCE = ROOT / "data" / "google_profanity_en.txt"
 GOOGLE_EN_COMMIT = "0ae3460863120bc671361b9403cc65d5f2075b89"
 GOOGLE_EN_SHA256 = "ea16a22f12b4fb9d32747b8fc7af21b90ce59df7313f6275ce1ef17d746b0dfe"
-# Second pinned copy of the canonical Google profanity list (451 terms), from
-# Shidouuu/Google-profanity-words @ 96139e6. Every term here is legally sensitive and
-# must never surface as a suggestion/correction — pinned by content SHA256 so the build
-# refuses an unreviewed edit, and asserted term-for-term by test_build_safety_lexicon.py.
 GOOGLE_SHIDOUUU_SOURCE = ROOT / "data" / "google_profanity_shidouuu_en.txt"
 GOOGLE_SHIDOUUU_COMMIT = "96139e6f2a4fa35ba2f9a80988e227279fd9e1c6"
 GOOGLE_SHIDOUUU_SHA256 = "8647103818e3e20d54b862636b04708e64cd07c9147a5c319fadc1c89b62ab29"
 
 MASK64 = (1 << 64) - 1
-# action ids (see manifest): allow=0, demote=1, suppress_suggest=2, suppress_always=3
 ACTIONS = {"allow": 0, "demote": 1, "suppress_suggest": 2, "suppress_always": 3}
 SUPPRESS = ACTIONS["suppress_suggest"]
 LANGUAGES = {"en": 1, "te": 2, "tenglish": 3}
 LANG_EN, LANG_TE, LANG_TENGLISH = 1, 2, 3
-# Source bit flags stored in the existing u16 sourceID field. A merged term can
-# carry several flags without changing the runtime format.
 SOURCE_GOOGLE_EN, SOURCE_PROJECT, SOURCE_RECOVERED, SOURCE_TENGLISH = 1, 2, 4, 8
 SOURCE_GOOGLE_SHIDOUUU = 16
-
 
 def fnv1a64(s: str) -> int:
     h = 0xCBF29CE484222325
@@ -64,7 +56,6 @@ def fnv1a64(s: str) -> int:
         h ^= b
         h = (h * 0x100000001B3) & MASK64
     return h
-
 
 def normalize(term: str, lang: int) -> str:
     """Mirror KBSafetyLexicon.normalize: Telugu → NFC; English → casefold + curly
@@ -75,14 +66,12 @@ def normalize(term: str, lang: int) -> str:
     s = term.replace("’", "'").replace("‘", "'").replace("`", "'").casefold()
     return " ".join(s.split())
 
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as source:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
-
 
 def merge_term(
     terms: dict[str, tuple[int, int, int]],
@@ -102,7 +91,6 @@ def merge_term(
     if old_lang != lang:
         raise SystemExit(f"normalized safety term has conflicting languages: {norm!r}")
     terms[norm] = (lang, max(old_action, action), old_source | source_id)
-
 
 def read_policy_tsv(path: Path, source_id: int):
     if not path.exists():
@@ -125,12 +113,9 @@ def read_policy_tsv(path: Path, source_id: int):
                 raise SystemExit(f"invalid {path.name}:{line_number}")
             if not source or not license_name or review not in {"approved", "candidate", "rejected"}:
                 raise SystemExit(f"missing provenance/review in {path.name}:{line_number}")
-            # Candidate and rejected rows remain reviewable in source control but never
-            # become runtime policy. In particular, no unreviewed suppress action ships.
             if review != "approved" or action == "allow":
                 continue
             yield term, LANGUAGES[language], source_id, ACTIONS[action]
-
 
 def load_pinned_english(terms, path, expected_sha, source_id):
     """Merge a pinned English blocklist as suppress_suggest, refusing any content that
@@ -146,7 +131,6 @@ def load_pinned_english(terms, path, expected_sha, source_id):
     for raw in path.read_text(encoding="utf-8").splitlines():
         merge_term(terms, raw.strip(), LANG_EN, source_id)
 
-
 def main():
     terms: dict[str, tuple[int, int, int]] = {}
     load_pinned_english(terms, GOOGLE_EN_SOURCE, GOOGLE_EN_SHA256, SOURCE_GOOGLE_EN)
@@ -161,7 +145,6 @@ def main():
         for word, language, row_source, action in read_policy_tsv(path, source_id):
             merge_term(terms, word, language, row_source, action)
 
-    # Build sorted (hash, term) entries + blob.
     rows = sorted(((fnv1a64(t), t, lang, act, source_id)
                    for t, (lang, act, source_id) in terms.items()),
                   key=lambda r: (r[0], r[1]))
@@ -189,7 +172,6 @@ def main():
         f"wrote {OUT} ({OUT.stat().st_size} bytes): {len(entries)} exact terms; "
         f"English sources pinned at {GOOGLE_EN_COMMIT[:7]} + {GOOGLE_SHIDOUUU_COMMIT[:7]}"
     )
-
 
 if __name__ == "__main__":
     main()

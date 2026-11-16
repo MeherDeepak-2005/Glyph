@@ -1,7 +1,3 @@
-// Writes the engine's goldens for tools/evaluation/fixtures/shared-engine, one JSON object per
-// line: `decode` for corpus.json (golden-corpus.json), `glide` for glides.json (golden-glide.json).
-// native/tests/EngineTests.cpp replays both.
-//   gengolden langdata.bin model.nsslm REPO FIXTURES decode|glide
 #include <string>
 #include <vector>
 #include "Engine.hpp"
@@ -27,8 +23,6 @@ static const char* sourceName(CandidateSource source) {
     static const char* names[] = {"typed", "fuzzyLexicon", "splitCorrection"};
     return names[static_cast<int>(source)];
 }
-// The spelling policies that ship beside the dictionary (langdata.kbmodern), installed as the
-// extension installs them (LangData.swift). A dictionary without the sidecar runs without.
 static void installPolicies(const PackedLexicon& lexicon, std::string path) {
     if (auto dot = path.rfind('.'); dot != std::string::npos) path.resize(dot);
     std::ifstream in(path + ".kbmodern", std::ios::binary);

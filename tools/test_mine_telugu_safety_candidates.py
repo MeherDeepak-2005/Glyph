@@ -6,7 +6,6 @@ import unittest
 import zipfile
 from pathlib import Path
 
-
 def load_module():
     path = Path(__file__).with_name("mine_telugu_safety_candidates.py")
     spec = importlib.util.spec_from_file_location("mine_telugu_safety_candidates", path)
@@ -14,9 +13,7 @@ def load_module():
     spec.loader.exec_module(module)
     return module
 
-
 miner = load_module()
-
 
 class TeluguSafetyCandidateTests(unittest.TestCase):
     def make_sources(self, root: Path):
@@ -71,7 +68,6 @@ class TeluguSafetyCandidateTests(unittest.TestCase):
                 target.writestr("tel_valid.json", "")
             with self.assertRaises(ValueError):
                 miner.roman_aliases(archive, "tel_valid.json", set(), 3)
-
 
 if __name__ == "__main__":
     unittest.main()

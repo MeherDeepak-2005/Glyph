@@ -17,16 +17,14 @@ SMALL = {
 }
 VOCAB = 50
 
-
 def stream(length: int, seed: int) -> torch.Tensor:
     """Several sentences back to back: <bos> words <eos> <bos> ..."""
     generator = torch.Generator().manual_seed(seed)
     tokens = torch.randint(4, VOCAB, (length,), generator=generator)
     tokens[0] = BOS
-    for at in (7, 8, 17, 18):   # <eos> then <bos>
+    for at in (7, 8, 17, 18):
         tokens[at] = EOS if at in (7, 17) else BOS
     return tokens
-
 
 class StreamingParityTests(unittest.TestCase):
     def setUp(self):
@@ -71,7 +69,6 @@ class StreamingParityTests(unittest.TestCase):
         masked = torch.nn.functional.cross_entropy((features @ weight.t() + bias)[keep], targets[keep], reduction="sum")
         torch.testing.assert_close(cross_entropy_sum(features, weight, bias, targets, 5, keep), masked)
 
-
 class RingTests(unittest.TestCase):
     def setUp(self):
         torch.manual_seed(0)
@@ -86,12 +83,12 @@ class RingTests(unittest.TestCase):
         result = ring.sync([5, 6])
         self.assertEqual((result.reused, result.stepped), (0, 2))
         torch.testing.assert_close(result.features[0], self.reference([5, 6]))
-        self.assertEqual(ring.sync([5, 6]).stepped, 0)        # next keystroke, same word
-        self.assertEqual(ring.sync([5, 6, 7]).stepped, 1)     # committed one more word
-        result = ring.sync([5, 6])                            # backspace into the previous word
+        self.assertEqual(ring.sync([5, 6]).stepped, 0)
+        self.assertEqual(ring.sync([5, 6, 7]).stepped, 1)
+        result = ring.sync([5, 6])
         self.assertEqual(result.stepped, 0)
         torch.testing.assert_close(result.features[0], self.reference([5, 6]))
-        result = ring.sync([5, 6, 8])                         # replaced the last word
+        result = ring.sync([5, 6, 8])
         self.assertEqual(result.stepped, 1)
         torch.testing.assert_close(result.features[0], self.reference([5, 6, 8]))
 
@@ -99,7 +96,6 @@ class RingTests(unittest.TestCase):
         ring = ContextRing(self.model, capacity=6, window=4)
         for length in range(1, 5):
             ring.sync([10 + i for i in range(length)])
-        # The host now sends only the last 4 words: [11, 12, 13, 14].
         result = ring.sync([11, 12, 13, 14])
         self.assertEqual(result.stepped, 1)
         torch.testing.assert_close(result.features[0], self.reference([10, 11, 12, 13, 14]))
@@ -107,16 +103,15 @@ class RingTests(unittest.TestCase):
     def test_new_sentence_and_eviction(self):
         ring = ContextRing(self.model, capacity=6, window=4)
         words = list(range(10, 20))
-        for end in range(4, len(words) + 1):          # a 10-word sentence, window of 4
+        for end in range(4, len(words) + 1):
             ring.sync(words[end - 4:end])
         self.assertEqual(ring.length, 10)
-        result = ring.sync([30, 31])                  # a new sentence restarts at the root
+        result = ring.sync([30, 31])
         self.assertEqual((result.reused, result.stepped), (0, 2))
         torch.testing.assert_close(result.features[0], self.reference([30, 31]))
         cold = ContextRing(self.model, capacity=6, window=4)
-        result = cold.sync([40, 41, 42, 43])          # unseen window: read from the root
+        result = cold.sync([40, 41, 42, 43])
         torch.testing.assert_close(result.features[0], self.reference([40, 41, 42, 43]))
-
 
 if __name__ == "__main__":
     unittest.main()

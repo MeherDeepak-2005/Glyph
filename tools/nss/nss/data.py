@@ -24,7 +24,6 @@ import numpy as np
 
 from .vocab import BOS
 
-
 @dataclass
 class Shard:
     tokens: np.ndarray
@@ -43,7 +42,6 @@ class Shard:
     def size(self) -> int:
         return int(self.offsets[-1])
 
-
 def gather(shard: Shard, indices: np.ndarray, out: np.ndarray, at: int) -> int:
     """Copy sentences `indices` of `shard` into `out` from `at`; returns the new end."""
     block = 1 << 16
@@ -52,12 +50,10 @@ def gather(shard: Shard, indices: np.ndarray, out: np.ndarray, at: int) -> int:
         starts, ends = shard.offsets[chosen], shard.offsets[chosen + 1]
         lengths = ends - starts
         total = int(lengths.sum())
-        # positions = start of each sentence repeated, plus the offset inside it
         within = np.arange(total) - np.repeat(np.cumsum(lengths) - lengths, lengths)
         out[at:at + total] = shard.tokens[np.repeat(starts, lengths) + within]
         at += total
     return at
-
 
 def truncated(sequence: np.ndarray, probability: float, rng: np.random.Generator) -> np.ndarray:
     """`sequence` (sentences `<bos> w1 .. wn <eos>`, back to back) with a `probability`
@@ -69,18 +65,15 @@ def truncated(sequence: np.ndarray, probability: float, rng: np.random.Generator
     words = np.diff(np.append(starts, len(sequence))) - 2
     chosen = np.flatnonzero((words >= 2) & (rng.random(len(starts)) < probability))
     dropped = 1 + (rng.random(len(chosen)) * (words[chosen] - 1)).astype(np.int64)
-    # +1 at the first dropped word, -1 after the last; the running sum marks the dropped words.
     edges = np.zeros(len(sequence) + 1, np.int8)
     edges[starts[chosen] + 1] = 1
     edges[starts[chosen] + 1 + dropped] -= 1
     return sequence[np.cumsum(edges[:-1], dtype=np.int8) == 0]
 
-
 def truncated_shard(shard: Shard, seed: int = 0) -> Shard:
     """A held-out shard with every sentence of two or more words started part-way."""
     tokens = truncated(np.asarray(shard.tokens), 1.0, np.random.default_rng(seed))
     return Shard(tokens, np.append(np.flatnonzero(tokens == BOS), len(tokens)))
-
 
 def streams(sequence: np.ndarray, batch: int) -> np.ndarray:
     """Cut a token sequence into `batch` equal rows that each start at a `<bos>`."""
@@ -90,7 +83,6 @@ def streams(sequence: np.ndarray, batch: int) -> np.ndarray:
     ends = np.append(cuts[1:], len(sequence))
     length = int((ends - cuts).min())
     return np.stack([sequence[cut:cut + length] for cut in cuts])
-
 
 class Mixture:
     def __init__(self, data: Path, weights: dict[str, float], split: str = "train", seed: int = 0,
@@ -110,14 +102,12 @@ class Mixture:
             chosen = [np.arange(shard.sentences)] * int(whole)
             chosen.append(rng.choice(shard.sentences, int(round(fraction * shard.sentences)), replace=False))
             picks.append((shard, np.concatenate(chosen)))
-        # Shuffle across sources: interleave by a random key per sentence.
         keys = [rng.random(len(indices)) for _, indices in picks]
         owner = np.concatenate([np.full(len(k), i) for i, k in enumerate(keys)])
         order = np.argsort(np.concatenate(keys), kind="stable")
         sizes = sum(int((shard.offsets[idx + 1] - shard.offsets[idx]).sum()) for shard, idx in picks)
         out = np.empty(sizes, np.uint16)
         at = 0
-        # Gather runs of consecutive same-source sentences in shuffled order.
         flat = np.concatenate([idx for _, idx in picks])
         bounds = np.flatnonzero(np.diff(owner[order])) + 1
         for run in np.split(order, bounds):
@@ -130,12 +120,10 @@ class Mixture:
         for start in range(0, rows.shape[1] - 1 - bptt + 1, bptt):
             yield rows[:, start:start + bptt].astype(np.int64), rows[:, start + 1:start + bptt + 1].astype(np.int64)
 
-
 def evaluation_rows(shard: Shard, batch: int) -> np.ndarray:
     """Every sentence of a held-out shard, in order, as `batch` rows starting at `<bos>`
     (the tail that does not fill a row is dropped)."""
     return streams(np.asarray(shard.tokens), batch)
-
 
 def lexicon_share(data: Path, weights: dict[str, float]) -> float:
     """Share of <unk> training tokens that are lexicon words, under the mixture weights."""

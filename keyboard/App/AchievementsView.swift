@@ -63,7 +63,6 @@ struct AchievementBanner: View {
 		}
 		.accessibilityIdentifier("progress.banner")
 		.onAppear { stats = KBStats.load() }
-		// Back from typing in another app: the keyboard saved new words meanwhile.
 		.onChange(of: scenePhase) { _, phase in if phase == .active { stats = KBStats.load() } }
 	}
 }

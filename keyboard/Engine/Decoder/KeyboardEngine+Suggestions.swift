@@ -1,7 +1,6 @@
 import Foundation
 
 extension KeyboardEngine {
-	// MARK: Suggestions (background; also precomputes the autocorrect decision)
 
 	func isLatest(_ gen: Int) -> Bool { genLock.lock(); defer { genLock.unlock() }; return gen == suggestGen }
 	func cancelSuggestions() {
@@ -11,9 +10,6 @@ extension KeyboardEngine {
 	func decode(_ request: DecodeRequest, completion: @escaping (DecodeSnapshot) -> Void) {
 		genLock.lock(); sharedDecodeToken?.cancel(); let nativeToken = KBCancellationToken(); sharedDecodeToken = nativeToken; suggestGen &+= 1; let gen = suggestGen; genLock.unlock()
 		let started = ProcessInfo.processInfo.systemUptime
-		// A decode with no partial word is a fresh word start — it builds the context /
-		// prediction search space (Gboard's UpdateLM). Time it separately as initialization
-		// latency, in addition to the ordinary tap-decode histogram.
 		let isWordStart = request.currentWord.isEmpty
 		let signpost = KBDiagnostics.beginTapDecode()
 		queue.async { [weak self] in
@@ -22,8 +18,8 @@ extension KeyboardEngine {
 				KBDiagnostics.endTapDecode(signpost, milliseconds: ms)
 				if isWordStart { KBDiagnostics.recordInitializationLatency(milliseconds: ms) }
 			}
-			guard let self, self.isLatest(gen) else { return }   // superseded — the newest pass delivers
-			KBDiagnostics.recorder.sample()   // cheap footprint/headroom probe, background only
+			guard let self, self.isLatest(gen) else { return }
+			KBDiagnostics.recorder.sample()
 			let currentWord = request.currentWord
 			let lw = currentWord.lowercased()
 			let taps = self.touchProfile.adjusted(request.taps, typed: lw)
@@ -36,8 +32,6 @@ extension KeyboardEngine {
 					nextCharacterPriors: priors, completedAtUptime: ProcessInfo.processInfo.systemUptime)
 				DispatchQueue.main.async { completion(snapshot) }
 			}
-			// Built once, when initialization finishes on this queue; nil only when the dictionary
-			// or the model did not load. The word then stays as typed.
 			guard let engine = self.sharedEngine else {
 				publish(currentWord.isEmpty ? [] : [currentWord], [], nil, 0)
 				return
@@ -65,8 +59,6 @@ extension KeyboardEngine {
 		}
 	}
 
-	/// Compatibility wrapper for tests and non-controller callers. Production typing
-	/// uses the versioned `decode` contract above.
 	func suggestions(currentWord: String, context: [String], taps: [KeyTap?]? = nil,
 					 completion: @escaping ([String], [Character: Double]) -> Void) {
 		let request = DecodeRequest(fieldRevision: 0, documentRevision: 0,
@@ -75,10 +67,6 @@ extension KeyboardEngine {
 		decode(request) { completion($0.suggestions, $0.nextCharacterPriors) }
 	}
 
-	/// iOS supplementary lexicon (contact names, text-replacement shortcuts): make
-	/// these words first-class citizens — suggestable and immune to autocorrect —
-	/// exactly how stock stops "mangling" names. Modest frequency: context counts,
-	/// not the freq term, should surface them.
 	func importSupplementaryLexicon(_ words: [String]) {
 		queue.async { [weak self] in
 			guard let self else { return }
@@ -93,9 +81,6 @@ extension KeyboardEngine {
 
 	func learn(word: String) {
 		let lw = word.lowercased()
-		// ≥2 chars, or the only real one-letter words. Single letters must never learn
-		// or adopt: contraction fragments ("what's" split at an unrecognized quote used
-		// to commit "s"/"t" as words) would otherwise flood suggestions after 5 uses.
 		guard lw.count >= 2 || lw == "a" || lw == "i",
 			  lw.allSatisfy({ $0.isLetter || $0 == "'" }) else { return }
 		if !lexicon.isSafeToLearn(lw) { return }
@@ -110,8 +95,6 @@ extension KeyboardEngine {
 		}
 	}
 
-	/// Learn only from a literal, accepted static word. Autocorrections and suggestion
-	/// replacements are excluded because their intended per-letter alignment is unknown.
 	func learnTouchProfile(word: String, taps: [KeyTap?]) {
 		let lower = word.lowercased()
 		guard lower.utf8.count == taps.count,
@@ -123,10 +106,6 @@ extension KeyboardEngine {
 		}
 	}
 
-	/// Unknown spellings enter the searchable vocabulary only after meaningful evidence:
-	/// a user-confirmed spelling at the normal threshold, otherwise twice as many uses, and
-	/// never a one-edit neighbour of a shipped word. This keeps repeated fat-finger errors
-	/// out of suggestions without preventing genuinely novel vocabulary from adapting.
 	func allowsPersonalAdoption(of word: String, count: Int) -> Bool {
 		user.allowsAdoption(word, count: count, lexicon: lexicon.nativeGenerationView())
 	}

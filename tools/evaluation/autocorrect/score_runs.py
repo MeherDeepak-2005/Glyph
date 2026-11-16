@@ -10,7 +10,6 @@ column is its rate; `gained/lost p` is the paired change against REF.
 import argparse, json
 import evaluate as ev
 
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('ref'); ap.add_argument('runs', nargs='+')
@@ -46,7 +45,6 @@ def main():
         report['metrics']['keystroke savings'] = {'n': len(nw), 'rates': savings}
     print('\n* paired p < 0.05; ! guardrail regression (worse with p < 0.05)')
     if a.json: open(a.json, 'w').write(json.dumps(report, indent=1) + '\n')
-
 
 if __name__ == '__main__':
     main()

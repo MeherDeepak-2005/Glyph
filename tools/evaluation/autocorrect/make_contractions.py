@@ -20,7 +20,6 @@ FORMS = {**{p: p for p in PAIRS}, **{c: p for p, c in PAIRS.items()}}
 PER_FORM = 400
 TOKEN = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
 
-
 def main():
     found = collections.defaultdict(list)
     with bz2.open(SOURCE, 'rt', encoding='utf-8') as lines:
@@ -46,7 +45,6 @@ def main():
     (CORPUS/'contraction-cases-meta.json').write_text(json.dumps(meta))
     counts = collections.Counter((m['set'], FORMS[m['target']]) for m in meta.values())
     print(len(rows), 'rows'); [print(f'  {s:18} {w:6} {n}') for (s, w), n in sorted(counts.items())]
-
 
 if __name__ == '__main__':
     main()

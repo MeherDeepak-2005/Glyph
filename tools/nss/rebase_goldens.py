@@ -19,7 +19,6 @@ from pathlib import Path
 
 EMITTABLE = re.compile(r"[a-z']+")
 
-
 def lexicon(path: Path) -> dict[str, int]:
     data = path.read_bytes()
     magic, version, count, nodes = struct.unpack_from("<4I", data, 0)
@@ -35,7 +34,6 @@ def lexicon(path: Path) -> dict[str, int]:
             table[word] = max(table.get(word, 0), frequencies[i])
     return table
 
-
 def vocabulary(path: Path) -> set[str]:
     """The model's output words (ids 4 and up; 0-3 are pad, unk, bos, eos)."""
     data = path.read_bytes()
@@ -48,11 +46,9 @@ def vocabulary(path: Path) -> set[str]:
             return {data[blob + lengths[i]:blob + lengths[i + 1]].decode("utf-8") for i in range(4, rows)}
     raise SystemExit(f"{path}: no vocabulary section")
 
-
 def policy(table: dict[str, int], vocab: set[str]) -> tuple[float, int]:
     masses = [frequency + 1.0 for word, frequency in table.items() if word not in vocab]
     return float(sum(masses)), len(masses)
-
 
 def main() -> None:
     if len(sys.argv) < 4:
@@ -84,7 +80,6 @@ def main() -> None:
         goldens_path.write_text(json.dumps(goldens, indent=1) + "\n")
         print(f"{goldens_path.name}: oov_words {old_words} -> {new_words}, oov_mass {old_mass:.0f} -> {new_mass:.0f}, "
               f"{moved} out-of-vocabulary scores moved")
-
 
 if __name__ == "__main__":
     main()

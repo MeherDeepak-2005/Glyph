@@ -1,16 +1,12 @@
 import UIKit
 
-// Letter-key path = insertText first. Decoding is asynchronous and publishes one
-// versioned snapshot that owns both the suggestion strip and boundary correction.
-
 final class KeyboardViewController: UIInputViewController {
 
 	var keyboard: KeyboardView!
 	var heightConstraint: NSLayoutConstraint?
-	/// The keyboard view's own height; it is pinned to the bottom of the window.
 	var keyboardHeightConstraint: NSLayoutConstraint?
 	private var heightMismatchActive = false
-	let engine = KeyboardEngine.shared   // process-wide: see KeyboardEngine.shared
+	let engine = KeyboardEngine.shared
 	private var personalDataResetObserver: KBPersonalDataResetObserver?
 	private var configurationObserver: KBConfigurationObserver?
 	private var accessibilityObservers: [NSObjectProtocol] = []
@@ -27,10 +23,6 @@ final class KeyboardViewController: UIInputViewController {
 	var presentedDecodeSnapshot: PresentedDecodeSnapshot?
 	var currentWordBuffer = ""
 	var currentContextBuffer: [String] = []
-	/// Next-word-prediction (NWP) benchmark state: the lowercased top-3 shown at the current
-	/// word's start and whether an in-context prediction was actually armed. Read once when
-	/// the word commits (was the intended word already offered before the first letter?),
-	/// then disarmed. Counts only — no text leaves the process.
 	var nwpPredictedTop3: Set<String> = []
 	var nwpPredictionArmed = false
 	var suggestionModeResolved = false
@@ -62,9 +54,6 @@ final class KeyboardViewController: UIInputViewController {
 	var activeGlideAutoShift = false
 	var activeGlideSessionID: GlideSessionID?
 	var glidePreviewEnabled = false
-	/// The exact prediction currently visible in the middle suggestion slot. If this
-	/// exists at lift, it is the commit authority; the user never sees one word and
-	/// receives another from a second release-time decode.
 	struct DisplayedGlidePrediction {
 		let prediction: GlidePrediction
 		let sessionID: GlideSessionID
@@ -75,52 +64,31 @@ final class KeyboardViewController: UIInputViewController {
 	}
 	var displayedGlidePrediction: DisplayedGlidePrediction?
 
-	/// Records the most recent replacement (autocorrect on a boundary, or a picked
-	/// completion) so a single Backspace can undo it back to what the user typed —
-	/// exactly like the stock keyboard.
 	struct Correction {
-		let original: String       // what the user actually typed
-		let corrected: String      // what we replaced it with
-		var trailing: String       // boundary/space/newline inserted after it (may be "")
-		let fromAutocorrect: Bool  // engine autocorrect: suppress re-correction on undo
+		let original: String
+		let corrected: String
+		var trailing: String
+		let fromAutocorrect: Bool
 		var recordedWordSessionID: UInt64? = nil
-		/// When it was applied (systemUptime): the recorder reports how long it stood.
 		var appliedAt = ProcessInfo.processInfo.systemUptime
 	}
 	var lastCorrection: Correction?
 
-	/// Manual-fix detection. The one-tap Backspace undo only catches an IMMEDIATE
-	/// revert; users just as often backspace through a word and retype it by hand.
-	/// Track the word being erased and the first word typed in its place, then feed
-	/// the swap to the engine: reverting one of OUR corrections registers as a
-	/// rejection (dontCorrect), and hand-fixing their own typo ("js" → "is") demotes
-	/// the typo so repetition can't adopt it into the dictionary.
 	var erasedWord = ""
-	var erasedCrossedBoundary = false   // deletion ate the word's leading boundary
+	var erasedCrossedBoundary = false
 	var replacementStarted = false
-	/// Recent autocorrects (typed → corrected), so erasing a correction and retyping
-	/// the original is recognizable even after `lastCorrection` expired.
 	var recentCorrections: [(original: String, corrected: String, word: UInt64)] = []
 
-	/// Per-tap landing offsets for the word currently being typed, one per letter, so
-	/// the channel model can score sub-key precision. Best-effort: cleared on word
-	/// boundaries, popped on delete; the engine ignores them unless the count matches
-	/// the word length, so any desync is silently safe.
 	var wordTaps: [KeyTap?] = []
 
-	/// Typing-speed and per-key evidence for the word being typed: the typing recorder and
-	/// the per-key diagnostics read it, the decoder never does. Reset with the word session.
 	struct TypingTrace {
 		var keystrokes: [KBTypingRecorder.Keystroke] = []
 		var startedAt: Double?
 		var backspaces = 0
-		/// Letters erased from this word, in reading order; the next letters typed replace them.
 		var erasedLetters: [Character] = []
 	}
 	var typingTrace = TypingTrace()
 	var lastKeyUptime = 0.0
-	/// Typing-recorder state (KeyboardViewController+Recording.swift); the decoder reads none of it.
-	/// A lifted gesture's samples wait here until the decoder answers.
 	struct PendingGlideRecord {
 		let samples: [KeyboardView.GlideSample]
 		let startKey: String?
@@ -129,7 +97,6 @@ final class KeyboardViewController: UIInputViewController {
 	}
 	var pendingGlideRecord: PendingGlideRecord?
 	var glidePreviewCount = 0
-	/// The geometry the recorder last described: a touch on any other gets a `layout` event first.
 	struct RecordedLayout: Equatable {
 		let revision: UInt64
 		let view: ObjectIdentifier
@@ -137,20 +104,11 @@ final class KeyboardViewController: UIInputViewController {
 		let page: KeyboardSurfacePage
 	}
 	var recordedLayout: RecordedLayout?
-	/// The correction whose acceptance was already recorded (its word session).
 	var recordedAcceptance: UInt64?
 
-	/// A glided word is awaiting an explicit verdict. Typing on is intentionally
-	/// unlabelled: only selecting an alternative is safe supervision for adaptation.
 	var pendingGlideVerdict = false
-	/// Progress is provisional until the user either continues or leaves the field.
-	/// An immediate whole-word Backspace cancels it, so leagues never reward a
-	/// rejected Glide result.
 	var pendingGlideStatsID: UUID?
 
-	/// Resolved only after the host connection is live. Calling
-	/// `needsInputModeSwitchKey` during extension prewarming produces an inaccurate result
-	/// and a UIKit warning; until then, omit the key and rebuild once if iOS requires it.
 	var showsGlobe = false
 
 	let boundary = CharacterSet(charactersIn: " .,!?;:")
@@ -161,11 +119,6 @@ final class KeyboardViewController: UIInputViewController {
 		view = root
 	}
 
-	/// `animated`: a panel opening or closing. iOS draws the keyboard's backdrop and moves
-	/// its top edge in one step whatever we do (per-frame heights are not shown), so the
-	/// height changes at once and the content carries the motion instead: the keyboard
-	/// view is pinned to the bottom, then rises into a taller keyboard or settles into a
-	/// shorter one. Bottom-pinned, it stays whole while the host catches up a frame later.
 	func updateKeyboardHeight(animated: Bool = false) {
 		guard let keyboard else { return }
 		let desired = keyboard.keyboardHeight
@@ -180,8 +133,6 @@ final class KeyboardViewController: UIInputViewController {
 
 	static let heightAnimationDuration: CFTimeInterval = 0.32
 
-	/// Growing: the new content starts where the old top edge was and rises by `delta`.
-	/// Shrinking: it fades in and settles down the last few points.
 	private func animateHeightChange(by delta: CGFloat, in keyboard: UIView) {
 		let rise = CABasicAnimation(keyPath: "transform.translation.y")
 		rise.fromValue = delta > 0 ? delta : min(18, -delta)
@@ -199,7 +150,6 @@ final class KeyboardViewController: UIInputViewController {
 		keyboard.layer.add(group, forKey: "heightChange")
 	}
 
-	/// Sizes the keyboard's window and the keyboard view (pinned to its bottom) together.
 	func applyKeyboardHeight(_ height: CGFloat) {
 		rootInputView?.desiredHeight = height
 		if heightConstraint?.constant != height { heightConstraint?.constant = height }
@@ -241,7 +191,6 @@ final class KeyboardViewController: UIInputViewController {
 			}
 		}
 
-		// Follow the host app's light/dark appearance and rebuild on changes.
 		registerForTraitChanges([UITraitUserInterfaceStyle.self, UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
 			self.buildKeyboard()
 			if self.hostConnectionReady { self.scheduleSuggestions() }
@@ -294,8 +243,6 @@ final class KeyboardViewController: UIInputViewController {
 
 	func buildKeyboard() {
 		keyboard?.removeFromSuperview()
-		// The old height constraint lives on the controller's view, not the removed
-		// keyboard — deactivate it or every rebuild (theme/globe change) stacks another.
 		heightConstraint?.isActive = false
 		heightConstraint = nil
 		keyboardHeightConstraint = nil
@@ -308,8 +255,6 @@ final class KeyboardViewController: UIInputViewController {
 		inputView?.isOpaque = false
 
 		let kb = KeyboardView(theme: theme, showsGlobe: showsGlobe)
-		// A prewarmed extension has no reliable text proxy yet. Exposing those keys lets
-		// an immediate tap race the one-time globe/trait rebuild and silently disappear.
 		kb.isUserInteractionEnabled = hostConnectionReady
 		kb.accessibilityElementsHidden = !hostConnectionReady
 		kb.hapticsEnabled   = KBSettings.haptics
@@ -363,11 +308,6 @@ final class KeyboardViewController: UIInputViewController {
 			self.cancelGlidePreview(clearStrip: true)
 		}
 		kb.onGlide          = { [weak self] path, times, layout in self?.handleGlide(path, times, layout) }
-		// Emoji search swaps the strip for a taller header. The `keyboard === kb` guard matters:
-		// buildKeyboard() (theme/globe change) replaces the view AND the constraint, so
-		// a stale view firing this would size the CURRENT constraint from a DEAD view's
-		// page — e.g. an expanded emoji height under a letters deck, which reads as a
-		// tall keyboard with dead space beneath the keys.
 		kb.onHeightChange   = { [weak self, weak kb] animated in
 			guard let self, let kb, self.keyboard === kb else { return }
 			self.updateKeyboardHeight(animated: animated)
@@ -405,7 +345,6 @@ final class KeyboardViewController: UIInputViewController {
 		updateKeyboardHeight()
 	}
 
-	// MARK: State for Autocorrect
 	var currentDecodeSnapshot: DecodeSnapshot? {
 		guard let snapshot = decodeSnapshot else { return nil }
 		let request = snapshot.request
@@ -425,29 +364,17 @@ final class KeyboardViewController: UIInputViewController {
 		return presented
 	}
 
-	// MARK: State for Clipboard
 	var cursorModeActive = false
 
 	#if DEBUG
-	/// Feeds Keyboard health's live memory row while the keyboard is on screen.
 	private var liveMemoryTimer: Timer?
 	#endif
 
-	// MARK: State for Keys
-	/// Timestamp of the last plain space, for the double-space → ". " shortcut.
 	var lastSpaceAt: TimeInterval = 0
-	/// Replaces an exact suffix without assuming that UIKit and Swift use the same
-	/// deletion unit for Indic text. This is intentionally reserved for explicit
-	/// correction/pick transactions, never the ordinary letter insertion path.
-	/// Deletes issued by the most recent `replaceHostSuffix` call, for the pick/revert
-	/// diagnostic (#3) — read immediately after the call, before any other edit.
 	var lastReplaceDeleteCount = 0
 
-	// MARK: State for Suggestions
 	var isSecureField: Bool { textDocumentProxy.isSecureTextEntry ?? false }
 	var suggestionsAllowed: Bool { !isSecureField }
-	/// Former prediction restrictions remain active only for automatic replacement.
-	/// The strip itself no longer inherits this policy (see the commented wiring below).
 	var autocorrectionAllowed: Bool {
 		let p = textDocumentProxy
 		if p.isSecureTextEntry ?? false { return false }
@@ -462,12 +389,10 @@ final class KeyboardViewController: UIInputViewController {
 		}
 	}
 
-	// MARK: UIKit lifecycle
-
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		hostConnectionReady = false
-		recordedLayout = nil   // each appearance describes its geometry to the typing recorder again
+		recordedLayout = nil
         documentReconciler.reset()
         presentationDocument = nil
         keyboard?.dismissTools()
@@ -490,28 +415,20 @@ final class KeyboardViewController: UIInputViewController {
 		keyboard?.glideEnabled = true
 		if let keyboard { applyKeyboardHeight(keyboard.keyboardHeight) }
 		invalidateDocumentSession()
-		resetEraseTracking()           // a new field/host — stale erase state is meaningless
+		resetEraseTracking()
 		wordTaps.removeAll(keepingCapacity: true)
 		KBStats.confirm(pendingGlideStatsID)
 		pendingGlideStatsID = nil
 		pendingGlideVerdict = false
 		cursorModeActive = false
-		// Host field properties are still unreliable here. The first text-input callback
-		// resolves the strip and globe after the extension-host connection is live.
-		keyboard?.prepareHaptics()     // prime the engine so the first tap isn't delayed
+		keyboard?.prepareHaptics()
 	}
 
-	/// Switching to Glyph with the globe key in a field that already has focus sends no
-	/// text-input callback until the user taps the field: the keys stayed disabled and the
-	/// strip empty. On screen, the host connection is live, so connect now.
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		// The system's edge-swipe gates delay touches near the screen sides, so Q, A
-		// and P arrive late, often with their lift, and their balloon never shows.
 		view.window?.gestureRecognizers?.forEach { $0.delaysTouchesBegan = false }
 		if !hostConnectionReady { handleHostCallback() }
 		#if DEBUG
-		// Keyboard health follows the footprint live: one reading a second while on screen.
 		liveMemoryTimer?.invalidate()
 		KBDiagnostics.noteLiveFootprint()
 		let timer = Timer(timeInterval: 1, repeats: true) { _ in KBDiagnostics.noteLiveFootprint() }
@@ -526,7 +443,7 @@ final class KeyboardViewController: UIInputViewController {
 		#if DEBUG
 		liveMemoryTimer?.invalidate()
 		liveMemoryTimer = nil
-		KBDiagnostics.noteLiveFootprint()             // the latest reading, shown once the keyboard is gone
+		KBDiagnostics.noteLiveFootprint()
 		#endif
 		hostConnectionReady = false
         recoveryMonitor?.stop()
@@ -546,8 +463,6 @@ final class KeyboardViewController: UIInputViewController {
 		super.didReceiveMemoryWarning()
 		KBDiagnostics.recorder.memoryPressure(critical: false)
 		keyboard?.releaseTransientMediaForMemoryPressure()
-		// The GIF/sticker cache is on disk only (no in-memory copy, urlCache nil): deleting it
-		// here freed no RAM and forced re-downloads later. Personal-data reset still clears it.
 		engine.handleMemoryPressure()
 	}
 

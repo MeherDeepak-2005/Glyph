@@ -27,10 +27,8 @@ spec = importlib.util.spec_from_file_location('evaluate', BENCH/'evaluate.py')
 eval = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(eval)
 
-
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
 
 def build(root, binary):
     subprocess.run(['xcrun', 'clang++', '-std=c++20', '-Os', '-DNDEBUG',
@@ -39,13 +37,11 @@ def build(root, binary):
                     *map(str, sorted((root/'native/DecoderCore/src').glob('*.cpp'))),
                     '-o', str(binary)], check=True)
 
-
 def replay(binary, model, out, name, langdata=ROOT/'keyboard/langdata.bin'):
     for corpus, suffix in [('cases.tsv',''),('ext-cases.tsv','.ext'),('keep-cases.tsv','.keep')]:
         subprocess.run([str(binary), str(langdata), str(ROOT/'keyboard/safety.kbguard'),
                         str(BENCH/'corpus'/corpus), str(out/f'{name}{suffix}.jsonl')],
                        env={**os.environ, 'KB_NSS': str(model)}, check=True)
-
 
 def read(out, name):
     data, process = {}, []
@@ -60,7 +56,6 @@ def read(out, name):
         data.update({r['id']:r for r in cases})
         process += [r for r in rows if r.get('kind') == 'process' and r.get('at') == 'end']
     return data, process
-
 
 def score(out, report_path):
     before, before_memory = read(out, 'nss-paper-before')
@@ -100,7 +95,6 @@ def score(out, report_path):
     for label, r in report['metrics'].items():
         print(f'{label:48} {r["before"]:9.3f} -> {r["after"]:9.3f}')
     return report
-
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)

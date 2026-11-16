@@ -1,17 +1,12 @@
 import Foundation
 import os
 
-/// One key in a layout pack: a character key, or a control the keyboard builds itself
-/// (shift, delete, page switches, globe, emoji, space, return, per-field keys).
 nonisolated enum LayoutKey: Equatable, Sendable {
 	enum Width: String, Decodable, Sendable { case unit, flex, modifier, utility, `return` }
 	enum Control: String, Decodable, Sendable {
 		case shift, delete, page, globe, emoji, space, `return`
-		/// The keys the focused field asks for (email: @ and .), from `fieldExtras`.
 		case fieldExtras
-		/// The number pad's spare key: the decimal separator, or + on a phone pad.
 		case padAuxiliary
-		/// The layout locale's currency symbol ($ for en-US, ₹ for te-IN).
 		case currency
 	}
 	enum PageTarget: String, Decodable, Sendable { case letters, numbers, symbols }
@@ -22,22 +17,15 @@ nonisolated enum LayoutKey: Equatable, Sendable {
 
 nonisolated struct LayoutPage: Equatable, Sendable {
 	let rows: [[LayoutKey]]
-	/// nil for the number pad, whose last row is its own.
 	let bottomRow: [LayoutKey]?
-	/// Whether character keys offer the pack's long-press variants (the number pad's don't).
 	let longPressVariants: Bool
 }
 
-/// A compiled Latin layout (`*.kbpack`, built by tools/language_packs/build_latin_layout.py
-/// from a reviewable JSON source). Key order, pages, long-press variants, per-field keys
-/// and the decoders' letter grid live there, not in code.
 nonisolated struct LatinLayoutPack: Equatable, Sendable {
 	let identifier: String
 	let version: Int
 	let locale: String
 	let letters, numbers, symbols, numberPad: LayoutPage
-	/// Letter rows in order ("qwertyuiop", …) and the visual offset of each row's first key
-	/// in key pitches: the coordinate space of tap scoring and Glide decoding.
 	let gridRows: [String]
 	let gridRowOffsets: [Double]
 	let fieldExtras: [String: [String]]
@@ -52,8 +40,6 @@ nonisolated struct LatinLayoutPack: Equatable, Sendable {
 			}
 			return try decode(Data(contentsOf: url, options: [.mappedIfSafe]))
 		} catch {
-			// The pack ships inside the extension and is checked by the layout tests, so this is
-			// a damaged install. Keep the keyboard usable with plain QWERTY and record it.
 			Logger(subsystem: Bundle.main.bundleIdentifier ?? "keyboard", category: "layout")
 				.fault("Layout \(resource, privacy: .public) rejected: \(String(describing: error), privacy: .public)")
 			assertionFailure("layout pack \(resource) rejected: \(error)")
@@ -65,7 +51,6 @@ nonisolated struct LatinLayoutPack: Equatable, Sendable {
 		try PropertyListDecoder().decode(LatinLayoutDocument.self, from: data).materialize()
 	}
 
-	/// Letters, digits and the controls only, for a pack that failed to load.
 	static let emergencyQWERTY: LatinLayoutPack = {
 		let rows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"]
 		func keys(_ s: String) -> [LayoutKey] { s.map { .character(String($0), width: nil, accessibilityLabel: nil) } }
@@ -84,7 +69,6 @@ nonisolated struct LatinLayoutPack: Equatable, Sendable {
 			gridRows: rows, gridRowOffsets: [0, 0.5, 1.5], fieldExtras: [:], alternatives: [:])
 	}()
 
-	/// The currency key's symbol for `locale` ($ for en-US, ₹ for te-IN).
 	static func currencySymbol(for locale: String) -> String {
 		Locale(identifier: locale).currencySymbol ?? "$"
 	}
@@ -150,7 +134,6 @@ private nonisolated struct LatinLayoutDocument: Decodable {
 				bottomRow: try p.bottomRow.map { try $0.map(key) }, longPressVariants: p.longPressVariants)
 		}
 		let letters = try page("letters")
-		// The grid must be exactly the letters page's character keys, row by row.
 		let pageRows = letters.rows.map { row in
 			row.compactMap { key -> String? in
 				if case .character(let text, _, _) = key { return text }
@@ -171,15 +154,9 @@ private nonisolated struct LatinLayoutDocument: Decodable {
 	}
 }
 
-/// Locates signed resources in either the containing app or the keyboard extension.
-/// The same helper is used by tests, where `Bundle.main` may be the XCTest bundle.
 nonisolated enum KBPackResources {
 	private final class BundleToken {}
 
-	/// Same search order as before, but lazy: the app and the keyboard find every pack in
-	/// Bundle.main, so the loaded frameworks are only listed when that fails. Listing them
-	/// (Bundle.allFrameworks) creates an NSBundle for each framework in the process, and the
-	/// keyboard asks for a pack about a dozen times as it starts.
 	static func url(resource: String, extension fileExtension: String) -> URL? {
 		var visited = Set<String>()
 		func search(_ bundles: [Bundle]) -> URL? {

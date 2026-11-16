@@ -5,11 +5,9 @@ import numpy as np
 from nss.data import Shard, truncated, truncated_shard
 from nss.vocab import BOS, EOS
 
-
 def sentences(sequence: np.ndarray) -> list[list[int]]:
     starts = np.flatnonzero(sequence == BOS)
     return [sequence[a:b].tolist() for a, b in zip(starts, np.append(starts[1:], len(sequence)))]
-
 
 class TruncationTests(unittest.TestCase):
     def setUp(self):
@@ -30,7 +28,6 @@ class TruncationTests(unittest.TestCase):
             self.assertEqual((cut[0], cut[-1]), (BOS, EOS))
             self.assertGreaterEqual(len(cut), 3)
             self.assertEqual(whole[len(whole) - len(cut) + 1:], cut[1:])
-            # one-word sentences have nothing to drop; longer ones always lose a word
             self.assertEqual(len(cut) < len(whole), len(whole) > 3)
 
     def test_the_share_of_cut_sentences_follows_the_probability(self):
@@ -46,7 +43,6 @@ class TruncationTests(unittest.TestCase):
         self.assertEqual(shard.sentences, len(offsets) - 1)
         self.assertTrue((shard.tokens[shard.offsets[:-1]] == BOS).all())
         self.assertTrue((shard.tokens[shard.offsets[1:] - 1] == EOS).all())
-
 
 if __name__ == "__main__":
     unittest.main()

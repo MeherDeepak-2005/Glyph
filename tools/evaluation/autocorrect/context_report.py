@@ -16,7 +16,6 @@ import evaluate as ev
 
 BUCKETS = ((1, 1), (2, 2), (3, 4), (5, 8))
 
-
 def context_words(raw: str, limit: int = 8) -> list[str]:
     word = lambda c: c.isalpha() or c == "'" or ord(c) >= 0x80
     words, end = [], len(raw)
@@ -30,7 +29,6 @@ def context_words(raw: str, limit: int = 8) -> list[str]:
         while start and word(raw[start - 1]): start -= 1
         words.insert(0, raw[start:end].lower()); end = start
     return words
-
 
 def main():
     ap = argparse.ArgumentParser()
@@ -77,7 +75,6 @@ def main():
             line += f'{100 * sum(good) / len(ids):>10.2f}% {mark:1}{p:5.0e}'.replace('e-0', 'e-')
         print(line)
     print('\n+/- : significantly better/worse than base (McNemar p < 0.05); the number after each rate is p.')
-
 
 if __name__ == '__main__':
     main()

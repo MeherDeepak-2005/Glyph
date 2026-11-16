@@ -57,16 +57,12 @@ ESDB_SHA256 = "b24c7392b4aec4adfea0b9322f80f86ab14a3ce13b74825ba2453af38c49ec28"
 
 VERSION = 7
 DICT_SIZE = 60_000
-MIN_WORD_FREQ = 5          # drop one-off OCR/subtitle junk from the long tail
-ESDB70_MIN_FREQ = 50       # size-70 entries require independent frequency evidence
-CONTRACTIONS_KEEP = 500    # corpus-harvested interior-apostrophe words merged into vocab
-CONTRACTIONS_MIN = 2       # the CC0 snapshot is intentionally small and curated
-EMPTY = 0xFFFFFFFF         # trie node without a word (word ids are < 2**31)
+MIN_WORD_FREQ = 5
+ESDB70_MIN_FREQ = 50
+CONTRACTIONS_KEEP = 500
+CONTRACTIONS_MIN = 2
+EMPTY = 0xFFFFFFFF
 
-# Informal apostrophe-less forms frequent in the subtitle corpus. If these ship
-# as vocabulary words the engine can never correct them (dictionary words are
-# never corrected) - stock corrects dont->don't, im->I'm, so we must too. Real
-# words that merely look like these (ill, id, its, hell, well, shed...) stay.
 EXCLUDE = {
     "im", "dont", "cant", "wont", "aint", "didnt", "doesnt", "isnt", "wasnt",
     "arent", "werent", "wouldnt", "couldnt", "shouldnt", "havent", "hasnt",
@@ -86,7 +82,6 @@ EXPANSION_MANIFEST = ROOT / "data" / "english-expansion-v1.manifest.json"
 COREV4_MANIFEST = ROOT / "data" / "corev4" / "english" / "manifest.json"
 LANGDATA_CAP = 10_000_000
 
-
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -94,13 +89,11 @@ def sha256(path: Path) -> str:
             h.update(block)
     return h.hexdigest()
 
-
 def require_hash(path: Path, expected: str) -> Path:
     actual = sha256(path)
     if actual != expected:
         sys.exit(f"checksum mismatch for {path}: expected {expected}, got {actual}")
     return path
-
 
 def fetch(url: str, cache_name: str, expected_sha256: str) -> Path:
     CACHE.mkdir(exist_ok=True)
@@ -109,7 +102,6 @@ def fetch(url: str, cache_name: str, expected_sha256: str) -> Path:
         print(f"downloading {url} ...", flush=True)
         urllib.request.urlretrieve(url, path)
     return require_hash(path, expected_sha256)
-
 
 def corpus_sentences():
     """Yield normalized word tokens from the pinned four-column Tatoeba export."""
@@ -124,7 +116,6 @@ def corpus_sentences():
             tokens = [t for t in tokens if t]
             if tokens:
                 yield tokens[:128]
-
 
 def load_esdb_tiers() -> dict[str, int]:
     """Load the pinned ESDB validity tiers without retaining upstream metadata."""
@@ -143,7 +134,6 @@ def load_esdb_tiers() -> dict[str, int]:
         sys.exit("ESDB snapshot is empty")
     return result
 
-
 def build_vocab() -> list[tuple[str, int]]:
     vocab: list[tuple[str, int]] = []
     seen: set[str] = set()
@@ -156,7 +146,7 @@ def build_vocab() -> list[tuple[str, int]]:
         if freq < MIN_WORD_FREQ or not WORD.match(w):
             continue
         if len(w) == 1 and w not in ("a", "i"):
-            continue                     # stray single letters aren't words
+            continue
         tier = esdb_tiers.get(w)
         if tier is None or (tier == 70 and freq < ESDB70_MIN_FREQ):
             continue
@@ -182,7 +172,6 @@ def build_vocab() -> list[tuple[str, int]]:
                 vocab.append((word, min(freq, 0xFFFFFFFF)))
     return vocab
 
-
 def build_trie(vocab) -> list[list[int]]:
     """Static trie over the vocab, serialized as BFS records (see header doc)."""
 
@@ -204,7 +193,6 @@ def build_trie(vocab) -> list[list[int]]:
             node = nxt
         node.wid = i
 
-    # Subtree max frequency, post-order (explicit stack - no recursion limits).
     maxfreq: dict[int, int] = {}
     stack: list[tuple[N, bool]] = [(root, False)]
     while stack:
@@ -219,8 +207,6 @@ def build_trie(vocab) -> list[list[int]]:
             for c in node.kids.values():
                 stack.append((c, False))
 
-    # BFS serialization: each node's children form one contiguous, label-sorted
-    # block, so the reader walks [firstChild, firstChild+childCount).
     records: list[list[int]] = [[0, 0, 0, root.wid, maxfreq[id(root)]]]
     queue = deque([(0, root)])
     while queue:
@@ -234,7 +220,6 @@ def build_trie(vocab) -> list[list[int]]:
             queue.append((ci, child))
     return records
 
-
 def write_bin(vocab, *, output=None, max_bytes=LANGDATA_CAP) -> None:
     output = Path(output) if output is not None else OUT
     if len(vocab) > 0x7fffffff:
@@ -247,7 +232,6 @@ def write_bin(vocab, *, output=None, max_bytes=LANGDATA_CAP) -> None:
         offsets.append(len(blob))
     trie = build_trie(vocab)
 
-    # Reject an oversized candidate BEFORE replacing the installed artifact.
     expected_bytes = 16 + 4 * len(vocab) + 4 * len(offsets) + 14 * len(trie) + len(blob)
     if expected_bytes > max_bytes:
         raise ValueError(f"language pack exceeds {max_bytes:,} byte cap: {expected_bytes:,}")
@@ -265,7 +249,6 @@ def write_bin(vocab, *, output=None, max_bytes=LANGDATA_CAP) -> None:
         temporary.unlink(missing_ok=True)
     mb = output.stat().st_size / 1e6
     print(f"wrote {output} ({mb:.1f} MB): {len(vocab)} words, {len(trie)} trie nodes")
-
 
 def merge_contractions(vocab: list[tuple[str, int]]) -> list[tuple[str, int]]:
     """The FrequencyWords source strips apostrophes, so the vocab ships with ZERO
@@ -308,7 +291,6 @@ def merge_contractions(vocab: list[tuple[str, int]]) -> list[tuple[str, int]]:
           f"(scale x{scale:.0f}) [{top} ...]")
     return merged
 
-
 def load_expansion(manifest_path: Path):
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("schema_version") != 1 or manifest.get("release_eligible") is not True:
@@ -337,7 +319,6 @@ def load_expansion(manifest_path: Path):
         raise ValueError("manifest vocabulary counts disagree")
     return manifest, vocabulary
 
-
 def merge_expansion(vocab, snapshot):
     if snapshot["baseline_words"] != len(vocab):
         raise ValueError("expansion was prepared for a different baseline")
@@ -353,9 +334,7 @@ def merge_expansion(vocab, snapshot):
                 or not set(entry["sources"]) <= {"esdb", "wordnet", "project"}:
             raise ValueError(f"invalid or duplicate expansion entry: {word}")
         merged[word] = frequency
-    # Glide and key-target readers assume ID order follows frequency: rebuild ALL IDs.
     return sorted(merged.items(), key=lambda entry: (-entry[1], entry[0]))
-
 
 def merge_corev4(vocab):
     """Admit CoreV4 stored forms with a conservative prior of 1 (not an observed count),
@@ -379,14 +358,12 @@ def merge_corev4(vocab):
     print(f"CoreV4: +{len(expanded)-len(vocab)} forms; {len(excluded)} existing contraction-policy exclusions; new prior=1")
     return expanded
 
-
 def build_vocabulary(manifest_path: Path = EXPANSION_MANIFEST) -> list[tuple[str, int]]:
     vocab = merge_contractions(build_vocab())
     manifest, vocabulary = load_expansion(manifest_path)
     vocab = merge_expansion(vocab, vocabulary)
     print(f"expansion: +{manifest['additional_words']} forms from pinned open sources")
     return merge_corev4(vocab)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Build the checksum-verified English KBLM v7 dictionary")
@@ -396,7 +373,6 @@ def main():
     if not args.output.parent.is_dir():
         parser.error(f"output folder does not exist: {args.output.parent}")
     write_bin(build_vocabulary(args.manifest), output=args.output)
-
 
 if __name__ == "__main__":
     main()

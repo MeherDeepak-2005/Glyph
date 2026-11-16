@@ -1,8 +1,5 @@
 import Foundation
 
-/// Platform persistence and synchronization. All live count/learning/undo/keep
-/// policy is owned by the shared native Personalization object: how often the user
-/// committed each word (no word context is kept), and the spellings they confirmed.
 final class UserModel {
     private let storageURLOverride: URL?
     private let state = KBPersonalState()
@@ -10,8 +7,6 @@ final class UserModel {
     private let ioQueue = DispatchQueue(label: "keyboard.usermodel.io", qos: .utility)
     private var nativeCountsCache: KBPersonalCounts?
     private static let maxUnigrams = 4000
-    /// Version 3: unigram counts only. Older files also stored word-pair and word-triple
-    /// counts; loading one drops those and rewrites the file.
     private static let version = 3
     init(storageURL: URL? = nil) { storageURLOverride = storageURL }
     private func locked<T>(_ operation: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return operation() }
@@ -28,8 +23,6 @@ final class UserModel {
     func releaseKeep(_ word: String) { locked { state.releaseKeep(word) } }
     func allowsAdoption(_ word: String, count: Int, lexicon: KBGenerationLexicon) -> Bool { locked { state.allowsAdoption(word, count: count, lexicon: lexicon) } }
     func confirmSpelling(_ word: String) { locked { ensureEpoch(); state.confirm(word) } }
-    // Drop the cached snapshot BEFORE mutating: while it is held, native copy-on-write
-    // must deep-copy the whole personal model on every learning event.
     @discardableResult func pruneIfNeeded() -> Bool { locked { nativeCountsCache = nil; return state.prune() } }
     func learn(word: String) { locked { ensureEpoch(); nativeCountsCache = nil; state.learn(word) } }
     func demote(_ word: String) { locked { let priorEpoch = state.epoch; ensureEpoch(); nativeCountsCache = nil; if priorEpoch == state.epoch { state.demote(word) } } }

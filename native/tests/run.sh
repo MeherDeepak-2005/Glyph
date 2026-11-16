@@ -5,7 +5,6 @@ work_dir=$(mktemp -d "${TMPDIR:-/tmp}/kb-native-tests.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT HUP INT TERM
 langdata="$repo_root/keyboard/langdata.bin"
 model="$repo_root/keyboard/nss-english.nsslm"
-# ASan/UBSan catch unsafe accesses and arithmetic in malformed/truncated fixtures.
 build() {
   "${CXX:-clang++}" -std=c++20 -Wall -Wextra -Werror -g \
     -fsanitize=address,undefined -fno-omit-frame-pointer \
@@ -19,7 +18,6 @@ build EngineTests.cpp engine-tests
 "$work_dir/engine-tests" "$langdata" "$model" "$repo_root" "$repo_root/tools/evaluation/fixtures/shared-engine"
 
 build NeuralLanguageModelTests.cpp nss-tests
-# Tiny random models cover each NSS kernel; the trained model too.
 for fixture in "$repo_root/native/tests/fixtures/nss/"*.nsslm "$model"; do
   [ -f "$fixture" ] || continue
   "$work_dir/nss-tests" "$fixture" "${fixture%.nsslm}.goldens.json" "$langdata"

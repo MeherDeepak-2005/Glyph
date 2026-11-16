@@ -1,11 +1,4 @@
 #!/bin/bash
-# Replays the autocorrect corpora on a connected iPhone (keyboardTests/DeviceBenchmark.swift) and
-# pulls the JSONL into results/ so `evaluate.py score NAME` compares it with Mac runs.
-#   tools/evaluation/autocorrect/device_bench.sh DEVICE_ID NAME [corpus.tsv ...]
-# Default corpora: cases.taps.tsv ext-cases.taps.tsv keep-cases.taps.tsv keystrokes.tsv.
-# langdata.bin, safety.kbguard and the word model nss-english.nsslm go to Documents/bench/in.
-# C++ is built at -Os like evaluate.py build; Swift stays Debug. Needs the developer certificate
-# trusted on the phone.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"; repo="$(cd "$here/../../.." && pwd)"
 device="$1"; name="$2"; shift 2

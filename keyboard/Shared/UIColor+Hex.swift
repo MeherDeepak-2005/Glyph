@@ -1,14 +1,11 @@
 import UIKit
 
-// UIColor hex + blend helpers.
-
 extension UIColor {
 	convenience init(hex: UInt32) {
 		self.init(red: CGFloat((hex >> 16) & 0xFF)/255,
 				  green: CGFloat((hex >> 8) & 0xFF)/255,
 				  blue: CGFloat(hex & 0xFF)/255, alpha: 1)
 	}
-	/// Mix toward another colour. fraction 0 = self, 1 = other.
 	func blended(with other: UIColor, fraction f: CGFloat) -> UIColor {
 		var r1: CGFloat = 0, g1: CGFloat = 0, b1: CGFloat = 0, a1: CGFloat = 0
 		var r2: CGFloat = 0, g2: CGFloat = 0, b2: CGFloat = 0, a2: CGFloat = 0

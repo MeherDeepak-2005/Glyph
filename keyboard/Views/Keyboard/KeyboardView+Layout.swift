@@ -1,7 +1,6 @@
 import UIKit
 
 extension KeyboardView {
-	// MARK: Layout
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -37,7 +36,6 @@ extension KeyboardView {
 		} else if isMediaSearching {
 			mediaSearchHeader?.frame = CGRect(x: 0, y: 0, width: bounds.width,
 				height: EmojiSearchHeader.height)
-			// Over the header's second (results) row: 44pt search row + 48pt results.
 			mediaSearchStrip?.frame = CGRect(x: 6, y: 44, width: max(0, bounds.width - 12), height: 48)
 		} else {
 			suggestionBar.frame = CGRect(x: 0, y: 0, width: bounds.width, height: stripSpace)
@@ -48,10 +46,8 @@ extension KeyboardView {
 		guard W > 0 else { return }
 		let deckOriginX = (bounds.width - W) / 2
 		let unit = max(1, (W - keySpacing*9)/10)
-		unitPitch = unit + keySpacing            // grid-unit scale for tap offsets
-		// Where Z…M start: half a key in from the A…L row's own half-key indent.
+		unitPitch = unit + keySpacing
 		let letterInset = unit*1.5 + keySpacing/2
-		// Stock proportions (393pt: shift/delete 44, 123/emoji 42.5, return 91.6).
 		let modifierW = unit * KeyWidth.modifierUnits
 		func fixed(_ k: KeyWidth) -> CGFloat {
 			switch k {
@@ -65,8 +61,6 @@ extension KeyboardView {
 
 		var y = headerSpace + topPad
 		for row in rows {
-            // Keep Z…M on the existing ten-unit letter grid. Narrowing just the
-            // edge caps must not move letter centers or the glide/touch model.
             if row.count == 9, row.first?.isShift == true,
                 row.dropFirst().dropLast().allSatisfy({ $0.letterBase != nil }) {
                 row[0].frame = CGRect(x: deckOriginX, y: y, width: modifierW, height: rowHeight)

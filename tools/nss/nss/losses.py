@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import torch
 
-
 class ChunkedCrossEntropy(torch.autograd.Function):
     """Rows weighted 0/1 rather than dropped: every batch keeps one shape, so MPS reuses
     its compiled kernels (a boolean-masked row count differs per batch and recompiles)."""
@@ -27,7 +26,6 @@ class ChunkedCrossEntropy(torch.autograd.Function):
             rows, wanted, scale = features[start:start + chunk], targets[start:start + chunk], rows_weight[start:start + chunk]
             log_probabilities = torch.log_softmax(torch.addmm(bias, rows, weight.t()), -1)
             total = total - (log_probabilities.gather(1, wanted[:, None]).squeeze(1) * scale).sum()
-            # d loss / d logits = (softmax - one-hot) per row, times the row's weight
             probabilities = log_probabilities.exp_()
             probabilities[torch.arange(rows.shape[0], device=rows.device), wanted] -= 1
             probabilities *= scale[:, None]
@@ -41,7 +39,6 @@ class ChunkedCrossEntropy(torch.autograd.Function):
     def backward(ctx, grad):
         grad_features, grad_weight, grad_bias = ctx.saved_tensors
         return grad_features * grad, grad_weight * grad, grad_bias * grad, None, None, None
-
 
 def cross_entropy_sum(features: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor,
                       targets: torch.Tensor, chunk: int = 1024, rows_weight: torch.Tensor | None = None) -> torch.Tensor:

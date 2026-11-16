@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Preset-first appearance editor. All edits remain local until Apply, so navigating
-/// back is a real cancel operation and the running extension never observes half a theme.
 struct ThemeStudioView: View {
 	private enum AppearanceSide: String, CaseIterable {
 		case light = "Light"
@@ -245,9 +243,6 @@ struct ThemeStudioView: View {
 	}
 }
 
-/// In-app appearance preview backed by the production UIKit renderer. iOS does not
-/// allow an app to embed or drive its keyboard-extension process, so sharing the exact
-/// view implementation is the deterministic equivalent without duplicating layout.
 private struct KeyboardAppearancePreview: UIViewRepresentable {
 	let accent: KBAccent
 	let customTheme: KBCustomTheme?
