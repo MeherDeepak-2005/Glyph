@@ -60,6 +60,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")
             transliteration = write("tenglish_lexicon.bin", b"tenglish")
+            write("tenglish_guard.bin", b"guard")
             manifest = {
                 "artifacts": {
                     "layout": layout,
@@ -124,6 +125,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")
             transliteration = write("tenglish_lexicon.bin", b"tenglish")
+            write("tenglish_guard.bin", b"guard")
             (root / "telugu_pack_manifest.json").write_text(json.dumps({
                 "artifacts": {"layout": layout, "language_model": language,
                               "transliteration_lexicon": transliteration},
@@ -160,6 +162,7 @@ class ReleaseArtifactVerifierTests(unittest.TestCase):
             layout = write("telugu_layout.kbpack", b"layout")
             language = write("telugu_langdata.bin", b"telugu")
             transliteration = write("tenglish_lexicon.bin", b"tenglish")
+            write("tenglish_guard.bin", b"guard")
             manifest = {
                 "artifacts": {"layout": layout, "language_model": language,
                               "transliteration_lexicon": transliteration},

@@ -63,6 +63,7 @@ __pycache__/
 !keyboard/langdata.bin
 !keyboard/telugu_langdata.bin
 !keyboard/tenglish_lexicon.bin
+!keyboard/tenglish_guard.bin
 *.kbguard
 !keyboard/safety.kbguard
 *.mlpackage/
