@@ -28,11 +28,13 @@ English collisions. A word is left out when the English decoder should keep owni
   - English is the likelier reading: it is an English word and not ENGLISH_BIAS times as
     frequent as Telugu (may, hot, drop, gym). Projected Telugu counts favour English
     spellings (a loanword's spellings collapse onto them, mined pairs hold translations),
-    so English needs only 1/8 of the Telugu count; em (Telugu "what", 8.9x) stays;
+    so English needs only 1/8 of the Telugu count; peru (Telugu "name", 42x) stays;
   - its Telugu word is an English loanword, one with a common English spelling
-    (commitee and cinima are English misspellings of committee and cinema);
-  - it is one keyboard slip (neighbouring key, missing or extra letter, swapped pair)
-    from an English word that is more than 1/SLIP_RATE times as frequent (ti -> to);
+    (commitee and cinima are English misspellings of committee and cinema; kaar is car);
+  - it is one keyboard slip (neighbouring key, missing, extra or doubled letter, swapped
+    pair) from a common English word, one of at least SLIP_COMMON_ENGLISH per million,
+    however frequent it is as Telugu (ki -> i, oc -> of, bigg -> big), or from an English
+    word that is more than 1/SLIP_RATE times as frequent (ti -> to);
   - it is an attested English misspelling (Birkbeck, Holbrook, Aspell, Wikipedia lists)
     of an English word that is more frequent than it is as Telugu (bal for ball).
 """
@@ -87,12 +89,20 @@ ENGLISH_BIAS = 8.0
 SLIP_RATE = 0.01
 # English words rarer than this (per million) are not considered slip targets.
 SLIP_TARGET_FLOOR = 1.0
+# Per-million counts of Telugu and English come from different corpora, and English is the
+# keyboard's language: no spelling one slip from an English word this common is listed,
+# however frequent it is as Telugu (ki for i, oc for of, bigg for big).
+SLIP_COMMON_ENGLISH = 200.0
 # An English spelling at least this long and this frequent (per million) marks a loanword.
 # Mined Aksharantar rows sometimes pair a word with its translation (kosam, "choose"), so
 # the English spelling must also carry this share of the word's romanizations.
 LOANWORD_MIN_LENGTH = 5
 LOANWORD_ENGLISH_FLOOR = 1.0
 LOANWORD_MIN_SHARE = 0.15
+# A shorter English spelling marks a loanword when it is this frequent (per million) and
+# the word's commonest spelling (car, talk); short Telugu spellings often collide with
+# rarer English words (ante, adi, anna) or take a minority English spelling (me for mee).
+LOANWORD_SHORT_ENGLISH_FLOOR = 100.0
 DEFAULT_MAX_WORDS = 20_000
 DEFAULT_MIN_PER_MILLION = 1.0
 # Letter rows and the x position of each row's first key centre, in key widths.
@@ -301,7 +311,8 @@ def select(projected: dict[str, float], best_native: dict[str, str],
             reason = "english_reading_likelier"
         elif best_native[word] in loanwords:
             reason = "english_loanword"
-        elif SLIP_RATE * slip_source.get(word, 0.0) > value:
+        elif slip_source.get(word, 0.0) >= SLIP_COMMON_ENGLISH \
+                or SLIP_RATE * slip_source.get(word, 0.0) > value:
             reason = "english_slip_likelier"
         elif any(phrase_frequency(target, english) > value
                  for target in misspelled.get(word, ())):
@@ -323,15 +334,17 @@ def english_loanwords(pairs: dict[str, collections.Counter],
                       english: dict[str, float]) -> set[str]:
     """Telugu words written for an English one: an attested spelling is a common English word.
 
-    Their other spellings (commitee, cinima) are English misspellings the decoder should fix.
-    Short spellings are skipped: ante, adi and anna are Telugu words that English also lists.
+    Their other spellings (commitee, cinima, kaar, staap) are English misspellings the
+    decoder should fix.
     """
     loanwords = set()
     for native, spellings in pairs.items():
         total = sum(spellings.values())
-        if any(len(latin) >= LOANWORD_MIN_LENGTH
-               and english.get(latin, 0.0) >= LOANWORD_ENGLISH_FLOOR
+        commonest = max(spellings.values())
+        if any(english.get(latin, 0.0) >= LOANWORD_ENGLISH_FLOOR
                and weight >= LOANWORD_MIN_SHARE * total
+               if len(latin) >= LOANWORD_MIN_LENGTH
+               else english.get(latin, 0.0) >= LOANWORD_SHORT_ENGLISH_FLOOR and weight == commonest
                for latin, weight in spellings.items()):
             loanwords.add(native)
     return loanwords

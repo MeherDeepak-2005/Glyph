@@ -223,20 +223,20 @@
     },
     {
       "path": "keyboard/tenglish_guard.bin",
-      "sha256": "91786fae9433592ff31926963c5fe9676fd4f9e99bdf408dd400d4f0e81e5d02",
-      "bytes": 1330179,
+      "sha256": "4a04541ffab6110ac50ca9659da7cf2e0d0f91e5ab8ef86299ef106f33d248bc",
+      "bytes": 1337644,
       "format": "KBTD v1 compact scalar trie (TeluguLexicon), Roman Telugu unigrams in frequency order, no n-grams",
       "builder": "tools/language_packs/build_tenglish_guard.py",
       "purpose": "English decoding keeps these Roman Telugu words as typed: no autocorrect, no spelling corrections",
       "contents": {
         "words": 20000,
-        "trieNodes": 62240
+        "trieNodes": 62646
       },
       "inputs": [
         {
           "name": "Reviewable Roman Telugu unigram list",
           "path": "tools/language_packs/sources/te-IN/tenglish-guard-unigrams.tsv",
-          "sha256": "8cddb4ea9966a9e3004f2b0a372c590ab7a0f08e1b68a74295fdb7cc8b060f06"
+          "sha256": "3395550fa37d685ec66faf793b29cee4f05309e6c64a3b5a5c6ae5c88d2bca09"
         },
         {
           "name": "External dictionary sources",

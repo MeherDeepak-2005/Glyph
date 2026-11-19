@@ -1,22 +1,16 @@
 roman	per_million	telugu
-yea	11731.147	ఈ
 meeru	10665.829	మీరు
 mariyu	9189.803	మరియు
-oka	7694.616	ఒక
 nenu	6460.104	నేను
 miru	5995.179	మీరు
-aa	5786.357	ఆ
 neenu	5533.373	నేను
-lo	5068.536	లో
 yokka	4217.733	యొక్క
 memu	3359.253	మేము
 undi	3234.202	ఉంది
-mee	2920.302	మీ
 naa	2904.200	నా
 undhi	2791.254	ఉంది
 ani	2675.427	అని
 anni	2557.071	అన్ని
-na	2529.876	న
 nundi	2523.883	నుండి
 ledu	2459.310	లేదు
 idi	2457.246	ఇది
@@ -36,13 +30,11 @@ konni	1684.954	కొన్ని
 kaligi	1678.063	కలిగి
 kuda	1677.906	కూడా
 rendu	1659.542	రెండు
-aame	1649.305	ఆమె
 manchi	1556.824	మంచి
 telusu	1490.425	తెలుసు
 aithe	1442.322	అయితే
 adi	1396.308	అది
 chala	1364.395	చాలా
-oc	1282.523	ఒక
 ooka	1281.367	ఒక
 kudi	1219.344	కుడి
 kevalam	1202.759	కేవలం
@@ -66,7 +58,6 @@ naaku	904.272	నాకు
 oa	888.494	ఓ
 varaku	877.357	వరకు
 nu	852.472	ను
-ki	839.987	కి
 madhya	815.160	మధ్య
 chepparu	806.107	చెప్పారు
 chendina	805.166	చెందిన
@@ -85,7 +76,6 @@ laedhu	756.353	లేదు
 samayamlo	755.235	సమయంలో
 kadu	753.497	కాదు
 vaari	730.139	వారి
-sare	729.938	సరే
 kani	719.045	కానీ
 pani	704.852	పని
 emiti	700.691	ఏమిటి
@@ -101,7 +91,6 @@ prajalu	647.383	ప్రజలు
 tirigi	643.966	తిరిగి
 thirigi	643.241	తిరిగి
 nannu	640.537	నన్ను
-sar	639.332	సర్
 thana	632.296	తన
 bayataku	629.715	బయటకు
 vadda	629.251	వద్ద
@@ -109,7 +98,6 @@ comm	615.728	కమ్
 pondandi	614.252	పొందండి
 unnaai	604.633	ఉన్నాయి
 pedda	600.214	పెద్ద
-ru	595.437	రూ
 prathi	592.872	ప్రతి
 ithara	579.934	ఇతర
 manishi	569.608	మనిషి
@@ -141,7 +129,6 @@ aemi	473.321	ఏమి
 chesindi	464.475	చేసింది
 chese	463.577	చేసే
 dayachesi	453.805	దయచేసి
-ni	451.456	ని
 cheyadam	449.614	చేయడం
 chestunnaru	446.471	చేస్తున్నారు
 kante	443.085	కంటే
@@ -152,12 +139,10 @@ valana	439.084	వలన
 dhanyavadalu	435.176	ధన్యవాదాలు
 prastutam	434.221	ప్రస్తుతం
 maaku	431.508	మాకు
-hai	428.648	హే
 prabhutva	423.873	ప్రభుత్వ
 vidhanga	423.759	విధంగా
 vadla	417.409	వద్ద
 paata	417.066	పాత
-ame	416.147	ఆమె
 anukuntunnara	414.932	అనుకుంటున్నారా
 ila	414.480	ఇలా
 oddha	413.814	వద్ద
@@ -218,7 +203,6 @@ dabbulu	333.815	డబ్బు
 gata	333.767	గత
 cheesina	331.849	చేసిన
 baga	331.092	బాగా
-em	331.085	ఏం
 kadhu	330.341	కాదు
 pillalu	330.146	పిల్లలు
 ga	329.587	గా
@@ -242,10 +226,8 @@ teliyadu	308.008	తెలియదు
 jarigindi	307.490	జరిగింది
 mottam	307.440	మొత్తం
 kendra	306.737	కేంద్ర
-hei	306.279	హే
 bhaganga	305.848	భాగంగా
 manthri	305.086	మంత్రి
-burt	305.014	బర్ట్
 prema	304.740	ప్రేమ
 rooju	304.530	రోజు
 unnayi	302.588	ఉన్నాయి
@@ -309,7 +291,6 @@ kaga	256.149	కాగా
 conei	256.077	కానీ
 kaanie	256.077	కానీ
 kaanii	256.077	కానీ
-koney	256.077	కానీ
 ayyo	255.804	అయ్యో
 kaligina	255.379	కలిగిన
 atanini	254.644	అతనిని
@@ -345,7 +326,6 @@ vecchi	235.809	వేచి
 vechi	235.692	వేచి
 gala	234.647	గల
 teliparu	233.037	తెలిపారు
-gd	230.082	గుడ్
 avakaasam	229.817	అవకాశం
 sambandhinchina	229.325	సంబంధించిన
 toli	226.557	తొలి
@@ -370,7 +350,6 @@ kotla	217.947	కోట్ల
 mallhee	217.843	మళ్ళీ
 vela	217.319	వేల
 ardam	215.855	అర్థం
-ade	215.834	అదే
 nela	215.758	నెల
 pelli	215.300	పెళ్లి
 avakasam	214.822	అవకాశం
@@ -429,10 +408,8 @@ uttama	193.150	ఉత్తమ
 padi	192.402	పది
 yedo	192.240	ఏదో
 vaarini	192.069	వారిని
-nee	191.736	నీ
 kontha	191.065	కొంత
 matladataniki	191.012	మాట్లాడటానికి
-inti	190.889	ఇంటి
 indulo	190.879	ఇందులో
 bharya	190.665	భార్య
 chikitsa	190.458	చికిత్స
@@ -484,7 +461,6 @@ ataniki	177.866	అతనికి
 samsdha	176.830	సంస్థ
 samstha	176.283	సంస్థ
 yela	176.003	ఎలా
-anu	175.289	అను
 gaani	175.218	గాని
 undatam	175.104	ఉండటం
 hathya	174.762	హత్య
@@ -548,7 +524,6 @@ und	156.513	అండ్
 cheppataniki	156.018	చెప్పటానికి
 dheenini	155.446	దీనిని
 vundali	154.122	ఉండాలి
-hay	153.844	హే
 gunde	153.839	గుండె
 motham	153.720	మొత్తం
 mottham	153.720	మొత్తం
@@ -602,7 +577,6 @@ polisulu	146.467	పోలీసులు
 nelala	145.560	నెలల
 raa	145.526	రా
 chustunna	145.419	చూస్తున్నా
-sri	145.399	శ్రీ
 gatamlo	145.396	గతంలో
 danini	145.181	దానిని
 cheestunnaanu	145.134	చేస్తున్నాను
@@ -617,7 +591,6 @@ avsaram	143.412	అవసరం
 praarambhinchaaru	143.163	ప్రారంభించారు
 anukunnanu	143.108	అనుకున్నాను
 snehithudu	142.943	స్నేహితుడు
-wasn	142.806	విషయం
 atyanta	142.720	అత్యంత
 agni	142.640	అగ్ని
 gadida	142.538	గాడిద
@@ -842,7 +815,6 @@ aaru	108.799	ఆరు
 saamaajika	108.567	సామాజిక
 charithra	108.457	చరిత్ర
 unnaaru	108.423	ఉన్నారు
-unde	108.278	ఉండే
 paluvuru	108.270	పలువురు
 bhavanam	108.106	భవనం
 jillaaloni	108.105	జిల్లాలోని
@@ -869,7 +841,6 @@ untai	106.694	ఉంటాయి
 unntay	106.681	ఉంటాయి
 untaay	106.681	ఉంటాయి
 vuntae	106.681	ఉంటాయి
-lett	106.581	లెట్
 webb	106.002	వెబ్
 caaru	105.914	కారు
 tarwata	105.895	తర్వాత
@@ -880,7 +851,6 @@ surakshita	104.966	సురక్షిత
 challani	104.947	చల్లని
 bhoomi	104.580	భూమి
 bhuumii	104.521	భూమి
-oke	104.501	ఒకే
 ammayi	104.478	అమ్మాయి
 nethalu	104.454	నేతలు
 adhikanga	104.285	అధికంగా
@@ -908,7 +878,6 @@ sibbandi	102.183	సిబ్బంది
 laekundaa	101.945	లేకుండా
 leekundaa	101.945	లేకుండా
 lekundaa	101.945	లేకుండా
-ene	101.938	ఎన్
 pergu	101.918	పేర్లు
 gurtimpu	101.852	గుర్తింపు
 bhari	101.813	భారీ
@@ -930,7 +899,6 @@ velle	99.893	వెళ్లి
 thala	99.794	తల
 pradhananga	99.163	ప్రధానంగా
 endhukante	99.109	ఎందుకంటే
-shere	99.094	షేర్
 kashtam	99.018	కష్టం
 bharata	98.544	భారత
 sainik	98.423	సైనిక
@@ -1110,15 +1078,12 @@ leni	86.257	లేని
 dhaadhaapu	86.248	దాదాపు
 maata	86.172	మాట
 somavaram	86.051	సోమవారం
-stree	85.910	స్త్రీ
 ichchina	85.903	ఇచ్చిన
 saam	85.842	సామ్
-ram	85.795	రామ్
 talupu	85.768	తలుపు
 aata	85.740	ఆట
 perkonnaaru	85.734	పేర్కొన్నారు
 umdae	85.642	ఉండే
-oo	85.451	ఊ
 avakaasaalu	85.448	అవకాశాలు
 ayyindi	85.167	అయ్యింది
 undagaa	85.102	ఉండగా
@@ -1329,7 +1294,6 @@ entho	73.537	ఎంతో
 sakha	73.460	శాఖ
 anumati	73.421	అనుమతి
 badhinchindi	73.407	బాధించింది
-maan	73.359	మాన్
 chudali	73.325	చూడాలి
 siddhamgaa	73.301	సిద్ధంగా
 kohli	73.300	కోహ్లీ
@@ -1340,7 +1304,6 @@ elaanti	72.882	ఎలాంటి
 brundam	72.877	బృందం
 pattindi	72.845	పట్టింది
 raaw	72.763	రా
-sree	72.721	శ్రీ
 shri	72.687	శ్రీ
 mugimpu	72.650	ముగింపు
 bhaarath	72.565	భారత్
@@ -1389,7 +1352,6 @@ ashistunnamu	71.022	ఆశిస్తున్నాము
 mukhyamaina	70.909	ముఖ్యమైన
 istam	70.812	ఇష్టం
 noru	70.811	నోరు
-intlo	70.804	ఇంట్లో
 niyanthrana	70.787	నియంత్రణ
 rakaala	70.745	రకాల
 ledani	70.710	లేదని
@@ -1447,7 +1409,6 @@ vachi	68.432	వచ్చి
 gatha	68.390	గత
 enni	68.368	ఎన్ని
 rachanalu	68.279	రచనలు
-edo	68.277	ఏదో
 samvatsaraala	68.263	సంవత్సరాల
 teliyadhu	68.263	తెలియదు
 theliyadu	68.263	తెలియదు
@@ -1458,7 +1419,6 @@ kalalu	68.049	కలలు
 bijiga	67.746	బిజీగా
 navvutuu	67.506	నవ్వుతూ
 undalani	67.502	ఉండాలని
-cree	67.482	క్రీ
 uthara	67.480	ఉత్తర
 daniki	67.425	దానికి
 arupu	67.408	అరుపు
@@ -1681,7 +1641,6 @@ prasna	59.584	ప్రశ్న
 cbi	59.537	సీబీఐ
 vasthunna	59.533	వస్తున్న
 adhikaara	59.508	అధికార
-swami	59.485	స్వామి
 pillalaku	59.482	పిల్లలకు
 heroga	59.430	హీరోగా
 aagraham	59.368	ఆగ్రహం
@@ -1710,7 +1669,6 @@ khachchitanga	58.977	ఖచ్చితంగా
 matchlo	58.945	మ్యాచ్‌లో
 cheppu	58.903	చెప్పు
 donga	58.891	దొంగ
-dee	58.856	డీ
 vallu	58.711	వాళ్లు
 priyamaina	58.647	ప్రియమైన
 mathram	58.589	మాత్రం
@@ -1772,7 +1730,6 @@ kshanam	57.070	క్షణం
 priyudu	57.061	ప్రియుడు
 critham	57.043	క్రితం
 dhooramloo	57.025	దూరంలో
-ra	56.998	రా
 pattukoni	56.987	పట్టుకొని
 dillilo	56.976	ఢిల్లీలో
 naayudu	56.967	నాయుడు
@@ -1895,7 +1852,6 @@ gaari	53.648	గారి
 vigraham	53.630	విగ్రహం
 pramaadham	53.617	ప్రమాదం
 paal	53.612	పాల్
-ur	53.563	ఊ
 thivra	53.506	తీవ్ర
 kopam	53.504	కోపం
 yedaadhi	53.491	ఏడాది
@@ -1938,7 +1894,6 @@ gaanam	52.529	గానం
 sthalam	52.524	స్థలం
 mahilaa	52.510	మహిళా
 ashcharyaniki	52.476	ఆశ్చర్యానికి
-raj	52.430	రాజ్
 bharatadesam	52.414	భారతదేశం
 perigina	52.404	పెరిగిన
 chetha	52.347	చేత
@@ -1946,7 +1901,6 @@ tarachu	52.305	తరచూ
 bantullo	52.297	బంతుల్లో
 graamaaniki	52.284	గ్రామానికి
 okey	52.251	ఒకే
-haa	52.175	హా
 alasyanga	52.116	ఆలస్యంగా
 unnadu	52.100	ఉన్నాడు
 tarachuga	52.077	తరచుగా
@@ -1992,7 +1946,6 @@ sadharananga	50.944	సాధారణంగా
 pradarshana	50.911	ప్రదర్శన
 vastuvulu	50.910	వస్తువులు
 kalyaan	50.897	కళ్యాణ్
-ipl	50.840	ఐపీఎల్
 bhaari	50.810	భారీ
 tayaru	50.801	తయారు
 pratyaksha	50.795	ప్రత్యక్ష
@@ -2001,7 +1954,6 @@ ledo	50.791	లేదో
 kaka	50.761	కాక
 prajaa	50.730	ప్రజా
 vydya	50.718	వైద్య
-veru	50.716	వేరు
 vastuvu	50.707	వస్తువు
 rojullo	50.616	రోజుల్లో
 samudram	50.608	సముద్రం
@@ -2030,7 +1982,6 @@ nirvahincharu	50.037	నిర్వహించారు
 padaanni	50.031	పదాన్ని
 taraha	50.026	తరహా
 padinchi	50.018	పాడించి
-mai	49.983	మై
 paadinchi	49.979	పాడించి
 cheesinappudu	49.968	చేసినప్పుడు
 dustulu	49.966	దుస్తులు
@@ -2163,7 +2114,6 @@ kaaryadarsi	47.487	కార్యదర్శి
 janabha	47.483	జనాభా
 chiranjeevi	47.478	చిరంజీవి
 kanugontaru	47.437	కనుగొంటారు
-bai	47.415	బై
 sambamdhinchi	47.391	సంబంధించి
 mukka	47.378	ముక్క
 nimishaala	47.350	నిమిషాల
@@ -2462,7 +2412,6 @@ ranga	41.803	రంగ
 vidhi	41.791	విధి
 ayinappatikee	41.784	అయినప్పటికీ
 pondaaru	41.778	పొందారు
-lyn	41.710	లైన్
 spandana	41.691	స్పందన
 vyaapti	41.655	వ్యాప్తి
 chentunnaavu	41.638	చేస్తున్నావు
@@ -2475,7 +2424,6 @@ dorakaleedu	41.573	దొరకలేదు
 badhyata	41.571	బాధ్యత
 pathrika	41.570	పత్రిక
 pondindi	41.560	పొందింది
-bigg	41.543	బిగ్
 palgonnaru	41.528	పాల్గొన్నారు
 shvaasa	41.513	శ్వాస
 patra	41.506	పాత్ర
@@ -2521,7 +2469,6 @@ pattanham	40.772	పట్టణం
 veediyoo	40.733	వీడియో
 viideo	40.733	వీడియో
 guruvaaram	40.704	గురువారం
-haard	40.703	హార్డ్
 tedi	40.687	తేదీ
 saankethika	40.654	సాంకేతిక
 samkethika	40.654	సాంకేతిక
@@ -2585,11 +2532,9 @@ akkadaa	39.877	ఎక్కడా
 intani	39.824	ఇతని
 naeta	39.819	నేత
 ichhindi	39.798	ఇచ్చింది
-lok	39.762	లోక్
 mudi	39.762	ముడి
 sini	39.755	సినీ
 umtumdani	39.747	ఉంటుందని
-mem	39.735	మేం
 mruti	39.734	మృతి
 chuskoni	39.722	చూసుకొని
 gattigaa	39.718	గట్టిగా
@@ -2891,7 +2836,6 @@ adhikaaramloki	35.657	అధికారంలోకి
 yuddhamlo	35.656	యుద్ధంలో
 bayatiki	35.652	బయటికి
 vellaaru	35.632	వెళ్ళారు
-bok	35.585	బుక్
 varun	35.584	వరుణ్
 prayathnam	35.563	ప్రయత్నం
 medialo	35.562	మీడియాలో
@@ -3004,7 +2948,6 @@ navvuthu	34.205	నవ్వుతూ
 dorukutundani	34.197	దొరుకుతుందని
 bayataki	34.195	బయటికి
 kesunu	34.182	కేసును
-hitu	34.178	హిట్
 chellinchadaaniki	34.164	చెల్లించడానికి
 samayaniki	34.131	సమయానికి
 deenipai	34.057	దీనిపై
@@ -3027,7 +2970,6 @@ prasidha	33.880	ప్రసిద్ధ
 vidyarthulaku	33.880	విద్యార్థులకు
 kavitvam	33.872	కవిత్వం
 pramaadhamloo	33.870	ప్రమాదంలో
-samme	33.859	సమ్మె
 abhimani	33.854	అభిమాని
 podavaina	33.839	పొడవైన
 visraamti	33.812	విశ్రాంతి
@@ -3053,7 +2995,6 @@ koraaru	33.527	కోరారు
 aasaktikaramaina	33.525	ఆసక్తికరమైన
 poyindi	33.504	పోయింది
 veetiloo	33.487	వీటిలో
-neee	33.480	నీరు
 yuvatha	33.473	యువత
 aneda	33.459	అనేది
 aravatam	33.449	అరవటం
@@ -3190,7 +3131,6 @@ aalochistaadu	32.257	ఆలోచిస్తాడు
 alochistadu	32.257	ఆలోచిస్తాడు
 tommidi	32.230	తొమ్మిది
 vrudhaa	32.230	వృధా
-yoo	32.227	యు
 tappanisari	32.221	తప్పనిసరి
 mandiki	32.202	మందికి
 garvanga	32.195	గర్వంగా
@@ -3230,14 +3170,12 @@ samadhi	31.851	సమాధి
 vaatiki	31.847	వాటికి
 raithulu	31.846	రైతులు
 evaroo	31.839	ఎవరో
-loney	31.837	లోనే
 shukravaaram	31.834	శుక్రవారం
 mandhini	31.831	మందిని
 tinadam	31.804	తినడం
 kagitham	31.789	కాగితం
 vyavasthalu	31.787	వ్యవస్థలు
 konthamandhi	31.785	కొంతమంది
-ul	31.785	ఊళ
 guru	31.769	గురు
 ekaraala	31.750	ఎకరాల
 highcourtu	31.749	హైకోర్టు
@@ -3394,7 +3332,6 @@ samvatsaramloo	30.408	సంవత్సరంలో
 vyaadhulu	30.384	వ్యాధులు
 kobbari	30.379	కొబ్బరి
 duram	30.368	దూరం
-bir	30.350	బీర్
 mammalni	30.338	మమ్మల్ని
 vidhamiena	30.313	విధమైన
 nunchae	30.306	నుంచే
@@ -3440,7 +3377,6 @@ kutumbham	29.964	కుటుంబం
 prakriyanu	29.950	ప్రక్రియను
 chalu	29.948	చాలు
 aspatriki	29.933	ఆస్పత్రికి
-orr	29.930	ఆర్
 vipe	29.906	వైపు
 dampathulaku	29.903	దంపతులకు
 anaga	29.894	అనగా
@@ -3460,7 +3396,6 @@ aadhaarita	29.766	ఆధారిత
 lagadam	29.762	లాగడం
 charyalanu	29.757	చర్యలను
 nelaku	29.753	నెలకు
-babi	29.744	బేబీ
 janmincharu	29.743	జన్మించారు
 vaatilo	29.729	వాటిలో
 vaatiloe	29.729	వాటిలో
@@ -3561,7 +3496,6 @@ talupunu	28.986	తలుపును
 badhuluga	28.983	బదులుగా
 badulugaa	28.983	బదులుగా
 vaeru	28.980	వేరు
-cine	28.972	సినీ
 sinii	28.972	సినీ
 khachitamgaa	28.956	ఖచ్చితంగా
 santhoshinchina	28.956	సంతోషించిన
@@ -3587,8 +3521,6 @@ kottadam	28.838	కొట్టడం
 muppu	28.829	ముప్పు
 janthuvulu	28.808	జంతువులు
 jantuvulu	28.808	జంతువులు
-baas	28.803	బాస్
-baass	28.803	బాస్
 saahithya	28.789	సాహిత్య
 cheppukochcharu	28.768	చెప్పుకొచ్చారు
 lakshalu	28.767	లక్షలు
@@ -3680,8 +3612,6 @@ alasyam	28.101	ఆలస్యం
 tisuku	28.090	తీసుకు
 edari	28.077	ఎడారి
 suukshma	28.077	సూక్ష్మ
-rocq	28.076	రాక్
-rokk	28.076	రాక్
 aarts	28.053	ఆర్ట్స్
 cheppalani	28.050	చెప్పాలని
 praarambinchindi	28.050	ప్రారంభించింది
@@ -3765,7 +3695,6 @@ gaddi	27.567	గడ్డి
 naga	27.559	నాగ
 ikkadiki	27.553	ఇక్కడికి
 emaina	27.540	ఏమైనా
-gem	27.525	గేమ్
 modalavutundi	27.525	మొదలవుతుంది
 jookyam	27.515	జోక్యం
 aaa	27.514	ఆయా
@@ -3786,7 +3715,6 @@ varshaalu	27.389	వర్షాలు
 kendramaina	27.374	కేంద్రమైన
 runaalu	27.372	రుణాలు
 swatantrya	27.364	స్వాతంత్ర్య
-phain	27.362	ఫైన్
 cheruvu	27.357	చెరువు
 paartiiloe	27.353	పార్టీలో
 sambandam	27.341	సంబంధం
@@ -3903,12 +3831,10 @@ minchina	26.670	మించిన
 vastondi	26.670	వస్తోంది
 kastham	26.669	కష్టం
 vachey	26.668	వచ్చే
-baaks	26.664	బాక్స్
 sadhinchindi	26.663	సాధించింది
 svayamgaa	26.661	స్వయంగా
 swayamgaa	26.661	స్వయంగా
 thupaakee	26.645	తుపాకీ
-gst	26.639	జీఎస్టీ
 ayurveda	26.616	ఆయుర్వేద
 kaalu	26.611	కాలు
 rastrapathi	26.609	రాష్ట్రపతి
@@ -3933,7 +3859,6 @@ bhaashaa	26.473	భాషా
 pondadam	26.456	పొందడం
 ithani	26.446	ఇతని
 appatlo	26.438	అప్పట్లో
-lain	26.437	లైన్
 venakku	26.431	వెనక్కు
 cheeyaleedu	26.425	చేయలేదు
 adantaa	26.422	అదంతా
@@ -4195,7 +4120,6 @@ paradhiloo	24.803	పరిధిలో
 paridhiloo	24.803	పరిధిలో
 andhuke	24.791	అందుకే
 nduke	24.791	అందుకే
-ey	24.790	ఏయ్
 adavilo	24.765	అడవిలో
 gramala	24.761	గ్రామాల
 musimusi	24.755	ముసిముసి
@@ -4684,7 +4608,6 @@ prasnaku	22.414	ప్రశ్నకు
 sunthing	22.410	సంథింగ్
 prarambhamlo	22.407	ప్రారంభంలో
 chesaanu	22.400	చేసాను
-tivi	22.395	టీవీ
 prabhaavaanni	22.387	ప్రభావాన్ని
 pothe	22.380	పోతే
 anugu	22.379	ఏనుగు
@@ -4832,7 +4755,6 @@ sangatana	21.630	సంఘటన
 maatlaadutundi	21.628	మాట్లాడుతుంది
 prantaniki	21.618	ప్రాంతానికి
 vaare	21.609	వారే
-staap	21.608	స్టాప్
 marcharu	21.598	మార్చారు
 casulu	21.589	కేసులు
 chittooru	21.565	చిత్తూరు
@@ -4934,7 +4856,6 @@ coolchivaceae	21.190	కూల్చివేసి
 korindi	21.190	కోరింది
 haikortu	21.166	హైకోర్టు
 hykoortu	21.166	హైకోర్టు
-ruun	21.164	రన్
 chustu	21.161	చూస్తూ
 rupayalu	21.160	రూపాయలు
 pora	21.153	పొర
@@ -5171,7 +5092,6 @@ danki	20.001	దానికి
 sangeetam	19.994	సంగీతం
 santanam	19.993	సంతానం
 nagaramloo	19.992	నగరంలో
-iar	19.990	ఇయర్
 pettae	19.986	పెట్టే
 santhosham	19.986	సంతోషం
 emukalu	19.973	ఎముకలు
@@ -5179,13 +5099,10 @@ vaesina	19.973	వేసిన
 virigina	19.970	విరిగిన
 inthaku	19.955	ఇంతకు
 kareemnagar	19.952	కరీంనగర్
-jaann	19.949	జాన్
-zohn	19.949	జాన్
 pragathi	19.943	ప్రగతి
 manamu	19.941	మనము
 rakalu	19.936	రకాలు
 pattavachchu	19.932	పట్టవచ్చు
-laya	19.929	లయ
 labhistundi	19.928	లభిస్తుంది
 mundastu	19.921	ముందస్తు
 pratibhanu	19.921	ప్రతిభను
@@ -5232,8 +5149,6 @@ bahirgatham	19.782	బహిర్గతం
 sthanamlo	19.781	స్థానంలో
 roopondinchina	19.779	రూపొందించిన
 bhavishyath	19.776	భవిష్యత్
-juune	19.769	జూన్
-zune	19.769	జూన్
 okaroju	19.766	ఒకరోజు
 namodaindi	19.756	నమోదైంది
 virat	19.755	విరాట్
@@ -5250,8 +5165,6 @@ chithraalanu	19.707	చిత్రాలను
 chitraalanu	19.707	చిత్రాలను
 kothi	19.704	కోతి
 overlalo	19.700	ఓవర్లలో
-paark	19.699	పార్క్
-parq	19.699	పార్క్
 teda	19.697	తేడా
 theda	19.697	తేడా
 sambandhamaina	19.696	సంబంధమైన
@@ -5290,9 +5203,6 @@ mukhyamgaa	19.592	ముఖ్యంగా
 swatantra	19.590	స్వతంత్ర
 kamyuunistu	19.585	కమ్యూనిస్టు
 padaviki	19.580	పదవికి
-joolai	19.579	జూలై
-juuly	19.579	జూలై
-zuly	19.579	జూలై
 daalarlu	19.568	డాలర్లు
 dollarlu	19.568	డాలర్లు
 sambandhaalu	19.567	సంబంధాలు
@@ -5352,8 +5262,6 @@ kurradu	19.366	కుర్రాడు
 tamilnadu	19.363	తమిళనాడు
 aaviri	19.362	ఆవిరి
 chendinadi	19.360	చెందినది
-ciity	19.358	సిటీ
-citi	19.358	సిటీ
 ikapi	19.334	ఇకపై
 anipinchindi	19.326	అనిపించింది
 pappu	19.326	పప్పు
@@ -5473,8 +5381,6 @@ mundugaane	18.902	ముందుగానే
 vyavaharinchaaru	18.900	వ్యవహరించారు
 vick	18.898	విక్
 kendramga	18.897	కేంద్రంగా
-laa	18.892	లా
-laaw	18.892	లా
 thvaraloo	18.890	త్వరలో
 twaraloe	18.890	త్వరలో
 twaraloo	18.890	త్వరలో
@@ -5588,7 +5494,6 @@ balli	18.548	బల్లి
 prachurana	18.546	ప్రచురణ
 sandarbhamgaa	18.543	సందర్భంగా
 vyaapaaraanni	18.542	వ్యాపారాన్ని
-kei	18.534	కీ
 paryatanaku	18.533	పర్యటనకు
 aakupaccha	18.532	ఆకుపచ్చ
 varlala	18.526	వర్గాల
@@ -5687,7 +5592,6 @@ gamanikalu	18.219	గమనికలు
 dravam	18.216	ద్రవం
 kwon	18.213	క్వాన్
 chaesaarani	18.212	చేశారని
-ity	18.212	ఐటీ
 paartiilaku	18.210	పార్టీలకు
 tamilhanaadu	18.210	తమిళనాడు
 rettu	18.207	రేట్లు
@@ -5721,7 +5625,6 @@ nirvahinchi	18.135	నిర్వహించి
 padine	18.135	పాడిన
 puri	18.134	పూరి
 oushadha	18.132	ఔషధ
-daya	18.130	దయ
 teesukoovadam	18.129	తీసుకోవడం
 teesukovadam	18.129	తీసుకోవడం
 tiisukoevadam	18.129	తీసుకోవడం
@@ -5747,7 +5650,6 @@ dheergha	18.066	దీర్ఘ
 diirgha	18.066	దీర్ఘ
 rajashekhar	18.066	రాజశేఖర్
 pratibha	18.064	ప్రతిభ
-qey	18.063	కీ
 looney	18.062	లోనే
 veduka	18.059	వేడుక
 untayani	18.052	ఉంటాయని
@@ -5937,7 +5839,6 @@ kadhanu	17.458	కథను
 mishrama	17.442	మిశ్రమ
 vrutti	17.439	వృత్తి
 musives	17.437	మూసివేసే
-needa	17.434	నీడ
 panicheeshaadu	17.434	పనిచేశాడు
 panicheshaadu	17.434	పనిచేశాడు
 kaluva	17.431	కాలువ
@@ -6056,7 +5957,6 @@ andukuntaru	17.098	అందుకుంటారు
 ichcharani	17.095	ఇచ్చారని
 gunam	17.092	గుణం
 perkonnaadu	17.091	పేర్కొన్నాడు
-hitt	17.089	హిట్
 gadulu	17.088	గదులు
 deetaa	17.085	డేటా
 detaa	17.085	డేటా
@@ -6158,7 +6058,6 @@ prothsahistunnaaru	16.804	ప్రోత్సహిస్తున్నార
 raashtraaniki	16.803	రాష్ట్రానికి
 maamsam	16.799	మాంసం
 sangga	16.799	సరిగ్గా
-armi	16.797	ఆర్మీ
 bandhuvulu	16.795	బంధువులు
 srisailam	16.789	శ్రీశైలం
 puraana	16.780	పురాణ
@@ -6337,7 +6236,6 @@ merugina	16.338	మెరుగైన
 prasangam	16.334	ప్రసంగం
 vattidi	16.333	వత్తిడి
 pratinidhi	16.332	ప్రతినిధి
-philm	16.329	ఫిల్మ్
 jeevulu	16.328	జీవులు
 bhaavimchaadu	16.325	భావించాడు
 bhaavinchaadu	16.325	భావించాడు
@@ -6433,7 +6331,6 @@ goa	16.067	గోవా
 povadam	16.064	పోవడం
 adhikam	16.061	అధికం
 vidhaanaalu	16.061	విధానాలు
-bitt	16.059	బిట్
 marokari	16.057	మరొకరి
 perkontunnaru	16.043	పేర్కొంటున్నారు
 birudu	16.042	బిరుదు
@@ -6729,7 +6626,6 @@ krishi	15.308	కృషి
 kaarlu	15.305	కార్లు
 karlu	15.305	కార్లు
 raashtraallo	15.303	రాష్ట్రాల్లో
-baack	15.299	బ్యాక్
 bakk	15.299	బ్యాక్
 narayanan	15.291	నారాయణ
 vellhu	15.291	వెళ్ళు
@@ -6764,7 +6660,6 @@ cheppalsi	15.213	చెప్పాల్సి
 chestarani	15.212	చేస్తారని
 tindiki	15.208	తిండికి
 dhaggaraku	15.204	దగ్గరకు
-guun	15.203	గన్
 merugu	15.199	మెరుగు
 veddi	15.197	వెఱ్ఱి
 chere	15.193	చేరే
@@ -6874,7 +6769,6 @@ atalo	14.996	ఆటలో
 maruthi	14.994	మారుతి
 premaloki	14.993	ప్రేమలో
 bhama	14.989	భామ
-eta	14.988	ఏట
 mailla	14.987	మైళ్ళ
 kantiki	14.983	కంటికి
 nindina	14.983	నిండిన
@@ -6936,7 +6830,6 @@ artiste	14.852	ఆర్టిస్ట్
 chesukoovadam	14.850	చేసుకోవడం
 prana	14.850	ప్రాణ
 tanikeel	14.850	తనిఖీలు
-pak	14.844	పాక్
 pratyaekimchi	14.836	ప్రత్యేకించి
 vara	14.831	వార
 sahakaara	14.830	సహకార
@@ -7055,7 +6948,6 @@ piliche	14.574	పిలిచే
 anadam	14.569	అనడం
 vipattu	14.568	విపత్తు
 ootami	14.567	ఓటమి
-shaat	14.565	షాట్
 hayaamloo	14.564	హయాంలో
 raajinaamaa	14.563	రాజీనామా
 srushti	14.559	సృష్టి
@@ -7331,7 +7223,6 @@ laghu	13.998	లఘు
 manasunu	13.996	మనసును
 idella	13.991	ఐదేళ్ల
 antunaru	13.990	అంటున్నారు
-tr	13.990	టీఆర్
 cheskuna	13.986	చేసుకున్న
 cheskunna	13.986	చేసుకున్న
 rutte	13.979	రూట్
@@ -7602,7 +7493,6 @@ yugam	13.472	యుగం
 konasagi	13.471	కొనసాగి
 vatavaranam	13.468	వాతావరణం
 hegde	13.464	హెగ్డే
-aam	13.461	ఆమ్
 aakattukunnaayi	13.458	ఆకట్టుకున్నాయి
 kortulo	13.456	కోర్టులో
 niilam	13.455	నీలం
@@ -7663,7 +7553,6 @@ polchi	13.341	పోల్చి
 manushula	13.338	మనుషుల
 swasthalam	13.338	స్వస్థలం
 inko	13.332	ఇంకో
-ara	13.331	అర
 vaarasathva	13.327	వారసత్వ
 varasatva	13.327	వారసత్వ
 anasuya	13.322	అనసూయ
@@ -7702,7 +7591,6 @@ aiduguru	13.273	ఐదుగురు
 imran	13.270	ఇమ్రాన్
 kutumbamtho	13.267	కుటుంబంతో
 pramukhyata	13.263	ప్రాముఖ్యత
-trai	13.261	ట్రై
 tapassu	13.258	తపస్సు
 kurnoolu	13.257	కర్నూలు
 pramukhula	13.253	ప్రముఖుల
@@ -8038,7 +7926,6 @@ gadiloo	12.698	గదిలో
 sivudu	12.694	శివుడు
 dinotsavam	12.692	దినోత్సవం
 sadalinchindi	12.691	సడలించింది
-gurl	12.689	గర్ల్
 kaavalani	12.687	కావాలని
 kavalani	12.687	కావాలని
 srinivaas	12.687	శ్రీనివాస్
@@ -8099,11 +7986,9 @@ monnati	12.605	మొన్నటి
 kshamaapana	12.600	క్షమాపణ
 kendramgaa	12.598	కేంద్రంగా
 kendrangaa	12.598	కేంద్రంగా
-secons	12.598	సెకన్లు
 mato	12.594	మాతో
 patala	12.590	పాటల
 grahinchina	12.583	గ్రహించిన
-itzz	12.583	ఇట్
 modatlo	12.578	మొదట్లో
 nidhula	12.575	నిధుల
 karentu	12.573	కరెంటు
@@ -8484,7 +8369,6 @@ vaesae	12.028	వేసే
 prantam	12.026	ప్రాంతం
 paksham	12.025	పక్షం
 nelakondhi	12.022	నెలకొంది
-seema	12.019	సీమ
 aanakatta	12.016	ఆనకట్ట
 chinnachinna	12.016	చిన్నచిన్న
 vishaakha	12.014	విశాఖ
@@ -8677,7 +8561,6 @@ shariraka	11.734	శారీరక
 godalu	11.733	గోడలు
 bandhinchi	11.730	బంధించి
 moodo	11.730	మూడో
-bead	11.729	బెడ్
 amramamlo	11.728	ఆశ్రమంలో
 vaardu	11.728	వార్డు
 ichi	11.727	ఇచ్చి
@@ -8751,7 +8634,6 @@ bharatadesa	11.638	భారతదేశ
 bharathadesa	11.638	భారతదేశ
 darmaraju	11.636	ధర్మరాజు
 dharmaraaju	11.636	ధర్మరాజు
-taam	11.636	టామ్
 padaalu	11.634	పదాలు
 padhaalu	11.634	పదాలు
 thiru	11.633	తీరు
@@ -8990,7 +8872,6 @@ cheppalenu	11.327	చెప్పలేను
 ontari	11.324	ఒంటరి
 pooshinchaadu	11.324	పోషించాడు
 velugulooki	11.324	వెలుగులోకి
-boks	11.321	బాక్స్
 pondaayi	11.321	పొందాయి
 vruksha	11.319	వృక్ష
 nouka	11.317	నౌక
@@ -9050,7 +8931,6 @@ cheyyabadimdi	11.251	చెయ్యబడింది
 cheyyabadindhi	11.251	చెయ్యబడింది
 laksha	11.248	లక్షా
 cheshaarani	11.247	చేశారని
-sixes	11.247	సిక్స్
 uttamamina	11.246	ఉత్తమమైన
 va	11.246	వా
 saastriya	11.244	శాస్త్రీయ
@@ -9194,7 +9074,6 @@ pedalaku	11.080	పేదలకు
 nikara	11.078	నికర
 baludi	11.076	బాలుడి
 gaand	11.076	గాను
-rel	11.076	రియల్
 debbatinna	11.073	దెబ్బతిన్న
 nadaggar	11.072	నాదగ్గర
 vaareega	11.071	వారీగా
@@ -9285,7 +9164,6 @@ samudramloo	10.975	సముద్రంలో
 rajdhani	10.974	రాజధాని
 thupaakulu	10.972	తుపాకులు
 tupakulu	10.972	తుపాకులు
-kar	10.971	కార్
 jana	10.970	జన
 payintlu	10.970	పాయింట్లు
 pointlu	10.970	పాయింట్లు
@@ -9581,7 +9459,6 @@ vinasanam	10.611	వినాశనం
 nag	10.607	నాగ్
 penchindi	10.606	పెంచింది
 loga	10.605	లోగా
-musi	10.603	మూసీ
 kurgayala	10.600	కూరగాయల
 pakkanee	10.596	పక్కనే
 iteevale	10.595	ఇటీవలే
@@ -9631,7 +9508,6 @@ praarambhamiena	10.553	ప్రారంభమైన
 bhaagaana	10.551	భాగాన
 nayeem	10.551	నయీం
 ramuni	10.550	రాముని
-nera	10.546	నేర
 varake	10.546	వరకే
 deepam	10.542	దీపం
 sanchika	10.539	సంచిక
@@ -9655,7 +9531,6 @@ sailini	10.516	శైలిని
 svayam	10.516	స్వయం
 telivi	10.513	తెలివి
 erpaatuku	10.512	ఏర్పాటుకు
-lav	10.511	లవ్
 adhikaaraanni	10.510	అధికారాన్ని
 adlukunnaru	10.510	అడ్డుకున్నారు
 padhavini	10.505	పదవిని
@@ -9729,7 +9604,6 @@ thelindi	10.417	తేలింది
 vimarsakula	10.417	విమర్శకుల
 kottadu	10.416	కొట్టాడు
 pampaaru	10.415	పంపారు
-luv	10.414	లవ్
 mothanni	10.414	మొత్తాన్ని
 patakam	10.414	పతకం
 gowravam	10.413	గౌరవం
@@ -9908,14 +9782,12 @@ chesaarani	10.224	చేశారని
 poota	10.224	పూట
 mirchi	10.223	మిర్చి
 mudhra	10.223	ముద్ర
-aak	10.221	లాక్
 aakulanu	10.221	ఆకులను
 laac	10.221	లాక్
 laak	10.221	లాక్
 laaq	10.221	లాక్
 lac	10.221	లాక్
 locq	10.221	లాక్
-lokk	10.221	లాక్
 adrushyam	10.219	అదృశ్యం
 chellimpulanu	10.219	చెల్లింపులను
 directorga	10.219	డైరెక్టర్‌గా
@@ -9946,7 +9818,6 @@ teskocche	10.193	తీసుకొచ్చే
 kaaryakalaapaalanu	10.192	కార్యకలాపాలను
 suuchanalanu	10.192	సూచనలను
 stambhimpa	10.190	స్తంభింప
-jaan	10.188	జాన్
 avutoemdi	10.187	అవుతోంది
 avutoondhi	10.187	అవుతోంది
 paalanaa	10.187	పాలనా
@@ -10103,7 +9974,6 @@ umdadamtoe	10.005	ఉండడంతో
 undadamtho	10.005	ఉండడంతో
 chennailoo	10.002	చెన్నైలో
 pratyekamaina	10.002	ప్రత్యేకమైన
-pari	10.000	పరి
 gananiyamaina	9.997	గణనీయమైన
 anuvadinchaaru	9.995	అనువదించారు
 empeaga	9.995	ఎంపీగా
@@ -10218,7 +10088,6 @@ haajarayyaaru	9.892	హాజరయ్యారు
 lakshmana	9.887	లక్ష్మణ
 anuvugaa	9.885	అనువుగా
 vimanasrayaniki	9.885	విమానాశ్రయానికి
-juun	9.884	జూన్
 plu	9.881	పాలు
 vidvansudu	9.879	విద్వాంసుడు
 ghanamgaa	9.878	ఘనంగా
@@ -10238,7 +10107,6 @@ roopondhinchaaru	9.864	రూపొందించారు
 roopondinchaaru	9.864	రూపొందించారు
 ruupomdimchaaru	9.864	రూపొందించారు
 graamaalu	9.863	గ్రామాలు
-jd	9.861	జేడీ
 vidhaanamlo	9.858	విధానంలో
 vidhaanamloo	9.858	విధానంలో
 andukundi	9.857	అందుకుంది
@@ -10308,7 +10176,6 @@ parishiilinchi	9.793	పరిశీలించి
 parisilinchi	9.793	పరిశీలించి
 bhaagaalugaa	9.791	భాగాలుగా
 chattamlo	9.790	చట్టంలో
-juli	9.789	జూలై
 thintaaru	9.788	తింటారు
 antar	9.787	అంతర
 kottindi	9.787	కొట్టింది
@@ -10843,7 +10710,6 @@ endu	9.256	ఎండు
 dustulanu	9.255	దుస్తులను
 pilupunichaaru	9.255	పిలుపునిచ్చారు
 teck	9.253	టెక్
-tek	9.253	టెక్
 yantra	9.253	యంత్ర
 ghatanaa	9.252	ఘటనా
 singareni	9.252	సింగరేణి
@@ -10991,7 +10857,6 @@ gaajulu	9.128	గాజులు
 adigindi	9.127	అడిగింది
 palli	9.127	పల్లి
 braden	9.126	బ్రాడెన్
-livin	9.126	లివిన్
 nadumupai	9.126	నడుముపై
 nirdharinchukovali	9.126	నిర్ధారించుకోవాలి
 pokar	9.126	పోకర్
@@ -11002,7 +10867,6 @@ maataku	9.124	మాటకు
 kalpinchindhi	9.123	కల్పించింది
 kshaya	9.123	క్షయ
 paamu	9.122	పాము
-phine	9.121	ఫైన్
 telivigaa	9.120	తెలివిగా
 rechagotti	9.119	రెచ్చగొట్టే
 roopaanni	9.119	రూపాన్ని
@@ -11097,10 +10961,6 @@ theertham	9.067	తీర్థం
 maddi	9.066	మడ్డి
 pooru	9.065	పోరు
 ninditudini	9.063	నిందితుడిని
-nyues	9.063	న్యూస్
-nyus	9.063	న్యూస్
-nyuss	9.063	న్యూస్
-nyuus	9.063	న్యూస్
 rajadhanula	9.063	రాజధానుల
 sinimaalaloe	9.062	సినిమాలలో
 adavulalo	9.058	అడవులలో
@@ -11144,7 +11004,6 @@ ventaadukune	9.048	వెంటాడుకునే
 zachari	9.048	జాచారి
 geylupu	9.047	గెలుపు
 oppandaalu	9.046	ఒప్పందాలు
-vill	9.045	విల్
 avvadam	9.042	అవ్వడం
 bahubali	9.041	బాహుబలి
 vaadana	9.041	వాదన
@@ -11316,7 +11175,6 @@ mundasthu	8.896	ముందస్తు
 prajaaswaamya	8.895	ప్రజాస్వామ్య
 okadanni	8.893	ఒకదాన్ని
 viswadabhirama	8.892	విశ్వదాభిరామ
-bhakts	8.888	బాక్స్
 kalupukoni	8.888	కలుపుకొని
 subbareddy	8.886	సుబ్బారెడ్డి
 ivvaledu	8.885	ఇవ్వలేదు
@@ -11614,7 +11472,6 @@ varnana	8.610	వర్ణన
 intiperu	8.609	ఇంటిపేరు
 pakshamlo	8.609	పక్షంలో
 chebutunnaayi	8.607	చెబుతున్నాయి
-iast	8.607	ఈస్ట్
 bhagaluga	8.606	భాగాలుగా
 vachay	8.604	వచ్చాయి
 aprillo	8.603	ఏప్రిల్‌లో
@@ -11822,8 +11679,6 @@ kashtaalu	8.455	కష్టాలు
 nyayamaina	8.455	న్యాయమైన
 nagireddy	8.454	నాగిరెడ్డి
 avasaraalanu	8.453	అవసరాలను
-vann	8.453	వన్
-vass	8.453	వన్
 stadiumlo	8.451	స్టేడియంలో
 avasaraala	8.450	అవసరాల
 amdukumdi	8.449	అందుకుంది
@@ -11996,7 +11851,6 @@ dharunam	8.293	దారుణం
 konasaagutunna	8.292	కొనసాగుతున్న
 okkati	8.292	ఒక్కటి
 poraataalu	8.290	పోరాటాలు
-haalf	8.289	హాఫ్
 halph	8.289	హాఫ్
 parimitha	8.289	పరిమిత
 pramukhamaina	8.287	ప్రముఖమైన
@@ -12052,7 +11906,6 @@ polchadam	8.242	పోల్చడం
 chadivindi	8.241	చదివింది
 darshakatvam	8.241	దర్శకత్వం
 galilo	8.240	గాలిలో
-julai	8.240	జులై
 apnichaesaaru	8.238	పనిచేసారు
 loeniki	8.238	లోనికి
 looniki	8.238	లోనికి
@@ -12106,8 +11959,6 @@ prayatnistundi	8.208	ప్రయత్నిస్తుంది
 yerpadi	8.208	ఏర్పడి
 unnatuvanti	8.207	ఉన్నటువంటి
 ethugada	8.205	ఎత్తుగడ
-caar	8.204	కార్
-kaar	8.204	కార్
 moosivesindi	8.203	మూసివేసింది
 musivesindi	8.203	మూసివేసింది
 prantalu	8.203	ప్రాంతాలు
@@ -12117,10 +11968,7 @@ prajaswamya	8.202	ప్రజాస్వామ్యంలో
 gananeeyamga	8.201	గణనీయంగా
 gananeeyangaa	8.201	గణనీయంగా
 pravaaha	8.201	ప్రవాహ
-vaal	8.201	వాల్
 vidhamuga	8.201	విధముగా
-waall	8.201	వాల్
-wal	8.201	వాల్
 aasa	8.199	ఆశ
 raagaane	8.199	రాగానే
 hinduvula	8.198	హిందువుల
@@ -12430,7 +12278,6 @@ machha	7.954	మచ్చ
 udrikta	7.954	ఉద్రిక్త
 beerl	7.953	బీర్లు
 beerlu	7.953	బీర్లు
-ree	7.953	రీ
 reee	7.953	రీ
 unnappude	7.953	ఉన్నప్పుడే
 kharchulanu	7.951	ఖర్చులను
@@ -12557,7 +12404,6 @@ pondataniki	7.866	పొందటానికి
 ramagundam	7.866	రామగుండం
 aamla	7.865	ఆమ్ల
 pilavabadee	7.865	పిలవబడే
-vit	7.865	విత్
 eenadu	7.863	ఈనాడు
 polalu	7.863	పొలాలు
 prabhaavaaniki	7.863	ప్రభావానికి
@@ -12692,7 +12538,6 @@ pranalaku	7.773	ప్రాణాలకు
 sargent	7.773	సార్జెంట్
 vidhaana	7.773	విధాన
 janaalu	7.770	జనాలు
-kear	7.770	కేర్
 vaallhaku	7.770	వాళ్లకు
 danilo	7.767	దానిలో
 gayani	7.767	గాయని
@@ -12758,7 +12603,6 @@ sthaanaalaku	7.720	స్థానాలకు
 batvaadaa	7.719	బట్వాడా
 ceyalanukune	7.718	చేయాలనుకునే
 cheruvulo	7.718	చెరువులో
-swatch	7.718	స్వేచ్చ
 upayoginchukovachu	7.718	ఉపయోగించుకోవచ్చు
 vivaranalu	7.718	వివరణలు
 lobadi	7.716	లోబడి
@@ -13462,7 +13306,6 @@ paluvuri	7.280	పలువురి
 ratnalu	7.280	రత్నాలు
 daggarlo	7.279	దగ్గర్లో
 prantiya	7.279	ప్రాంతీయ
-taalk	7.279	టాక్
 talq	7.279	టాక్
 sthaayilu	7.278	స్థాయిలు
 undantu	7.278	ఉందంటూ
@@ -13818,7 +13661,6 @@ thallidandrulato	7.069	తల్లిదండ్రులతో
 kadagadam	7.068	కడగడం
 zirconium	7.068	జిర్కోనియం
 pavitramaina	7.067	పవిత్రమైన
-tema	7.067	తేమ
 theema	7.067	తేమ
 polisthe	7.065	పోలిస్తే
 pattanallo	7.063	పట్టణాల్లో
@@ -13908,7 +13750,6 @@ thalaku	7.014	తలకు
 ibbandulanu	7.013	ఇబ్బందులను
 partilo	7.013	పార్టీలో
 bashalo	7.012	భాషలో
-liqe	7.012	లైక్
 pradhaniki	7.012	ప్రధానికి
 droham	7.010	ద్రోహం
 narasimhaaraavu	7.009	నరసింహారావు
@@ -14028,7 +13869,6 @@ pilichevaru	6.938	పిలిచేవారు
 untondi	6.938	ఉంటోంది
 utubelo	6.938	యూట్యూబ్‌లో
 vidichipetti	6.938	విడిచిపెట్టి
-yee	6.938	యీ
 saanubhuuti	6.937	సానుభూతి
 marchandi	6.936	మార్చండి
 ragi	6.936	రాగి
@@ -14291,7 +14131,6 @@ mokkulu	6.797	మొక్కులు
 ayoomayam	6.796	అయోమయం
 mantriga	6.796	మంత్రిగా
 paaripooyina	6.795	పారిపోయిన
-vare	6.795	వారే
 jiva	6.794	జీవ
 paryaveekshanha	6.794	పర్యవేక్షణ
 japanlo	6.793	జపాన్‌లో
@@ -14400,7 +14239,6 @@ vyakthigathamga	6.740	వ్యక్తిగతంగా
 vyaktigathamga	6.740	వ్యక్తిగతంగా
 vyaktigathamgaa	6.740	వ్యక్తిగతంగా
 addham	6.739	అద్దం
-dier	6.739	డియర్
 khaleega	6.739	ఖాళీగా
 perugutai	6.739	పెరుగుతాయి
 saktiki	6.739	శక్తికి
@@ -14986,7 +14824,6 @@ vanka	6.449	వంక
 vastunnaaru	6.449	వస్తున్నారు
 anukarana	6.447	అనుకరణ
 unikilo	6.446	ఉనికిలో
-pok	6.445	పాక్
 aarm	6.444	ఆర్మ్
 bahiramgamgaa	6.444	బహిరంగంగా
 bahirangamga	6.444	బహిరంగంగా
@@ -15263,7 +15100,6 @@ praamthaalu	6.327	ప్రాంతాలు
 praantaalu	6.327	ప్రాంతాలు
 praanthaalu	6.327	ప్రాంతాలు
 prasnaapatram	6.326	ప్రశ్నాపత్రం
-tej	6.325	తేజ్
 velumulo	6.325	వేలంలో
 kia	6.324	కియా
 qea	6.324	కియా
@@ -15468,8 +15304,6 @@ visesham	6.235	విశేషం
 chaerchaaru	6.233	చేర్చారు
 modalupettaadu	6.232	మొదలుపెట్టాడు
 chitta	6.231	చిత్త
-bloo	6.230	బ్లూ
-bluue	6.230	బ్లూ
 matladaledu	6.230	మాట్లాడలేదు
 vyaparala	6.230	వ్యాపారాల
 ammavariki	6.229	అమ్మవారికి
@@ -15506,7 +15340,6 @@ chandrasekhar	6.219	చంద్రశేఖర్
 karyalayaniki	6.219	కార్యాలయానికి
 valmiki	6.219	వాల్మీకి
 mottamu	6.217	మొత్తము
-taun	6.217	టౌన్
 naama	6.216	నామ
 vaddane	6.216	వద్దనే
 paalgonaadu	6.214	పాల్గొన్నాడు
@@ -15756,7 +15589,6 @@ sandarbhalu	6.106	సందర్భాలు
 angikarinchadam	6.105	అంగీకరించడం
 choostam	6.105	చూస్తాం
 icchinaa	6.105	ఇచ్చినా
-paart	6.105	పార్ట్
 pakshalu	6.105	పక్షాలు
 nirudyogulu	6.103	నిరుద్యోగులు
 paadae	6.103	పాడే
@@ -15781,7 +15613,6 @@ sanvatsaraniki	6.098	సంవత్సరానికి
 dakshinaaphrikaa	6.097	దక్షిణాఫ్రికా
 eduraina	6.097	ఎదురైనా
 kuchipudi	6.097	కూచిపూడి
-phram	6.096	ఫ్రం
 rachanaku	6.096	రచనకు
 akattukune	6.095	ఆకట్టుకునే
 narsimha	6.095	నరసింహ
@@ -15816,7 +15647,6 @@ bhayamtoe	6.081	భయంతో
 bhayamtoo	6.081	భయంతో
 dvandva	6.081	ద్వంద్వ
 lenidi	6.081	లేనిది
-jook	6.080	జోక్
 pourula	6.080	పౌరుల
 rupaanni	6.080	రూపాన్ని
 vimarsha	6.080	విమర్శ
@@ -16296,7 +16126,6 @@ pustakanni	5.903	పుస్తకాన్ని
 ugravaad	5.901	ఉగ్రవాద
 ugravaada	5.901	ఉగ్రవాద
 vugravaada	5.901	ఉగ్రవాద
-ivae	5.900	ఇవే
 sekarinche	5.900	సేకరించే
 yajamanyamalo	5.900	యాజమాన్యంలో
 meenan	5.899	మీనన్
@@ -16607,7 +16436,6 @@ vumdae	5.769	వుండే
 vunday	5.769	వుండే
 vundee	5.769	వుండే
 cheyyatam	5.768	చెయ్యటం
-galf	5.767	గల్ఫ్
 saktigaa	5.766	శక్తిగా
 vatine	5.766	వాటినే
 jammoo	5.765	జమ్మూ
@@ -17625,7 +17453,6 @@ jabitalanu	5.362	జాబితాలను
 konasaginchenduku	5.362	కొనసాగించేందుకు
 silaa	5.362	శిలా
 evarikaina	5.360	ఎవరికైనా
-qute	5.360	క్యూట్
 reputunnayi	5.360	రేపుతున్నాయి
 siddamavuthondi	5.360	సిద్ధమవుతోంది
 tidipilo	5.360	టిడిపిలో
@@ -18137,7 +17964,6 @@ isthea	5.189	ఇస్తే
 kamineni	5.189	కామినేని
 itadini	5.187	ఇతడిని
 vaataala	5.187	వాటాల
-gete	5.186	గేట్
 millionlu	5.186	మిలియన్లు
 sikkulu	5.186	సిక్కులు
 prayatnaalaku	5.185	ప్రయత్నాలకు
@@ -18199,7 +18025,6 @@ hindheelo	5.168	హిందీలో
 hindhielo	5.168	హిందీలో
 padadu	5.168	పాడాడు
 vacchayani	5.168	వచ్చాయని
-secon	5.166	సెకనుకు
 jarigai	5.165	జరిగాయి
 jalalanu	5.163	జలాలను
 merugudala	5.163	మెరుగుదల
@@ -18603,7 +18428,6 @@ vyaktitva	5.033	వ్యక్తిత్వ
 thelusukoni	5.032	తెలుసుకొని
 vasin	5.032	వేసిన
 rasaanni	5.031	రసాన్ని
-ruum	5.031	రూం
 tokanu	5.031	తోకను
 kaluvalu	5.030	కాలువలు
 maasamlo	5.030	మాసంలో
@@ -18842,7 +18666,6 @@ paschimagodavari	4.963	పశ్చిమగోదావరి
 vikraya	4.963	విక్రయ
 aaharalu	4.962	ఆహారాలు
 pourudu	4.962	పౌరుడు
-cadre	4.961	క్యాడర్
 gutiki	4.961	గూటికి
 hodaalo	4.961	హోదాలో
 istunnatlu	4.961	ఇస్తున్నట్లు
@@ -19049,7 +18872,6 @@ cheyutha	4.896	చేయూత
 premikulu	4.896	ప్రేమికులు
 vaivaahika	4.896	వైవాహిక
 vellipoyindhi	4.896	వెళ్ళిపోయింది
-juulai	4.895	జూలై
 sikshakudu	4.895	శిక్షకుడు
 vellaanu	4.895	వెళ్ళాను
 aelukalu	4.894	ఎలుకలు
@@ -19156,7 +18978,6 @@ adhyakshunigaa	4.863	అధ్యక్షునిగా
 goppalu	4.862	గొప్పలు
 pillaluga	4.862	పిల్లలుగా
 pradhan	4.862	ప్రధాన్
-rann	4.862	రాన్
 trymasic	4.862	త్రైమాసిక
 adhbhutanga	4.861	అద్భుతంగా
 palpaduthunna	4.861	పాల్పడుతున్న
@@ -19507,7 +19328,6 @@ prarthanal	4.774	ప్రార్థనల
 rumaalu	4.774	రుమాలు
 teta	4.774	తేట
 undipoyayi	4.774	ఉండిపోయాయి
-baad	4.773	బాద్
 baadhitulaku	4.773	బాధితులకు
 kshetraniki	4.773	క్షేత్రానికి
 saaraanni	4.773	సారాన్ని
@@ -19999,3 +19819,183 @@ kanugonda	4.636	కనుగొన్న
 vantenalu	4.636	వంతెనలు
 chesinattuga	4.635	చేసినట్టుగా
 cheyanu	4.635	చేయను
+padandi	4.635	పదండి
+vinipistu	4.635	వినిపిస్తూ
+nagaraala	4.633	నగరాల
+annapurna	4.632	అన్నపూర్ణ
+avatarinchindi	4.632	అవతరించింది
+batwaadaa	4.632	బట్వాడా
+maza	4.632	మజా
+ashrama	4.631	ఆశ్రమ
+dhinam	4.631	దినం
+dinum	4.631	దినం
+oksari	4.631	ఒకేసారి
+puppodi	4.631	పుప్పొడి
+restarentlu	4.631	రెస్టారెంట్లు
+viyogam	4.631	వియోగం
+vachinattu	4.630	వచ్చినట్టు
+dongathanalu	4.629	దొంగతనాలు
+lamcham	4.629	లంచం
+techcenduku	4.629	తెచ్చేందుకు
+sampaadhinchaaru	4.628	సంపాదించారు
+anusarinchadaaniki	4.627	అనుసరించడానికి
+vinipinchindhi	4.627	వినిపించింది
+dhanavantudu	4.626	ధనవంతుడు
+jikki	4.626	జిక్కి
+mythri	4.626	మైత్రీ
+thaanuu	4.626	తానూ
+cappu	4.625	కప్పు
+saanubhuuthi	4.625	సానుభూతి
+andukune	4.624	అందుకునే
+chendutaru	4.624	చెందుతారు
+kapadin	4.624	కాపాడిన
+pratipadanalanu	4.624	ప్రతిపాదనలను
+suhasini	4.624	సుహాసిని
+vakrikrita	4.624	వక్రీకృత
+bhadhra	4.623	భద్ర
+choochi	4.623	చూచి
+dhushta	4.623	దుష్ట
+erpaatlu	4.623	ఏర్పాట్లు
+sanghatananu	4.623	సంఘటనను
+marneni	4.622	వ్
+tupaakulato	4.622	తుపాకులతో
+gobind	4.621	గోబింద్
+sthoothram	4.621	స్తోత్రము
+thaaraka	4.621	తారక
+upayogapadataai	4.621	ఉపయోగపడతాయి
+upayogapadataayi	4.621	ఉపయోగపడతాయి
+anduvalle	4.619	అందువల్లే
+gunamu	4.619	గుణము
+kalavataniki	4.619	కలవటానికి
+pharma	4.619	ఫార్మా
+pramukhangaa	4.619	ప్రముఖంగా
+ruchulu	4.619	రుచులు
+telgani	4.619	తెల్లని
+telleni	4.619	తెల్లని
+vidhinchi	4.619	విధించి
+chuuputuu	4.618	చూపుతూ
+kittu	4.618	కిట్లు
+rushulu	4.618	ఋషులు
+brahmanamdam	4.617	బ్రహ్మానందం
+brahmanandham	4.617	బ్రహ్మానందం
+chintapalli	4.617	చింతపల్లి
+praarambhinchindi	4.617	ప్రారంభించింది
+prarambhinchindi	4.617	ప్రారంభించింది
+saahasa	4.617	సాహస
+sahakaaraalu	4.617	సహకారాలు
+kanipisthaaru	4.616	కనిపిస్తారు
+nimishalaku	4.616	నిమిషాలకు
+prakreeyalu	4.616	ప్రక్రియలు
+rajeshwar	4.616	రాజేశ్వర్
+shishyudu	4.616	శిష్యుడు
+pasi	4.615	పసి
+sette	4.615	పెట్టె
+vaadhinchaaru	4.615	వాదించారు
+vaadinchaaru	4.615	వాదించారు
+madhuri	4.614	మాధురి
+vijayala	4.614	విజయాల
+darji	4.613	దర్జీ
+gayalanu	4.613	గాయాలను
+marinthagaa	4.613	మరింతగా
+pradarshanalu	4.613	ప్రదర్శనలు
+versities	4.613	వర్సిటీలో
+chestunnayi	4.612	చేస్తున్నాయి
+konnalluga	4.612	కొన్నాళ్లుగా
+lukto	4.612	లుక్‌తో
+monnatiki	4.612	మొన్నటికి
+resentga	4.612	రీసెంట్‌గా
+vedha	4.612	వేద
+preethi	4.610	ప్రీతీ
+jariginaa	4.609	జరిగినా
+tellavaru	4.609	తెల్లవారు
+pogottukuni	4.608	పోగొట్టుకుని
+sthaavaram	4.608	స్థావరం
+gamaninchaaru	4.607	గమనించారు
+teerani	4.607	తీరని
+thecchindi	4.607	తెచ్చింది
+thechindi	4.607	తెచ్చింది
+tirani	4.607	తీరని
+andalato	4.606	అందాలతో
+bullitherapy	4.606	బుల్లితెరపై
+galavalani	4.606	గెలవాలని
+kolpoga	4.606	కోల్పోగా
+sammelo	4.606	సమ్మెలో
+testullo	4.606	టెస్టుల్లో
+vaastu	4.606	వాస్తు
+viidhiloe	4.606	వీధిలో
+prakhtaati	4.605	ప్రఖ్యాతి
+prakhyaati	4.605	ప్రఖ్యాతి
+prashninchina	4.605	ప్రశ్నించిన
+prathipaadanalu	4.605	ప్రతిపాదనలు
+vaidhika	4.605	వైదిక
+cheelika	4.604	చీలిక
+svechcha	4.604	స్వేచ్ఛా
+vignaanam	4.604	విజ్ఞానం
+vivarimchina	4.604	వివరించిన
+balaheena	4.603	బలహీన
+balahiina	4.603	బలహీన
+miliyanu	4.603	మిలియను
+pamulu	4.603	పాములు
+baanamulu	4.602	బాణములు
+cheyyakudadani	4.602	చెయ్యకూడదని
+cheyyakuddani	4.602	చెయ్యకూడదని
+deveshistaru	4.602	ద్వేషిస్తారు
+dveshistaaru	4.602	ద్వేషిస్తారు
+asantristhiki	4.601	అసంతృప్తికి
+bavada	4.601	బడా
+biliyanla	4.601	బిలియన్ల
+chuupae	4.601	చూపే
+chuupee	4.601	చూపే
+gantallone	4.601	గంటల్లోనే
+kolkatalo	4.601	కోల్‌కతాలో
+nashtanto	4.601	నష్టంతో
+shrinullo	4.601	శ్రేణుల్లో
+tiyadam	4.601	తీయడం
+chanpina	4.600	చంపిన
+ettuku	4.600	ఎత్తుకు
+manassuloo	4.599	మనస్సులో
+chilchi	4.598	చీల్చి
+kadiri	4.598	కదిరి
+madhyanunna	4.598	మధ్యనున్న
+mulikalu	4.598	మూలికలు
+padutunnaru	4.598	పడుతున్నారు
+puttintiki	4.598	పుట్టింటికి
+sthananni	4.598	స్థానాన్ని
+vadatadu	4.598	వాడతారు
+dopidiki	4.597	దోపిడీకి
+ivvani	4.596	ఇవ్వని
+krishnayya	4.596	కృష్ణయ్య
+madhavan	4.596	మాధవన్
+munupennadu	4.596	మునుపెన్నడూ
+rahim	4.596	రహీమ్
+narsingh	4.595	నరసింహ
+pariikshalanu	4.595	పరీక్షలను
+ennatiki	4.594	ఎన్నటికీ
+kilakapatra	4.594	కీలకపాత్ర
+moosiveyadam	4.594	మూసివేయడం
+raayudu	4.594	రాయుడు
+angeless	4.593	ఏంజలెస్
+chandrasekar	4.593	చంద్రశేఖర్
+guruvaina	4.593	గురువైన
+neraalu	4.593	నేరాలు
+chennur	4.592	చెన్నూరు
+kumaarudini	4.592	కుమారుడిని
+prathyeekathanu	4.592	ప్రత్యేకతను
+tolaginche	4.592	తొలగించే
+aragamta	4.591	అరగంట
+bantulanu	4.591	బంతులను
+eppudo	4.591	ఎప్పుడో
+gaarten	4.591	గార్టెన్
+jawaharlal	4.591	జవహర్‌లాల్
+okato	4.591	ఒకటో
+vuntundani	4.591	వుంటుందని
+arjunudini	4.590	అర్జునుడిని
+chandrayaan	4.590	చంద్రయాన్‌
+pamputunna	4.590	పంపుతున్న
+mattaniki	4.588	మట్టానికి
+pulu	4.588	పూలు
+aadaesaanni	4.587	ఆదేశాన్ని
+aadesaanni	4.587	ఆదేశాన్ని
+aadheshaanni	4.587	ఆదేశాన్ని
+dweepa	4.587	ద్వీప
+manavulu	4.587	మానవులు

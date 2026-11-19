@@ -58,14 +58,22 @@ python3 tools/language_packs/build_tenglish_guard.py compile
 ```
 
 `extract` printed `{"kept": 20000, "excluded": {"english_reading_likelier": 5697,
-"english_loanword": 2899, "english_slip_likelier": 217, "attested_english_misspelling": 156,
-"over_size_cap": 45051}}`.
+"english_loanword": 3057, "english_slip_likelier": 325, "attested_english_misspelling": 116,
+"over_size_cap": 44825}}`.
+
+Spellings one keyboard slip from an English word of 200 or more per million are left out
+however frequent they are as Telugu, so English keeps its corrections of slips such as oc,
+ni, gst and phine. The same rule drops some frequent Telugu words (oka, aa, lo, ki, na,
+mee, nee, em). Spellings found only in the machine-romanized CulturaX pairs stay in the
+list: the common words rendu, telusu, nundi, mana and entha have no other training source,
+because Dakshina and Aksharantar keep them in their held-out splits.
 
 ## Measured (production NSS raw decoder, IOSBench, 19 Nov 2026)
 
-- Dakshina test sentences (held out; first 8,000 words, two words of context): 44.1% of
-  the words are in the list; the decoder autocorrected 12.9% of the words before, 4.4% with
-  the list. The largest remaining changes are ee -> we (ee is in no training source) and
+- Dakshina test sentences (held out; first 8,000 words, two words of context): 41.4% of
+  the words are in the list; the decoder autocorrected 12.9% of the words before, 6.3% with
+  the list. The largest remaining changes are ee -> we (ee is in no training source),
+  oka -> okay, aa -> as and aame -> same (slips of common English words), and
   ane -> and (an attested misspelling of "and").
-- English misspelling lists (40,910 rows): 86 rows are list words; the decoder fixes 2 of
+- English misspelling lists (40,910 rows): 61 rows are list words; the decoder fixes 2 of
   them today (chery -> cherry, hegde -> hedge, both Birkbeck), which the list now keeps.

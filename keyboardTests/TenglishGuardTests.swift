@@ -26,19 +26,19 @@ struct TenglishGuardTests {
 		let list = TeluguLexicon.tenglishGuard
 		#expect(list.isAvailable)
 		#expect(list.vocabularyCount == 20_000)
-		for word in ["nenu", "meeru", "idi", "ledu", "kuda", "chala", "ela", "enti", "ani", "oka", "em"] {
+		for word in ["nenu", "meeru", "idi", "ledu", "kuda", "chala", "ela", "enti", "ani", "rendu", "emi"] {
 			#expect(list.contains(word), "\(word) should be a known Tenglish word")
 		}
 		// Common English words, slips and misspellings of them, and English loanwords.
 		for word in ["the", "to", "and", "may", "hot", "menu", "teh", "adn", "wnat", "becuase",
-			"recieve", "ti", "cinema", "commitee"] {
+			"recieve", "ti", "cinema", "commitee", "oc", "ni", "gst", "phine", "bigg", "caar"] {
 			#expect(!list.contains(word), "\(word) belongs to English")
 		}
 	}
 
 	@Test func tenglishWordsAreKeptAsTyped() async {
 		let engine = KeyboardEngine(languageDataURL: langdataURL())
-		for word in ["nenu", "ela", "enti", "kuda", "ani", "em", "chala"] {
+		for word in ["nenu", "ela", "enti", "kuda", "ani", "rendu", "chala"] {
 			for context in [[], ["i", "told", "him"], ["nenu"]] {
 				let snapshot = await decode(engine, word: word, context: context)
 				#expect(snapshot.correction == nil, "\(word) after \(context) became \(snapshot.correction ?? "")")
@@ -68,6 +68,17 @@ struct TenglishGuardTests {
 		}
 	}
 
+	/// One-key slips of common English words that look like Roman Telugu spellings.
+	@Test func englishKeyboardSlipsAreStillCorrected() async {
+		let engine = KeyboardEngine(languageDataURL: langdataURL())
+		for (slip, fix, context) in [("oc", "of", ["one"]), ("ni", "in", ["i", "live"]),
+			("gst", "get", ["i", "will"]), ("phine", "phone", ["my"])] {
+			#expect(!engine.isGuardedTenglish(slip))
+			let snapshot = await decode(engine, word: slip, context: context)
+			#expect(snapshot.correction == fix, "\(slip) became \(snapshot.correction ?? "nil")")
+		}
+	}
+
 	@Test func teluguCompletionsComeLateAndNeverDisplaceEnglish() {
 		let engine = KeyboardEngine(languageDataURL: langdataURL())
 		// A known word loses its spelling corrections; Telugu completions take the free slots.
@@ -78,6 +89,7 @@ struct TenglishGuardTests {
 		#expect(confidence == 0)
 		#expect(guarded.first == "cheppa")
 		#expect(guarded.count == 3)
+		#expect(guarded.contains("chepparu"))
 		#expect(guarded.dropFirst().allSatisfy { $0.hasPrefix("cheppa") && $0 != "cheppa" })
 
 		// A full English strip is left exactly as it was, decision included.
@@ -90,13 +102,15 @@ struct TenglishGuardTests {
 		// Room in the strip: completions are appended after English, not before.
 		let (filled, _, _) = engine.applyTenglishGuard(typed: "vasta", shown: "vasta",
 			suggestions: ["vasta"], decision: nil, confidence: 0)
-		#expect(filled.first == "vasta")
-		#expect(filled.count == 3)
+		// The two most frequent vasta... words in the reviewed list.
+		#expect(filled == ["vasta", "vastaayi", "vastayi"])
 
-		// Only once most of the word is typed.
+		// Only once most of the word is typed: chepparu (the list's most frequent chepp...
+		// word) after five letters, but not after four, and never cheppataniki.
 		#expect(engine.tenglishCompletions(of: "che", limit: 3).isEmpty)
-		for word in engine.tenglishCompletions(of: "chepp", limit: 3) {
-			#expect(word.hasPrefix("chepp") && Double("chepp".count) >= 0.6 * Double(word.count))
-		}
+		let completions = engine.tenglishCompletions(of: "chepp", limit: 3)
+		#expect(completions.contains("chepparu"), "chepp offered \(completions)")
+		#expect(!completions.contains("cheppataniki"))
+		#expect(!engine.tenglishCompletions(of: "chep", limit: 3).contains("chepparu"))
 	}
 }

@@ -2,9 +2,10 @@ import Foundation
 
 /// Roman Telugu (Tenglish) typed on the English keyboard. A word in the memory-mapped
 /// Tenglish unigram list (`tenglish_guard.bin`) is kept exactly as typed: no autocorrect
-/// and no spelling corrections in the strip. Words English owns (common English words,
-/// likely slips and misspellings of them, English loanwords) are left out of the list when
-/// it is built, so English correction of them is unchanged.
+/// and no spelling corrections in the strip. The builder leaves out words English owns:
+/// English words likelier than their Telugu reading, spellings one keyboard slip from a
+/// common English word or from a far more frequent one, attested misspellings of more
+/// frequent English words, and English loanwords. English correction of those is unchanged.
 extension KeyboardEngine {
 	/// A Telugu completion is offered only once this many letters are typed...
 	static let tenglishCompletionMinimumTyped = 4
