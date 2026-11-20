@@ -174,6 +174,24 @@ or hash table is retained. The current bundled inventory is 60,450 English words
 (9,391,297 bytes), 22,000 Telugu words (1,918,563 bytes), and 12,000 Roman keys /
 20,028 mappings (967,207 bytes), for 12,277,067 dictionary bytes total.
 
+### Tenglish guard for English typing
+
+Roman Telugu typed on the English keyboard is kept as typed. `build_tenglish_guard.py`
+projects Telugu-script word frequencies (news, Wikipedia, subtitles, chat) onto
+attested Roman spellings (the Dakshina training lexicon, Aksharantar, machine-romanized
+CulturaX) and keeps the 20,000 most frequent,
+leaving out words English should own: likelier English readings, English loanwords,
+one-key slips of much more frequent English words, one-key slips of common English
+words (200 per million or more) unless people typed them often enough (oka) or they are
+on the reviewed `sources/te-IN/tenglish-guard-allowlist.tsv` (aa, lo, ki, inti), and
+attested English misspellings.
+The reviewable list is `sources/te-IN/tenglish-guard-unigrams.tsv`; its sources and
+checksums are in `sources/te-IN/TENGLISH_GUARD_SOURCES.md`. `compile` writes
+`keyboard/tenglish_guard.bin` in the KBTD format `TeluguLexicon` reads (no n-grams,
+1,336,246 bytes, mapped read-only by English sessions). English decoding never
+autocorrects a listed word and shows only completions of it beside it; Telugu
+completions fill empty strip slots once 4 letters and 60% of the word are typed.
+
 Do not make On-Demand Resources the only source for an iOS 18 keyboard extension.
 The host controls extension lifetime, and a keyboard must remain usable when the
 companion app has never fetched an optional asset. Keep compact mapped fallbacks in

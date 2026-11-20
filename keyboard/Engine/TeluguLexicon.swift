@@ -5,6 +5,10 @@ import os
 /// The pack is immutable and all lookup methods are read-only/thread-safe.
 nonisolated final class TeluguLexicon {
 	static let shared = TeluguLexicon()
+	/// Roman Telugu (Tenglish) unigrams in the same format, no n-grams: the English decoder
+	/// keeps these words as typed (tools/language_packs/build_tenglish_guard.py).
+	static let tenglishGuard = TeluguLexicon(
+		url: KBPackResources.url(resource: "tenglish_guard", extension: "bin"))
 
 	private static let magic = [UInt8(ascii: "K"), UInt8(ascii: "B"),
 		UInt8(ascii: "T"), UInt8(ascii: "D")]

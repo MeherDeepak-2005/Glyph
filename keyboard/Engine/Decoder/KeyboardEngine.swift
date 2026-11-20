@@ -70,6 +70,7 @@ final class KeyboardEngine {
 	/// keep English sessions from mapping multilingual packs they never query.
 	var transliterator: TenglishTransliterator { TenglishTransliterator.shared }
 	var teluguLexicon: TeluguLexicon { TeluguLexicon.shared }
+	var tenglishGuard: TeluguLexicon { TeluguLexicon.tenglishGuard }
 	let touchProfile = TouchSpatialProfile()
 
 	// Tunables.

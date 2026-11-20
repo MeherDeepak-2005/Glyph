@@ -24,12 +24,13 @@ NEURAL_RESOURCE_NAMES = {
 REQUIRED_RELEASE_RESOURCES = {
     "emoji.bin", "langdata.bin", "langdata.kbmodern", "safety.kbguard",
     "telugu_layout.kbpack", "telugu_langdata.bin",
-    "tenglish_lexicon.bin", "telugu_pack_manifest.json",
+    "tenglish_lexicon.bin", "telugu_pack_manifest.json", "tenglish_guard.bin",
 }
 RESOURCE_CAPS = {
     "langdata.bin": LANGDATA_CAP,
     "telugu_langdata.bin": 2_500_000,
     "tenglish_lexicon.bin": 1_250_000,
+    "tenglish_guard.bin": 1_500_000,
 }
 
 

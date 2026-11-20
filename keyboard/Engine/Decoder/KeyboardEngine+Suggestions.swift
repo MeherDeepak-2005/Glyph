@@ -461,6 +461,8 @@ extension KeyboardEngine {
                     }
                     suggestions = Array(suggestions.prefix(3))
                 }
+                (suggestions, decision, confidence) = self.applyTenglishGuard(typed: lw,
+                    shown: currentWord, suggestions: suggestions, decision: decision, confidence: confidence)
                 let priors = self.contextualCharPriors(evidence: evidence, prefix: lw,
 					base: self.lexicon.nextCharPriors(prefix: lw))
 				guard self.isLatest(gen) else { return }
@@ -498,7 +500,8 @@ extension KeyboardEngine {
                         identity: identity.withUnsafeBytes { Data($0) }, characterOffsets: offsets,
                         letterFlags: flags, tapOffsets: buffers?.offsets, tapValidity: buffers?.validity,
                         lexicon: view, personal: self.user.nativeCountsSnapshot(),
-                        topWords: self.lexicon.topWords.map { $0.lowercased() }, kept: self.isKept(lw),
+                        topWords: self.lexicon.topWords.map { $0.lowercased() },
+                        kept: self.isKept(lw) || self.isGuardedTenglish(lw),
                         modelTier: tier.rawValue, token: nativeToken)
                     guard !result.cancelled, self.isLatest(gen) else { return }
                     let typedScore = result.rows.first(where: { $0.word == lw })?.score ?? 0
