@@ -181,12 +181,13 @@ projects Telugu-script word frequencies (news, Wikipedia, subtitles, chat) onto
 attested Roman spellings (the Dakshina training lexicon, Aksharantar, machine-romanized
 CulturaX) and keeps the 20,000 most frequent,
 leaving out words English should own: likelier English readings, English loanwords,
-one-key slips of common English words (200 per million or more) or of much more
-frequent ones, and attested English misspellings.
+one-key slips of much more frequent English words, one-key slips of common English
+words (200 per million or more) unless they are established Telugu spellings (oka, ki),
+and attested English misspellings.
 The reviewable list is `sources/te-IN/tenglish-guard-unigrams.tsv`; its sources and
 checksums are in `sources/te-IN/TENGLISH_GUARD_SOURCES.md`. `compile` writes
 `keyboard/tenglish_guard.bin` in the KBTD format `TeluguLexicon` reads (no n-grams,
-1,337,644 bytes, mapped read-only by English sessions). English decoding never
+1,335,813 bytes, mapped read-only by English sessions). English decoding never
 autocorrects a listed word and shows only completions of it beside it; Telugu
 completions fill empty strip slots once 4 letters and 60% of the word are typed.
 

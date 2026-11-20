@@ -1,16 +1,22 @@
 roman	per_million	telugu
+yea	11731.147	ఈ
 meeru	10665.829	మీరు
 mariyu	9189.803	మరియు
+oka	7694.616	ఒక
 nenu	6460.104	నేను
 miru	5995.179	మీరు
+aa	5786.357	ఆ
 neenu	5533.373	నేను
+lo	5068.536	లో
 yokka	4217.733	యొక్క
 memu	3359.253	మేము
 undi	3234.202	ఉంది
+mee	2920.302	మీ
 naa	2904.200	నా
 undhi	2791.254	ఉంది
 ani	2675.427	అని
 anni	2557.071	అన్ని
+na	2529.876	న
 nundi	2523.883	నుండి
 ledu	2459.310	లేదు
 idi	2457.246	ఇది
@@ -30,6 +36,7 @@ konni	1684.954	కొన్ని
 kaligi	1678.063	కలిగి
 kuda	1677.906	కూడా
 rendu	1659.542	రెండు
+aame	1649.305	ఆమె
 manchi	1556.824	మంచి
 telusu	1490.425	తెలుసు
 aithe	1442.322	అయితే
@@ -58,6 +65,7 @@ naaku	904.272	నాకు
 oa	888.494	ఓ
 varaku	877.357	వరకు
 nu	852.472	ను
+ki	839.987	కి
 madhya	815.160	మధ్య
 chepparu	806.107	చెప్పారు
 chendina	805.166	చెందిన
@@ -76,6 +84,7 @@ laedhu	756.353	లేదు
 samayamlo	755.235	సమయంలో
 kadu	753.497	కాదు
 vaari	730.139	వారి
+sare	729.938	సరే
 kani	719.045	కానీ
 pani	704.852	పని
 emiti	700.691	ఏమిటి
@@ -91,6 +100,7 @@ prajalu	647.383	ప్రజలు
 tirigi	643.966	తిరిగి
 thirigi	643.241	తిరిగి
 nannu	640.537	నన్ను
+sar	639.332	సర్
 thana	632.296	తన
 bayataku	629.715	బయటకు
 vadda	629.251	వద్ద
@@ -98,6 +108,7 @@ comm	615.728	కమ్
 pondandi	614.252	పొందండి
 unnaai	604.633	ఉన్నాయి
 pedda	600.214	పెద్ద
+ru	595.437	రూ
 prathi	592.872	ప్రతి
 ithara	579.934	ఇతర
 manishi	569.608	మనిషి
@@ -129,6 +140,7 @@ aemi	473.321	ఏమి
 chesindi	464.475	చేసింది
 chese	463.577	చేసే
 dayachesi	453.805	దయచేసి
+ni	451.456	ని
 cheyadam	449.614	చేయడం
 chestunnaru	446.471	చేస్తున్నారు
 kante	443.085	కంటే
@@ -143,6 +155,7 @@ prabhutva	423.873	ప్రభుత్వ
 vidhanga	423.759	విధంగా
 vadla	417.409	వద్ద
 paata	417.066	పాత
+ame	416.147	ఆమె
 anukuntunnara	414.932	అనుకుంటున్నారా
 ila	414.480	ఇలా
 oddha	413.814	వద్ద
@@ -203,6 +216,7 @@ dabbulu	333.815	డబ్బు
 gata	333.767	గత
 cheesina	331.849	చేసిన
 baga	331.092	బాగా
+em	331.085	ఏం
 kadhu	330.341	కాదు
 pillalu	330.146	పిల్లలు
 ga	329.587	గా
@@ -228,6 +242,7 @@ mottam	307.440	మొత్తం
 kendra	306.737	కేంద్ర
 bhaganga	305.848	భాగంగా
 manthri	305.086	మంత్రి
+burt	305.014	బర్ట్
 prema	304.740	ప్రేమ
 rooju	304.530	రోజు
 unnayi	302.588	ఉన్నాయి
@@ -291,6 +306,7 @@ kaga	256.149	కాగా
 conei	256.077	కానీ
 kaanie	256.077	కానీ
 kaanii	256.077	కానీ
+koney	256.077	కానీ
 ayyo	255.804	అయ్యో
 kaligina	255.379	కలిగిన
 atanini	254.644	అతనిని
@@ -326,6 +342,7 @@ vecchi	235.809	వేచి
 vechi	235.692	వేచి
 gala	234.647	గల
 teliparu	233.037	తెలిపారు
+gd	230.082	గుడ్
 avakaasam	229.817	అవకాశం
 sambandhinchina	229.325	సంబంధించిన
 toli	226.557	తొలి
@@ -350,6 +367,7 @@ kotla	217.947	కోట్ల
 mallhee	217.843	మళ్ళీ
 vela	217.319	వేల
 ardam	215.855	అర్థం
+ade	215.834	అదే
 nela	215.758	నెల
 pelli	215.300	పెళ్లి
 avakasam	214.822	అవకాశం
@@ -408,8 +426,10 @@ uttama	193.150	ఉత్తమ
 padi	192.402	పది
 yedo	192.240	ఏదో
 vaarini	192.069	వారిని
+nee	191.736	నీ
 kontha	191.065	కొంత
 matladataniki	191.012	మాట్లాడటానికి
+inti	190.889	ఇంటి
 indulo	190.879	ఇందులో
 bharya	190.665	భార్య
 chikitsa	190.458	చికిత్స
@@ -461,6 +481,7 @@ ataniki	177.866	అతనికి
 samsdha	176.830	సంస్థ
 samstha	176.283	సంస్థ
 yela	176.003	ఎలా
+anu	175.289	అను
 gaani	175.218	గాని
 undatam	175.104	ఉండటం
 hathya	174.762	హత్య
@@ -577,6 +598,7 @@ polisulu	146.467	పోలీసులు
 nelala	145.560	నెలల
 raa	145.526	రా
 chustunna	145.419	చూస్తున్నా
+sri	145.399	శ్రీ
 gatamlo	145.396	గతంలో
 danini	145.181	దానిని
 cheestunnaanu	145.134	చేస్తున్నాను
@@ -815,6 +837,7 @@ aaru	108.799	ఆరు
 saamaajika	108.567	సామాజిక
 charithra	108.457	చరిత్ర
 unnaaru	108.423	ఉన్నారు
+unde	108.278	ఉండే
 paluvuru	108.270	పలువురు
 bhavanam	108.106	భవనం
 jillaaloni	108.105	జిల్లాలోని
@@ -851,6 +874,7 @@ surakshita	104.966	సురక్షిత
 challani	104.947	చల్లని
 bhoomi	104.580	భూమి
 bhuumii	104.521	భూమి
+oke	104.501	ఒకే
 ammayi	104.478	అమ్మాయి
 nethalu	104.454	నేతలు
 adhikanga	104.285	అధికంగా
@@ -878,6 +902,7 @@ sibbandi	102.183	సిబ్బంది
 laekundaa	101.945	లేకుండా
 leekundaa	101.945	లేకుండా
 lekundaa	101.945	లేకుండా
+ene	101.938	ఎన్
 pergu	101.918	పేర్లు
 gurtimpu	101.852	గుర్తింపు
 bhari	101.813	భారీ
@@ -899,6 +924,7 @@ velle	99.893	వెళ్లి
 thala	99.794	తల
 pradhananga	99.163	ప్రధానంగా
 endhukante	99.109	ఎందుకంటే
+shere	99.094	షేర్
 kashtam	99.018	కష్టం
 bharata	98.544	భారత
 sainik	98.423	సైనిక
@@ -1078,12 +1104,15 @@ leni	86.257	లేని
 dhaadhaapu	86.248	దాదాపు
 maata	86.172	మాట
 somavaram	86.051	సోమవారం
+stree	85.910	స్త్రీ
 ichchina	85.903	ఇచ్చిన
 saam	85.842	సామ్
+ram	85.795	రామ్
 talupu	85.768	తలుపు
 aata	85.740	ఆట
 perkonnaaru	85.734	పేర్కొన్నారు
 umdae	85.642	ఉండే
+oo	85.451	ఊ
 avakaasaalu	85.448	అవకాశాలు
 ayyindi	85.167	అయ్యింది
 undagaa	85.102	ఉండగా
@@ -1304,6 +1333,7 @@ elaanti	72.882	ఎలాంటి
 brundam	72.877	బృందం
 pattindi	72.845	పట్టింది
 raaw	72.763	రా
+sree	72.721	శ్రీ
 shri	72.687	శ్రీ
 mugimpu	72.650	ముగింపు
 bhaarath	72.565	భారత్
@@ -1352,6 +1382,7 @@ ashistunnamu	71.022	ఆశిస్తున్నాము
 mukhyamaina	70.909	ముఖ్యమైన
 istam	70.812	ఇష్టం
 noru	70.811	నోరు
+intlo	70.804	ఇంట్లో
 niyanthrana	70.787	నియంత్రణ
 rakaala	70.745	రకాల
 ledani	70.710	లేదని
@@ -1409,6 +1440,7 @@ vachi	68.432	వచ్చి
 gatha	68.390	గత
 enni	68.368	ఎన్ని
 rachanalu	68.279	రచనలు
+edo	68.277	ఏదో
 samvatsaraala	68.263	సంవత్సరాల
 teliyadhu	68.263	తెలియదు
 theliyadu	68.263	తెలియదు
@@ -1419,6 +1451,7 @@ kalalu	68.049	కలలు
 bijiga	67.746	బిజీగా
 navvutuu	67.506	నవ్వుతూ
 undalani	67.502	ఉండాలని
+cree	67.482	క్రీ
 uthara	67.480	ఉత్తర
 daniki	67.425	దానికి
 arupu	67.408	అరుపు
@@ -1641,6 +1674,7 @@ prasna	59.584	ప్రశ్న
 cbi	59.537	సీబీఐ
 vasthunna	59.533	వస్తున్న
 adhikaara	59.508	అధికార
+swami	59.485	స్వామి
 pillalaku	59.482	పిల్లలకు
 heroga	59.430	హీరోగా
 aagraham	59.368	ఆగ్రహం
@@ -1669,6 +1703,7 @@ khachchitanga	58.977	ఖచ్చితంగా
 matchlo	58.945	మ్యాచ్‌లో
 cheppu	58.903	చెప్పు
 donga	58.891	దొంగ
+dee	58.856	డీ
 vallu	58.711	వాళ్లు
 priyamaina	58.647	ప్రియమైన
 mathram	58.589	మాత్రం
@@ -1730,6 +1765,7 @@ kshanam	57.070	క్షణం
 priyudu	57.061	ప్రియుడు
 critham	57.043	క్రితం
 dhooramloo	57.025	దూరంలో
+ra	56.998	రా
 pattukoni	56.987	పట్టుకొని
 dillilo	56.976	ఢిల్లీలో
 naayudu	56.967	నాయుడు
@@ -1894,6 +1930,7 @@ gaanam	52.529	గానం
 sthalam	52.524	స్థలం
 mahilaa	52.510	మహిళా
 ashcharyaniki	52.476	ఆశ్చర్యానికి
+raj	52.430	రాజ్
 bharatadesam	52.414	భారతదేశం
 perigina	52.404	పెరిగిన
 chetha	52.347	చేత
@@ -1901,6 +1938,7 @@ tarachu	52.305	తరచూ
 bantullo	52.297	బంతుల్లో
 graamaaniki	52.284	గ్రామానికి
 okey	52.251	ఒకే
+haa	52.175	హా
 alasyanga	52.116	ఆలస్యంగా
 unnadu	52.100	ఉన్నాడు
 tarachuga	52.077	తరచుగా
@@ -1946,6 +1984,7 @@ sadharananga	50.944	సాధారణంగా
 pradarshana	50.911	ప్రదర్శన
 vastuvulu	50.910	వస్తువులు
 kalyaan	50.897	కళ్యాణ్
+ipl	50.840	ఐపీఎల్
 bhaari	50.810	భారీ
 tayaru	50.801	తయారు
 pratyaksha	50.795	ప్రత్యక్ష
@@ -1954,6 +1993,7 @@ ledo	50.791	లేదో
 kaka	50.761	కాక
 prajaa	50.730	ప్రజా
 vydya	50.718	వైద్య
+veru	50.716	వేరు
 vastuvu	50.707	వస్తువు
 rojullo	50.616	రోజుల్లో
 samudram	50.608	సముద్రం
@@ -19959,43 +19999,3 @@ kadiri	4.598	కదిరి
 madhyanunna	4.598	మధ్యనున్న
 mulikalu	4.598	మూలికలు
 padutunnaru	4.598	పడుతున్నారు
-puttintiki	4.598	పుట్టింటికి
-sthananni	4.598	స్థానాన్ని
-vadatadu	4.598	వాడతారు
-dopidiki	4.597	దోపిడీకి
-ivvani	4.596	ఇవ్వని
-krishnayya	4.596	కృష్ణయ్య
-madhavan	4.596	మాధవన్
-munupennadu	4.596	మునుపెన్నడూ
-rahim	4.596	రహీమ్
-narsingh	4.595	నరసింహ
-pariikshalanu	4.595	పరీక్షలను
-ennatiki	4.594	ఎన్నటికీ
-kilakapatra	4.594	కీలకపాత్ర
-moosiveyadam	4.594	మూసివేయడం
-raayudu	4.594	రాయుడు
-angeless	4.593	ఏంజలెస్
-chandrasekar	4.593	చంద్రశేఖర్
-guruvaina	4.593	గురువైన
-neraalu	4.593	నేరాలు
-chennur	4.592	చెన్నూరు
-kumaarudini	4.592	కుమారుడిని
-prathyeekathanu	4.592	ప్రత్యేకతను
-tolaginche	4.592	తొలగించే
-aragamta	4.591	అరగంట
-bantulanu	4.591	బంతులను
-eppudo	4.591	ఎప్పుడో
-gaarten	4.591	గార్టెన్
-jawaharlal	4.591	జవహర్‌లాల్
-okato	4.591	ఒకటో
-vuntundani	4.591	వుంటుందని
-arjunudini	4.590	అర్జునుడిని
-chandrayaan	4.590	చంద్రయాన్‌
-pamputunna	4.590	పంపుతున్న
-mattaniki	4.588	మట్టానికి
-pulu	4.588	పూలు
-aadaesaanni	4.587	ఆదేశాన్ని
-aadesaanni	4.587	ఆదేశాన్ని
-aadheshaanni	4.587	ఆదేశాన్ని
-dweepa	4.587	ద్వీప
-manavulu	4.587	మానవులు

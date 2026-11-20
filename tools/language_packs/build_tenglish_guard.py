@@ -32,9 +32,11 @@ English collisions. A word is left out when the English decoder should keep owni
   - its Telugu word is an English loanword, one with a common English spelling
     (commitee and cinima are English misspellings of committee and cinema; kaar is car);
   - it is one keyboard slip (neighbouring key, missing, extra or doubled letter, swapped
-    pair) from a common English word, one of at least SLIP_COMMON_ENGLISH per million,
-    however frequent it is as Telugu (ki -> i, oc -> of, bigg -> big), or from an English
-    word that is more than 1/SLIP_RATE times as frequent (ti -> to);
+    pair) from an English word that is more than 1/SLIP_RATE times as frequent (ti -> to),
+    or from a common English word, one of at least SLIP_COMMON_ENGLISH per million
+    (oc -> of, gst -> get, baack -> back), unless it is an established Telugu spelling:
+    at least SLIP_ESTABLISHED_FLOOR per million, and typed by people or its Telugu word's
+    commonest spelling (oka, mee, ki, edo stay);
   - it is an attested English misspelling (Birkbeck, Holbrook, Aspell, Wikipedia lists)
     of an English word that is more frequent than it is as Telugu (bal for ball).
 """
@@ -90,9 +92,16 @@ SLIP_RATE = 0.01
 # English words rarer than this (per million) are not considered slip targets.
 SLIP_TARGET_FLOOR = 1.0
 # Per-million counts of Telugu and English come from different corpora, and English is the
-# keyboard's language: no spelling one slip from an English word this common is listed,
-# however frequent it is as Telugu (ki for i, oc for of, bigg for big).
+# keyboard's language: a spelling one slip from an English word this common is listed only
+# when it is an established Telugu spelling (oc for of and gst for get are not).
 SLIP_COMMON_ENGLISH = 200.0
+# An established spelling is typed by people (Dakshina, the reviewed core, the Tenglish
+# lexicon) or is its Telugu word's commonest spelling, and is at least this frequent (per
+# million). Comparing with the English word's count cannot separate the two: ki (0.035 of i)
+# and secons (0.035 of second), edo and baack (both 0.011) tie. Rare spellings typed by
+# people are mostly English loanwords (baack, paart: at most 42 per million), while the
+# least frequent Telugu function words the rule protects (edo, intlo) are near 70.
+SLIP_ESTABLISHED_FLOOR = 50.0
 # An English spelling at least this long and this frequent (per million) marks a loanword.
 # Mined Aksharantar rows sometimes pair a word with its translation (kosam, "choose"), so
 # the English spelling must also carry this share of the word's romanizations.
@@ -164,28 +173,36 @@ def machine_romanized_pairs(path: Path) -> collections.Counter:
 
 
 def romanizations(dakshina: Path, aksharantar: Path, lexicon: Path, core: Path,
-                  machine: Path, english: dict[str, float]) -> dict[str, collections.Counter]:
-    """Weighted Roman spellings of each Telugu word. Spellings the list cannot hold (one
-    letter: e for ee) are kept under UNUSABLE so they still take their share."""
+                  machine: Path, english: dict[str, float]
+                  ) -> tuple[dict[str, collections.Counter], set[str]]:
+    """Weighted Roman spellings of each Telugu word, and the spellings people typed (the
+    Dakshina training lexicon and Aksharantar's Dakshina rows, the Tenglish lexicon, the
+    reviewed core); mined, aligned and machine pairs are not. Spellings the list cannot hold
+    (one letter: e for ee) are kept under UNUSABLE so they still take their share."""
     pairs: dict[str, collections.Counter] = collections.defaultdict(collections.Counter)
+    typed: set[str] = set()
 
-    def add(native: str, latin: str, weight: float) -> None:
+    def add(native: str, latin: str, weight: float, by_people: bool = False) -> None:
         native_word = telugu.normalize_telugu_word(native)
         if not native_word or not latin.isascii() or not latin.isalpha():
             return
-        pairs[native_word][roman(latin) or UNUSABLE] += weight
+        spelling = roman(latin) or UNUSABLE
+        pairs[native_word][spelling] += weight
+        if by_people:
+            typed.add(spelling)
 
     # Training split only: Dakshina's dev/test lexicons and romanized sentences stay
     # evaluation data.
     with (dakshina / "lexicons/te.translit.sampled.train.tsv").open(encoding="utf-8") as handle:
         for line in handle:
             native, latin, attestations = line.rstrip("\n").split("\t")
-            add(native, latin, float(attestations))
+            add(native, latin, float(attestations), by_people=True)
     with zipfile.ZipFile(aksharantar) as archive, archive.open("tel_train.json") as handle:
         for line in handle:
             row = json.loads(line)
             add(row["native word"], row["english word"] or "",
-                MINED_WEIGHT if row["source"] == "IndicCorp" else 1.0)
+                MINED_WEIGHT if row["source"] == "IndicCorp" else 1.0,
+                by_people=row["source"] == "Dakshina")
     data = lexicon.read_bytes()
     _, _, keys, _, key_offset, variant_offset, blob_offset, _ = struct.unpack_from("<4s7I", data)
     for index in range(keys):
@@ -195,11 +212,11 @@ def romanizations(dakshina: Path, aksharantar: Path, lexicon: Path, core: Path,
             native_start, native_length, _, _ = struct.unpack_from(
                 "<IHHf", data, variant_offset + (first + variant) * 12)
             add(data[blob_offset + native_start:blob_offset + native_start + native_length].decode(),
-                latin, 1.0)
+                latin, 1.0, by_people=True)
     with core.open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
             if row["review_status"] == "approved":
-                add(row["native"], row["roman"], CORE_WEIGHT)
+                add(row["native"], row["roman"], CORE_WEIGHT, by_people=True)
     # One vote per distinct pair, like a mined Aksharantar row, so a frequent word's
     # machine spelling does not drown the spellings people typed.
     machine_pairs = machine_romanized_pairs(machine)
@@ -210,7 +227,7 @@ def romanizations(dakshina: Path, aksharantar: Path, lexicon: Path, core: Path,
         if count >= MACHINE_MIN_COUNT and count >= MACHINE_MIN_SHARE * occurrences[native] \
                 and english.get(latin.lower(), 0.0) < MACHINE_ENGLISH_CEILING:
             add(native, latin, MINED_WEIGHT)
-    return pairs
+    return pairs, typed
 
 
 def english_frequencies(path: Path) -> dict[str, float]:
@@ -292,9 +309,10 @@ def slips(word: str, adjacent: dict[str, set[str]]) -> set[str]:
 
 
 def select(projected: dict[str, float], best_native: dict[str, str],
-           loanwords: set[str], english: dict[str, float],
+           loanwords: set[str], established: set[str], english: dict[str, float],
            misspelled: dict[str, set[str]], max_words: int,
            min_per_million: float) -> tuple[list[tuple[str, float, str]], dict]:
+    """`established` holds the spellings people typed and each Telugu word's commonest one."""
     candidates = {word: value for word, value in projected.items() if value >= min_per_million}
     adjacent = neighbours()
     slip_source: dict[str, float] = {}
@@ -311,8 +329,9 @@ def select(projected: dict[str, float], best_native: dict[str, str],
             reason = "english_reading_likelier"
         elif best_native[word] in loanwords:
             reason = "english_loanword"
-        elif slip_source.get(word, 0.0) >= SLIP_COMMON_ENGLISH \
-                or SLIP_RATE * slip_source.get(word, 0.0) > value:
+        elif SLIP_RATE * slip_source.get(word, 0.0) > value \
+                or slip_source.get(word, 0.0) >= SLIP_COMMON_ENGLISH \
+                and (word not in established or value < SLIP_ESTABLISHED_FLOOR):
             reason = "english_slip_likelier"
         elif any(phrase_frequency(target, english) > value
                  for target in misspelled.get(word, ())):
@@ -356,8 +375,8 @@ def extract(args: argparse.Namespace) -> None:
         [args.dakshina / "native_script_wikipedia/te.wiki-filt.train.text.shuf.txt.gz"],
         args.conversation])
     english = english_frequencies(args.english)
-    pairs = romanizations(args.dakshina, args.aksharantar_zip, args.tenglish_lexicon, args.core,
-                          args.machine_romanized, english)
+    pairs, typed = romanizations(args.dakshina, args.aksharantar_zip, args.tenglish_lexicon,
+                                 args.core, args.machine_romanized, english)
     projected: dict[str, float] = collections.defaultdict(float)
     contribution: dict[str, tuple[float, str]] = {}
     for native, spellings in pairs.items():
@@ -374,9 +393,12 @@ def extract(args: argparse.Namespace) -> None:
                 contribution[latin] = (share, native)
     # Rounded as written to the TSV, so the TSV order is the compiled word order.
     projected = {word: round(value, 3) for word, value in projected.items()}
-    kept, reasons = select(projected, {word: native for word, (_, native) in contribution.items()},
-                           english_loanwords(pairs, english), english,
-                           misspellings(args.misspellings), args.max_words, args.min_per_million)
+    best_native = {word: native for word, (_, native) in contribution.items()}
+    established = typed | {word for word, native in best_native.items()
+                           if pairs[native][word] == max(pairs[native].values())}
+    kept, reasons = select(projected, best_native, english_loanwords(pairs, english),
+                           established, english, misspellings(args.misspellings),
+                           args.max_words, args.min_per_million)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8", newline="") as handle:
         handle.write("\t".join(HEADER) + "\n")

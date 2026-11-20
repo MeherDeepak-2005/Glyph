@@ -288,18 +288,19 @@ class LanguagePackTests(unittest.TestCase):
                 telugu_builder.read_corpus_manifest(manifest)
 
 
-# Listed words a review found one keyboard slip from an English word of 200 or more per
-# million (oc for of, ni for in, gst for get), and English loanwords spelled with a slip.
+# Words a review found one keyboard slip from an English word of 200 or more per million
+# (oc for of, gst for get) that are not established Telugu spellings, and English loanwords
+# spelled with a slip.
 REVIEWED_ENGLISH_SLIPS = (
-    "yea oka aa lo mee na aame oc ki sare sar ru ni ame em burt koney gd ade nee inti "
-    "anu sri wasn unde lett oke ene shere stree ram oo maan sree intlo edo cree swami "
-    "dee ra ur raj haa ipl veru bigg haard lok mem bok samme neee yoo loney ul bir "
-    "orr cine gst ey ruun iar laya paark ciity ity daya needa bitt baack eta pak tr "
-    "aam ara trai gurl secons seema bead boks rel musi nera aak lokk pari jd tek "
-    "livin phine haalf caar wal ree vit kear swatch taalk tema yee vare dier pok tej "
-    "paart jook galf qute secon cadre rann baad"
+    "oc wasn lett maan ur bigg haard lok mem bok samme neee yoo loney ul bir orr cine "
+    "gst ey ruun iar laya paark ciity ity daya needa bitt baack eta pak tr aam ara "
+    "trai gurl secons seema bead boks rel musi nera aak lokk pari jd tek livin phine "
+    "haalf caar wal ree vit kear swatch taalk tema yee vare dier pok tej paart jook "
+    "galf qute secon cadre rann baad"
 ).split()
 REVIEWED_LOANWORDS = "bigg haard ciity baack gurl caar taalk paart jook lokk".split()
+# Frequent Telugu words that are also one slip from a common English word (oka, ki, lo).
+FREQUENT_TELUGU_SLIPS = "oka aa lo mee na aame ki nee em inti intlo edo".split()
 
 
 class TenglishGuardTests(unittest.TestCase):
@@ -319,9 +320,10 @@ class TenglishGuardTests(unittest.TestCase):
 
     def test_reviewed_english_slips_and_loanwords_are_not_listed(self):
         words = {word for word, _ in guard_builder.read_tsv(guard_builder.DEFAULT_TSV)}
-        self.assertEqual(len(REVIEWED_ENGLISH_SLIPS), 113)
+        self.assertEqual(len(REVIEWED_ENGLISH_SLIPS), 73)
         self.assertEqual(set(REVIEWED_ENGLISH_SLIPS) & words, set())
         self.assertEqual(set(REVIEWED_LOANWORDS) & words, set())
+        self.assertEqual(set(FREQUENT_TELUGU_SLIPS) - words, set())
 
     def test_slips_cover_neighbouring_keys_and_dropped_letters(self):
         slips = guard_builder.slips("to", guard_builder.neighbours())
@@ -331,14 +333,18 @@ class TenglishGuardTests(unittest.TestCase):
 
     def test_english_keeps_its_words_slips_misspellings_and_loanwords(self):
         projected = {"nenu": 500.0, "may": 40.0, "ti": 100.0, "gata": 20.0,
-                     "sinima": 300.0, "kuda": 50.0, "oc": 1282.0, "ki": 840.0}
+                     "sinima": 300.0, "kuda": 50.0, "oc": 1282.0, "ki": 840.0,
+                     "baack": 15.0}
         native = {word: word.upper() for word in projected}
         english = {"may": 900.0, "to": 30_000.0, "great": 400.0, "menu": 16.0,
-                   "of": 18_334.0, "i": 23_695.0}
+                   "of": 18_334.0, "i": 23_695.0, "back": 1349.0}
+        # ki is the commonest spelling of a frequent particle; oc is a stray spelling of
+        # oka; baack was typed by people but is a rare spelling of an English loanword.
+        established = {"nenu", "kuda", "ki", "baack"}
         kept, reasons = guard_builder.select(
-            projected, native, {"SINIMA"}, english, {"gata": {"great"}},
+            projected, native, {"SINIMA"}, established, english, {"gata": {"great"}},
             max_words=10, min_per_million=1.0)
-        self.assertEqual([word for word, _, _ in kept], ["nenu", "kuda"])
+        self.assertEqual([word for word, _, _ in kept], ["ki", "nenu", "kuda"])
         self.assertEqual(reasons, {
             "english_reading_likelier": 1, "english_loanword": 1,
             "english_slip_likelier": 3, "attested_english_misspelling": 1,

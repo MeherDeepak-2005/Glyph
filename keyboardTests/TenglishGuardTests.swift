@@ -26,19 +26,20 @@ struct TenglishGuardTests {
 		let list = TeluguLexicon.tenglishGuard
 		#expect(list.isAvailable)
 		#expect(list.vocabularyCount == 20_000)
-		for word in ["nenu", "meeru", "idi", "ledu", "kuda", "chala", "ela", "enti", "ani", "rendu", "emi"] {
+		for word in ["nenu", "meeru", "idi", "ledu", "kuda", "chala", "ela", "enti", "ani", "rendu", "emi",
+			"oka", "em", "ki", "lo"] {
 			#expect(list.contains(word), "\(word) should be a known Tenglish word")
 		}
 		// Common English words, slips and misspellings of them, and English loanwords.
 		for word in ["the", "to", "and", "may", "hot", "menu", "teh", "adn", "wnat", "becuase",
-			"recieve", "ti", "cinema", "commitee", "oc", "ni", "gst", "phine", "bigg", "caar"] {
+			"recieve", "ti", "cinema", "commitee", "oc", "gst", "phine", "bigg", "caar"] {
 			#expect(!list.contains(word), "\(word) belongs to English")
 		}
 	}
 
 	@Test func tenglishWordsAreKeptAsTyped() async {
 		let engine = KeyboardEngine(languageDataURL: langdataURL())
-		for word in ["nenu", "ela", "enti", "kuda", "ani", "rendu", "chala"] {
+		for word in ["nenu", "ela", "enti", "kuda", "ani", "em", "oka", "chala"] {
 			for context in [[], ["i", "told", "him"], ["nenu"]] {
 				let snapshot = await decode(engine, word: word, context: context)
 				#expect(snapshot.correction == nil, "\(word) after \(context) became \(snapshot.correction ?? "")")
@@ -71,8 +72,8 @@ struct TenglishGuardTests {
 	/// One-key slips of common English words that look like Roman Telugu spellings.
 	@Test func englishKeyboardSlipsAreStillCorrected() async {
 		let engine = KeyboardEngine(languageDataURL: langdataURL())
-		for (slip, fix, context) in [("oc", "of", ["one"]), ("ni", "in", ["i", "live"]),
-			("gst", "get", ["i", "will"]), ("phine", "phone", ["my"])] {
+		for (slip, fix, context) in [("oc", "of", ["one"]), ("gst", "get", ["i", "will"]),
+			("phine", "phone", ["my"])] {
 			#expect(!engine.isGuardedTenglish(slip))
 			let snapshot = await decode(engine, word: slip, context: context)
 			#expect(snapshot.correction == fix, "\(slip) became \(snapshot.correction ?? "nil")")

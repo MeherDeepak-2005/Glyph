@@ -58,22 +58,39 @@ python3 tools/language_packs/build_tenglish_guard.py compile
 ```
 
 `extract` printed `{"kept": 20000, "excluded": {"english_reading_likelier": 5697,
-"english_loanword": 3057, "english_slip_likelier": 325, "attested_english_misspelling": 116,
-"over_size_cap": 44825}}`.
+"english_loanword": 3057, "english_slip_likelier": 276, "attested_english_misspelling": 125,
+"over_size_cap": 44865}}`.
 
-Spellings one keyboard slip from an English word of 200 or more per million are left out
-however frequent they are as Telugu, so English keeps its corrections of slips such as oc,
-ni, gst and phine. The same rule drops some frequent Telugu words (oka, aa, lo, ki, na,
-mee, nee, em). Spellings found only in the machine-romanized CulturaX pairs stay in the
-list: the common words rendu, telusu, nundi, mana and entha have no other training source,
-because Dakshina and Aksharantar keep them in their held-out splits.
+English is the keyboard's language, and Telugu and English per-million counts come from
+different corpora. So a spelling one keyboard slip from an English word of 200 or more
+per million is listed only when it is an established Telugu spelling. That means it is at
+least 50 per million, and either people typed it (the Dakshina training lexicon and
+Aksharantar's Dakshina rows, `tenglish_lexicon.bin`, the reviewed core) or it is its
+Telugu word's commonest spelling. Mined Aksharantar rows (IndicCorp, Samanantar, Existing)
+and CulturaX machine pairs do not count as typed by people.
 
-## Measured (production NSS raw decoder, IOSBench, 19 Nov 2026)
+Comparing a spelling's Telugu count with its English word's count cannot draw this line:
+ki is 0.035 of i and secons 0.035 of second; edo and baack are both 0.011. The absolute
+floor can. The rarest Telugu function words it protects, edo and intlo, are near 70 per
+million. The spellings people typed for English loanwords (baack, paart, taalk, jook,
+lokk) and bigg are at most 42.
 
-- Dakshina test sentences (held out; first 8,000 words, two words of context): 41.4% of
-  the words are in the list; the decoder autocorrected 12.9% of the words before, 6.3% with
-  the list. The largest remaining changes are ee -> we (ee is in no training source),
-  oka -> okay, aa -> as and aame -> same (slips of common English words), and
-  ane -> and (an attested misspelling of "and").
-- English misspelling lists (40,910 rows): 61 rows are list words; the decoder fixes 2 of
+So oka, aa, lo, mee, na, aame, ki, nee, em, inti, intlo and edo stay listed. oc (a stray
+Aksharantar spelling of oka), gst, secons, wasn and the loanword spellings are left out,
+and phine is left out as a spelling of the loanword fine. 40 listed words remain one slip
+from an English word of 200 or more per million. Besides the twelve above, they include
+ni, sare, ade, gd, koney and veru, which people typed in Dakshina, and burt, shere and yea,
+the commonest spellings of their Telugu words.
+
+Spellings found only in the machine-romanized CulturaX pairs stay in the list. The common
+words rendu, telusu, nundi, mana and entha have no other training source, because Dakshina
+and Aksharantar keep them in their held-out splits.
+
+## Measured (production NSS raw decoder, IOSBench, 20 Nov 2026)
+
+- Dakshina test sentences (held out; first 8,000 words, two words of context): 44.1% of
+  the words are in the list. The decoder autocorrected 12.9% of the words before and 4.4%
+  with the list. The largest remaining changes are ee -> we (ee is in no training source)
+  and ane -> and (an attested misspelling of "and").
+- English misspelling lists (40,910 rows): 81 rows are list words. The decoder fixes 2 of
   them today (chery -> cherry, hegde -> hedge, both Birkbeck), which the list now keeps.
