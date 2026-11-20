@@ -41,6 +41,7 @@ __pycache__/
 *.bin
 !keyboard/emoji.bin
 !keyboard/langdata.bin
+!keyboard/tenglish_guard.bin
 *.kbguard
 !keyboard/safety.kbguard
 *.mlpackage/

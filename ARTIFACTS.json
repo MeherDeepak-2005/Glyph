@@ -249,6 +249,34 @@
           "license": "Project-owned"
         }
       ]
+    },
+    {
+      "path": "keyboard/tenglish_guard.bin",
+      "sha256": "511245200104f2129353b1d789f17ef9c42ba5e06426c02f819e5fd5e3b57017",
+      "bytes": 1336246,
+      "format": "KBTD v1 compact scalar trie (TeluguLexicon), Roman Telugu unigrams in frequency order, no n-grams",
+      "builder": "tools/language_packs/build_tenglish_guard.py",
+      "purpose": "English decoding keeps these Roman Telugu words as typed: no autocorrect, no spelling corrections",
+      "contents": {
+        "words": 20000,
+        "trieNodes": 62570
+      },
+      "inputs": [
+        {
+          "name": "Reviewable Roman Telugu unigram list",
+          "path": "tools/language_packs/sources/te-IN/tenglish-guard-unigrams.tsv",
+          "sha256": "6235d23a14a690c62a142a9fe4f3fa11f3ee43f29f7ba06746be17f08a1d707c"
+        },
+        {
+          "name": "Reviewed Telugu spellings kept despite an English slip",
+          "path": "tools/language_packs/sources/te-IN/tenglish-guard-allowlist.tsv",
+          "sha256": "24291e47de56796961e25108ed3b875f846f572e5f19bcde2df112f72f341dbf"
+        },
+        {
+          "name": "External dictionary sources",
+          "path": "tools/language_packs/sources/te-IN/TENGLISH_GUARD_SOURCES.md"
+        }
+      ]
     }
   ],
   "excludedReleaseArtifacts": [

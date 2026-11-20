@@ -18,6 +18,7 @@ final class KeyboardEngine {
 	let user: UserModel
 	var sharedEngine: KBSharedEngine?
 	var sharedDecodeToken: KBCancellationToken?
+	var tenglishGuard: TeluguLexicon { TeluguLexicon.tenglishGuard }
 	let touchProfile = TouchSpatialProfile()
 
 	let adoptAfter = 8

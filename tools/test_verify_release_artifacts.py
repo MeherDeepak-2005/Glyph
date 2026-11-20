@@ -20,7 +20,8 @@ def write_bundle(root: Path) -> None:
     for name, payload in (("demo_keyboard", b"binary"), ("emoji.bin", b"emoji"),
                           ("english_layout.kbpack", b"layout"), ("langdata.bin", b"english"),
                           ("langdata.kbmodern", b"policies"),
-                          ("nss-english.nsslm", b"model"), ("safety.kbguard", b"safety")):
+                          ("nss-english.nsslm", b"model"), ("safety.kbguard", b"safety"),
+                          ("tenglish_guard.bin", b"guard")):
         (root / name).write_bytes(payload)
 
 def audit(root: Path, *flags: str) -> subprocess.CompletedProcess:

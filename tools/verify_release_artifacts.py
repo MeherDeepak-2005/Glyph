@@ -22,9 +22,9 @@ NEURAL_RESOURCE_NAMES = {
 }
 REQUIRED_RELEASE_RESOURCES = {
     "emoji.bin", "english_layout.kbpack", "langdata.bin", "langdata.kbmodern", "nss-english.nsslm",
-    "safety.kbguard",
+    "safety.kbguard", "tenglish_guard.bin",
 }
-RESOURCE_CAPS = {"langdata.bin": LANGDATA_CAP}
+RESOURCE_CAPS = {"langdata.bin": LANGDATA_CAP, "tenglish_guard.bin": 1_500_000}
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
