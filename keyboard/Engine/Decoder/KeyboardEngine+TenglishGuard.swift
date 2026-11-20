@@ -4,9 +4,9 @@ import Foundation
 /// Tenglish unigram list (`tenglish_guard.bin`) is kept exactly as typed: no autocorrect
 /// and no spelling corrections in the strip. The builder leaves out words English owns:
 /// English words likelier than their Telugu reading, spellings one keyboard slip from a
-/// far more frequent English word, or from a common one unless they are established Telugu
-/// spellings (oka, ki), attested misspellings of more frequent English words, and English
-/// loanwords. English correction of those is unchanged.
+/// far more frequent English word, or from a common one unless people typed them often
+/// enough or they are on a reviewed allowlist (oka, ki), attested misspellings of more
+/// frequent English words, and English loanwords. English correction of those is unchanged.
 extension KeyboardEngine {
 	/// A Telugu completion is offered only once this many letters are typed...
 	static let tenglishCompletionMinimumTyped = 4

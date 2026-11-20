@@ -34,9 +34,9 @@ English collisions. A word is left out when the English decoder should keep owni
   - it is one keyboard slip (neighbouring key, missing, extra or doubled letter, swapped
     pair) from an English word that is more than 1/SLIP_RATE times as frequent (ti -> to),
     or from a common English word, one of at least SLIP_COMMON_ENGLISH per million
-    (oc -> of, gst -> get, baack -> back), unless it is an established Telugu spelling:
-    at least SLIP_ESTABLISHED_FLOOR per million, and typed by people or its Telugu word's
-    commonest spelling (oka, mee, ki, edo stay);
+    (oc -> of, gst -> get, burt -> but, baack -> back), unless people typed it and it is at
+    least SLIP_TYPED_FLOOR per million (oka, mee, edo stay) or it is on the reviewed
+    allowlist sources/te-IN/tenglish-guard-allowlist.tsv (aa, lo, ki, inti);
   - it is an attested English misspelling (Birkbeck, Holbrook, Aspell, Wikipedia lists)
     of an English word that is more frequent than it is as Telugu (bal for ball).
 """
@@ -68,6 +68,7 @@ DEFAULT_BIN = REPO / "keyboard/tenglish_guard.bin"
 DEFAULT_INDICCORP = REPO / "tools/data/indiccorpv2-te-stratified-2026-07-20.txt.bz2"
 DEFAULT_TENGLISH_LEXICON = REPO / "keyboard/tenglish_lexicon.bin"
 DEFAULT_CORE = ROOT / "sources/te-IN/tenglish-core-reviewed.tsv"
+DEFAULT_ALLOWLIST = ROOT / "sources/te-IN/tenglish-guard-allowlist.tsv"
 DEFAULT_ENGLISH = REPO / "tools/data/nss/unigram-v1/unigrams.tsv"
 
 ROMAN = re.compile(r"^[a-z]{2,24}$")
@@ -93,15 +94,14 @@ SLIP_RATE = 0.01
 SLIP_TARGET_FLOOR = 1.0
 # Per-million counts of Telugu and English come from different corpora, and English is the
 # keyboard's language: a spelling one slip from an English word this common is listed only
-# when it is an established Telugu spelling (oc for of and gst for get are not).
+# when people typed it or it is on the reviewed allowlist (oc for of, burt for but are not).
 SLIP_COMMON_ENGLISH = 200.0
-# An established spelling is typed by people (Dakshina, the reviewed core, the Tenglish
-# lexicon) or is its Telugu word's commonest spelling, and is at least this frequent (per
-# million). Comparing with the English word's count cannot separate the two: ki (0.035 of i)
-# and secons (0.035 of second), edo and baack (both 0.011) tie. Rare spellings typed by
-# people are mostly English loanwords (baack, paart: at most 42 per million), while the
-# least frequent Telugu function words the rule protects (edo, intlo) are near 70.
-SLIP_ESTABLISHED_FLOOR = 50.0
+# A spelling people typed must also be this frequent (per million) to outweigh such an
+# English word. Comparing with the English word's count cannot draw the line: edo and baack
+# are both 0.011 of theirs. Rare spellings people typed are mostly English loanwords
+# (baack, paart: at most 42 per million), while the least frequent Telugu function words
+# the rule keeps (edo, intlo) are near 70.
+SLIP_TYPED_FLOOR = 50.0
 # An English spelling at least this long and this frequent (per million) marks a loanword.
 # Mined Aksharantar rows sometimes pair a word with its translation (kosam, "choose"), so
 # the English spelling must also carry this share of the word's romanizations.
@@ -309,10 +309,11 @@ def slips(word: str, adjacent: dict[str, set[str]]) -> set[str]:
 
 
 def select(projected: dict[str, float], best_native: dict[str, str],
-           loanwords: set[str], established: set[str], english: dict[str, float],
-           misspelled: dict[str, set[str]], max_words: int,
+           loanwords: set[str], typed: set[str], allowlist: set[str],
+           english: dict[str, float], misspelled: dict[str, set[str]], max_words: int,
            min_per_million: float) -> tuple[list[tuple[str, float, str]], dict]:
-    """`established` holds the spellings people typed and each Telugu word's commonest one."""
+    """`typed` holds the spellings people typed; `allowlist` the reviewed Telugu spellings
+    kept whatever English word they are one slip from."""
     candidates = {word: value for word, value in projected.items() if value >= min_per_million}
     adjacent = neighbours()
     slip_source: dict[str, float] = {}
@@ -330,8 +331,8 @@ def select(projected: dict[str, float], best_native: dict[str, str],
         elif best_native[word] in loanwords:
             reason = "english_loanword"
         elif SLIP_RATE * slip_source.get(word, 0.0) > value \
-                or slip_source.get(word, 0.0) >= SLIP_COMMON_ENGLISH \
-                and (word not in established or value < SLIP_ESTABLISHED_FLOOR):
+                or slip_source.get(word, 0.0) >= SLIP_COMMON_ENGLISH and word not in allowlist \
+                and (word not in typed or value < SLIP_TYPED_FLOOR):
             reason = "english_slip_likelier"
         elif any(phrase_frequency(target, english) > value
                  for target in misspelled.get(word, ())):
@@ -393,18 +394,22 @@ def extract(args: argparse.Namespace) -> None:
                 contribution[latin] = (share, native)
     # Rounded as written to the TSV, so the TSV order is the compiled word order.
     projected = {word: round(value, 3) for word, value in projected.items()}
-    best_native = {word: native for word, (_, native) in contribution.items()}
-    established = typed | {word for word, native in best_native.items()
-                           if pairs[native][word] == max(pairs[native].values())}
-    kept, reasons = select(projected, best_native, english_loanwords(pairs, english),
-                           established, english, misspellings(args.misspellings),
-                           args.max_words, args.min_per_million)
+    kept, reasons = select(projected, {word: native for word, (_, native) in contribution.items()},
+                           english_loanwords(pairs, english), typed, read_allowlist(args.allowlist),
+                           english, misspellings(args.misspellings), args.max_words,
+                           args.min_per_million)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8", newline="") as handle:
         handle.write("\t".join(HEADER) + "\n")
         for word, value, native in kept:
             handle.write(f"{word}\t{value:.3f}\t{native}\n")
     print(json.dumps({"kept": len(kept), "excluded": reasons}, sort_keys=True))
+
+
+def read_allowlist(path: Path) -> set[str]:
+    """Roman spellings of the reviewed allowlist (columns roman, telugu, reason)."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        return {row["roman"] for row in csv.DictReader(handle, delimiter="\t")}
 
 
 def read_tsv(path: Path) -> list[tuple[str, float]]:
@@ -449,6 +454,7 @@ def parse_args() -> argparse.Namespace:
     extract_parser.add_argument("--indiccorp", type=Path, default=DEFAULT_INDICCORP)
     extract_parser.add_argument("--tenglish-lexicon", type=Path, default=DEFAULT_TENGLISH_LEXICON)
     extract_parser.add_argument("--core", type=Path, default=DEFAULT_CORE)
+    extract_parser.add_argument("--allowlist", type=Path, default=DEFAULT_ALLOWLIST)
     extract_parser.add_argument("--english", type=Path, default=DEFAULT_ENGLISH)
     extract_parser.add_argument("--max-words", type=int, default=DEFAULT_MAX_WORDS)
     extract_parser.add_argument("--min-per-million", type=float, default=DEFAULT_MIN_PER_MILLION)

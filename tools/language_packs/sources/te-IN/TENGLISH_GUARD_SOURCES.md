@@ -58,29 +58,33 @@ python3 tools/language_packs/build_tenglish_guard.py compile
 ```
 
 `extract` printed `{"kept": 20000, "excluded": {"english_reading_likelier": 5697,
-"english_loanword": 3057, "english_slip_likelier": 276, "attested_english_misspelling": 125,
-"over_size_cap": 44865}}`.
+"english_loanword": 3057, "english_slip_likelier": 291, "attested_english_misspelling": 120,
+"over_size_cap": 44855}}`.
 
 English is the keyboard's language, and Telugu and English per-million counts come from
-different corpora. So a spelling one keyboard slip from an English word of 200 or more
-per million is listed only when it is an established Telugu spelling. That means it is at
-least 50 per million, and either people typed it (the Dakshina training lexicon and
-Aksharantar's Dakshina rows, `tenglish_lexicon.bin`, the reviewed core) or it is its
-Telugu word's commonest spelling. Mined Aksharantar rows (IndicCorp, Samanantar, Existing)
-and CulturaX machine pairs do not count as typed by people.
+different corpora. So a spelling one keyboard slip from an English word of 200 or more per
+million is listed only in two cases. Either people typed it and it is at least 50 per
+million, or it is on the reviewed allowlist. People typed it means the Dakshina training
+lexicon, Aksharantar's Dakshina rows, `tenglish_lexicon.bin` or the reviewed core. Mined
+Aksharantar rows (IndicCorp, Samanantar, Existing) and CulturaX machine pairs do not
+count.
 
 Comparing a spelling's Telugu count with its English word's count cannot draw this line:
-ki is 0.035 of i and secons 0.035 of second; edo and baack are both 0.011. The absolute
-floor can. The rarest Telugu function words it protects, edo and intlo, are near 70 per
-million. The spellings people typed for English loanwords (baack, paart, taalk, jook,
-lokk) and bigg are at most 42.
+edo and baack are both 0.011 of theirs. The 50 per million floor can. The rarest Telugu
+words people typed that it keeps, edo and intlo, are near 70 per million. The spellings
+people typed for English loanwords (baack, paart, taalk, jook, lokk) are at most 42.
 
-So oka, aa, lo, mee, na, aame, ki, nee, em, inti, intlo and edo stay listed. oc (a stray
-Aksharantar spelling of oka), gst, secons, wasn and the loanword spellings are left out,
-and phine is left out as a spelling of the loanword fine. 40 listed words remain one slip
-from an English word of 200 or more per million. Besides the twelve above, they include
-ni, sare, ade, gd, koney and veru, which people typed in Dakshina, and burt, shere and yea,
-the commonest spellings of their Telugu words.
+`tenglish-guard-allowlist.tsv` (reviewed, columns roman, telugu, reason) holds frequent
+Telugu words that no training source attests, because Dakshina and Aksharantar keep them
+in their held-out splits: aa (ఆ), lo (లో), ki (కి) and inti (ఇంటి). Allowlisted words skip
+only this rule.
+
+So oka, aa, lo, mee, na, aame, ki, nee, em, inti, intlo and edo stay listed. Spellings
+that only mined or machine pairs produced are left out: oc, gst, yea, burt, shere, stree,
+cree, oo, ipl, ene, sar, ru, wasn and secons. So are the loanword spellings, and phine is
+left out as a spelling of the loanword fine. 30 listed words remain one slip from an
+English word of 200 or more per million. Besides the twelve above, they include ni, sare,
+ade, gd, koney and veru, which people typed in Dakshina.
 
 Spellings found only in the machine-romanized CulturaX pairs stay in the list. The common
 words rendu, telusu, nundi, mana and entha have no other training source, because Dakshina
@@ -92,5 +96,5 @@ and Aksharantar keep them in their held-out splits.
   the words are in the list. The decoder autocorrected 12.9% of the words before and 4.4%
   with the list. The largest remaining changes are ee -> we (ee is in no training source)
   and ane -> and (an attested misspelling of "and").
-- English misspelling lists (40,910 rows): 81 rows are list words. The decoder fixes 2 of
+- English misspelling lists (40,910 rows): 77 rows are list words. The decoder fixes 2 of
   them today (chery -> cherry, hegde -> hedge, both Birkbeck), which the list now keeps.
