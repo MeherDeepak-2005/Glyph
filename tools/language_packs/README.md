@@ -182,9 +182,9 @@ attested Roman spellings (the Dakshina training lexicon, Aksharantar, machine-ro
 CulturaX) and keeps the 20,000 most frequent,
 leaving out words English should own: likelier English readings, English loanwords,
 one-key slips of much more frequent English words, one-key slips of common English
-words (200 per million or more) unless people typed them often enough or they are on
-the reviewed `sources/te-IN/tenglish-guard-allowlist.tsv` (oka, ki), and attested English
-misspellings.
+words (200 per million or more) unless people typed them often enough (oka) or they are
+on the reviewed `sources/te-IN/tenglish-guard-allowlist.tsv` (aa, lo, ki, inti), and
+attested English misspellings.
 The reviewable list is `sources/te-IN/tenglish-guard-unigrams.tsv`; its sources and
 checksums are in `sources/te-IN/TENGLISH_GUARD_SOURCES.md`. `compile` writes
 `keyboard/tenglish_guard.bin` in the KBTD format `TeluguLexicon` reads (no n-grams,
