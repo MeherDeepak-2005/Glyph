@@ -20,10 +20,12 @@ Writes into OUT_DIR:
                        a label with its source:
                          prompt      practice target (ground truth, even when the decoder was wrong)
                          selection   the alternative the user picked on the strip
-                         retracted   the user deleted the word: the committed word was wrong
+                         retracted   the user explicitly undid the inserted word
+                         backspaced  a later backspace reached the inserted word
+                         continued   the user entered more text (weak evidence for the committed word)
                          unverified  nothing contradicted the committed word (an observation, not truth)
 
-Commits are observations. Only prompt, selection, undo and manual-replacement rows are labels.
+Commits are observations. Keep continuation separate from prompt and selection supervision.
 """
 from __future__ import annotations
 import argparse, csv, json, statistics, sys
@@ -196,9 +198,12 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
             glide_outcomes[glide["outcome"]] += 1
             committed = (e.get("text") or "").lower() or None
             prompt = prompt_for(spans, e)
-            later = related.get((e["install"], e.get("process"), e.get("word")), ())
+            later = [l for l in related.get((e["install"], e.get("process"), e.get("word")), ())
+                     if l.get("session") == e.get("session") and l.get("uptime", 0) >= e.get("uptime", 0)]
             picked = next((l for l in later if l["kind"] == "glide-selection"), None)
             retracted = any(l["kind"] == "undo" and l.get("evidence") == "explicit-retraction" for l in later)
+            continued = next((l for l in later if l["kind"] == "glide-continued"), None)
+            backspaced = next((l for l in later if l["kind"] == "glide-backspaced"), None)
             label, source = None, None
             if prompt and " " not in prompt["target"]:
                 label, source = prompt["target"].lower(), "prompt"
@@ -210,12 +215,19 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                 label, source = (picked.get("replacement") or "").lower(), "selection"
             elif retracted:
                 source = "retracted"
+            elif backspaced:
+                source = "backspaced"
+            elif continued:
+                label, source = committed, "continued"
             else:
                 label, source = committed, "unverified"
             labels[source] += 1
             handle.write(json.dumps({
                 "install": e["install"], "process": e.get("process"), "layout": e.get("layout"), "time": e.get("time"),
                 "id": e["id"], "outcome": glide["outcome"], "committed": committed, "label": label, "label_source": source,
+                "continued": continued is not None, "backspaced": backspaced is not None,
+                "continued_after_ms": continued.get("sinceMs") if continued else None,
+                "backspaced_after_ms": backspaced.get("sinceMs") if backspaced else None,
                 "prompt_target": prompt["target"] if prompt else None, "start_key": glide.get("startKey"),
                 "decode_source": glide.get("source"), "previews": glide.get("previews"), "margin": e.get("confidence"),
                 "duration_ms": e.get("durationMs"), "lift_to_insert_ms": glide.get("liftToInsertMs"),

@@ -115,5 +115,25 @@ class DatasetTests(unittest.TestCase):
         self.assertEqual(self.summary["glide_labels"], {"prompt": 1, "rejected": 1, "retracted": 1, "selection": 1, "unverified": 1})
         self.assertEqual(len((self.out / "layouts.jsonl").read_text().splitlines()), 1)
 
+    def test_glide_follow_up(self):
+        root = Path(self.temp.name)
+        events = [
+            event("header", 1, header={"install": "install-A"}),
+            glide(2, 1, "hello"),
+            event("glide-continued", 3, word=2, relatedWord=1, sinceMs=1000),
+            glide(4, 2, "world"),
+            event("glide-continued", 5, word=3, relatedWord=2, sinceMs=1000),
+            event("glide-backspaced", 6, word=3, relatedWord=2, sinceMs=2000),
+            event("glide-backspaced", 7, session=2, word=4, relatedWord=1, sinceMs=5000),
+        ]
+        source = root / "follow-up"
+        source.mkdir()
+        (source / "events.jsonl").write_text("\n".join(json.dumps(e) for e in events))
+        build_datasets.build(source, self.out, None)
+        hello, world = [json.loads(line) for line in (self.out / "glides.jsonl").read_text().splitlines()]
+        self.assertEqual((hello["label"], hello["label_source"], hello["backspaced"]), ("hello", "continued", False))
+        self.assertEqual((world["label"], world["label_source"]), (None, "backspaced"))
+        self.assertEqual((world["continued_after_ms"], world["backspaced_after_ms"]), (1000, 2000))
+
 if __name__ == "__main__":
     unittest.main()

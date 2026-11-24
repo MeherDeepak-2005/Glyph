@@ -85,7 +85,7 @@ extension KeyboardViewController {
                                                 previews: glidePreviewCount, liftAt: liftAt)
     }
 
-    func recordGlide(outcome: String, word: String? = nil) {
+    func recordGlide(outcome: String, word: String? = nil, displayedWord: String? = nil) {
         guard let pending = pendingGlideRecord else { return }
         pendingGlideRecord = nil
         guard KBTypingRecorder.enabled, permitsTypingData,
@@ -113,6 +113,71 @@ extension KeyboardViewController {
                          liftToInsertMs: outcome == "committed" ? tenth((now - pending.liftAt) * 1_000) : nil,
                          truncated: pending.samples.count > kept.count ? true : nil),
             at: pending.liftAt)
+        if outcome == "committed", let displayedWord, !displayedWord.isEmpty, displayedWord.count <= 64 {
+            if recordedGlideFollowUps.count == 4 { recordedGlideFollowUps.removeFirst() }
+            recordedGlideFollowUps.append(.init(wordID: wordSessionID, liftAt: pending.liftAt,
+                                               length: displayedWord.count, tail: displayedWord + " "))
+        }
+    }
+
+    func extendRecordedGlides(with text: String) {
+        guard !recordedGlideFollowUps.isEmpty, !text.isEmpty else { return }
+        let length = text.prefix(97).count
+        let hasNewTyping = length <= 96 && text.contains(where: isWordChar)
+        recordedGlideFollowUps.removeAll { $0.tail.count + length > 96 }
+        for index in recordedGlideFollowUps.indices {
+            recordedGlideFollowUps[index].tail += text
+            if hasNewTyping && !recordedGlideFollowUps[index].continued {
+                recordedGlideFollowUps[index].hasNewTyping = true
+            }
+        }
+    }
+
+    func shortenRecordedGlides(by count: Int, backspace: Bool = false) {
+        guard !recordedGlideFollowUps.isEmpty, count > 0 else { return }
+        recordedGlideFollowUps.removeAll { glide in
+            count > glide.tail.count || (!backspace && glide.tail.count - count < glide.length)
+        }
+        for index in recordedGlideFollowUps.indices {
+            recordedGlideFollowUps[index].tail.removeLast(count)
+            if backspace && recordedGlideFollowUps[index].tail.count < recordedGlideFollowUps[index].length {
+                recordedGlideFollowUps[index].backspaced = true
+            }
+        }
+    }
+
+    func finishRecordedGlideEdit(before: HostDocumentSnapshot?, after: HostDocumentSnapshot?) {
+        guard !recordedGlideFollowUps.isEmpty else { return }
+        guard KBTypingRecorder.enabled, permitsTypingData, let before, let after,
+              before.documentID == after.documentID, (before.selection ?? "").isEmpty,
+              (after.selection ?? "").isEmpty, (before.after ?? "") == (after.after ?? ""),
+              let context = after.before ?? (after.isEmpty ? "" : nil) else {
+            recordedGlideFollowUps.removeAll()
+            return
+        }
+        let tail = HostDocumentSnapshot.folded(String(context.suffix(96)))
+        for index in recordedGlideFollowUps.indices.reversed() {
+            let glide = recordedGlideFollowUps[index]
+            guard tail.hasSuffix(HostDocumentSnapshot.folded(glide.tail)) else {
+                recordedGlideFollowUps.remove(at: index)
+                continue
+            }
+            if glide.backspaced || glide.hasNewTyping {
+                guard !before.matches(after) else {
+                    recordedGlideFollowUps.remove(at: index)
+                    continue
+                }
+                let now = ProcessInfo.processInfo.systemUptime
+                recordTyping(glide.backspaced ? "glide-backspaced" : "glide-continued",
+                             relatedWord: glide.wordID, sinceMs: (now - glide.liftAt) * 1_000, at: now)
+                if glide.backspaced {
+                    recordedGlideFollowUps.remove(at: index)
+                } else {
+                    recordedGlideFollowUps[index].continued = true
+                    recordedGlideFollowUps[index].hasNewTyping = false
+                }
+            }
+        }
     }
 
     func recordTyping(_ kind: String, text: String? = nil, replacement: String? = nil,

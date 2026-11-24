@@ -83,7 +83,7 @@ extension KeyboardViewController {
 		KBDiagnostics.logGlideCommit(ms: (ProcessInfo.processInfo.systemUptime - liftAt) * 1_000)
 
 		recordCommitMetrics(word, autocorrected: false, source: "glide-unverified")
-		recordGlide(outcome: "committed", word: word)
+		recordGlide(outcome: "committed", word: word, displayedWord: display)
 		learnCommittedWord(word)
 		lastCorrection = Correction(original: "", corrected: display, trailing: " ", fromAutocorrect: false, recordedWordSessionID: wordSessionID)
 		advanceWordSession()
@@ -115,7 +115,7 @@ extension KeyboardViewController {
 			keyboard?.setGlidePreview(nil)
 			return
 		}
-		textDocumentProxy.deleteBackward()
+		deleteFromHost()
 		noteProxyEdit()
 		if !wordTaps.isEmpty { wordTaps.removeLast() }
 		if !currentWordBuffer.isEmpty { currentWordBuffer.removeLast() }

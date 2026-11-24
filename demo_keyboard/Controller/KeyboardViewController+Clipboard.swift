@@ -40,6 +40,7 @@ extension KeyboardViewController {
 	}
 
 	func invalidateDocumentSession() {
+		recordedGlideFollowUps.removeAll()
 		recordTyping("session-end")
 		KBDiagnostics.finishTypingSession()
 		fieldRevision &+= 1
@@ -101,7 +102,7 @@ extension KeyboardViewController {
 				let before = textDocumentProxy.documentContextBeforeInput ?? ""
 				if before.hasSuffix(" "), let prev = before.dropLast().last,
 				   isWordChar(prev), autocorrectionAllowed {
-					textDocumentProxy.deleteBackward()
+					deleteFromHost()
 					insertIntoHost(". ")
 					noteProxyEdit()
 					advanceWordSession()
@@ -131,7 +132,7 @@ extension KeyboardViewController {
 				KBStats.noteCommitted(glided: false)
 			}
 			if ch != " ", ch != "\n", lastCorrection?.trailing == " " {
-				textDocumentProxy.deleteBackward()
+				deleteFromHost()
 			}
 			insertIntoHost(ch)
 			noteProxyEdit()
@@ -181,6 +182,7 @@ extension KeyboardViewController {
         defer { endKeyboardEdit() }
 		guard !cursorModeActive else { return }
 		cursorModeActive = true
+		recordedGlideFollowUps.removeAll()
 		resolveCorrectionAsAccepted()
 		resolveGlideUnverified()
 		lastCorrection = nil

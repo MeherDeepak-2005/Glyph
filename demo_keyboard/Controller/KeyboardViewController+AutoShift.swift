@@ -35,7 +35,7 @@ extension KeyboardViewController {
 				}
 				lastCorrection = nil
 				let erased = ctx.last
-				textDocumentProxy.deleteBackward()
+				deleteFromHost(backspace: true)
 				traceErase(erased)
 				if let erased, isWordChar(erased), !wordTaps.isEmpty { wordTaps.removeLast() }
 				else { wordTaps.removeAll(keepingCapacity: true) }
@@ -74,7 +74,7 @@ extension KeyboardViewController {
 			return
 		}
 		let erased = textDocumentProxy.documentContextBeforeInput?.last
-		textDocumentProxy.deleteBackward()
+		deleteFromHost(backspace: true)
 		traceErase(erased)
 		if let erased, isWordChar(erased), !wordTaps.isEmpty { wordTaps.removeLast() }
 		else { wordTaps.removeAll(keepingCapacity: true) }

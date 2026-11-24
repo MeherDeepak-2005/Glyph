@@ -54,6 +54,8 @@ protection, so nothing is written while the phone is locked.
 | `glide-began` | a touch became a Glide | the provisional start letter (already logged as a `key`) was retracted |
 | `glide` | the gesture ended, however it ended | see below |
 | `glide-selection` | the user swapped a glided word for a strip alternative | `text` committed, `replacement` chosen, `relatedWord`, `sinceMs` |
+| `glide-continued` | the user entered more text containing a word character after the glide | `relatedWord`, `sinceMs` from lift |
+| `glide-backspaced` | ordinary backspace reached a character of the original glided word | `relatedWord`, `sinceMs` from lift |
 | `prompt-shown`, `prompt-done` | practice (app) | `prompt`: `id`, `target`, `mode` (`glide`, `tap`, `sentences`), `result` (what was in the field); `evidence` `matched`, `skipped` or `left` |
 | `session-end` | field closed | — |
 
@@ -78,7 +80,11 @@ Commits are observations, not labels: an autocorrection (`automatic-unverified`)
 - **Practice prompts**: everything between `prompt-shown` and `prompt-done` (same install, by
   `uptime`) was an attempt at `prompt.target`, including the attempts the decoder got wrong.
 - **Glide**: `glide-selection` (the chosen word is the label for that path), `undo` with
-  `explicit-retraction` (the committed word was wrong; the intended word is unknown).
+  `explicit-retraction` or `glide-backspaced` (the user edited the original word; the intended word is unknown),
+  and `glide-continued` (weak evidence for the committed word that a later edit can override).
+  Follow-up tracking stays within the current document session and tracks up to four glides
+  while their text remains within 96 characters before the cursor. Cursor moves and external
+  document changes end tracking. The export preserves both follow-up signals and their timing.
 - **Word corrections**: `undo` and `manual-replacement` with a `relatedWord` (the correction was
   wrong and the restored word is the label), `correction-accepted` (weak: it stood), picks.
 - **Per-key error model**: `key-fix` pairs; `touch-down` positions against the `layout`

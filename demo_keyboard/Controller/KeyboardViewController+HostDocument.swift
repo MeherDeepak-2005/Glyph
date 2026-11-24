@@ -81,6 +81,7 @@ extension KeyboardViewController {
 
     func endKeyboardEdit() {
         let finalState = documentReconciler.editDepth == 1 ? readHostDocument() : nil
+        let previousState = documentReconciler.snapshot
         var unexpectedInsertion = false
         if documentReconciler.editDepth == 1, let text = expectedLetterInsertion {
             expectedLetterInsertion = nil
@@ -93,6 +94,8 @@ extension KeyboardViewController {
             KBDiagnostics.noteIntegrityEvent("host-edit-diverged")
             resetDocumentPresentation()
             scheduleSuggestions()
+        } else if documentReconciler.editDepth == 0 {
+            finishRecordedGlideEdit(before: previousState, after: finalState)
         }
         updateRecoveryTimer()
     }

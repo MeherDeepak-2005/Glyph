@@ -81,6 +81,12 @@ extension KeyboardViewController {
 		#else
 		textDocumentProxy.insertText(text)
 		#endif
+		extendRecordedGlides(with: text)
+	}
+
+	func deleteFromHost(backspace: Bool = false) {
+		textDocumentProxy.deleteBackward()
+		shortenRecordedGlides(by: 1, backspace: backspace)
 	}
 
 	@discardableResult
@@ -92,12 +98,21 @@ extension KeyboardViewController {
 			&& HostDocumentSnapshot.folded(hostSuffix) == HostDocumentSnapshot.folded(suffix) ? hostSuffix : suffix
 		guard let plan = HostSuffixReplacementPlan(contextBeforeInput: initial,
 				suffix: matched, replacement: replacement) else { return false }
-		return plan.apply(initialContext: initial,
+		let applied = plan.apply(initialContext: initial,
 			deleteBackward: {
 				textDocumentProxy.deleteBackward()
 				lastReplaceDeleteCount += 1
 				return textDocumentProxy.documentContextBeforeInput
 			},
-			insert: { insertIntoHost($0) })
+			insert: {
+				shortenRecordedGlides(by: matched.count)
+				insertIntoHost($0)
+			})
+		if applied && replacement.isEmpty {
+			shortenRecordedGlides(by: matched.count)
+		} else if !applied && lastReplaceDeleteCount > 0 {
+			recordedGlideFollowUps.removeAll()
+		}
+		return applied
 	}
 }
