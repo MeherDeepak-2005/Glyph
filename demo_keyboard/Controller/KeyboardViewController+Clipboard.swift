@@ -40,7 +40,7 @@ extension KeyboardViewController {
 	}
 
 	func invalidateDocumentSession() {
-		recordedGlideFollowUps.removeAll()
+		recordedWordFollowUps.removeAll()
 		recordTyping("session-end")
 		KBDiagnostics.finishTypingSession()
 		fieldRevision &+= 1
@@ -81,6 +81,7 @@ extension KeyboardViewController {
 				self.noteTap(atUptime: keyTime)
 				if let acceptedCorrection, acceptedCorrection.fromAutocorrect {
 					self.engine.correctionStood(acceptedCorrection.original)
+					self.recordCorrectionAccepted(acceptedCorrection)
 				}
 				if unresolvedGlide { self.engine.glideUnverified() }
 				KBStats.confirm(acceptedGlideStatsID)
@@ -136,6 +137,7 @@ extension KeyboardViewController {
 			}
 			insertIntoHost(ch)
 			noteProxyEdit()
+			trackRecordedWord(committedWord, trailing: ch, kind: correction == nil ? "typed" : "autocorrection")
 			correction?.trailing = ch
 			lastCorrection = correction
 			advanceWordSession()
@@ -182,7 +184,7 @@ extension KeyboardViewController {
         defer { endKeyboardEdit() }
 		guard !cursorModeActive else { return }
 		cursorModeActive = true
-		recordedGlideFollowUps.removeAll()
+		recordedWordFollowUps.removeAll()
 		resolveCorrectionAsAccepted()
 		resolveGlideUnverified()
 		lastCorrection = nil
@@ -242,6 +244,7 @@ extension KeyboardViewController {
             updateAutoShift()
             return
         }
+		trackRecordedWord(committedWord, trailing: "\n", kind: correction == nil ? "typed" : "autocorrection")
 		correction?.trailing = "\n"
 		lastCorrection = correction
 		advanceWordSession()

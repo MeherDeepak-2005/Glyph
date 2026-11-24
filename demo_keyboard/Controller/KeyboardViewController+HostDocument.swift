@@ -95,7 +95,7 @@ extension KeyboardViewController {
             resetDocumentPresentation()
             scheduleSuggestions()
         } else if documentReconciler.editDepth == 0 {
-            finishRecordedGlideEdit(before: previousState, after: finalState)
+            finishRecordedWordEdit(before: previousState, after: finalState)
         }
         updateRecoveryTimer()
     }

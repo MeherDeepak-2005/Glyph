@@ -96,16 +96,17 @@ final class KeyboardViewController: UIInputViewController {
 		let liftAt: Double
 	}
 	var pendingGlideRecord: PendingGlideRecord?
-	struct RecordedGlideFollowUp {
+	struct RecordedWordFollowUp {
+		let kind: String
 		let wordID: UInt64
-		let liftAt: Double
+		let enteredAt: Double
 		let length: Int
 		var tail: String
 		var continued = false
 		var hasNewTyping = false
 		var backspaced = false
 	}
-	var recordedGlideFollowUps: [RecordedGlideFollowUp] = []
+	var recordedWordFollowUps: [RecordedWordFollowUp] = []
 	var glidePreviewCount = 0
 	struct RecordedLayout: Equatable {
 		let revision: UInt64

@@ -113,68 +113,85 @@ extension KeyboardViewController {
                          liftToInsertMs: outcome == "committed" ? tenth((now - pending.liftAt) * 1_000) : nil,
                          truncated: pending.samples.count > kept.count ? true : nil),
             at: pending.liftAt)
-        if outcome == "committed", let displayedWord, !displayedWord.isEmpty, displayedWord.count <= 64 {
-            if recordedGlideFollowUps.count == 4 { recordedGlideFollowUps.removeFirst() }
-            recordedGlideFollowUps.append(.init(wordID: wordSessionID, liftAt: pending.liftAt,
-                                               length: displayedWord.count, tail: displayedWord + " "))
+        if outcome == "committed", let displayedWord {
+            trackRecordedWord(displayedWord, trailing: " ", kind: "glide", enteredAt: pending.liftAt)
         }
     }
 
-    func extendRecordedGlides(with text: String) {
-        guard !recordedGlideFollowUps.isEmpty, !text.isEmpty else { return }
+    func trackRecordedWord(_ word: String, trailing: String, kind: String,
+                           enteredAt: Double = ProcessInfo.processInfo.systemUptime) {
+        guard KBTypingRecorder.enabled, permitsTypingData, !word.isEmpty, word.count <= 64 else { return }
+        if recordedWordFollowUps.count == 4 { recordedWordFollowUps.removeFirst() }
+        recordedWordFollowUps.append(.init(kind: kind, wordID: wordSessionID, enteredAt: enteredAt,
+                                           length: word.count, tail: word + trailing))
+    }
+
+    func recordCorrectionAccepted(_ correction: Correction) {
+        guard correction.fromAutocorrect, let word = correction.recordedWordSessionID,
+              word != recordedAcceptance else { return }
+        recordedAcceptance = word
+        recordTyping("correction-accepted", text: correction.original, replacement: correction.corrected,
+                     evidence: "user-continued", relatedWord: word,
+                     sinceMs: (ProcessInfo.processInfo.systemUptime - correction.appliedAt) * 1_000)
+    }
+
+    func extendRecordedWords(with text: String) {
+        guard !recordedWordFollowUps.isEmpty, !text.isEmpty else { return }
         let length = text.prefix(97).count
         let hasNewTyping = length <= 96 && text.contains(where: isWordChar)
-        recordedGlideFollowUps.removeAll { $0.tail.count + length > 96 }
-        for index in recordedGlideFollowUps.indices {
-            recordedGlideFollowUps[index].tail += text
-            if hasNewTyping && !recordedGlideFollowUps[index].continued {
-                recordedGlideFollowUps[index].hasNewTyping = true
+        recordedWordFollowUps.removeAll { $0.tail.count + length > 96 }
+        for index in recordedWordFollowUps.indices {
+            recordedWordFollowUps[index].tail += text
+            if hasNewTyping && !recordedWordFollowUps[index].continued {
+                recordedWordFollowUps[index].hasNewTyping = true
             }
         }
     }
 
-    func shortenRecordedGlides(by count: Int, backspace: Bool = false) {
-        guard !recordedGlideFollowUps.isEmpty, count > 0 else { return }
-        recordedGlideFollowUps.removeAll { glide in
+    func shortenRecordedWords(by count: Int, backspace: Bool = false) {
+        guard !recordedWordFollowUps.isEmpty, count > 0 else { return }
+        recordedWordFollowUps.removeAll { glide in
             count > glide.tail.count || (!backspace && glide.tail.count - count < glide.length)
         }
-        for index in recordedGlideFollowUps.indices {
-            recordedGlideFollowUps[index].tail.removeLast(count)
-            if backspace && recordedGlideFollowUps[index].tail.count < recordedGlideFollowUps[index].length {
-                recordedGlideFollowUps[index].backspaced = true
+        for index in recordedWordFollowUps.indices {
+            recordedWordFollowUps[index].tail.removeLast(count)
+            if backspace && recordedWordFollowUps[index].tail.count < recordedWordFollowUps[index].length {
+                recordedWordFollowUps[index].backspaced = true
             }
         }
     }
 
-    func finishRecordedGlideEdit(before: HostDocumentSnapshot?, after: HostDocumentSnapshot?) {
-        guard !recordedGlideFollowUps.isEmpty else { return }
+    func finishRecordedWordEdit(before: HostDocumentSnapshot?, after: HostDocumentSnapshot?) {
+        guard !recordedWordFollowUps.isEmpty else { return }
         guard KBTypingRecorder.enabled, permitsTypingData, let before, let after,
               before.documentID == after.documentID, (before.selection ?? "").isEmpty,
               (after.selection ?? "").isEmpty, (before.after ?? "") == (after.after ?? ""),
               let context = after.before ?? (after.isEmpty ? "" : nil) else {
-            recordedGlideFollowUps.removeAll()
+            recordedWordFollowUps.removeAll()
             return
         }
         let tail = HostDocumentSnapshot.folded(String(context.suffix(96)))
-        for index in recordedGlideFollowUps.indices.reversed() {
-            let glide = recordedGlideFollowUps[index]
+        for index in recordedWordFollowUps.indices.reversed() {
+            let glide = recordedWordFollowUps[index]
             guard tail.hasSuffix(HostDocumentSnapshot.folded(glide.tail)) else {
-                recordedGlideFollowUps.remove(at: index)
+                recordedWordFollowUps.remove(at: index)
                 continue
             }
             if glide.backspaced || glide.hasNewTyping {
                 guard !before.matches(after) else {
-                    recordedGlideFollowUps.remove(at: index)
+                    recordedWordFollowUps.remove(at: index)
                     continue
                 }
                 let now = ProcessInfo.processInfo.systemUptime
-                recordTyping(glide.backspaced ? "glide-backspaced" : "glide-continued",
-                             relatedWord: glide.wordID, sinceMs: (now - glide.liftAt) * 1_000, at: now)
+                let prefix = glide.kind == "glide" ? "glide" : "word"
+                recordTyping(prefix + (glide.backspaced ? "-backspaced" : "-continued"),
+                             evidence: glide.kind == "glide" ? nil : glide.kind,
+                             relatedWord: glide.wordID, sinceMs: (now - glide.enteredAt) * 1_000, at: now)
                 if glide.backspaced {
-                    recordedGlideFollowUps.remove(at: index)
+                    recordedWordFollowUps.remove(at: index)
                 } else {
-                    recordedGlideFollowUps[index].continued = true
-                    recordedGlideFollowUps[index].hasNewTyping = false
+                    recordedWordFollowUps[index].continued = true
+                    recordedWordFollowUps[index].hasNewTyping = false
                 }
             }
         }
@@ -192,25 +209,34 @@ extension KeyboardViewController {
         guard KBTypingRecorder.enabled, permitsTypingData else { return }
         func finite(_ value: Double?) -> Double? { value?.isFinite == true ? value : nil }
         func tenth(_ value: CGFloat?) -> Double? { value.flatMap { finite((Double($0) * 10).rounded() / 10) } }
-        KBTypingRecorder.record(.init(uptime: at, process: KBTypingRecorder.processID,
+        let clippedCandidates: [String]? = candidates.map { $0.prefix(3).map { String($0.prefix(64)) } }
+        let clippedKeystrokes: [KBTypingRecorder.Keystroke]? = keystrokes.map { Array($0.prefix(64)) }
+        let snapshotConfidence: Double? = snapshot.flatMap { $0.confidence.isFinite ? $0.confidence : nil }
+        let snapshotEvidence: [KBTypingRecorder.Candidate]? = snapshot.map { snapshot in
+            snapshot.candidates.prefix(8).map { candidate -> KBTypingRecorder.Candidate in
+                KBTypingRecorder.Candidate(word: String(candidate.word.prefix(64)), score: finite(candidate.score),
+                      spatialCost: finite(candidate.spatialCost),
+                      logLanguageProbability: finite(candidate.logLanguageProbability),
+                      neuralLogProbability: finite(candidate.neuralLogProbability),
+                      typedWordMargin: finite(candidate.typedWordMargin), source: candidate.source.rawValue)
+            }
+        }
+        let model: String = snapshot == nil && glide == nil ? "not-decoded" : "nss"
+        let build: String = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "unknown"
+        KBTypingRecorder.record(KBTypingRecorder.Event(uptime: at, process: KBTypingRecorder.processID,
             session: fieldRevision, word: wordSessionID, relatedWord: relatedWord, layout: layoutRevision, kind: kind,
             text: text.map { String($0.prefix(64)) },
             replacement: replacement.map { String($0.prefix(64)) }, evidence: evidence,
-            candidates: candidates.map { $0.prefix(3).map { String($0.prefix(64)) } },
+            candidates: clippedCandidates,
             dx: finite(tap?.dx), dy: finite(tap?.dy), x: tenth(point?.x), y: tenth(point?.y), radius: tenth(radius),
             touchID: touchID,
             intervalMs: finite(intervalMs), sinceMs: finite(sinceMs), typed: typed.map { String($0.prefix(64)) },
-            keystrokes: keystrokes.map { Array($0.prefix(64)) }, durationMs: finite(durationMs), backspaces: backspaces,
-            confidence: finite(confidence) ?? (snapshot?.confidence.isFinite == true ? snapshot?.confidence : nil),
-            candidateEvidence: candidateEvidence ?? snapshot?.candidates.prefix(8).map {
-                .init(word: String($0.word.prefix(64)), score: finite($0.score),
-                      spatialCost: finite($0.spatialCost), logLanguageProbability: finite($0.logLanguageProbability),
-                      neuralLogProbability: finite($0.neuralLogProbability),
-                      typedWordMargin: finite($0.typedWordMargin), source: $0.source.rawValue)
-            },
+            keystrokes: clippedKeystrokes, durationMs: finite(durationMs), backspaces: backspaces,
+            confidence: finite(confidence) ?? snapshotConfidence,
+            candidateEvidence: candidateEvidence ?? snapshotEvidence,
             glide: glide, geometry: geometry,
-            model: snapshot == nil && glide == nil ? "not-decoded" : "nss", requestedModel: "nss",
+            model: model, requestedModel: "nss",
             language: "english",
-            build: (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "unknown"))
+            build: build))
     }
 }

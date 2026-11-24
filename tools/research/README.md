@@ -38,7 +38,8 @@ python3 tools/research/build_datasets.py ~/glyph-research/opened ~/glyph-researc
 
 A tester's shared export (`export.jsonl`) is already plain: put it in the `opened` folder.
 `build_datasets.py --help` lists the tables; `glides.jsonl` + `layouts.jsonl` are the Glide
-training set, `autocorrect.tsv` the correction/undo study, `word_frequency.tsv` and
+training set, `autocorrect.tsv` the correction/undo study, `words.tsv` every tapped word with its
+candidates and whether the user kept it or backspaced it (and what they typed instead), `word_frequency.tsv` and
 `oov_words.tsv` the vocabulary.
 
 ## Tests

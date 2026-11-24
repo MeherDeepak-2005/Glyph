@@ -135,5 +135,56 @@ class DatasetTests(unittest.TestCase):
         self.assertEqual((world["label"], world["label_source"]), (None, "backspaced"))
         self.assertEqual((world["continued_after_ms"], world["backspaced_after_ms"]), (1000, 2000))
 
+    def test_word_follow_up(self):
+        root = Path(self.temp.name)
+        candidates = [{"word": "form", "score": -2.0, "spatialCost": 0.4}, {"word": "from", "score": -2.5, "spatialCost": 0.6}]
+        events = [
+            event("header", 1, header={"install": "install-A"}),
+            event("suggestions", 2, word=1, text="form", candidateEvidence=candidates),
+            event("commit", 2.1, word=1, text="form", typed="form", evidence="literal-unverified"),
+            event("word-backspaced", 3, word=2, relatedWord=1, sinceMs=900, evidence="typed"),
+            event("commit", 4, word=2, text="from", typed="from", evidence="literal-unverified"),
+            event("word-continued", 4.5, word=3, relatedWord=2, sinceMs=500, evidence="typed"),
+            event("suggestion-pick", 5, word=3, text="ca", replacement="cat", evidence="explicit-selection"),
+            event("commit", 5.01, word=3, text="cat", evidence="literal-unverified"),
+            event("autocorrection", 6, word=4, text="teh", replacement="the", confidence=2.0),
+            event("commit", 6.01, word=4, text="the", typed="teh", evidence="automatic-unverified"),
+            event("word-continued", 6.5, word=5, relatedWord=4, sinceMs=500, evidence="autocorrection"),
+            event("correction-accepted", 6.5, word=5, relatedWord=4, text="teh", replacement="the", sinceMs=500),
+            event("autocorrection", 7, word=5, text="adn", replacement="ads", confidence=0.3),
+            event("commit", 7.01, word=5, text="ads", typed="adn", evidence="automatic-unverified"),
+            event("word-backspaced", 7.5, word=6, relatedWord=5, sinceMs=500, evidence="autocorrection"),
+            event("commit", 8, word=6, text="and", typed="and", evidence="literal-unverified"),
+        ]
+        source = root / "words"
+        source.mkdir()
+        (source / "events.jsonl").write_text("\n".join(json.dumps(e) for e in events))
+        summary = build_datasets.build(source, self.out, None)
+        rows = {row["word"]: row for row in self.table("words.tsv")}
+        self.assertEqual((rows["form"]["outcome"], rows["form"]["since_ms"], rows["form"]["replaced_by"]), ("backspaced", "900", "from"))
+        self.assertEqual(json.loads(rows["form"]["candidates"])[1][0], "from")
+        self.assertEqual((rows["from"]["entry"], rows["from"]["outcome"]), ("typed", "continued"))
+        self.assertEqual((rows["cat"]["entry"], rows["cat"]["outcome"]), ("pick", "unverified"))
+        self.assertEqual((rows["the"]["entry"], rows["the"]["outcome"]), ("autocorrection", "continued"))
+        self.assertEqual((rows["ads"]["outcome"], rows["ads"]["replaced_by"]), ("backspaced", "and"))
+        autocorrect = {row["typed"]: row["outcome"] for row in self.table("autocorrect.tsv")}
+        self.assertEqual(autocorrect, {"teh": "accepted", "adn": "backspaced"})
+        self.assertEqual(summary["word_outcomes"], {"backspaced": 2, "continued": 2, "unverified": 2})
+
+    def test_glide_replaced_by(self):
+        root = Path(self.temp.name)
+        events = [
+            event("header", 1, header={"install": "install-A"}),
+            glide(2, 1, "tome"), event("commit", 2.01, word=1, text="tome", evidence="glide-unverified"),
+            event("glide-backspaced", 3, word=2, relatedWord=1, sinceMs=1000),
+            event("commit", 4, word=2, text="time", typed="time", evidence="literal-unverified"),
+        ]
+        source = root / "glide-replaced"
+        source.mkdir()
+        (source / "events.jsonl").write_text("\n".join(json.dumps(e) for e in events))
+        build_datasets.build(source, self.out, None)
+        tome = json.loads((self.out / "glides.jsonl").read_text().splitlines()[0])
+        self.assertEqual((tome["label_source"], tome["replaced_by"]), ("backspaced", "time"))
+
 if __name__ == "__main__":
     unittest.main()

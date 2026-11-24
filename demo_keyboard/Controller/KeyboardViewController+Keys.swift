@@ -5,11 +5,7 @@ extension KeyboardViewController {
 	func resolveCorrectionAsAccepted() {
 		if let c = lastCorrection, c.fromAutocorrect {
 			engine.correctionStood(c.original)
-			if let word = c.recordedWordSessionID, word != recordedAcceptance {
-				recordedAcceptance = word
-				recordTyping("correction-accepted", text: c.original, replacement: c.corrected, evidence: "user-continued",
-					relatedWord: word, sinceMs: (ProcessInfo.processInfo.systemUptime - c.appliedAt) * 1_000)
-			}
+			recordCorrectionAccepted(c)
 		}
 	}
 
@@ -81,12 +77,12 @@ extension KeyboardViewController {
 		#else
 		textDocumentProxy.insertText(text)
 		#endif
-		extendRecordedGlides(with: text)
+		extendRecordedWords(with: text)
 	}
 
 	func deleteFromHost(backspace: Bool = false) {
 		textDocumentProxy.deleteBackward()
-		shortenRecordedGlides(by: 1, backspace: backspace)
+		shortenRecordedWords(by: 1, backspace: backspace)
 	}
 
 	@discardableResult
@@ -105,13 +101,13 @@ extension KeyboardViewController {
 				return textDocumentProxy.documentContextBeforeInput
 			},
 			insert: {
-				shortenRecordedGlides(by: matched.count)
+				shortenRecordedWords(by: matched.count)
 				insertIntoHost($0)
 			})
 		if applied && replacement.isEmpty {
-			shortenRecordedGlides(by: matched.count)
+			shortenRecordedWords(by: matched.count)
 		} else if !applied && lastReplaceDeleteCount > 0 {
-			recordedGlideFollowUps.removeAll()
+			recordedWordFollowUps.removeAll()
 		}
 		return applied
 	}
