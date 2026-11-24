@@ -537,6 +537,35 @@ final class keyboardUITests: XCTestCase {
     }
 
 	@MainActor
+	func testSendKeyWorksInAFieldThatEnablesReturnAutomatically() throws {
+		let host = XCUIApplication()
+		host.launchArguments = ["-keyboard-runtime-send"]
+		host.launch()
+		let field = host.textViews["runtime.text"]
+		XCTAssertTrue(field.waitForExistence(timeout: 5))
+		field.tap()
+		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
+			throw XCTSkip("Glyph is not the active software keyboard")
+		}
+		let sent = host.staticTexts["runtime.sent"]
+		let send = host.descendants(matching: .any).matching(NSPredicate(format: "label ==[c] 'send'")).firstMatch
+		XCTAssertTrue(send.waitForExistence(timeout: 3), "Send key missing")
+		XCTAssertFalse(send.isEnabled, "Send should start disabled in an empty field that enables Return automatically")
+		for ch in "ok" { tapLetter(String(ch), in: host) }
+		let typed = waitForText(field, toDifferFrom: "")
+		RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+		XCTAssertTrue(send.isEnabled, "Send stayed disabled after typing [\(typed)]")
+		send.tap()
+		let deadline = Date().addingTimeInterval(3)
+		var delivered = false
+		while Date() < deadline, !delivered {
+			delivered = sent.label == "Sent 1" || ((field.value as? String) ?? "").contains("\n")
+			if !delivered { RunLoop.current.run(until: Date().addingTimeInterval(0.1)) }
+		}
+		XCTAssertTrue(delivered, "Send did not deliver Return; field=[\((field.value as? String) ?? "")]")
+	}
+
+	@MainActor
 	func testEmojiSelectionProbe() throws {
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
@@ -555,16 +584,20 @@ final class keyboardUITests: XCTestCase {
 		func settle() { RunLoop.current.run(until: Date().addingTimeInterval(1.2)) }
 		func tapVisibleCell(_ note: String, skip: Int = 0) {
 			settle()
-			let bounds = grid.frame.insetBy(dx: -0.5, dy: -0.5)
-			let inside = grid.cells.allElementsBoundByIndex.filter {
-				!$0.frame.isEmpty && bounds.contains($0.frame) && !$0.label.isEmpty
+			guard let snapshot = try? grid.snapshot() else {
+				return XCTFail("\(note): could not read the emoji grid")
+			}
+			let bounds = snapshot.frame.insetBy(dx: -0.5, dy: -0.5)
+			let inside = snapshot.children.filter {
+				$0.elementType == .cell && !$0.frame.isEmpty && bounds.contains($0.frame) && !$0.label.isEmpty
 			}
 			guard inside.count > skip else {
-				return XCTFail("\(note): no fully visible emoji cell in \(grid.frame)")
+				return XCTFail("\(note): no fully visible emoji cell in \(snapshot.frame)")
 			}
 			let cell = inside[skip]
 			let expected = cell.label
-			cell.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+			grid.coordinate(withNormalizedOffset: .zero)
+				.withOffset(CGVector(dx: cell.frame.midX - snapshot.frame.minX, dy: cell.frame.midY - snapshot.frame.minY)).tap()
 			let text = waitForText(field, toDifferFrom: previous)
 			let inserted = text.hasPrefix(previous) ? String(text.dropFirst(previous.count)) : text
 			previous = text
@@ -584,6 +617,7 @@ final class keyboardUITests: XCTestCase {
 		}
 
 		grid.swipeLeft()
+		RunLoop.current.run(until: Date().addingTimeInterval(3))
 		tapVisibleCell("after-scroll")
 		XCTAssertEqual(tapped, 4, "Not every emoji probe ran")
 	}

@@ -97,6 +97,7 @@ extension KeyboardViewController {
         } else if documentReconciler.editDepth == 0 {
             finishRecordedWordEdit(before: previousState, after: finalState)
         }
+        if documentReconciler.editDepth == 0, hostConnectionReady { updateActionKey() }
         updateRecoveryTimer()
     }
 
