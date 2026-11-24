@@ -36,6 +36,11 @@ struct DecodeOutput {
     std::vector<std::string> suggestions;
     std::vector<CandidateEvidence> candidates;
     CorrectionResult correction;
+#ifdef KB_TUNING
+    std::vector<RankedRow> complete, ranked;
+    bool typedIsWord = false;
+    double literal = 0;
+#endif
 };
 struct EngineView {
     GenerationLexicon lexicon;

@@ -3,8 +3,10 @@
 #include <iterator>
 #include "Engine.hpp"
 #include "Safety.hpp"
+#include "NssRules.hpp"
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <cstdlib>
 #include <cctype>
 #include <fstream>
@@ -108,6 +110,45 @@ int main(int argc, char** argv) {
     if (bytes == MAP_FAILED) { std::cerr << "cannot map " << path << "\n"; return 3; }
     auto neural = NeuralWordModel::load({static_cast<const std::byte*>(bytes), std::size_t(nst.st_size)});
     auto engine = std::make_shared<Engine>(reader, neural, options); auto state = engine->createState();
+#ifdef KB_TUNING
+    const bool wsp = std::getenv("KB_DUMP") && std::string(std::getenv("KB_DUMP")) == "2";
+    auto wspLexicon = std::make_shared<NeuralLexicon>(*reader);
+    NeuralFst::Tables wspTables(neural, wspLexicon, {options.nssExact, options.nssUnigramFloor, options.nssUnknownExponent});
+    UnigramModel wspUnigram(*reader);
+    auto num = [](double v) { return std::isfinite(v) ? v : -1e30; };
+    auto parts = [&](std::ostream& o, const std::string& key) {
+        const auto word = key.substr(0, key.find(' '));
+        const auto lex = reader->wordID(word);
+        const int mid = lex ? wspTables.wordToModel[std::size_t(*lex)] : -1;
+        o << mid << ',' << num(lex ? wspLexicon->unigram[std::size_t(*lex)] : -INFINITY) << ','
+          << num(lex && !wspTables.outsideUnigram.empty() ? wspTables.outsideUnigram[std::size_t(*lex)] : -INFINITY) << ','
+          << num(wspUnigram.logProbability(word)) << ',' << (key.find(' ') != std::string::npos ? 1 : 0);
+    };
+    std::string wspTyped;
+    auto sameSound = [&](const std::string& key) {
+        if (wspTyped.size() < 4 || key.find_first_of(" '") != std::string::npos) return 0;
+        const auto skeleton = nssSpellingSkeleton(wspTyped);
+        return !skeleton.empty() && skeleton == nssSpellingSkeleton(key) ? 1 : 0;
+    };
+    auto rows = [&](std::ostream& o, const char* name, std::vector<RankedRow> list, std::size_t limit) {
+        std::sort(list.begin(), list.end(), [](const auto& a, const auto& b) { return a.score == b.score ? a.key < b.key : a.score > b.score; });
+        if (list.size() > limit) list.resize(limit);
+        o << ",\"" << name << "\":[";
+        for (std::size_t i = 0; i < list.size(); ++i) {
+            const auto& row = list[i];
+            o << (i ? "," : "") << '[' << quote(row.key) << ',' << row.channel.cost << ',' << num(row.language) << ','
+              << (reader->allowsCorrection(row.key) ? 1 : 0) << ',';
+            parts(o, row.key); o << ',' << sameSound(row.key) << ']';
+        }
+        o << ']';
+    };
+    if (wsp) out << "{\"kind\":\"wsp\",\"outside_mass\":" << wspTables.outsideMass << ",\"unk_share\":" << neural->unknownLexiconShare()
+                 << ",\"start_weight\":" << nssStartUnigramWeight << ",\"channel_weight\":" << channelWeight
+                 << ",\"margins\":[" << nssRawCommitMargin << ',' << nssStartCommitMargin << ',' << nssCapitalizedCommitMargin << "]"
+                 << ",\"split_rule\":" << (nssRuleOn(nssRuleSplitMargin) ? 1 : 0) << ",\"split_margin\":" << nssSplitMargin
+                 << ",\"same_sound_rule\":" << (nssRuleOn(nssRuleSameSound) ? 1 : 0) << ",\"same_sound_margin\":" << nssSameSoundMargin
+                 << ",\"same_sound_gap\":" << nssSameSoundGap << ",\"frequency_rule\":" << (nssRuleOn(nssRuleFrequency) ? 1 : 0) << "}\n";
+#endif
     state->setSafety(parseSafetyPenalties(slurp(argv[2])));
     auto session = engine->createSession();
     out << "{\"kind\":\"startup\",\"engine\":\"ioskeyboard\",\"tier\":\"nss\",\"words\":" << reader->wordCount() << ",\"startup_ms\":" << ms(initStart, Clock::now()) << "}\n";
@@ -137,6 +178,20 @@ int main(int argc, char** argv) {
             out << "{\"id\":" << quote(id) << ",\"s\":"; words(out, r.suggestions);
             out << ",\"c\":" << (r.correction.word ? quote(*r.correction.word) : "null") << ",\"ms\":" << elapsed
                 << ",\"ok\":" << (r.status == EngineStatus::ok ? 1 : 0);
+#ifdef KB_TUNING
+            if (wsp) {
+                wspTyped = in.normalized;
+                out << ",\"ctx\":"; words(out, context);
+                out << ",\"t\":" << quote(in.normalized) << ",\"w\":" << quote(in.word) << ",\"tw\":" << (r.typedIsWord ? 1 : 0)
+                    << ",\"lit\":" << num(r.literal) << ",\"pres\":" << (reader->preserves(in.normalized) ? 1 : 0) << ",\"tc\":[";
+                parts(out, in.normalized); out << ']';
+                rows(out, "C", r.complete, 64);
+                rows(out, "R", r.ranked, 40);
+                out << ",\"tg\":[" << quote(target) << ',' << (reader->allowsCorrection(target) ? 1 : 0) << ',';
+                parts(out, target); out << ',' << sameSound(target) << ',' << nssFirstLetterCost(in.normalized, target)
+                    << ',' << (view.lexicon.isBlocked(target) ? 1 : 0) << ']';
+            }
+#endif
             if (dump) {
                 out << ",\"rows\":[";
                 for (std::size_t i = 0; i < r.candidates.size(); ++i) {

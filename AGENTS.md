@@ -19,3 +19,7 @@ The production decoder's spelling rules (vowel swap, apostrophe, doubled letters
 ## Performance tests
 
 "Performance tests" is the name for the autocorrect benchmark (real misspellings, synthetic typos, external misspelling lists, contractions, guardrails, latency). Run `python3 tools/evaluation/autocorrect/performance_tests.py` from that folder (about 1.5 min); it scores prod against the dev n-gram setup and CoreV4 and writes `docs/performance-tests.md`.
+
+## NSS weight programming
+
+Hand-written edits to the NSS model's weights (no training) live in `tools/nss/wsp/` (protocol in its `program.md`; seconds-fast rules-off evaluator `fasteval.py`). Results and the edited model's costs are in `docs/nss-weight-programming.md`: read it before editing weights again.

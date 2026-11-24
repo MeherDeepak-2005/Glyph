@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "format": "NSLM v1",
+  "architecture": {
+    "arch": "lstm",
+    "embed": 96,
+    "hidden": 670,
+    "proj": 96,
+    "cifg": true,
+    "layers": 1,
+    "tied": true
+  },
+  "parameters": 3362638,
+  "vocabulary_sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+  "file": "context-contractions.nsslm",
+  "sha256": "6f1df9fa30b441e1850cccf35ec2e02a9b20d16d8ac80fb4f2126f50eaec2484",
+  "bytes": 3922400,
+  "parent_sha256": "d1cecea11a181771dc260b701e6afa64a358973bd631a9b6e1a16299552b4067",
+  "runtime_dictionary_sha256": "de4a9277d7371deae2026b7d317b40468f0cad7799cb313eb01871cad258511a",
+  "corpus_manifest_sha256": "e07fb7c3ad296256b024254098ce31d4cb713467b2f1b34bdc6ed0ceb9c06a41",
+  "split": "train",
+  "sources": [
+    "tatoeba",
+    "wikitext"
+  ],
+  "seed": 1122,
+  "contraction_training": {
+    "script": "tools/nss/train_contraction_rows.py",
+    "strength": 1.0
+  }
+}

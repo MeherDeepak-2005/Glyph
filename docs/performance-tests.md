@@ -15,9 +15,9 @@ python3 performance_tests.py --env KB_nssRules=0   # the neural engine alone (se
 python3 performance_tests.py report prod-<stamp>   # re-score a stored run
 ```
 
-## Latest standing (prod-2026-11-16-0027)
+## Latest standing (prod-2026-11-16-0415)
 
-Held half; prod = `prod-2026-11-16-0027` (taps where a set has them), Dev (n-gram) = dev branch n-gram tier with its rules (`dev-ngram-2026-11-01`, taps), CoreV4 = iOS harness with engxx.abn (`corev4-engxx-2026-11-14`, no taps). Each row is scored on the cases every listed system decoded. Δ = prod minus that system, in points; * = paired McNemar p < 0.05; ↓ = lower is better.
+Held half; prod = `prod-2026-11-16-0415` (taps where a set has them), Dev (n-gram) = dev branch n-gram tier with its rules (`dev-ngram-2026-11-01`, taps), CoreV4 = iOS harness with engxx.abn (`corev4-engxx-2026-11-14`, no taps). Each row is scored on the cases every listed system decoded. Δ = prod minus that system, in points; * = paired McNemar p < 0.05; ↓ = lower is better.
 
 ### Real misspellings
 
@@ -79,7 +79,7 @@ Per word, the same 1,000 held ECPS words. Prod measured alone just now; the refe
 
 | System | p50 ms | p95 ms | p99 ms |
 |---|---|---|---|
-| Prod (NSS) | 7.88 | 10.09 | 11.02 |
+| Prod (NSS) | 8.53 | 13.29 | 16.88 |
 | Dev (n-gram) | 0.93 | 6.32 | 8.47 |
 | CoreV4 | 9.87 | 20.27 | 23.68 |
 

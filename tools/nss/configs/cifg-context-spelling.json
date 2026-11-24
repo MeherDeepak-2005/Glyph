@@ -1,0 +1,6 @@
+{
+  "description": "Short-context fine-tune of the shipped CIFG checkpoint with a local spelling-neighborhood loss.",
+  "model": {"arch": "lstm", "embed": 96, "hidden": 670, "proj": 96, "cifg": true, "layers": 1, "tied": true, "dropout": 0.0},
+  "data": {"weights": {"tatoeba": 0.024, "wikitext": 0.0048}, "truncate": 0.25},
+  "train": {"batch": 24, "bptt": 12, "tokens": 138240, "lr": 0.00012, "min_lr_ratio": 0.1, "warmup": 24, "clip": 1, "weight_decay": 0.01, "confusion_weight": 0.3, "eval_every": 480, "log_every": 80, "seed": 1122, "valid": ["tatoeba", "wikitext"], "chunk": 288}
+}

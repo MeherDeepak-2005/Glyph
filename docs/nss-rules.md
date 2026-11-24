@@ -173,6 +173,62 @@ p50 / p95 / p99 7.88 / 10.09 / 11.02 ms.
 - The n-gram tier's other decision rules (n-gram rescoring, lenient recovery) do not apply: there is no
   n-gram model in prod.
 
+## Learned speller, prototype (23 Nov 2026): not adopted
+
+The question was whether a second candidate generator could find the words the joint search misses. The search
+prices only single-letter edits, so its fix rate falls with edit distance. On the shipped model, Birkbeck held
+cases are fixed 80.7% at one edit, 26.8% at two, 2.5% at three and 0% at four or more.
+
+**Ceiling (oracle).** The true target was added as a candidate at spelling cost c (plus the first-letter cost) for
+every typed non-word. The commit rule was then replayed with `fasteval.Bench`, rules on, with taps; the replay
+matches the C++ decoder on 100% of commits. `IOSBench` `KB_DUMP=2` now writes the target's lookup values as `"tg"`.
+
+| Held, fixed % | Now | c = 0.5 | c = 1 | c = 1.5 | c = 2 | c = 3 |
+|---|---|---|---|---|---|---|
+| ECPS | 90.6 | 96.6 | 95.3 | 93.5 | 92.7 | 90.8 |
+| Synthetic | 91.9 | 98.0 | 95.8 | 94.1 | 93.0 | 92.0 |
+| Birkbeck | 32.6 | 92.2 | 86.5 | 79.4 | 63.3 | 33.4 |
+| Holbrook | 43.8 | 91.3 | 81.1 | 69.1 | 59.6 | 44.7 |
+| Wikipedia | 81.5 | 94.8 | 92.6 | 89.3 | 84.6 | 81.5 |
+
+**Prototype.** A Brill–Moore error model: aligned (typed, word) pairs give chunk rewrites with 0–2 letters of
+context and word-edge marks (`^ph→^f`, `ica→aca`), each costing −ln P(chunk typed this way). A best-first
+search over the 185k-word dictionary trie returns the eight cheapest words. Those words joined the complete
+candidates at cost a × cost + b (plus the first-letter cost) for typed non-words only.
+- **Data:** rules came from the tune halves of ECPS, Aspell, Birkbeck, Holbrook and Wikipedia. Splits are by target
+  word, so no held target is seen.
+- **Calibration:** a, b, top-k and the gate (none, two-or-more edits only, skip capitalised words mid-sentence,
+  confident top candidate only) were chosen on a second, target-disjoint half of tune. Rules were learned on the
+  other half.
+- **Result:** the chosen setting was confident top candidate, a 0.25, b 1.0.
+
+| Held | Now | Speller | Δ | Rules without Birkbeck | Δ |
+|---|---|---|---|---|---|
+| ECPS fixed | 90.63 | 91.30 | +0.68* | 91.26 | +0.63* |
+| Birkbeck fixed | 32.56 | 35.06 | +2.50* | 34.16 | +1.61* |
+| Aspell fixed | 53.16 | 54.85 | +1.69 | 54.85 | +1.69 |
+| Holbrook fixed | 43.78 | 45.11 | +1.33 | 44.44 | +0.67 |
+| Wikipedia fixed | 81.55 | 83.27 | +1.73* | 83.36 | +1.82* |
+| ECPS left uncorrected ↓ | 2.69 | 2.32 | −0.37* | 2.34 | −0.35* |
+| GUARD unknown names changed ↓ | 49.32 | 53.08 | **+3.77\* fail** | 52.40 | **+3.08\* fail** |
+| Other guardrails | | | ±0.3, none significant | | |
+
+**Why it fell short of the ceiling.** The speller is confident where the search already succeeds. For Birkbeck
+tune cases at speller cost ≤ 2, 1,494 were already fixed and 117 were newly fixed. Of the cases the search
+misses, 2,732 were not found by the speller and 1,702 cost more than 2.5. The speller's cost for a typed name's
+nearest word (median 4.0) overlaps its cost for real Birkbeck targets (median 5.0), so the bias b must stay near
+1 to protect names and rare words. Cheaper settings reach about +6 points mean accuracy on tune, but fail the
+names, rare-word and Tenglish guardrails.
+
+**What would change the result:** a speller much sharper on 3+ edit errors (more and different training data,
+pronunciation-based matching, or a learned character model), together with a signal that separates intended
+unknown words from misspellings. The prototype and how to rerun it are in `tools/nss/speller/` (README there).
+
+**Speed.** The Python search takes 22.6 ms p50 and 110 ms p99 per typed non-word (M1), expanding 2,422 trie nodes at
+p50 and 17,380 at p99. It would run only once per word, on Space, and only when the typed text is not a dictionary
+word. A C++ port on the existing packed lexicon trie would add about 26k rules (under 1 MB) and is estimated at
+about 1–5 ms per such word. That is an estimate from the node counts, not a measurement.
+
 ## How to test a rule
 
 ```

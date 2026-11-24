@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "format": "NSLM v1",
+  "architecture": {
+    "arch": "lstm",
+    "embed": 96,
+    "hidden": 670,
+    "proj": 96,
+    "cifg": true,
+    "layers": 1,
+    "tied": true
+  },
+  "parameters": 3362638,
+  "vocabulary_sha256": "6baffcfede08a37d7c67acd5c360e70f180aa10225ee4a302881366679aabef7",
+  "file": "context-calibrated.nsslm",
+  "sha256": "05ac809a4a0559eea6b161fd0a9c37a92788513bc91a42311950ad3089227b2e",
+  "bytes": 3922400,
+  "parent_sha256": "d1cecea11a181771dc260b701e6afa64a358973bd631a9b6e1a16299552b4067",
+  "runtime_dictionary_sha256": "de4a9277d7371deae2026b7d317b40468f0cad7799cb313eb01871cad258511a",
+  "corpus_manifest_sha256": "e07fb7c3ad296256b024254098ce31d4cb713467b2f1b34bdc6ed0ceb9c06a41",
+  "split": "train",
+  "sources": [
+    "tatoeba",
+    "wikitext"
+  ],
+  "seed": 1122,
+  "contraction_training": {
+    "script": "tools/nss/train_contraction_rows.py",
+    "strength": 1.0
+  },
+  "prediction_caps": {
+    "script": "tools/nss/fit_prediction_caps.py",
+    "proposal_sha256": "ce08ec182147350a41dc385b7f26e35153b5282490c70f382fcdacc7fe4119d6",
+    "positions_per_source": 65536,
+    "margin": 0.75
+  }
+}

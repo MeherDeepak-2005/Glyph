@@ -100,6 +100,9 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
     std::erase_if(complete, [&](const auto& row) { return row.key == typed; });
     if (nssRuleOn(nssRuleFirstLetter)) for (auto* rows : {&ranked, &complete}) for (auto& row : *rows)
         if (const double extra = nssFirstLetterCost(typed, row.key); extra > 0) { row.channel.cost += extra; row.score -= channelWeight * extra; }
+#ifdef KB_TUNING
+    out.complete = complete; out.ranked = ranked; out.typedIsWord = typedIsWord; out.literal = literal;
+#endif
     if (nssRuleOn(nssRuleFrequency)) {
         const auto prior = [&](RankedRow& row) {
             if (row.key.find(' ') != std::string::npos) return;
