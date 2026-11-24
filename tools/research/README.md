@@ -19,7 +19,7 @@ you
    `Config/research-private-key.txt` (**not** in git). Back the private key up somewhere safe.
    Without it no uploaded chunk can be read; anyone who has it can read every tester's typing.
 2. **CloudKit container.** In Xcode, target `keyboard` › Signing & Capabilities › iCloud: tick
-   CloudKit and the container `iCloud.com.meherdeepak.glyph` (create it if it is not listed).
+   CloudKit and the container `iCloud.com.keypointtech.glyph` (create it if it is not listed).
    The entitlements file already names it.
 3. **Schema.** Import `cloudkit-schema.ckdb` into the Development environment (CloudKit Console ›
    Schema › Import, or `xcrun cktool import-schema`), run a Debug build once and upload a chunk

@@ -3,7 +3,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"; repo="$(cd "$here/../../.." && pwd)"
 device="$1"; name="$2"; shift 2
 corpora=("$@"); [ ${#corpora[@]} -gt 0 ] || corpora=(cases.taps.tsv ext-cases.taps.tsv keep-cases.taps.tsv keystrokes.tsv)
-app=com.meherdeepak.glyph; derived="${DERIVED:-$repo/tmp/device-bench-derived}"
+app=com.keypointtech.glyph; derived="${DERIVED:-$repo/tmp/device-bench-derived}"
 copy() { xcrun devicectl device copy "$@" --device "$device" --domain-type appDataContainer --domain-identifier "$app" >/dev/null; }
 xcodebuild -project "$repo/keyboard.xcodeproj" -scheme keyboard -configuration Debug \
   -destination "id=$device" -derivedDataPath "$derived" -allowProvisioningUpdates \

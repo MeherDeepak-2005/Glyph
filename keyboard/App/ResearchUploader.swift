@@ -5,8 +5,8 @@ import CryptoKit
 import Foundation
 
 enum ResearchUploader {
-    static let containerID = "iCloud.com.meherdeepak.glyph"
-    static let refreshTaskID = "com.meherdeepak.glyph.research-upload"
+    static let containerID = "iCloud.com.keypointtech.glyph"
+    static let refreshTaskID = "com.keypointtech.glyph.research-upload"
     static let recordType = "TypingChunk"
     static let magic = Data("GLYPHRC1".utf8)
     static let info = Data("glyph-research-chunk-v1".utf8)
