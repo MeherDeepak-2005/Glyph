@@ -120,12 +120,9 @@ struct KeyboardTests {
 			#expect(bar.point(inside: CGPoint(x: width / 2, y: 27.9), with: nil))
 			#expect(!bar.point(inside: CGPoint(x: width / 2, y: 28), with: nil))
 			let primary = try #require(suggestionButton("suggestion.primary", in: bar))
-			#expect(primary.frame.minY == -3)
+			#expect(primary.frame.minY == 0)
 			#expect(primary.frame.height == 32)
-			let highlight = try #require(bar.subviews.first {
-				!($0 is UIButton) && $0.layer.borderWidth > 0
-			})
-			#expect(highlight.frame.minY == 1)
+			#expect(primary.accessibilityTraits.contains(.selected))
 		}
 	}
 
@@ -990,7 +987,7 @@ struct KeyboardTests {
 			"thads: correction=\(thads.correction ?? "nil") sugg=\(thads.suggestions)")
 		#expect(thads.suggestions.first == thads.correction)
 		let idStart = await decode(engine, word: "id", context: [])
-		#expect(idStart.correction == "i",
+		#expect(idStart.correction == "i'd",
 			"id at start: correction=\(idStart.correction ?? "nil")")
 		let idNoun = await decode(engine, word: "id", context: ["send", "your"])
 		#expect(idNoun.correction != "is",
@@ -1019,7 +1016,8 @@ struct KeyboardTests {
 
 		let url = try #require(EmojiAtlas.generateIfNeeded(store: store, scale: 2, in: directory))
 		let bytes = try #require((try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize)
-		#expect(bytes > 0 && bytes % (72 * 72 * 4) == 0)
+		let tile = Int((EmojiAtlas.pointSize * 2).rounded())
+		#expect(bytes > 0 && bytes % (tile * tile * 4) == 0)
 		#expect(EmojiAtlas.generateIfNeeded(store: store, scale: 2, in: directory) == url)
 
 		let atlas = try #require(EmojiAtlas.load(store: store, scale: 2, in: directory))

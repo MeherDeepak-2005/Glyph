@@ -40,6 +40,9 @@ final class SuggestionBar: UIView {
 		isOpaque = false
 
         toolsButton.tintColor = theme.specialKeyText
+        var toolsConfig = UIButton.Configuration.plain()
+        toolsConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: -2 * visualOffsetY, trailing: 0)
+        toolsButton.configuration = toolsConfig
         toolsButton.accessibilityIdentifier = "suggestion.tools"
         toolsButton.addAction(UIAction { [weak self] _ in
             guard let self else { return }
@@ -53,7 +56,8 @@ final class SuggestionBar: UIView {
             var config = UIButton.Configuration.plain()
             config.image = UIImage(systemName: tool.symbol,
                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .regular))
-            config.contentInsets = .zero
+            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0,
+                bottom: -2 * (visualOffsetY + 1.5), trailing: 0)
             config.baseForegroundColor = theme.keyText
             button.configuration = config
             button.accessibilityLabel = tool.title
@@ -92,12 +96,12 @@ final class SuggestionBar: UIView {
 	override func layoutSubviews() {
 		super.layoutSubviews()
         let clipW = Self.toolsWidth
-        toolsButton.frame = CGRect(x: 0, y: visualOffsetY, width: clipW, height: bounds.height)
+        toolsButton.frame = CGRect(x: 0, y: 0, width: clipW, height: bounds.height)
         toolsSeparator.frame = CGRect(x: clipW - 0.5, y: 6 + visualOffsetY, width: 0.5,
             height: max(0, bounds.height - 12))
         let toolWidth = max(0, (bounds.width - clipW) / 4)
         for (index, button) in toolButtons.enumerated() {
-            button.frame = CGRect(x: clipW + CGFloat(index) * toolWidth, y: visualOffsetY + 1.5,
+            button.frame = CGRect(x: clipW + CGFloat(index) * toolWidth, y: 0,
                 width: toolWidth, height: bounds.height)
         }
 		let w = max(0, (bounds.width - clipW) / 3)
@@ -131,8 +135,10 @@ final class SuggestionBar: UIView {
     }
 
     private func updateToolsButton() {
-        toolsButton.setImage(UIImage(systemName: showingTools ? "chevron.left" : "square.grid.2x2",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .regular)), for: .normal)
+        var config = toolsButton.configuration ?? .plain()
+        config.image = UIImage(systemName: showingTools ? "chevron.left" : "square.grid.2x2",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .regular))
+        toolsButton.configuration = config
         toolsButton.accessibilityLabel = showingTools ? "Back to suggestions" : "Tools"
         toolsButton.accessibilityValue = showingTools ? "Expanded" : "Collapsed"
     }
