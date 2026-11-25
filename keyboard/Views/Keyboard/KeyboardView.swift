@@ -208,12 +208,13 @@ final class KeyboardView: UIView {
 		NotificationCenter.default.removeObserver(self)
 	}
 
-	private(set) var showsSuggestions = true
+	private var suggestionsRequested = true
+	var showsSuggestions: Bool { suggestionsRequested && !inputKind.usesDedicatedNumberPad }
 
 	func setShowsSuggestions(_ on: Bool) {
-		guard on != showsSuggestions else { return }
-		showsSuggestions = on
-		suggestionBar.isHidden = !on
+		guard on != suggestionsRequested else { return }
+		suggestionsRequested = on
+		suggestionBar.isHidden = !showsSuggestions
 		setNeedsLayout()
 	}
 
@@ -223,7 +224,9 @@ final class KeyboardView: UIView {
 		inputKind = kind
 		page = kind == .numbersAndPunctuation || kind.usesDedicatedNumberPad ? .numbers : .letters
 		shift = kind == .standard ? shift : .off
+		suggestionBar.isHidden = !showsSuggestions
 		reload()
+		setNeedsLayout()
 		return true
 	}
 }

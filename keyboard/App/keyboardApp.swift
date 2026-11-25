@@ -85,6 +85,14 @@ private struct KeyboardRuntimeSendHostView: View {
 }
 
 private struct KeyboardRuntimeHostView: View {
+	static var runtimeKeyboardType: UIKeyboardType {
+		let arguments = ProcessInfo.processInfo.arguments
+		if arguments.contains("-keyboard-runtime-url") { return .URL }
+		if arguments.contains("-keyboard-runtime-numberpad") { return .numberPad }
+		if arguments.contains("-keyboard-runtime-decimalpad") { return .decimalPad }
+		if arguments.contains("-keyboard-runtime-phonepad") { return .phonePad }
+		return .default
+	}
 	@State private var text = ""
 	@State private var contextIndex = 0
 	@FocusState private var isFocused: Bool
@@ -107,7 +115,7 @@ private struct KeyboardRuntimeHostView: View {
                 .accessibilityIdentifier("runtime.next")
             }
             TextField("Type", text: $text)
-                .keyboardType(ProcessInfo.processInfo.arguments.contains("-keyboard-runtime-url") ? .URL : .default)
+                .keyboardType(Self.runtimeKeyboardType)
                 .autocorrectionDisabled(ProcessInfo.processInfo.arguments.contains("-keyboard-runtime-url"))
                 .textFieldStyle(.roundedBorder)
                 .padding(24)

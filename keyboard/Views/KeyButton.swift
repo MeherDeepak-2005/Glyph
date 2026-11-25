@@ -20,6 +20,7 @@ final class KeyButton: UIView {
 	private var label: UILabel?
 	private var iconView: UIImageView?
 	private var contentView: UIView?
+	private var subtitleLabel: UILabel?
 	private let recessColor: UIColor
 	private let spokenLabelWasExplicit: Bool
 	private let foregroundColor: UIColor
@@ -103,8 +104,21 @@ final class KeyButton: UIView {
 		addSubview(content)
 		NSLayoutConstraint.activate([
 			content.centerXAnchor.constraint(equalTo: centerXAnchor),
-			content.centerYAnchor.constraint(equalTo: centerYAnchor)
+			content.centerYAnchor.constraint(equalTo: centerYAnchor, constant: spec.subtitle == nil ? 0 : -7)
 		])
+		if let subtitle = spec.subtitle {
+			let sub = UILabel()
+			sub.attributedText = NSAttributedString(string: subtitle, attributes: [
+				.font: UIFont.systemFont(ofSize: 10, weight: .semibold), .kern: 1.6, .foregroundColor: fg])
+			sub.translatesAutoresizingMaskIntoConstraints = false
+			sub.isAccessibilityElement = false
+			addSubview(sub)
+			NSLayoutConstraint.activate([
+				sub.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0.8),
+				sub.topAnchor.constraint(equalTo: content.bottomAnchor, constant: -3)
+			])
+			subtitleLabel = sub
+		}
 
 		layer.cornerRadius = theme.cornerRadius
 		layer.cornerCurve = .continuous
@@ -118,6 +132,11 @@ final class KeyButton: UIView {
 		layer.shadowRadius = 2.5
 		layer.shadowOffset = CGSize(width: 0, height: 1)
         if isShift, let symbol = spec.symbol { setSymbol(symbol) }
+		if spec.isSpacer {
+			isHidden = true
+			isAccessibilityElement = false
+			acceptsInput = false
+		}
 	}
 	required init?(coder: NSCoder) { fatalError() }
 
@@ -188,6 +207,7 @@ final class KeyButton: UIView {
 	func setCovered(_ on: Bool) {
 		covered = on
 		contentView?.isHidden = on
+		subtitleLabel?.isHidden = on
 		dim.backgroundColor = on ? recessColor : .clear
 	}
 

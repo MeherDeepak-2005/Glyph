@@ -687,4 +687,26 @@ final class keyboardUITests: XCTestCase {
 		attachment.lifetime = .keepAlways
 		add(attachment)
 	}
+
+	@MainActor
+	func testNumberPadOpensInNumberFields() throws {
+		for mode in ["numberpad", "decimalpad"] {
+			let app = XCUIApplication()
+			app.launchArguments = ["-keyboard-runtime-host", "-keyboard-runtime-\(mode)"]
+			app.launch()
+			let field = app.textFields["runtime.text"]
+			XCTAssertTrue(field.waitForExistence(timeout: 5))
+			field.tap()
+			_ = activate(.glyph, in: app, attempts: 3)
+			RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+			let a = XCTAttachment(screenshot: XCUIScreen.main.screenshot()); a.name = "pad-\(mode)"; a.lifetime = .keepAlways; add(a)
+			XCTAssertTrue(app.descendants(matching: .any)["glyph.keyboard"].exists, "Glyph is not showing in the \(mode) field")
+			XCTAssertTrue(app.keys["0"].exists && app.keys["9"].exists, "No number pad in the \(mode) field")
+			XCTAssertFalse(app.keys["Q"].exists, "Letters showed in the \(mode) field")
+			XCTAssertFalse(app.descendants(matching: .any)["suggestion.primary"].isHittable, "Suggestions showed on the \(mode) pad")
+			app.keys["4"].tap(); app.keys["2"].tap()
+			XCTAssertEqual(fieldText(field), "42")
+			app.terminate()
+		}
+	}
 }
