@@ -29,6 +29,7 @@ final class KeyboardViewController: UIInputViewController {
 	var suggestionsVisible = true
 	var hostConnectionReady = false
 	var supplementaryLexiconRequested = false
+	var contactNamesLoadedAt: Date?
     var documentReconciler = HostDocumentReconciler()
     var recoveryMonitor: HostDocumentRecoveryMonitor?
     var presentationDocument: HostDocumentSnapshot?

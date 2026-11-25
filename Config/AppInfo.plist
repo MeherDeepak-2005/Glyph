@@ -6,6 +6,8 @@
 	<array>
 		<string>com.keypointtech.glyph.research-upload</string>
 	</array>
+	<key>NSContactsUsageDescription</key>
+	<string>Glyph reads your contacts' first, last and nicknames so the keyboard spells them right and never autocorrects them. Names stay on your iPhone.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIBackgroundModes</key>

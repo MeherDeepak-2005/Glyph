@@ -37,6 +37,7 @@ final class SettingsStore: ObservableObject {
 struct ContentView: View {
 	@StateObject private var store = SettingsStore()
 	@StateObject private var commercial = CommercialStore()
+	@StateObject private var contacts = ContactNamesSync()
 	@Environment(\.colorScheme) private var scheme
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.scenePhase) private var scenePhase
@@ -95,10 +96,29 @@ struct ContentView: View {
 								  tint: Color(uiColor: .systemOrange),
 								  title: "Haptic Feedback")
 					}
+					if contacts.isDenied {
+						Button {
+							if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+						} label: {
+							SettingRow(icon: "person.crop.circle.fill", tint: Color(uiColor: .systemGreen),
+								title: "Contact Names", value: "Allow in Settings")
+						}
+						.foregroundStyle(.primary)
+					} else {
+						Toggle(isOn: $contacts.enabled) {
+							HStack(spacing: 12) {
+								iconLabel("person.crop.circle.fill", tint: Color(uiColor: .systemGreen), title: "Contact Names")
+								if contacts.enabled && contacts.nameCount > 0 {
+									Text("\(contacts.nameCount)").foregroundStyle(.secondary)
+								}
+							}
+						}
+						.accessibilityIdentifier("settings.contacts")
+					}
 				} header: {
 					Text("Keyboard")
 				} footer: {
-					Text("Haptics require a physical iPhone and follow the device's system haptic settings. The status page shows the last state observed by the keyboard.")
+					Text("Contact Names keeps your contacts' names spelled as saved and capitalized; names stay on your iPhone. Haptics require a physical iPhone and follow the device's system haptic settings.")
 				}
 
 				Section("Rewards") {
@@ -187,7 +207,7 @@ struct ContentView: View {
 		.onAppear { refreshInstallState() }
 		.task { await commercial.refresh() }
 		.onChange(of: scenePhase) { _, phase in
-			if phase == .active { refreshInstallState() }
+			if phase == .active { refreshInstallState(); contacts.refresh() }
 			#if RESEARCH_BETA
 			if phase == .active || phase == .background, KBTypingRecorder.installID != nil {
 				Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }

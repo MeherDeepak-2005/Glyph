@@ -121,8 +121,20 @@ extension KeyboardViewController {
 		if !supplementaryLexiconRequested {
 			supplementaryLexiconRequested = true
 			requestSupplementaryLexicon { [weak self] lexicon in
-				self?.engine.importSupplementaryLexicon(lexicon.entries.map(\.documentText))
+				guard let self else { return }
+				let names = lexicon.entries.filter { entry in
+					entry.userInput == entry.documentText && entry.documentText.first?.isUppercase == true
+						&& KBContactNames.isNameToken(entry.documentText)
+				}.map(\.documentText)
+				self.engine.importContactNames(names)
+				self.engine.importSupplementaryLexicon(lexicon.entries.map(\.documentText))
 			}
+		}
+		let namesModified = KBContactNames.modifiedAt
+		if namesModified != contactNamesLoadedAt {
+			contactNamesLoadedAt = namesModified
+			let names = KBContactNames.load()
+			if !names.isEmpty { engine.importContactNames(names) }
 		}
 		if firstConnection {
 			updateActionKey()

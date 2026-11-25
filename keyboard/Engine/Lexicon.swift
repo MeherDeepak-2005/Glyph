@@ -41,6 +41,11 @@ final class Lexicon {
 		return langData?.trieContains(lw) == true
 			|| supplementaryTrie.contains(lw) || personalTrie.contains(lw)
 	}
+	func staticFrequency(_ lw: String) -> Int? {
+		lock.lock(); defer { lock.unlock() }
+		guard let data = langData, let id = data.trieWordID(lw) else { return nil }
+		return data.freq(Int(id))
+	}
 	func isStaticWord(_ lw: String) -> Bool {
 		lock.lock(); defer { lock.unlock() }
 		return langData?.trieContains(lw) == true

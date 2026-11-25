@@ -97,6 +97,11 @@ nonisolated final class TeluguLexicon {
 		return Array(result.prefix(limit))
 	}
 
+	func rank(of word: String) -> Int? {
+		guard let data, let header else { return nil }
+		return wordID(word, data: data, header: header).map(Int.init)
+	}
+
 	func contains(_ word: String) -> Bool {
 		guard let data, let header,
 			  let node = trieNode(for: word.precomposedStringWithCanonicalMapping,

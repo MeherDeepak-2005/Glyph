@@ -24,7 +24,7 @@ final class KeyboardSetupStatus: ObservableObject {
 }
 
 enum SetupStep: Int, CaseIterable, Identifiable {
-	case welcome, enable, fullAccess, switchTo, mainKeyboard, done
+	case welcome, enable, fullAccess, contacts, switchTo, mainKeyboard, done
 	var id: Int { rawValue }
 
 	var title: String {
@@ -32,6 +32,7 @@ enum SetupStep: Int, CaseIterable, Identifiable {
 		case .welcome: "Meet Glyph"
 		case .enable: "Turn on Glyph"
 		case .fullAccess: "Allow Full Access"
+		case .contacts: "Spell names right"
 		case .switchTo: "Switch to Glyph"
 		case .mainKeyboard: "Make Glyph your main keyboard"
 		case .done: "You're all set"
@@ -46,6 +47,8 @@ enum SetupStep: Int, CaseIterable, Identifiable {
 			"Tap Open Settings, tap Keyboards, then switch Glyph on. Come back here when you're done."
 		case .fullAccess:
 			"Optional. Turn on Allow Full Access in the same place, then tap Allow. It unlocks GIFs, clipboard history and haptics."
+		case .contacts:
+			"Optional. Let Glyph read your contacts' names so it never autocorrects them and capitalizes them for you. Names stay on your iPhone."
 		case .switchTo:
 			"Tap the box below. Then touch and hold the globe key under the keyboard and pick Glyph."
 		case .mainKeyboard:
@@ -61,6 +64,7 @@ struct SetupGuideView: View {
 	var onClose: (() -> Void)? = nil
 	@State private var step: SetupStep
 	@StateObject private var status = KeyboardSetupStatus()
+	@StateObject private var contacts = ContactNamesSync()
 	@Environment(\.scenePhase) private var scenePhase
 	@State private var tryText = ""
 	@FocusState private var tryFocused: Bool
@@ -105,7 +109,12 @@ struct SetupGuideView: View {
 		}
 		.background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
 		.toolbar(.hidden, for: .navigationBar)
-		.onChange(of: scenePhase) { _, phase in if phase == .active { status.refresh() } }
+		.onChange(of: scenePhase) { _, phase in
+			if phase == .active { status.refresh(); contacts.refresh() }
+		}
+		.onChange(of: contacts.nameCount) { _, count in
+			if count > 0, step == .contacts { advance(after: 1.2) }
+		}
 		.task {
 			while !Task.isCancelled {
 				status.refresh()
@@ -156,6 +165,7 @@ struct SetupGuideView: View {
 		case .welcome: WelcomeIllustration()
 		case .enable: EnableIllustration(fullAccess: false)
 		case .fullAccess: EnableIllustration(fullAccess: true)
+		case .contacts: ContactsIllustration()
 		case .switchTo: GlobeMenuIllustration()
 		case .mainKeyboard: ReorderIllustration()
 		case .done: DoneIllustration()
@@ -169,6 +179,14 @@ struct SetupGuideView: View {
 		case .fullAccess:
 			if status.hasOpened {
 				pill(done: status.fullAccess, on: "Full Access is on", off: "Full Access is off")
+			}
+		case .contacts:
+			if contacts.isDenied {
+				Label("Contacts access is off in Settings", systemImage: "exclamationmark.circle")
+					.font(.subheadline.weight(.medium))
+					.foregroundStyle(.secondary)
+			} else if contacts.isAuthorized && contacts.enabled {
+				pill(done: true, on: "\(contacts.nameCount) names added", off: "")
 			}
 		case .switchTo:
 			pill(done: status.hasOpened, on: "Glyph is working", off: "Waiting for Glyph to open")
@@ -234,6 +252,7 @@ struct SetupGuideView: View {
 		case .welcome: "Set up Glyph"
 		case .enable: status.isEnabled ? "Next" : "Open Settings"
 		case .fullAccess: "Open Settings"
+		case .contacts: contactsDone ? "Next" : (contacts.isDenied ? "Open Settings" : "Allow Contacts")
 		case .switchTo: status.hasOpened ? "Next" : "Show me the box"
 		case .mainKeyboard: "Open Settings"
 		case .done: "Start typing"
@@ -245,6 +264,7 @@ struct SetupGuideView: View {
 		case .welcome: nil
 		case .enable: status.isEnabled ? nil : "I've turned it on"
 		case .fullAccess: "Skip for now"
+		case .contacts: contactsDone ? nil : "Skip for now"
 		case .switchTo: status.hasOpened ? nil : "Skip"
 		case .mainKeyboard: "I've done this"
 		case .done: nil
@@ -256,6 +276,10 @@ struct SetupGuideView: View {
 		case .welcome: go(.enable)
 		case .enable: status.isEnabled ? go(.fullAccess) : openSettings()
 		case .fullAccess, .mainKeyboard: openSettings()
+		case .contacts:
+			if contactsDone { go(.switchTo) }
+			else if contacts.isDenied { openSettings() }
+			else { Task { await contacts.requestAndSync() } }
 		case .switchTo: status.hasOpened ? go(.mainKeyboard) : (tryFocused = true)
 		case .done: onFinish()
 		}
@@ -264,12 +288,15 @@ struct SetupGuideView: View {
 	private func secondaryAction() {
 		switch step {
 		case .enable: go(.fullAccess)
-		case .fullAccess: go(.switchTo)
+		case .fullAccess: go(.contacts)
+		case .contacts: go(.switchTo)
 		case .switchTo: go(.mainKeyboard)
 		case .mainKeyboard: go(.done)
 		default: break
 		}
 	}
+
+	private var contactsDone: Bool { contacts.isAuthorized && contacts.enabled }
 
 	private func go(_ next: SetupStep) {
 		tryFocused = false
@@ -669,6 +696,73 @@ private struct DoneIllustration: View {
 		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.onAppear { withAnimation(.spring(duration: 0.6, bounce: 0.45)) { appeared = true } }
 		.accessibilityHidden(true)
+	}
+}
+
+private struct ContactsIllustration: View {
+	@State private var phase = 0
+
+	var body: some View {
+		MockScreen {
+			ZStack {
+				VStack(spacing: 12) {
+					HStack(spacing: 0) {
+						Text(phase >= 4 ? "Hi Meher " : phase >= 2 ? "Hi mehr" : "Hi ")
+							.font(.system(size: 20))
+						Rectangle().fill(Color.accentColor).frame(width: 2, height: 22)
+						Spacer()
+					}
+					.padding(14)
+					.background(Color(uiColor: .secondarySystemGroupedBackground),
+						in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+					.padding(.horizontal, 14)
+					.padding(.top, 18)
+					HStack(spacing: 0) {
+						ForEach(["mehr", "Meher", "Meera"], id: \.self) { word in
+							Text(word)
+								.font(.system(size: 15, weight: word == "Meher" ? .semibold : .regular))
+								.frame(maxWidth: .infinity, minHeight: 34)
+								.background(word == "Meher" && phase == 3 ? Color.accentColor.opacity(0.2) : .clear,
+									in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+						}
+					}
+					.opacity(phase >= 2 && phase < 4 ? 1 : 0)
+					.padding(.horizontal, 10)
+					MiniKeyboard(highlight: phase == 2 ? "r" : nil)
+						.padding(.horizontal, 10)
+				}
+				.opacity(phase < 2 ? 0.3 : 1)
+				if phase < 2 {
+					VStack(spacing: 0) {
+						VStack(spacing: 6) {
+							Image(systemName: "person.crop.circle.fill").font(.system(size: 28)).foregroundStyle(.secondary)
+							Text("\u{201C}Glyph\u{201D} Would Like to Access Your Contacts")
+								.font(.system(size: 14, weight: .semibold))
+								.multilineTextAlignment(.center)
+							Text("Names stay on your iPhone.")
+								.font(.system(size: 11)).foregroundStyle(.secondary)
+						}
+						.padding(14)
+						Divider()
+						HStack(spacing: 0) {
+							Text("Don't Allow").frame(maxWidth: .infinity)
+							Divider()
+							Text("Continue").fontWeight(.semibold)
+								.frame(maxWidth: .infinity, maxHeight: .infinity)
+								.background(phase == 1 ? Color(uiColor: .systemGray4) : .clear)
+						}
+						.font(.system(size: 14))
+						.foregroundStyle(Color.accentColor)
+						.frame(height: 40)
+					}
+					.frame(width: 240)
+					.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+					.shadow(color: .black.opacity(0.2), radius: 16, y: 6)
+					.transition(.scale(scale: 1.1).combined(with: .opacity))
+				}
+			}
+		}
+		.looping($phase, count: 6, every: 1.1)
 	}
 }
 

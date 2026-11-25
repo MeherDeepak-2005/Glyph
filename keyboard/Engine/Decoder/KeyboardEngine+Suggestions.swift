@@ -23,9 +23,11 @@ extension KeyboardEngine {
 			let currentWord = request.currentWord
 			let lw = currentWord.lowercased()
 			let taps = self.touchProfile.adjusted(request.taps, typed: lw)
-			let publish: ([String], [DecodeCandidateEvidence], String?, Double) -> Void = { suggestions, evidence, decision, confidence in
-				let (suggestions, decision, confidence) = self.applyTenglishGuard(typed: lw, shown: currentWord,
-					suggestions: suggestions, decision: decision, confidence: confidence)
+			let publish: ([String], [DecodeCandidateEvidence], String?, Double) -> Void = { rawSuggestions, evidence, rawDecision, rawConfidence in
+				let guarded = self.applyTenglishGuard(typed: lw, shown: currentWord,
+					suggestions: rawSuggestions, decision: rawDecision, confidence: rawConfidence)
+				let (suggestions, decision, confidence) = self.applyContactNames(typed: lw, shown: currentWord,
+					suggestions: guarded.0, decision: guarded.1, confidence: guarded.2)
 				let priors = self.contextualCharPriors(evidence: evidence, prefix: lw,
 					base: self.lexicon.nextCharPriors(prefix: lw))
 				guard self.isLatest(gen) else { return }
@@ -45,7 +47,7 @@ extension KeyboardEngine {
 			do {
 				let result = try engine.decode(word: currentWord, normalized: lw, context: request.context.map { $0.lowercased() },
 					identity: identity.withUnsafeBytes { Data($0) }, tapOffsets: buffers?.offsets, tapValidity: buffers?.validity,
-					lexicon: view, personal: self.user.nativeCountsSnapshot(), kept: self.isKept(lw) || self.isGuardedTenglish(lw), token: nativeToken)
+					lexicon: view, personal: self.user.nativeCountsSnapshot(), kept: self.isKept(lw) || self.isGuardedTenglish(lw) || self.isContactName(lw), token: nativeToken)
 				guard !result.cancelled, self.isLatest(gen) else { return }
 				let typedScore = result.rows.first(where: { $0.word == lw })?.score ?? 0
 				let evidence = zip(result.rows, result.sources).map { row, source in
