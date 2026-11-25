@@ -114,14 +114,16 @@ struct KeyboardTests {
 	@MainActor @Test func suggestionPassThroughBoundaryDoesNotMoveKeyGeometry() throws {
 		for width: CGFloat in [320, 390, 440] {
 			let bar = SuggestionBar(theme: .system(dark: true))
-			bar.frame = CGRect(x: 0, y: 0, width: width, height: 32)
+			let height = KeyboardView.stripHeight
+			let band = SuggestionBar.bottomPassThroughHeight
+			bar.frame = CGRect(x: 0, y: 0, width: width, height: height)
 			bar.setSuggestions(["one", "two", "three"], highlightPrimary: true)
 			bar.layoutIfNeeded()
-			#expect(bar.point(inside: CGPoint(x: width / 2, y: 27.9), with: nil))
-			#expect(!bar.point(inside: CGPoint(x: width / 2, y: 28), with: nil))
+			#expect(bar.point(inside: CGPoint(x: width / 2, y: height - band - 0.1), with: nil))
+			#expect(!bar.point(inside: CGPoint(x: width / 2, y: height - band), with: nil))
 			let primary = try #require(suggestionButton("suggestion.primary", in: bar))
 			#expect(primary.frame.minY == 0)
-			#expect(primary.frame.height == 32)
+			#expect(primary.frame.height == height - band)
 			#expect(primary.accessibilityTraits.contains(.selected))
 		}
 	}

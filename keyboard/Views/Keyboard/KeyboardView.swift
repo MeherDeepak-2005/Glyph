@@ -99,7 +99,8 @@ final class KeyboardView: UIView {
 	var lastGlidePreviewTime: TimeInterval = 0
 	let glidePreviewInterval: TimeInterval = 0.035
 	var glideThreshold: CGFloat { unitPitch * 0.85 }
-	private let stripHeight: CGFloat = 32
+	static let stripHeight: CGFloat = 48
+	private var stripHeight: CGFloat { Self.stripHeight }
 	var metrics: KeyboardLayoutMetrics {
 		let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width
 		let base = KeyboardLayoutMetrics.resolve(width: width,

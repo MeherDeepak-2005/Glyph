@@ -356,7 +356,7 @@ struct KeyboardConsistencyTests {
         #expect(root.sizeThatFits(CGSize(width: 700, height: 1000)).height == 328)
     }
 
-    @Test func lowercaseLegendsGrowAndSuggestionsAlignAtTop() throws {
+    @Test func lowercaseLegendsGrowAndSuggestionsCenterAboveThePassThroughBand() throws {
         let theme = KeyboardTheme.preview(dark: false, accent: KBPalette.system, customTheme: nil)
         let keyboard = KeyboardView(theme: theme)
         let key = try #require(descendants(keyboard).compactMap { $0 as? KeyButton }.first { $0.letterBase == "a" })
@@ -367,11 +367,12 @@ struct KeyboardConsistencyTests {
         key.setTitle("A")
         #expect(label.font.pointSize == 23)
         let strip = SuggestionBar(theme: theme)
-        strip.frame = CGRect(x: 0, y: 0, width: 393, height: 32)
+        strip.frame = CGRect(x: 0, y: 0, width: 393, height: KeyboardView.stripHeight)
         strip.layoutIfNeeded()
         let primary = try button("suggestion.primary", in: strip)
-        #expect(primary.contentVerticalAlignment == .top)
+        #expect(primary.contentVerticalAlignment == .center)
         #expect(primary.frame.minY == 0)
+        #expect(primary.frame.maxY == KeyboardView.stripHeight - SuggestionBar.bottomPassThroughHeight)
     }
 
     @Test func largeKeyPopupsStayInsideDeckAtEdgesWithoutChangingHeight() throws {
@@ -396,10 +397,15 @@ struct KeyboardConsistencyTests {
                             #expect(popup.frame.width >= 55.5)
                             #expect(!popup.isUserInteractionEnabled)
                             #expect(label.text == key.popupText)
-                            if suggestions {
+                            if suggestions && (letter == "q" || letter == "p") {
+                                #expect(popup.frame.minY == 2)
+                                #expect(label.frame.height >= 46)
+                                #expect(label.font.pointSize >= 36)
+                                #expect(popup.frame.minY + label.frame.maxY + 2 <= key.frame.minY + 2,
+                                    "top-row popup head must sit above its key")
+                            } else if suggestions {
                                 #expect(label.frame.height >= 50)
                                 #expect(label.font.pointSize == 38)
-                                if letter == "q" || letter == "p" { #expect(popup.frame.minY == 2) }
                             } else {
                                 #expect(label.font.pointSize >= 26)
                             }
