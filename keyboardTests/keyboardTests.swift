@@ -843,10 +843,7 @@ struct KeyboardTests {
 				#expect(tabs.map { $0.title(for: .normal) } == ["Emoji", "GIFs", "Stickers"])
 			}
 		}
-		#expect(KBExperiments.arm(forDraw: 0) == .stacked)
-		#expect(KBExperiments.arm(forDraw: 0.49) == .stacked)
-		#expect(KBExperiments.arm(forDraw: 0.5) == .unified)
-		#expect(KBExperiments.arm(forDraw: 0.99) == .unified)
+		#expect(KBExperiments.defaultPanelHeader == .unified)
 		#expect(KBExperiments.panelHeader == .unified)
 	}
 

@@ -516,7 +516,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Panel header A/B test")
 			} footer: {
-				Text("Each install gets the stacked (A) or unified (C) header at random and keeps it. Pin one for a moderated session; it applies the next time a panel opens. Counts per arm: panels opened from the letters, searches started, tab switches, and emoji, GIFs or stickers picked. Counts only, no content.")
+				Text("Every install uses the unified (C) header. Pin the stacked (A) header to compare in a moderated session; it applies the next time a panel opens. Counts per arm: panels opened from the letters, searches started, tab switches, and emoji, GIFs or stickers picked. Counts only, no content.")
 			}
 
 			Section {
@@ -653,7 +653,7 @@ struct DiagnosticsView: View {
 	}
 	private func panelHeaderArmDescription() -> String {
 		let style = KBExperiments.panelHeader
-		return style.displayName + (KBExperiments.panelHeaderOverride == nil ? " (assigned)" : " (pinned)")
+		return style.displayName + (KBExperiments.panelHeaderOverride == nil ? " (default)" : " (pinned)")
 	}
 
 	private func panelEventSummary(for style: PanelHeaderStyle) -> String {
