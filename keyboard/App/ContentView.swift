@@ -45,6 +45,8 @@ struct ContentView: View {
 	@State private var hasUsedKeyboard = KBSettings.hasUsedKeyboard
 	@AppStorage("kb.onboarding.continued") private var continuedPastOnboarding = false
 	@AppStorage("kb.prompt.mainKeyboard.done") private var mainKeyboardPromptDone = false
+	@AppStorage("kb.research.launchNoticeShown") private var researchNoticeShown = false
+	@State private var showResearchNotice = false
 
 	var body: some View {
 		NavigationStack {
@@ -185,6 +187,18 @@ struct ContentView: View {
 			}
 			#endif
 		}
+		#if RESEARCH_BETA
+		.onAppear {
+			if !researchNoticeShown && !ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {
+				showResearchNotice = true
+			}
+		}
+		.alert("Typing Research", isPresented: $showResearchNotice) {
+			Button("OK") { researchNoticeShown = true }
+		} message: {
+			Text("This beta records your typing to improve Glyph. You can turn it off in Typing Research.")
+		}
+		#endif
 		.alert("Reset learned words?", isPresented: $showResetConfirm) {
 			Button("Reset", role: .destructive, action: resetUserData)
 			Button("Cancel", role: .cancel) { }
@@ -824,6 +838,8 @@ private struct FirstRunView: View {
 					Label("Beta: Glyph records your typing to improve it. You can turn this off in Typing Research.", systemImage: "shield")
 						.font(.footnote)
 						.foregroundStyle(.tertiary)
+						.fixedSize(horizontal: false, vertical: true)
+						.padding(.horizontal, 24)
 						.padding(.bottom, 18)
 					#else
 					Label("Your typing stays on your iPhone.", systemImage: "shield")
@@ -872,10 +888,12 @@ private struct FirstRunView: View {
 					+ Text(text[range]).bold()
 					+ Text(text[range.upperBound...]))
 					.foregroundStyle(isOptional ? .secondary : .primary)
+					.fixedSize(horizontal: false, vertical: true)
 					.frame(maxWidth: .infinity, alignment: .leading)
 			} else {
 				Text(text)
 					.foregroundStyle(isOptional ? .secondary : .primary)
+					.fixedSize(horizontal: false, vertical: true)
 					.frame(maxWidth: .infinity, alignment: .leading)
 			}
 		}
