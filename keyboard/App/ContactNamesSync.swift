@@ -25,8 +25,17 @@ final class ContactNamesSync: ObservableObject {
 		enabled = KBSettings.sharedDefaults.bool(forKey: Self.enabledKey)
 	}
 
+	func refreshStatus() {
+		let current = CNContactStore.authorizationStatus(for: .contacts)
+		if current != status { status = current }
+		if isDenied && nameCount > 0 {
+			KBContactNames.remove()
+			nameCount = 0
+		}
+	}
+
 	func refresh() {
-		status = CNContactStore.authorizationStatus(for: .contacts)
+		refreshStatus()
 		if enabled && isAuthorized { Task { await sync() } }
 		else { nameCount = KBContactNames.load().count }
 	}

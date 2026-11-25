@@ -7,6 +7,8 @@ final class KeyboardSetupStatus: ObservableObject {
 	static let extensionBundleID = "com.keypointtech.glyph.keyboard"
 
 	@Published private(set) var isEnabled = false
+	@Published private(set) var isMainKeyboard = false
+	@Published private(set) var canSeeKeyboards = false
 	@Published private(set) var hasOpened = false
 	@Published private(set) var fullAccess = false
 	@Published private(set) var lastSeen: Date?
@@ -14,9 +16,14 @@ final class KeyboardSetupStatus: ObservableObject {
 	init() { refresh() }
 
 	func refresh() {
-		let keyboards = UserDefaults.standard.object(forKey: "AppleKeyboards") as? [String] ?? []
-		let enabled = keyboards.contains(Self.extensionBundleID) || KBSettings.hasUsedKeyboard
+		let list = UserDefaults.standard.object(forKey: "AppleKeyboards") as? [String]
+		let visible = list != nil
+		let keyboards = list ?? []
+		let enabled = visible ? keyboards.contains(Self.extensionBundleID) : KBSettings.hasUsedKeyboard
+		let main = keyboards.first(where: { !$0.hasPrefix("emoji") }) == Self.extensionBundleID
+		if visible != canSeeKeyboards { canSeeKeyboards = visible }
 		if enabled != isEnabled { isEnabled = enabled }
+		if main != isMainKeyboard { isMainKeyboard = main }
 		if KBSettings.hasUsedKeyboard != hasOpened { hasOpened = KBSettings.hasUsedKeyboard }
 		if KBSettings.lastFullAccess != fullAccess { fullAccess = KBSettings.lastFullAccess }
 		if KBSettings.keyboardLastSeenAt != lastSeen { lastSeen = KBSettings.keyboardLastSeenAt }
@@ -67,6 +74,8 @@ struct SetupGuideView: View {
 	@StateObject private var contacts = ContactNamesSync()
 	@Environment(\.scenePhase) private var scenePhase
 	@State private var tryText = ""
+	@State private var skipped: Set<SetupStep> = []
+	@State private var notice: String?
 	@FocusState private var tryFocused: Bool
 
 	init(start: SetupStep = .welcome, onClose: (() -> Void)? = nil, onFinish: @escaping () -> Void) {
@@ -97,6 +106,14 @@ struct SetupGuideView: View {
 							.fixedSize(horizontal: false, vertical: true)
 					}
 					.padding(.horizontal, 28)
+					if let notice {
+						Label(notice, systemImage: "arrow.uturn.backward.circle.fill")
+							.font(.subheadline.weight(.medium))
+							.foregroundStyle(.orange)
+							.multilineTextAlignment(.center)
+							.padding(.horizontal, 28)
+							.accessibilityIdentifier("setup.notice")
+					}
 					statusPill
 					if step == .switchTo { tryField }
 				}
@@ -112,20 +129,26 @@ struct SetupGuideView: View {
 		.onChange(of: scenePhase) { _, phase in
 			if phase == .active { status.refresh(); contacts.refresh() }
 		}
-		.onChange(of: contacts.nameCount) { _, count in
-			if count > 0, step == .contacts { advance(after: 1.2) }
+		.onAppear {
+			status.refresh()
+			contacts.refreshStatus()
+			if step == .enable || (step != .welcome && isDone(step)) { step = next(after: .welcome) }
 		}
 		.task {
 			while !Task.isCancelled {
 				status.refresh()
+				contacts.refreshStatus()
 				try? await Task.sleep(for: .seconds(1))
 			}
 		}
-		.onChange(of: status.isEnabled) { _, on in
-			if on, step == .enable { advance(after: 0.9) }
-		}
-		.onChange(of: status.lastSeen) { _, _ in
-			if step == .switchTo, status.hasOpened { advance(after: 1.4) }
+		.onChange(of: completion) { old, new in
+			if let lost = SetupStep.allCases.first(where: { old.contains($0) && !new.contains($0) }),
+			   lost == .enable, step.rawValue > SetupStep.enable.rawValue {
+				notice = "Glyph was turned off. Turn it back on to keep going."
+				go(.enable, keepNotice: true)
+				return
+			}
+			if new.contains(step), !old.contains(step) { advance(after: 1.0) }
 		}
 	}
 
@@ -134,14 +157,14 @@ struct SetupGuideView: View {
 			HStack(spacing: 6) {
 				ForEach(SetupStep.allCases.dropFirst().dropLast()) { s in
 					Capsule()
-						.fill(s.rawValue <= step.rawValue ? Color.accentColor : Color(uiColor: .systemFill))
+						.fill(isDone(s) ? Color.green : s == step ? Color.accentColor : Color(uiColor: .systemFill))
 						.frame(height: 4)
 				}
 			}
 			.opacity(step == .welcome || step == .done ? 0 : 1)
 			.animation(.easeInOut, value: step)
 			.accessibilityElement()
-			.accessibilityLabel("Step \(step.rawValue) of \(SetupStep.allCases.count - 2)")
+			.accessibilityLabel("Step \(step.rawValue) of \(SetupStep.allCases.count - 2), \(completion.count) done")
 			.accessibilityIdentifier("onboarding.firstRun")
 			if let onClose {
 				Button(action: onClose) {
@@ -190,6 +213,10 @@ struct SetupGuideView: View {
 			}
 		case .switchTo:
 			pill(done: status.hasOpened, on: "Glyph is working", off: "Waiting for Glyph to open")
+		case .mainKeyboard:
+			if status.canSeeKeyboards {
+				pill(done: status.isMainKeyboard, on: "Glyph is your main keyboard", off: "Waiting for Glyph to move to the top")
+			}
 		default:
 			EmptyView()
 		}
@@ -249,12 +276,12 @@ struct SetupGuideView: View {
 
 	private var primaryTitle: String {
 		switch step {
-		case .welcome: "Set up Glyph"
+		case .welcome: completion.isEmpty ? "Set up Glyph" : "Continue setup"
 		case .enable: status.isEnabled ? "Next" : "Open Settings"
-		case .fullAccess: "Open Settings"
+		case .fullAccess: status.fullAccess ? "Next" : "Open Settings"
 		case .contacts: contactsDone ? "Next" : (contacts.isDenied ? "Open Settings" : "Allow Contacts")
 		case .switchTo: status.hasOpened ? "Next" : "Show me the box"
-		case .mainKeyboard: "Open Settings"
+		case .mainKeyboard: status.isMainKeyboard ? "Next" : "Open Settings"
 		case .done: "Start typing"
 		}
 	}
@@ -263,43 +290,58 @@ struct SetupGuideView: View {
 		switch step {
 		case .welcome: nil
 		case .enable: status.isEnabled ? nil : "I've turned it on"
-		case .fullAccess: "Skip for now"
+		case .fullAccess: status.fullAccess ? nil : "Skip for now"
 		case .contacts: contactsDone ? nil : "Skip for now"
 		case .switchTo: status.hasOpened ? nil : "Skip"
-		case .mainKeyboard: "I've done this"
+		case .mainKeyboard: status.isMainKeyboard ? nil : (status.canSeeKeyboards ? "Skip for now" : "I've done this")
 		case .done: nil
 		}
 	}
 
 	private func primaryAction() {
 		switch step {
-		case .welcome: go(.enable)
-		case .enable: status.isEnabled ? go(.fullAccess) : openSettings()
-		case .fullAccess, .mainKeyboard: openSettings()
-		case .contacts:
-			if contactsDone { go(.switchTo) }
-			else if contacts.isDenied { openSettings() }
-			else { Task { await contacts.requestAndSync() } }
-		case .switchTo: status.hasOpened ? go(.mainKeyboard) : (tryFocused = true)
+		case .welcome: go(next(after: .welcome))
 		case .done: onFinish()
+		default:
+			if isDone(step) { go(next(after: step)); return }
+			switch step {
+			case .contacts:
+				if contacts.isDenied { openSettings() } else { Task { await contacts.requestAndSync() } }
+			case .switchTo: tryFocused = true
+			default: openSettings()
+			}
 		}
 	}
 
 	private func secondaryAction() {
-		switch step {
-		case .enable: go(.fullAccess)
-		case .fullAccess: go(.contacts)
-		case .contacts: go(.switchTo)
-		case .switchTo: go(.mainKeyboard)
-		case .mainKeyboard: go(.done)
-		default: break
-		}
+		skipped.insert(step)
+		go(next(after: step))
 	}
 
 	private var contactsDone: Bool { contacts.isAuthorized && contacts.enabled }
 
-	private func go(_ next: SetupStep) {
+	private var completion: Set<SetupStep> { Set(SetupStep.allCases.filter(isDone)) }
+
+	private func isDone(_ s: SetupStep) -> Bool {
+		switch s {
+		case .enable: status.isEnabled
+		case .fullAccess: status.fullAccess
+		case .contacts: contactsDone
+		case .switchTo: status.hasOpened
+		case .mainKeyboard: status.isMainKeyboard
+		case .welcome, .done: false
+		}
+	}
+
+	private func next(after current: SetupStep) -> SetupStep {
+		SetupStep.allCases.first { s in
+			s.rawValue > current.rawValue && (s == .done || (!isDone(s) && !skipped.contains(s)))
+		} ?? .done
+	}
+
+	private func go(_ next: SetupStep, keepNotice: Bool = false) {
 		tryFocused = false
+		if !keepNotice { notice = nil }
 		withAnimation(.spring(duration: 0.45)) { step = next }
 	}
 
@@ -307,8 +349,8 @@ struct SetupGuideView: View {
 		let from = step
 		Task {
 			try? await Task.sleep(for: .seconds(delay))
-			guard step == from, let next = SetupStep(rawValue: from.rawValue + 1) else { return }
-			go(next)
+			guard step == from, isDone(from) else { return }
+			go(next(after: from))
 		}
 	}
 
@@ -763,6 +805,34 @@ private struct ContactsIllustration: View {
 			}
 		}
 		.looping($phase, count: 6, every: 1.1)
+	}
+}
+
+struct SetupAttentionCard: View {
+	let title: String
+	let detail: String
+	let action: String
+	let perform: () -> Void
+
+	var body: some View {
+		VStack(alignment: .leading, spacing: 12) {
+			HStack(alignment: .top, spacing: 12) {
+				Image(systemName: "exclamationmark.triangle.fill")
+					.font(.system(size: 18, weight: .semibold))
+					.foregroundStyle(.white)
+					.frame(width: 40, height: 40)
+					.background(Color.orange, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+				VStack(alignment: .leading, spacing: 4) {
+					Text(title).font(.headline)
+					Text(detail).font(.subheadline).foregroundStyle(.secondary)
+						.fixedSize(horizontal: false, vertical: true)
+				}
+			}
+			Button(action, action: perform).buttonStyle(.borderedProminent)
+		}
+		.padding(.vertical, 6)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier("prompt.setupAttention")
 	}
 }
 

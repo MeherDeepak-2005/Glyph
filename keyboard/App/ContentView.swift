@@ -38,6 +38,7 @@ struct ContentView: View {
 	@StateObject private var store = SettingsStore()
 	@StateObject private var commercial = CommercialStore()
 	@StateObject private var contacts = ContactNamesSync()
+	@StateObject private var setup = KeyboardSetupStatus()
 	@Environment(\.colorScheme) private var scheme
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.scenePhase) private var scenePhase
@@ -60,7 +61,13 @@ struct ContentView: View {
 							.listRowBackground(Color.clear)
 							.listRowSeparator(.hidden)
 					}
-					if !mainKeyboardPromptDone {
+					if !setup.isEnabled {
+						Section {
+							SetupAttentionCard(title: "Glyph is turned off",
+								detail: "Glyph was removed from your keyboards. Turn it back on in a few taps.",
+								action: "Turn it back on") { guideStart = .enable }
+						}
+					} else if setup.canSeeKeyboards ? !setup.isMainKeyboard : !mainKeyboardPromptDone {
 						Section {
 							MainKeyboardCard(showGuide: { guideStart = .mainKeyboard },
 								done: { mainKeyboardPromptDone = true })
@@ -71,12 +78,12 @@ struct ContentView: View {
 					}
 				Section("Status") {
 					NavigationLink {
-						SetupSupportView(showGuide: { guideStart = .enable })
+						SetupSupportView(setup: setup, contacts: contacts, showGuide: { guideStart = .enable })
 					} label: {
 						SettingRow(icon: "keyboard",
 								   tint: Color(uiColor: .systemBlue),
 								   title: "Setup & Support",
-								   value: keyboardStatusValue)
+								   value: setup.isEnabled ? keyboardStatusValue : "Turned off")
 					}
 				}
 
@@ -204,10 +211,10 @@ struct ContentView: View {
 				EmojiAtlas.generateIfNeeded(scale: scale)
 			}.value
 		}
-		.onAppear { refreshInstallState() }
+		.onAppear { refreshInstallState(); setup.refresh() }
 		.task { await commercial.refresh() }
 		.onChange(of: scenePhase) { _, phase in
-			if phase == .active { refreshInstallState(); contacts.refresh() }
+			if phase == .active { refreshInstallState(); contacts.refresh(); setup.refresh() }
 			#if RESEARCH_BETA
 			if phase == .active || phase == .background, KBTypingRecorder.installID != nil {
 				Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }
@@ -360,6 +367,8 @@ private struct RewardCenterView: View {
 }
 
 private struct SetupSupportView: View {
+	@ObservedObject var setup: KeyboardSetupStatus
+	@ObservedObject var contacts: ContactNamesSync
 	let showGuide: () -> Void
 	@State private var access = KBSettings.lastFullAccess
 	@State private var observedAt = KBSettings.lastFullAccessObservedAt
@@ -368,6 +377,13 @@ private struct SetupSupportView: View {
 
 	var body: some View {
 		List {
+			Section("Setup checklist") {
+				check("Glyph turned on", done: setup.isEnabled)
+				check("Main keyboard", done: setup.isMainKeyboard, optional: true)
+				check("Full Access", done: access, optional: true,
+					note: access ? nil : "Checked when Glyph opens")
+				check("Contact names", done: contacts.isAuthorized && contacts.enabled, optional: true)
+			}
 			Section("Keyboard") {
 				statusRow("Last opened", value: lastSeen?.formatted(date: .abbreviated, time: .shortened) ?? "Not yet")
 				statusRow("Full Access", value: access ? "On" : "Off or unknown")
@@ -424,6 +440,20 @@ private struct SetupSupportView: View {
 		let short = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
 		let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
 		return "\(short) (\(build))"
+	}
+
+	private func check(_ title: String, done: Bool, optional: Bool = false, note: String? = nil) -> some View {
+		HStack {
+			Image(systemName: done ? "checkmark.circle.fill" : optional ? "circle" : "exclamationmark.circle.fill")
+				.foregroundStyle(done ? Color.green : optional ? Color.secondary : Color.orange)
+			VStack(alignment: .leading, spacing: 2) {
+				Text(title)
+				if let note { Text(note).font(.caption).foregroundStyle(.secondary) }
+			}
+			Spacer()
+			Text(done ? "Done" : optional ? "Optional" : "Needed").foregroundStyle(.secondary)
+		}
+		.accessibilityElement(children: .combine)
 	}
 
 	private func statusRow(_ title: String, value: String) -> some View {

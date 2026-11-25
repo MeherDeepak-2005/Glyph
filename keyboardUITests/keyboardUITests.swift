@@ -720,34 +720,28 @@ final class keyboardUITests: XCTestCase {
 			RunLoop.current.run(until: Date().addingTimeInterval(wait))
 			let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
 		}
-		shot("0-home", 1)
-		let card = app.buttons["Show me how"]
-		XCTAssertTrue(card.waitForExistence(timeout: 3))
-		shot("0-wait", 2)
+		shot("0-home", 1.5)
 		let guide = app.descendants(matching: .any)["onboarding.firstRun"]
-		for attempt in 0..<4 {
-			card.tap()
-			let ok = guide.waitForExistence(timeout: 3)
-			NSLog("GUIDEPROBE attempt %d exists=%d cardHittable=%d", attempt, ok ? 1 : 0, card.isHittable ? 1 : 0)
-			if ok { break }
+		let attention = app.buttons["Turn it back on"]
+		if attention.exists {
+			for _ in 0..<3 where !guide.exists { attention.tap(); _ = guide.waitForExistence(timeout: 3) }
+			XCTAssertTrue(guide.exists, "The turned-off card did not open the guide")
+			shot("1-guide-from-attention", 2.4)
+			XCTAssertTrue(app.staticTexts["Turn on Glyph"].exists, "The guide did not open at Turn on Glyph")
+			app.buttons["setup.close"].tap()
 		}
-		shot("5-main-a", 0.6); shot("5-main-b", 2.2)
-		app.buttons["setup.close"].tap()
 		let support = app.staticTexts["Setup & Support"]
 		for _ in 0..<4 { if support.exists && support.isHittable { break }; app.swipeUp() }
-		support.tap()
+		for _ in 0..<3 where !app.buttons["setup.guide"].exists { support.tap(); _ = app.buttons["setup.guide"].waitForExistence(timeout: 2) }
+		shot("2-checklist", 0.8)
+		XCTAssertTrue(app.staticTexts["Glyph turned on"].exists, "The setup checklist is missing")
 		app.buttons["setup.guide"].tap()
 		XCTAssertTrue(guide.waitForExistence(timeout: 3), "Setup & Support did not open the guide")
-		shot("1-enable-a", 1.0); shot("1-enable-b", 2.4)
-		let primary = app.buttons["onboarding.continue"], secondary = app.buttons["setup.secondary"]
-		primary.tap()
-		shot("2-access-a", 2.5); shot("2-access-b", 2.4); shot("2-access-c", 2.4)
-		secondary.tap()
-		shot("2b-contacts-a", 2.4); shot("2b-contacts-b", 3.3)
-		XCTAssertTrue(app.staticTexts["Spell names right"].exists, "The contacts step is missing")
-		secondary.tap()
-		shot("3-switch-a", 2.4)
-		XCTAssertTrue(app.textFields["setup.try"].exists, "The try-it field is missing")
+		shot("3-first-open-step", 2.4)
+		let secondary = app.buttons["setup.secondary"]
+		var hops = 0
+		while secondary.exists && hops < 6 { secondary.tap(); hops += 1; shot("4-step-\(hops)", 1.4) }
+		XCTAssertTrue(app.buttons["onboarding.continue"].exists)
 		app.buttons["setup.close"].tap()
 		XCTAssertFalse(guide.waitForExistence(timeout: 1.5), "The guide did not close")
 	}
