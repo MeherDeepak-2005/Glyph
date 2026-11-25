@@ -152,7 +152,7 @@ enum ResearchUploader {
     static func scheduleBackgroundRefresh() {
         guard refreshPermitted, KBTypingRecorder.enabled else { return }
         let request = BGAppRefreshTaskRequest(identifier: refreshTaskID)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 6 * 3_600)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 3 * 3_600)
         try? BGTaskScheduler.shared.submit(request)
     }
 }

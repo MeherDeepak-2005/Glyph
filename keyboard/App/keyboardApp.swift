@@ -6,6 +6,10 @@ struct keyboardApp: App {
 	init() {
 		#if RESEARCH_BETA
 		ResearchUploader.registerBackgroundRefresh()
+		if !ProcessInfo.processInfo.arguments.contains("-keyboard-runtime-host"),
+		   NSClassFromString("XCTestCase") == nil, KBTypingRecorder.enableByDefaultUnlessOptedOut() {
+			ResearchUploader.scheduleBackgroundRefresh()
+		}
 		#endif
 		#if DEBUG
 		if ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {

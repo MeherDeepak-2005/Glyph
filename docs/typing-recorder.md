@@ -2,12 +2,16 @@
 
 Opt-in research log written by `keyboard/Shared/KBTypingRecorder.swift`: by the keyboard
 extension (`demo_keyboard/Controller/KeyboardViewController+Recording.swift`) and, for practice
-prompts, by the app (`keyboard/App/PracticeView.swift`). Off until the tester turns it on in the
-app: Privacy › Typing Research. Secure, email, phone, URL, number, one-time-code and username
-fields are never recorded (`permitsTypingData`).
+prompts, by the app (`keyboard/App/PracticeView.swift`). Beta builds (`RESEARCH_BETA`) turn it on
+when the app launches (`KBTypingRecorder.enableByDefaultUnlessOptedOut`); beta testers are told
+outside the app. The tester can turn it off or stop and delete in Privacy › Typing Research, which
+records an opt-out the next launch respects. Secure, email, phone, URL, number, one-time-code and
+username fields are never recorded (`permitsTypingData`).
 
-One JSON event per line. Beta builds (`RESEARCH_BETA`) upload the files, encrypted, from the app
-(`keyboard/App/ResearchUploader.swift`); the extension never transmits. Getting the data back and
+One JSON event per line. Beta builds (`RESEARCH_BETA`) upload the files automatically, encrypted,
+from the app (`keyboard/App/ResearchUploader.swift`): when it becomes active or goes to the
+background, and from a background refresh requested every 3 hours. There is no manual upload
+button. The extension never transmits. Getting the data back and
 building tables from it: [tools/research/README.md](../tools/research/README.md).
 
 ## Files

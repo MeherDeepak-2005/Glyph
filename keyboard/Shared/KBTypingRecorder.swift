@@ -101,6 +101,7 @@ enum KBTypingRecorder {
     private static let outboxBytes = 200 * 1_024 * 1_024
     private static let retention: TimeInterval = 30 * 86_400
     private static let enabledKey = "kb.typing.capture"
+    private static let optedOutKey = "kb.research.optedOut"
     private static let generationKey = "kb.typing.generation"
     private static let installKey = "kb.research.install"
     private static let profileKey = "kb.research.profile"
@@ -131,14 +132,23 @@ enum KBTypingRecorder {
         return try body()
     }
 
+    static var optedOut: Bool { KBSettings.sharedDefaults.bool(forKey: optedOutKey) }
+
     static func setEnabled(_ value: Bool) {
         do {
             try locked {
                 KBSettings.sharedDefaults.set(UUID().uuidString, forKey: generationKey)
                 if value, installID == nil { KBSettings.sharedDefaults.set(UUID().uuidString, forKey: installKey) }
                 KBSettings.sharedDefaults.set(value, forKey: enabledKey)
+                KBSettings.sharedDefaults.set(!value, forKey: optedOutKey)
             }
         } catch { KBDiagnostics.noteIntegrityEvent("capture-control-failed") }
+    }
+
+    @discardableResult static func enableByDefaultUnlessOptedOut() -> Bool {
+        guard !enabled, !optedOut else { return false }
+        setEnabled(true)
+        return enabled
     }
 
     private static func valid(_ event: Event) -> Bool {
@@ -308,6 +318,7 @@ enum KBTypingRecorder {
         do {
             try locked {
                 KBSettings.sharedDefaults.set(false, forKey: enabledKey)
+                KBSettings.sharedDefaults.set(true, forKey: optedOutKey)
                 KBSettings.sharedDefaults.set(UUID().uuidString, forKey: generationKey)
                 if let dir = directory, FileManager.default.fileExists(atPath: dir.path) {
                     try FileManager.default.removeItem(at: dir)

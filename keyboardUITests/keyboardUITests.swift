@@ -25,11 +25,12 @@ final class keyboardUITests: XCTestCase {
 		app.launch()
 
 		let appearance = app.buttons["settings.appearance"]
-		XCTAssertTrue(appearance.waitForExistence(timeout: 5))
-		for _ in 0..<4 {
-			if appearance.isHittable { break }
+		XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5))
+		for _ in 0..<6 {
+			if appearance.exists && appearance.isHittable { break }
 			app.swipeUp()
 		}
+		XCTAssertTrue(appearance.waitForExistence(timeout: 2), "Appearance row missing")
 		appearance.tap()
 		XCTAssertTrue(app.navigationBars["Appearance"].waitForExistence(timeout: 2))
 		add(XCTAttachment(screenshot: app.screenshot()))
@@ -452,6 +453,8 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertTrue(clip.waitForExistence(timeout: 3), "Clipboard action missing from tools row")
 		XCTAssertTrue(clip.isHittable, "Clipboard icon is not hittable")
 		clip.tap()
+		let allowPaste = XCUIApplication(bundleIdentifier: "com.apple.springboard").buttons["Allow Paste"]
+		if allowPaste.waitForExistence(timeout: 3) { allowPaste.tap() }
 		XCTAssertTrue(host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 3),
 			"Keyboard disappeared after opening the clipboard panel")
 	}

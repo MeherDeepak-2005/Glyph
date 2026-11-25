@@ -44,6 +44,7 @@ struct ContentView: View {
 	@State private var showDeleteAllConfirm = false
 	@State private var hasUsedKeyboard = KBSettings.hasUsedKeyboard
 	@AppStorage("kb.onboarding.continued") private var continuedPastOnboarding = false
+	@AppStorage("kb.prompt.mainKeyboard.done") private var mainKeyboardPromptDone = false
 
 	var body: some View {
 		NavigationStack {
@@ -54,6 +55,11 @@ struct ContentView: View {
 							.listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
 							.listRowBackground(Color.clear)
 							.listRowSeparator(.hidden)
+					}
+					if !mainKeyboardPromptDone {
+						Section {
+							MainKeyboardPrompt { mainKeyboardPromptDone = true }
+						}
 					}
 					Section("Progress") {
 						AchievementBanner()
@@ -390,11 +396,11 @@ private struct PrivacyDataView: View {
 	var body: some View {
 		List {
 			Section("Typing") {
-				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Unless you turn on Typing Research, Glyph does not transmit the text you type to a server.")
+				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Glyph only transmits the text you type through Typing Research, which beta builds turn on.")
 			}
 			#if RESEARCH_BETA
 			Section("Typing Research (beta)") {
-				Text("Off unless you turn it on. While it is on, Glyph records the words you type in ordinary text fields, your touches and swipe paths, and what you do with suggestions and corrections, and uploads them encrypted to the Glyph developer to improve typing and Glide. Password, email, phone, number, address and code fields are never recorded. You can stop and delete at any time in Typing Research.")
+				Text("On for beta testers. While it is on, Glyph records the words you type in ordinary text fields, your touches and swipe paths, and what you do with suggestions and corrections, and uploads them automatically, encrypted, to the Glyph developer to improve typing and Glide. Password, email, phone, number, address and code fields are never recorded. You can stop and delete at any time in Typing Research.")
 			}
 			#endif
 			Section("On-device storage") {
@@ -566,7 +572,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Typing research")
 			} footer: {
-				Text("Off by default. Records typed text, key timing, touches, Glide paths, suggestions and correction actions in general text fields. Ordinary text can still contain personal information. Beta builds upload the recordings, encrypted, when the app is opened (Typing Research); up to 200 MB and 30 days wait on the device. An export adds one more copy. Delete removes what is on the device. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
+				Text("On by default in beta builds. Records typed text, key timing, touches, Glide paths, suggestions and correction actions in general text fields. Ordinary text can still contain personal information. Beta builds upload the recordings automatically, encrypted, when the app opens or closes and every few hours in the background; up to 200 MB and 30 days wait on the device. An export adds one more copy. Delete removes what is on the device. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
 			}
 
 			Section("Input integrity") {
@@ -793,7 +799,10 @@ private struct FirstRunView: View {
 						Divider().padding(.leading, 64)
 						step(number: 3, text: "In any app, hold the globe and pick Glyph")
 						Divider().padding(.leading, 64)
-						step(number: 4, text: "Optional: allow Full Access for haptics",
+						step(number: 4, text: "Make Glyph your main keyboard: tap Edit in Keyboards and drag Glyph to the top",
+							emphasized: "main keyboard")
+						Divider().padding(.leading, 64)
+						step(number: 5, text: "Optional: allow Full Access for GIFs, clipboard and haptics",
 							isOptional: true)
 					}
 					.background(Color(uiColor: .secondarySystemGroupedBackground),
@@ -811,10 +820,17 @@ private struct FirstRunView: View {
 					.accessibilityIdentifier("onboarding.continue")
 
 					Spacer(minLength: 48)
-					Label("Your typing stays on your iPhone unless you join Typing Research.", systemImage: "shield")
+					#if RESEARCH_BETA
+					Label("Beta: Glyph records your typing to improve it. You can turn this off in Typing Research.", systemImage: "shield")
 						.font(.footnote)
 						.foregroundStyle(.tertiary)
 						.padding(.bottom, 18)
+					#else
+					Label("Your typing stays on your iPhone.", systemImage: "shield")
+						.font(.footnote)
+						.foregroundStyle(.tertiary)
+						.padding(.bottom, 18)
+					#endif
 				}
 				.frame(maxWidth: .infinity, minHeight: geometry.size.height)
 			}
@@ -877,4 +893,37 @@ private struct FirstRunView: View {
 
 #Preview {
 	ContentView()
+}
+
+private struct MainKeyboardPrompt: View {
+	let done: () -> Void
+
+	var body: some View {
+		VStack(alignment: .leading, spacing: 10) {
+			Label("Make Glyph your main keyboard", systemImage: "keyboard.badge.ellipsis")
+				.font(.headline)
+			Text("iOS shows the keyboard you used last. To get Glyph every time:")
+				.font(.subheadline)
+				.foregroundStyle(.secondary)
+			VStack(alignment: .leading, spacing: 6) {
+				Text("1. Settings › General › Keyboard › Keyboards")
+				Text("2. Tap Edit and drag Glyph to the top")
+				Text("3. For Glyph only, delete English (US) in the same list")
+			}
+			.font(.subheadline)
+			HStack {
+				Button("Open Settings") {
+					if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+				}
+				.buttonStyle(.borderedProminent)
+				Spacer()
+				Button("Done", action: done)
+					.buttonStyle(.bordered)
+			}
+			.padding(.top, 4)
+		}
+		.padding(.vertical, 6)
+		.accessibilityElement(children: .contain)
+		.accessibilityIdentifier("prompt.mainKeyboard")
+	}
 }
