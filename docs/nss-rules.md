@@ -27,6 +27,7 @@ does not need re-testing** unless the model, vocabulary, channel weight or commi
 | Touch (`nssRuleTouch`) | a tap is priced against the key it landed on: an off-centre tap on the right key costs nothing | relative key distance at `touchSigma` 0.7 | **On** (16 Nov) |
 | Split margin (`nssRuleSplitMargin`) | a two-word correction (missing space) must beat the typed text by 3 (`nssSplitMargin`), else the best single word competes | — | **On** (16 Nov) |
 | Frequency prior (`nssRuleFrequency`) | 0.1 × ln(dictionary count + 1) added to each word's score | — | **Off: rejected** (16 Nov) |
+| Start real word (`nssRuleStartRealWord`) | a dictionary word typed first in a message (hi -> i, form -> from) must lose to the correction by 1.0 (`nssStartRealWordMargin`); the same word with an apostrophe added (its -> it's, id -> i'd) is exempt | margin 1.0 instead of 0 for typed dictionary words with no context | **On** (25 Nov) |
 | First-letter change (`nssRuleFirstLetter`) | a candidate whose first letter differs from the typed one (tounge: tongue, not younger) | `firstLetterPenalty`: 0.35 / 0.2 for 3 / 4 letters; from 5 letters 0.75 if the first two letters are swapped, 1.5 if the first letter is missing, 1.0 for a neighbouring key, otherwise 2.0 | **On** |
 
 Swapped neighbouring letters ("misplaced letters", tihs -> this) were already in raw NSS at the n-gram tier's cost
@@ -167,6 +168,36 @@ p50 / p95 / p99 7.88 / 10.09 / 11.02 ms.
 | N-gram rescoring (`nssNgramWeight` 0.25) | not portable: it is the n-gram language model, which the prod scope excludes |
 | Candidate recovery (`nssRecovery`: trie first-letter passes, broad recovery, context injection) and the blocked-typo rule | not portable as a rule: that candidate-generation code (CandidateGeneration, IncrementalSearch) is not on prod |
 | Word patches ("id" rule, kept opening quote) | not ported: patches for single words (id -> I'd now comes from the apostrophe rule) |
+
+## Start real word (25 Nov 2026)
+
+TestFlight testers saw "Hi" + Send turn into "I": with no context the model prefers "i" and a typed dictionary word
+had no commit margin, so any better-scoring word replaced it. Measured gaps at the start of a message: hi -> i 0.66,
+its -> it's 0.67, form -> from 0.95, shed -> she 1.55, yo -> you 3.31, ill -> i'll 3.31, id -> i'd 4.32.
+A plain margin would also block its -> it's, so a correction that only adds an apostrophe is exempt (`nssApostropheVariant`).
+
+Setup: held half, simulated taps, eight rules on, shipped model. **The corpus was rebuilt on 25 Nov** (the original
+`corpus-ios-vocab.tsv` was not recorded, so the iOS vocabulary is now `unigram-v1` words with a stored weight > 0;
+`make_tenglish.py` restored from 0ac2b2b with the lexicon read from dc46ddb^). Compare these numbers only with each other.
+Runs: `results/x-prod`, `x-start10`, `x-start20`, `x-start35`.
+
+| Metric (held) | Prod | Margin 1.0 | Margin 2.0 | Margin 3.5 |
+|---|---|---|---|---|
+| ECPS real misspellings fixed | 90.63% | −0.01 | −0.06 | −0.08* |
+| Synthetic typos / contractions in sentences / Tenglish / names | 91.78 / 85.19 / 12.76 / 50.00% | 0 | 0 | 0 |
+| External lists (Aspell / Birkbeck / Holbrook / Wikipedia) | 53.6 / 32.9 / 44.0 / 82.0% | 0 / −0.01 / 0 / −0.09 | 0 / −0.01 / 0 / −0.09 | 0 / −0.03 / 0 / −0.09 |
+| GUARD rare dictionary words changed | 8.96% | **−0.42*** | −0.42* | −0.42* |
+| GUARD hard valid words changed | 11.58% | −1.05 | −3.16 | −4.21 |
+| GUARD correct ECPS words changed | 0.48% | −0.01 | −0.03 | −0.05 |
+| GUARD real-word errors fixed | 57.26% | −0.28 | −1.42 fail | −2.56 fail |
+
+- **On at margin 1.0.** Every guardrail passes; it changes fewer rare and valid words, keeps hi, and leaves contractions
+  and Tenglish unchanged. The cost is two real-word fixes at the start of a message (not significant), e.g. form -> from.
+  2.0 and 3.5 also keep shed and yo, but fail the real-word guardrail.
+- **Latency** (uncontended, `ablate.py latency`): prod 5.85 / 7.71 / 8.65 ms, margin 1.0 5.84 / 7.70 / 8.63 (p50 / p95 / p99).
+- Golden c047 (form, no context) now keeps "form".
+- Not addressed: chat slang missing from the vocabulary is still corrected at the start (lol -> look, u -> i, k -> i);
+  that is a vocabulary gap, not this rule.
 
 ## Not adopted / not tried
 

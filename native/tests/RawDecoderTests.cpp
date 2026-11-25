@@ -29,6 +29,13 @@ static void admissible(const NeuralFst& graph, const NeuralLexicon& lex, std::ui
 }
 int main(int argc, char** argv) {
     assert(argc == 3);
+    assert(nssApostropheVariant("its", "it's") && nssApostropheVariant("id", "i'd") && nssApostropheVariant("ill", "i'll"));
+    assert(nssApostropheVariant("shed", "she'd") && nssApostropheVariant("its", "its'"));
+    assert(!nssApostropheVariant("hi", "i") && !nssApostropheVariant("shed", "she") && !nssApostropheVariant("form", "from"));
+    assert(!nssApostropheVariant("its", "it''s") && !nssApostropheVariant("its", "its") && !nssApostropheVariant("dont", "don't's"));
+    assert(nssStartRealWordAllowance(true, true, "hi", "i") == nssStartRealWordMargin);
+    assert(nssStartRealWordAllowance(true, true, "its", "it's") == 0);
+    assert(nssStartRealWordAllowance(false, true, "hi", "i") == 0 && nssStartRealWordAllowance(true, false, "teh", "the") == 0);
     auto bytes = read(argv[1]), pack = read(argv[2]);
     auto model = NeuralWordModel::load(bytes);
     auto packed = std::make_shared<PackedLexicon>(pack);

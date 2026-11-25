@@ -21,8 +21,25 @@ KB_TUNABLE(nssRuleFrequency, 0);
 KB_TUNABLE(nssFrequencyWeight, 0.1);
 KB_TUNABLE(nssRuleSplitMargin, 1);
 KB_TUNABLE(nssSplitMargin, 3.0);
+KB_TUNABLE(nssRuleStartRealWord, 1);
+KB_TUNABLE(nssStartRealWordMargin, 1.0);
 
 inline bool nssRuleOn(double rule) noexcept { return nssRules != 0 && rule != 0; }
+inline bool nssApostropheVariant(std::string_view typed, std::string_view word) noexcept {
+    if (word.size() != typed.size() + 1) return false;
+    std::size_t i = 0, j = 0;
+    bool skipped = false;
+    while (i < typed.size() && j < word.size()) {
+        if (typed[i] == word[j]) { ++i; ++j; continue; }
+        if (word[j] != '\'' || skipped) return false;
+        skipped = true; ++j;
+    }
+    return i == typed.size() && (j == word.size() || (!skipped && word[j] == '\'' && j + 1 == word.size()));
+}
+inline double nssStartRealWordAllowance(bool start, bool typedIsWord, std::string_view typed, std::string_view best) noexcept {
+    if (!start || !typedIsWord || !nssRuleOn(nssRuleStartRealWord) || nssApostropheVariant(typed, best)) return 0;
+    return nssStartRealWordMargin;
+}
 inline bool nssVowel(std::uint8_t c) noexcept { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }
 
 inline double nssKeyCost(std::uint8_t intended, std::uint8_t typed, std::optional<TouchOffset> tap) noexcept {

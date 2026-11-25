@@ -143,6 +143,7 @@ DecodeOutput EngineSession::decode(const DecodeInput& input, const EngineView& v
         !std::all_of(input.word.begin(), input.word.end(), [&](char c) { return upper(c) || !std::isalpha(static_cast<unsigned char>(c)); });
     const double margin = typedIsWord ? 0 : start ? nssStartCommitMargin : capitalized ? nssCapitalizedCommitMargin : nssRawCommitMargin;
     double allowance = margin;
+    if (best != complete.end()) allowance -= nssStartRealWordAllowance(start, typedIsWord, typed, best->key);
     if (best != complete.end() && !typedIsWord && nssRuleOn(nssRuleSameSound)) {
         double next = -std::numeric_limits<double>::infinity();
         for (const auto& row : complete) if (&row != &*best) next = std::max(next, row.score);

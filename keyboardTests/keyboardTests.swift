@@ -988,6 +988,13 @@ struct KeyboardTests {
 		#expect(thads.correction == "that's",
 			"thads: correction=\(thads.correction ?? "nil") sugg=\(thads.suggestions)")
 		#expect(thads.suggestions.first == thads.correction)
+		let hiStart = await decode(engine, word: "hi", context: [])
+		#expect(hiStart.correction == nil,
+			"hi at the start of a message must stay hi: correction=\(hiStart.correction ?? "nil")")
+		#expect(hiStart.suggestions.first == "hi")
+		let itsStart = await decode(engine, word: "its", context: [])
+		#expect(itsStart.correction == "it's",
+			"its at the start should still get its apostrophe: correction=\(itsStart.correction ?? "nil")")
 		let idStart = await decode(engine, word: "id", context: [])
 		#expect(idStart.correction == "i'd",
 			"id at start: correction=\(idStart.correction ?? "nil")")
