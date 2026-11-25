@@ -291,15 +291,17 @@ final class keyboardUITests: XCTestCase {
 	}
 
 	@MainActor
-	private func activate(_ keyboard: ComparedKeyboard, in app: XCUIApplication) -> Bool {
-		app.buttons["Next keyboard"].firstMatch.press(forDuration: 1.2)
+	private func activate(_ keyboard: ComparedKeyboard, in app: XCUIApplication, attempts: Int = 1) -> Bool {
 		let row = XCUIElement.ElementType(rawValue: 75) ?? .any
 		let item = app.descendants(matching: row).matching(NSPredicate(format: "label BEGINSWITH %@", menuName(keyboard))).firstMatch
-		guard item.waitForExistence(timeout: 2) else {
+		var found = false
+		for _ in 0..<max(1, attempts) {
+			app.buttons["Next keyboard"].firstMatch.press(forDuration: 1.2)
+			if item.waitForExistence(timeout: 4) { found = true; break }
 			app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.06)).tap()
-			RunLoop.current.run(until: Date().addingTimeInterval(1))
-			return false
+			RunLoop.current.run(until: Date().addingTimeInterval(1.5))
 		}
+		guard found else { return false }
 		item.tap()
 		RunLoop.current.run(until: Date().addingTimeInterval(1.5))
 		let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
@@ -364,7 +366,7 @@ final class keyboardUITests: XCTestCase {
 		let contexts = cases.map(\.context)
 		host.launchEnvironment["KB_RUNTIME_CONTEXTS"] = String(decoding: try JSONEncoder().encode(contexts), as: UTF8.self)
 		host.launch()
-		defer { _ = activate(.glyph, in: host) }
+		defer { _ = activate(.glyph, in: host, attempts: 3) }
 		let field = host.textFields["runtime.text"]
 		XCTAssertTrue(field.waitForExistence(timeout: 5))
 		field.tap()
