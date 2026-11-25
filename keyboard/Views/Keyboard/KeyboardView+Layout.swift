@@ -38,7 +38,9 @@ extension KeyboardView {
 				height: EmojiSearchHeader.height)
 			mediaSearchStrip?.frame = CGRect(x: 6, y: 44, width: max(0, bounds.width - 12), height: 48)
 		} else {
-			suggestionBar.frame = CGRect(x: 0, y: 0, width: bounds.width, height: stripSpace)
+			suggestionBar.extraPassThroughHeight = showsSuggestions ? topPad : 0
+			suggestionBar.frame = CGRect(x: 0, y: 0, width: bounds.width,
+				height: showsSuggestions ? stripSpace + topPad : stripSpace)
 		}
 
 		let availableWidth = bounds.width - sidePad * 2

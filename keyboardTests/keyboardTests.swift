@@ -123,7 +123,7 @@ struct KeyboardTests {
 			#expect(!bar.point(inside: CGPoint(x: width / 2, y: height - band), with: nil))
 			let primary = try #require(suggestionButton("suggestion.primary", in: bar))
 			#expect(primary.frame.minY == 0)
-			#expect(primary.frame.height == height - band)
+			#expect(primary.frame.height == height)
 			#expect(primary.accessibilityTraits.contains(.selected))
 		}
 	}

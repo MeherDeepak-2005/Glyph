@@ -31,7 +31,8 @@ final class SuggestionBar: UIView {
 	private var stableGlideResult: (winner: String, alternatives: [String])?
 	static let bottomPassThroughHeight: CGFloat = 6
 	private var bottomPassThroughHeight: CGFloat { Self.bottomPassThroughHeight }
-	private var contentHeight: CGFloat { max(0, bounds.height - bottomPassThroughHeight) }
+	private var contentHeight: CGFloat { bounds.height }
+	var extraPassThroughHeight: CGFloat = 0
 
 	init(theme: KeyboardTheme) {
 		self.textColor = theme.keyText
@@ -117,7 +118,7 @@ final class SuggestionBar: UIView {
 
 	override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if !UIAccessibility.isVoiceOverRunning, !showingTools, point.x >= Self.toolsWidth,
-            point.y >= bounds.maxY - bottomPassThroughHeight { return false }
+            point.y >= bounds.maxY - bottomPassThroughHeight - extraPassThroughHeight { return false }
 		return super.point(inside: point, with: event)
 	}
 

@@ -372,7 +372,7 @@ struct KeyboardConsistencyTests {
         let primary = try button("suggestion.primary", in: strip)
         #expect(primary.contentVerticalAlignment == .center)
         #expect(primary.frame.minY == 0)
-        #expect(primary.frame.maxY == KeyboardView.stripHeight - SuggestionBar.bottomPassThroughHeight)
+        #expect(primary.frame.midY == KeyboardView.stripHeight / 2)
     }
 
     @Test func largeKeyPopupsStayInsideDeckAtEdgesWithoutChangingHeight() throws {

@@ -6,8 +6,6 @@ final class KeyboardViewController: UIInputViewController {
 	var heightConstraint: NSLayoutConstraint?
 	var keyboardHeightConstraint: NSLayoutConstraint?
 	private var heightMismatchActive = false
-	private var heightReassertAttempts = 0
-	private var heightReassertScheduled = false
 	let engine = KeyboardEngine.shared
 	private var personalDataResetObserver: KBPersonalDataResetObserver?
 	private var configurationObserver: KBConfigurationObserver?
@@ -173,38 +171,6 @@ final class KeyboardViewController: UIInputViewController {
 
 	private var rootInputView: KeyboardInputView? { view as? KeyboardInputView }
 
-	func reassertKeyboardHeight() {
-		guard let keyboard, isViewLoaded else { return }
-		let height = keyboard.keyboardHeight
-		guard height.isFinite, height > 0 else { return }
-		heightConstraint?.isActive = false
-		let constraint = view.heightAnchor.constraint(equalToConstant: height)
-		constraint.priority = .required - 1
-		constraint.isActive = true
-		heightConstraint = constraint
-		keyboardHeightConstraint?.constant = height
-		rootInputView?.desiredHeight = height
-		rootInputView?.invalidateIntrinsicContentSize()
-		let width = view.bounds.width
-		preferredContentSize = CGSize(width: width, height: height + 1)
-		preferredContentSize = CGSize(width: width, height: height)
-		view.setNeedsLayout()
-		view.superview?.setNeedsLayout()
-	}
-
-	private func scheduleHeightReassert() {
-		guard !heightReassertScheduled, heightReassertAttempts < 4 else { return }
-		heightReassertScheduled = true
-		heightReassertAttempts += 1
-		DispatchQueue.main.async { [weak self] in
-			guard let self else { return }
-			self.heightReassertScheduled = false
-			guard let keyboard = self.keyboard, self.view.window != nil,
-				abs(self.view.bounds.height - keyboard.keyboardHeight) > 2 else { return }
-			self.reassertKeyboardHeight()
-		}
-	}
-
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 		updateKeyboardHeight()
@@ -212,7 +178,6 @@ final class KeyboardViewController: UIInputViewController {
 			let mismatch = abs(view.bounds.height - keyboard.keyboardHeight) > 2
 			if mismatch && !heightMismatchActive { KBDiagnostics.noteIntegrityEvent("keyboard-height-mismatch") }
 			heightMismatchActive = mismatch
-			if mismatch { scheduleHeightReassert() }
 		}
 	}
 
@@ -459,8 +424,7 @@ final class KeyboardViewController: UIInputViewController {
 			keyboard?.setInputKind(.standard)
 		}
 		keyboard?.glideEnabled = true
-		heightReassertAttempts = 0
-		reassertKeyboardHeight()
+		if let keyboard { applyKeyboardHeight(keyboard.keyboardHeight) }
 		invalidateDocumentSession()
 		resetEraseTracking()
 		wordTaps.removeAll(keepingCapacity: true)
@@ -474,8 +438,6 @@ final class KeyboardViewController: UIInputViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		view.window?.gestureRecognizers?.forEach { $0.delaysTouchesBegan = false }
-		heightReassertAttempts = 0
-		reassertKeyboardHeight()
 		if !hostConnectionReady { handleHostCallback() }
 		#if DEBUG
 		liveMemoryTimer?.invalidate()
@@ -506,15 +468,6 @@ final class KeyboardViewController: UIInputViewController {
 		KBStats.flush()
 		KBDiagnostics.finishTypingSession()
 		KBTypingRecorder.flush()
-	}
-
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-		super.viewWillTransition(to: size, with: coordinator)
-		coordinator.animate(alongsideTransition: nil) { [weak self] _ in
-			guard let self else { return }
-			self.heightReassertAttempts = 0
-			self.reassertKeyboardHeight()
-		}
 	}
 
 	override func didReceiveMemoryWarning() {
