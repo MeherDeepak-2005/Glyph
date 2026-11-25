@@ -47,6 +47,7 @@ struct ContentView: View {
 	@AppStorage("kb.prompt.mainKeyboard.done") private var mainKeyboardPromptDone = false
 	@AppStorage("kb.research.launchNoticeShown") private var researchNoticeShown = false
 	@State private var showResearchNotice = false
+	@State private var guideStart: SetupStep?
 
 	var body: some View {
 		NavigationStack {
@@ -60,7 +61,8 @@ struct ContentView: View {
 					}
 					if !mainKeyboardPromptDone {
 						Section {
-							MainKeyboardPrompt { mainKeyboardPromptDone = true }
+							MainKeyboardCard(showGuide: { guideStart = .mainKeyboard },
+								done: { mainKeyboardPromptDone = true })
 						}
 					}
 					Section("Progress") {
@@ -68,7 +70,7 @@ struct ContentView: View {
 					}
 				Section("Status") {
 					NavigationLink {
-						SetupSupportView()
+						SetupSupportView(showGuide: { guideStart = .enable })
 					} label: {
 						SettingRow(icon: "keyboard",
 								   tint: Color(uiColor: .systemBlue),
@@ -165,7 +167,13 @@ struct ContentView: View {
 				.navigationTitle("Glyph")
 				.navigationBarTitleDisplayMode(.large)
 			} else {
-				FirstRunView { continuedPastOnboarding = true }
+				SetupGuideView { continuedPastOnboarding = true }
+			}
+		}
+		.fullScreenCover(item: $guideStart) { start in
+			SetupGuideView(start: start, onClose: { guideStart = nil }) {
+				if start == .mainKeyboard { mainKeyboardPromptDone = true }
+				guideStart = nil
 			}
 		}
 		.environmentObject(store)
@@ -332,6 +340,7 @@ private struct RewardCenterView: View {
 }
 
 private struct SetupSupportView: View {
+	let showGuide: () -> Void
 	@State private var access = KBSettings.lastFullAccess
 	@State private var observedAt = KBSettings.lastFullAccessObservedAt
 	@State private var lastSeen = KBSettings.keyboardLastSeenAt
@@ -354,6 +363,10 @@ private struct SetupSupportView: View {
 				}
 			}
 			Section("Setup") {
+				Button(action: showGuide) {
+					Label("Step-by-step setup guide", systemImage: "list.number")
+				}
+				.accessibilityIdentifier("setup.guide")
 				Button(action: openSettings) {
 					Label("Open Keyboard Settings", systemImage: "gear")
 				}
@@ -782,166 +795,6 @@ struct SettingRow: View {
 	}
 }
 
-private struct FirstRunView: View {
-	@Environment(\.colorScheme) private var scheme
-	let onContinue: () -> Void
-
-	var body: some View {
-		GeometryReader { geometry in
-			ScrollView {
-				VStack(spacing: 0) {
-					Spacer(minLength: 46)
-					appMark
-						.padding(.bottom, 22)
-					Text("Meet Glyph")
-						.font(.system(size: 34, weight: .bold))
-					Text("Better corrections, glide typing, and\nthemes - in every app you type in.")
-						.font(.system(size: 17))
-						.foregroundStyle(.secondary)
-						.multilineTextAlignment(.center)
-						.lineSpacing(4)
-						.padding(.top, 16)
-						.padding(.bottom, 34)
-
-					VStack(spacing: 0) {
-						Button(action: openSettings) {
-							step(number: 1, text: "Open Settings and go to Keyboards")
-						}
-						.buttonStyle(.plain)
-						Divider().padding(.leading, 64)
-						step(number: 2, text: "Turn on Glyph", emphasized: "Glyph")
-						Divider().padding(.leading, 64)
-						step(number: 3, text: "In any app, hold the globe and pick Glyph")
-						Divider().padding(.leading, 64)
-						step(number: 4, text: "Make Glyph your main keyboard: tap Edit in Keyboards and drag Glyph to the top",
-							emphasized: "main keyboard")
-						Divider().padding(.leading, 64)
-						step(number: 5, text: "Optional: allow Full Access for GIFs, clipboard and haptics",
-							isOptional: true)
-					}
-					.background(Color(uiColor: .secondarySystemGroupedBackground),
-						in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-					.padding(.horizontal, 24)
-
-					Button(action: onContinue) {
-						Text("I've turned on Glyph")
-							.font(.headline)
-							.frame(maxWidth: .infinity, minHeight: 50)
-					}
-					.buttonStyle(.borderedProminent)
-					.padding(.horizontal, 24)
-					.padding(.top, 24)
-					.accessibilityIdentifier("onboarding.continue")
-
-					Spacer(minLength: 48)
-					#if RESEARCH_BETA
-					Label("Beta: Glyph records your typing to improve it. You can turn this off in Typing Research.", systemImage: "shield")
-						.font(.footnote)
-						.foregroundStyle(.tertiary)
-						.fixedSize(horizontal: false, vertical: true)
-						.padding(.horizontal, 24)
-						.padding(.bottom, 18)
-					#else
-					Label("Your typing stays on your iPhone.", systemImage: "shield")
-						.font(.footnote)
-						.foregroundStyle(.tertiary)
-						.padding(.bottom, 18)
-					#endif
-				}
-				.frame(maxWidth: .infinity, minHeight: geometry.size.height)
-			}
-		}
-		.background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
-		.toolbar(.hidden, for: .navigationBar)
-		.accessibilityIdentifier("onboarding.firstRun")
-	}
-
-	private var appMark: some View {
-		ZStack {
-			LinearGradient(colors: [Color(uiColor: .systemBlue),
-				Color(red: 0.35, green: 0.34, blue: 0.92)],
-				startPoint: .topLeading, endPoint: .bottomTrailing)
-			RoundedRectangle(cornerRadius: 8, style: .continuous)
-				.fill(Color(uiColor: .systemBackground).opacity(scheme == .dark ? 0.92 : 0.88))
-				.frame(width: 48, height: 48)
-			Text("G")
-				.font(.system(size: 24, weight: .bold, design: .rounded))
-				.foregroundStyle(Color(red: 0.14, green: 0.22, blue: 0.42))
-		}
-		.frame(width: 96, height: 96)
-		.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-		.shadow(color: Color(uiColor: .systemBlue).opacity(0.18), radius: 18, y: 9)
-		.accessibilityHidden(true)
-	}
-
-	private func step(number: Int, text: String, emphasized: String? = nil,
-		isOptional: Bool = false) -> some View {
-		HStack(spacing: 14) {
-			Text("\(number)")
-				.font(.system(size: 15, weight: .bold))
-				.foregroundStyle(isOptional ? Color.secondary : Color.white)
-				.frame(width: 30, height: 30)
-				.background(isOptional ? Color(uiColor: .systemFill)
-					: Color(uiColor: .systemBlue), in: Circle())
-			if let emphasized, let range = text.range(of: emphasized) {
-				(Text(text[..<range.lowerBound])
-					+ Text(text[range]).bold()
-					+ Text(text[range.upperBound...]))
-					.foregroundStyle(isOptional ? .secondary : .primary)
-					.fixedSize(horizontal: false, vertical: true)
-					.frame(maxWidth: .infinity, alignment: .leading)
-			} else {
-				Text(text)
-					.foregroundStyle(isOptional ? .secondary : .primary)
-					.fixedSize(horizontal: false, vertical: true)
-					.frame(maxWidth: .infinity, alignment: .leading)
-			}
-		}
-		.font(.system(size: 16))
-		.padding(.horizontal, 16)
-		.padding(.vertical, 14)
-		.contentShape(Rectangle())
-	}
-
-	private func openSettings() {
-		guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-		UIApplication.shared.open(url)
-	}
-}
-
 #Preview {
 	ContentView()
-}
-
-private struct MainKeyboardPrompt: View {
-	let done: () -> Void
-
-	var body: some View {
-		VStack(alignment: .leading, spacing: 10) {
-			Label("Make Glyph your main keyboard", systemImage: "keyboard.badge.ellipsis")
-				.font(.headline)
-			Text("iOS shows the keyboard you used last. To get Glyph every time:")
-				.font(.subheadline)
-				.foregroundStyle(.secondary)
-			VStack(alignment: .leading, spacing: 6) {
-				Text("1. Settings › General › Keyboard › Keyboards")
-				Text("2. Tap Edit and drag Glyph to the top")
-				Text("3. For Glyph only, delete English (US) in the same list")
-			}
-			.font(.subheadline)
-			HStack {
-				Button("Open Settings") {
-					if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
-				}
-				.buttonStyle(.borderedProminent)
-				Spacer()
-				Button("Done", action: done)
-					.buttonStyle(.bordered)
-			}
-			.padding(.top, 4)
-		}
-		.padding(.vertical, 6)
-		.accessibilityElement(children: .contain)
-		.accessibilityIdentifier("prompt.mainKeyboard")
-	}
 }

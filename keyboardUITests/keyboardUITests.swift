@@ -709,4 +709,43 @@ final class keyboardUITests: XCTestCase {
 			app.terminate()
 		}
 	}
+
+	@MainActor
+	func testSetupGuideWalkthrough() throws {
+		let app = XCUIApplication()
+		app.launchArguments = ["-ui-testing-used-keyboard"]
+		app.launch()
+		XCUIDevice.shared.orientation = .portrait
+		func shot(_ name: String, _ wait: Double = 1.6) {
+			RunLoop.current.run(until: Date().addingTimeInterval(wait))
+			let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
+		}
+		shot("0-home", 1)
+		let card = app.buttons["Show me how"]
+		XCTAssertTrue(card.waitForExistence(timeout: 3))
+		shot("0-wait", 2)
+		let guide = app.descendants(matching: .any)["onboarding.firstRun"]
+		for attempt in 0..<4 {
+			card.tap()
+			let ok = guide.waitForExistence(timeout: 3)
+			NSLog("GUIDEPROBE attempt %d exists=%d cardHittable=%d", attempt, ok ? 1 : 0, card.isHittable ? 1 : 0)
+			if ok { break }
+		}
+		shot("5-main-a", 0.6); shot("5-main-b", 2.2)
+		app.buttons["setup.close"].tap()
+		let support = app.staticTexts["Setup & Support"]
+		for _ in 0..<4 { if support.exists && support.isHittable { break }; app.swipeUp() }
+		support.tap()
+		app.buttons["setup.guide"].tap()
+		XCTAssertTrue(guide.waitForExistence(timeout: 3), "Setup & Support did not open the guide")
+		shot("1-enable-a", 1.0); shot("1-enable-b", 2.4)
+		let primary = app.buttons["onboarding.continue"], secondary = app.buttons["setup.secondary"]
+		primary.tap()
+		shot("2-access-a", 2.5); shot("2-access-b", 2.4); shot("2-access-c", 2.4)
+		secondary.tap()
+		shot("3-switch-a", 2.4)
+		XCTAssertTrue(app.textFields["setup.try"].exists, "The try-it field is missing")
+		app.buttons["setup.close"].tap()
+		XCTAssertFalse(guide.waitForExistence(timeout: 1.5), "The guide did not close")
+	}
 }
