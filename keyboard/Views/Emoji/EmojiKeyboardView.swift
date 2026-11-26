@@ -79,6 +79,7 @@ final class EmojiKeyboardView: UIView, UICollectionViewDataSource, UICollectionV
 		collection.dataSource = self
 		collection.delegate = self
 		collection.register(EmojiCell.self, forCellWithReuseIdentifier: "e")
+		collection.accessibilityIdentifier = "emoji.grid"
 		collection.showsVerticalScrollIndicator = false
 		collection.showsHorizontalScrollIndicator = false
 		collection.alwaysBounceVertical = false

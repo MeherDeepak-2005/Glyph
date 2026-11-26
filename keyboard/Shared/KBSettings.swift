@@ -137,7 +137,7 @@ struct KBCustomThemePair: Codable, Equatable {
 }
 
 enum KBSettings {
-	nonisolated static let appGroup = "group.com.meherdeepak.glyph"
+	nonisolated static let appGroup = "group.com.keypointtech.glyph"
 	nonisolated(unsafe) static let sharedDefaults = UserDefaults(suiteName: appGroup) ?? .standard
 	private static var store: UserDefaults { sharedDefaults }
 	private static let configurationNotification = CFNotificationName(

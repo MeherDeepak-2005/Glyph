@@ -85,6 +85,12 @@ extension KeyboardView {
 
 	private func characterSpec(_ text: String, width: LayoutKey.Width?, accessibilityLabel: String?,
 		variants: Bool = true) -> KeySpec {
+		if page == .numbers, inputKind.usesDedicatedNumberPad {
+			return KeySpec(label: text, accessibilityLabel: accessibilityLabel, width: keyWidth(width, default: .flex),
+				subtitle: Self.padLetters[text]) { [weak self] in
+				self?.routeInsert(text, nil)
+			}
+		}
 		if page == .letters, text.count == 1, text.first?.isLetter == true {
 			return KeySpec(label: shifted(text), accessibilityLabel: accessibilityLabel,
 				width: keyWidth(width), popup: true, letterBase: text,
@@ -160,7 +166,7 @@ extension KeyboardView {
 		variants: Bool) -> [KeySpec] {
 		switch control {
 		case .shift: return [shiftKeySpec(width: keyWidth(width, default: .modifier))]
-		case .delete: return [deleteKeySpec()]
+		case .delete: return [deleteKeySpec(width: keyWidth(width, default: .modifier))]
 		case .return: return [returnKeySpec()]
 		case .space: return [spaceKeySpec()]
 		case .emoji:
@@ -192,6 +198,8 @@ extension KeyboardView {
 			switch inputKind {
 			case .decimalPad: value = Locale.current.decimalSeparator ?? "."
 			case .phonePad: value = "+"
+			case .numberPad:
+				return [KeySpec(accessibilityLabel: nil, width: keyWidth(width, default: .flex), isSpacer: true) {}]
 			default: return []
 			}
 			return [characterSpec(value, width: width ?? .flex, accessibilityLabel: nil, variants: variants)]
@@ -200,9 +208,12 @@ extension KeyboardView {
 		}
 	}
 
-	private func deleteKeySpec() -> KeySpec {
+	static let padLetters: [String: String] = ["2": "ABC", "3": "DEF", "4": "GHI", "5": "JKL",
+		"6": "MNO", "7": "PQRS", "8": "TUV", "9": "WXYZ"]
+
+	private func deleteKeySpec(width: KeyWidth = .modifier) -> KeySpec {
 		KeySpec(symbol: "delete.left", accessibilityLabel: "Delete",
-			role: .special, width: .modifier, repeats: true) { [weak self] in self?.routeDelete() }
+			role: .special, width: width, repeats: true) { [weak self] in self?.routeDelete() }
 	}
 
 	private func returnKeySpec() -> KeySpec {

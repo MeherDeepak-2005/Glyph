@@ -64,7 +64,8 @@ nonisolated struct LatinLayoutPack: Equatable, Sendable {
 				bottomRow: [control(.page, .numbers, "123"), control(.globe), control(.space), control(.return)], longPressVariants: true),
 			numbers: digits, symbols: digits,
 			numberPad: LayoutPage(rows: [keys("123"), keys("456"), keys("789"),
-				[control(.page, .letters, "ABC")] + keys("0") + [control(.delete), control(.return)]],
+				[.control(.padAuxiliary, width: .flex, target: nil, label: nil), .character("0", width: .flex, accessibilityLabel: nil),
+					.control(.delete, width: .flex, target: nil, label: nil)]],
 				bottomRow: nil, longPressVariants: false),
 			gridRows: rows, gridRowOffsets: [0, 0.5, 1.5], fieldExtras: [:], alternatives: [:])
 	}()

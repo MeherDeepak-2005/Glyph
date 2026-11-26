@@ -53,7 +53,7 @@ def main() -> None:
     parser.add_argument("--key-file", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--environment", choices=["production", "development"], default="production")
-    parser.add_argument("--container", default="iCloud.com.meherdeepak.glyph")
+    parser.add_argument("--container", default="iCloud.com.keypointtech.glyph")
     args = parser.parse_args()
     sealed = args.out / "sealed"
     sealed.mkdir(parents=True, exist_ok=True)

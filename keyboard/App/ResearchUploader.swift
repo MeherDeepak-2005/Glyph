@@ -5,8 +5,8 @@ import CryptoKit
 import Foundation
 
 enum ResearchUploader {
-    static let containerID = "iCloud.com.meherdeepak.glyph"
-    static let refreshTaskID = "com.meherdeepak.glyph.research-upload"
+    static let containerID = "iCloud.com.keypointtech.glyph"
+    static let refreshTaskID = "com.keypointtech.glyph.research-upload"
     static let recordType = "TypingChunk"
     static let magic = Data("GLYPHRC1".utf8)
     static let info = Data("glyph-research-chunk-v1".utf8)
@@ -152,7 +152,7 @@ enum ResearchUploader {
     static func scheduleBackgroundRefresh() {
         guard refreshPermitted, KBTypingRecorder.enabled else { return }
         let request = BGAppRefreshTaskRequest(identifier: refreshTaskID)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 6 * 3_600)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 3 * 3_600)
         try? BGTaskScheduler.shared.submit(request)
     }
 }

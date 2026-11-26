@@ -275,5 +275,7 @@ struct KeySpec {
 	var isInputModeSwitch: Bool = false
 	var isSpace: Bool = false
 	var alternatives: [String] = []
+	var subtitle: String? = nil
+	var isSpacer: Bool = false
 	var action: () -> Void
 }

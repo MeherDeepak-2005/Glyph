@@ -7071,12 +7071,12 @@
     "word": "formalize"
    }
   ],
-  "correction": "from",
+  "correction": null,
   "id": "c047",
   "suggestions": [
+   "form",
    "from",
-   "formula",
-   "former"
+   "formula"
   ]
  },
  {

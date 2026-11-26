@@ -90,7 +90,7 @@ enum KBPersonalData {
 			KBSettings.sharedDefaults.set(NSNumber(value: epoch), forKey: epochKey)
 			KBSettings.sharedDefaults.set(NSNumber(value: epoch), forKey: resetRequestedKey)
 			var success = removeModelFiles()
-			for name in ["glide_capture.jsonl", "clipboard.json", "kb_theme_bg.jpg"] {
+			for name in ["glide_capture.jsonl", "clipboard.json", "kb_theme_bg.jpg", KBContactNames.fileName] {
 				success = remove(name) && success
 			}
 			success = remove("media-cache") && success

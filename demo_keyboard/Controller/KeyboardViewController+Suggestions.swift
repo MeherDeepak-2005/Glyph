@@ -35,6 +35,7 @@ extension KeyboardViewController {
 		fieldInputKind = kind
 		layoutRevision &+= 1
 		keyboard?.setInputKind(kind)
+		updateKeyboardHeight()
 		return true
 	}
 

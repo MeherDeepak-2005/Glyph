@@ -37,6 +37,8 @@ final class SettingsStore: ObservableObject {
 struct ContentView: View {
 	@StateObject private var store = SettingsStore()
 	@StateObject private var commercial = CommercialStore()
+	@StateObject private var contacts = ContactNamesSync()
+	@StateObject private var setup = KeyboardSetupStatus()
 	@Environment(\.colorScheme) private var scheme
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.scenePhase) private var scenePhase
@@ -44,6 +46,10 @@ struct ContentView: View {
 	@State private var showDeleteAllConfirm = false
 	@State private var hasUsedKeyboard = KBSettings.hasUsedKeyboard
 	@AppStorage("kb.onboarding.continued") private var continuedPastOnboarding = false
+	@AppStorage("kb.prompt.mainKeyboard.done") private var mainKeyboardPromptDone = false
+	@AppStorage("kb.research.launchNoticeShown") private var researchNoticeShown = false
+	@State private var showResearchNotice = false
+	@State private var guideStart: SetupStep?
 
 	var body: some View {
 		NavigationStack {
@@ -55,17 +61,29 @@ struct ContentView: View {
 							.listRowBackground(Color.clear)
 							.listRowSeparator(.hidden)
 					}
+					if !setup.isEnabled {
+						Section {
+							SetupAttentionCard(title: "Glyph is turned off",
+								detail: "Glyph was removed from your keyboards. Turn it back on in a few taps.",
+								action: "Turn it back on") { guideStart = .enable }
+						}
+					} else if setup.canSeeKeyboards ? !setup.isMainKeyboard : !mainKeyboardPromptDone {
+						Section {
+							MainKeyboardCard(showGuide: { guideStart = .mainKeyboard },
+								done: { mainKeyboardPromptDone = true })
+						}
+					}
 					Section("Progress") {
 						AchievementBanner()
 					}
 				Section("Status") {
 					NavigationLink {
-						SetupSupportView()
+						SetupSupportView(setup: setup, contacts: contacts, showGuide: { guideStart = .enable })
 					} label: {
 						SettingRow(icon: "keyboard",
 								   tint: Color(uiColor: .systemBlue),
 								   title: "Setup & Support",
-								   value: keyboardStatusValue)
+								   value: setup.isEnabled ? keyboardStatusValue : "Turned off")
 					}
 				}
 
@@ -85,10 +103,29 @@ struct ContentView: View {
 								  tint: Color(uiColor: .systemOrange),
 								  title: "Haptic Feedback")
 					}
+					if contacts.isDenied {
+						Button {
+							if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+						} label: {
+							SettingRow(icon: "person.crop.circle.fill", tint: Color(uiColor: .systemGreen),
+								title: "Contact Names", value: "Allow in Settings")
+						}
+						.foregroundStyle(.primary)
+					} else {
+						Toggle(isOn: $contacts.enabled) {
+							HStack(spacing: 12) {
+								iconLabel("person.crop.circle.fill", tint: Color(uiColor: .systemGreen), title: "Contact Names")
+								if contacts.enabled && contacts.nameCount > 0 {
+									Text("\(contacts.nameCount)").foregroundStyle(.secondary)
+								}
+							}
+						}
+						.accessibilityIdentifier("settings.contacts")
+					}
 				} header: {
 					Text("Keyboard")
 				} footer: {
-					Text("Haptics require a physical iPhone and follow the device's system haptic settings. The status page shows the last state observed by the keyboard.")
+					Text("Contact Names keeps your contacts' names spelled as saved and capitalized; names stay on your iPhone. Haptics require a physical iPhone and follow the device's system haptic settings.")
 				}
 
 				Section("Rewards") {
@@ -157,7 +194,13 @@ struct ContentView: View {
 				.navigationTitle("Glyph")
 				.navigationBarTitleDisplayMode(.large)
 			} else {
-				FirstRunView { continuedPastOnboarding = true }
+				SetupGuideView { continuedPastOnboarding = true }
+			}
+		}
+		.fullScreenCover(item: $guideStart) { start in
+			SetupGuideView(start: start, onClose: { guideStart = nil }) {
+				if start == .mainKeyboard { mainKeyboardPromptDone = true }
+				guideStart = nil
 			}
 		}
 		.environmentObject(store)
@@ -168,10 +211,10 @@ struct ContentView: View {
 				EmojiAtlas.generateIfNeeded(scale: scale)
 			}.value
 		}
-		.onAppear { refreshInstallState() }
+		.onAppear { refreshInstallState(); setup.refresh() }
 		.task { await commercial.refresh() }
 		.onChange(of: scenePhase) { _, phase in
-			if phase == .active { refreshInstallState() }
+			if phase == .active { refreshInstallState(); contacts.refresh(); setup.refresh() }
 			#if RESEARCH_BETA
 			if phase == .active || phase == .background, KBTypingRecorder.installID != nil {
 				Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }
@@ -179,6 +222,18 @@ struct ContentView: View {
 			}
 			#endif
 		}
+		#if RESEARCH_BETA
+		.onAppear {
+			if !researchNoticeShown && !ProcessInfo.processInfo.arguments.contains("-ui-testing-used-keyboard") {
+				showResearchNotice = true
+			}
+		}
+		.alert("Typing Research", isPresented: $showResearchNotice) {
+			Button("OK") { researchNoticeShown = true }
+		} message: {
+			Text("This beta records your typing to improve Glyph. You can turn it off in Typing Research.")
+		}
+		#endif
 		.alert("Reset learned words?", isPresented: $showResetConfirm) {
 			Button("Reset", role: .destructive, action: resetUserData)
 			Button("Cancel", role: .cancel) { }
@@ -312,6 +367,9 @@ private struct RewardCenterView: View {
 }
 
 private struct SetupSupportView: View {
+	@ObservedObject var setup: KeyboardSetupStatus
+	@ObservedObject var contacts: ContactNamesSync
+	let showGuide: () -> Void
 	@State private var access = KBSettings.lastFullAccess
 	@State private var observedAt = KBSettings.lastFullAccessObservedAt
 	@State private var lastSeen = KBSettings.keyboardLastSeenAt
@@ -319,6 +377,13 @@ private struct SetupSupportView: View {
 
 	var body: some View {
 		List {
+			Section("Setup checklist") {
+				check("Glyph turned on", done: setup.isEnabled)
+				check("Main keyboard", done: setup.isMainKeyboard, optional: true)
+				check("Full Access", done: access, optional: true,
+					note: access ? nil : "Checked when Glyph opens")
+				check("Contact names", done: contacts.isAuthorized && contacts.enabled, optional: true)
+			}
 			Section("Keyboard") {
 				statusRow("Last opened", value: lastSeen?.formatted(date: .abbreviated, time: .shortened) ?? "Not yet")
 				statusRow("Full Access", value: access ? "On" : "Off or unknown")
@@ -334,6 +399,10 @@ private struct SetupSupportView: View {
 				}
 			}
 			Section("Setup") {
+				Button(action: showGuide) {
+					Label("Step-by-step setup guide", systemImage: "list.number")
+				}
+				.accessibilityIdentifier("setup.guide")
 				Button(action: openSettings) {
 					Label("Open Keyboard Settings", systemImage: "gear")
 				}
@@ -373,6 +442,20 @@ private struct SetupSupportView: View {
 		return "\(short) (\(build))"
 	}
 
+	private func check(_ title: String, done: Bool, optional: Bool = false, note: String? = nil) -> some View {
+		HStack {
+			Image(systemName: done ? "checkmark.circle.fill" : optional ? "circle" : "exclamationmark.circle.fill")
+				.foregroundStyle(done ? Color.green : optional ? Color.secondary : Color.orange)
+			VStack(alignment: .leading, spacing: 2) {
+				Text(title)
+				if let note { Text(note).font(.caption).foregroundStyle(.secondary) }
+			}
+			Spacer()
+			Text(done ? "Done" : optional ? "Optional" : "Needed").foregroundStyle(.secondary)
+		}
+		.accessibilityElement(children: .combine)
+	}
+
 	private func statusRow(_ title: String, value: String) -> some View {
 		HStack { Text(title); Spacer(); Text(value).foregroundStyle(.secondary) }
 	}
@@ -390,11 +473,11 @@ private struct PrivacyDataView: View {
 	var body: some View {
 		List {
 			Section("Typing") {
-				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Unless you turn on Typing Research, Glyph does not transmit the text you type to a server.")
+				Text("Typing, autocorrect, suggestions, and Glide are processed on your device. Glyph only transmits the text you type through Typing Research, which beta builds turn on.")
 			}
 			#if RESEARCH_BETA
 			Section("Typing Research (beta)") {
-				Text("Off unless you turn it on. While it is on, Glyph records the words you type in ordinary text fields, your touches and swipe paths, and what you do with suggestions and corrections, and uploads them encrypted to the Glyph developer to improve typing and Glide. Password, email, phone, number, address and code fields are never recorded. You can stop and delete at any time in Typing Research.")
+				Text("On for beta testers. While it is on, Glyph records the words you type in ordinary text fields, your touches and swipe paths, and what you do with suggestions and corrections, and uploads them automatically, encrypted, to the Glyph developer to improve typing and Glide. Password, email, phone, number, address and code fields are never recorded. You can stop and delete at any time in Typing Research.")
 			}
 			#endif
 			Section("On-device storage") {
@@ -516,7 +599,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Panel header A/B test")
 			} footer: {
-				Text("Each install gets the stacked (A) or unified (C) header at random and keeps it. Pin one for a moderated session; it applies the next time a panel opens. Counts per arm: panels opened from the letters, searches started, tab switches, and emoji, GIFs or stickers picked. Counts only, no content.")
+				Text("Every install uses the unified (C) header. Pin the stacked (A) header to compare in a moderated session; it applies the next time a panel opens. Counts per arm: panels opened from the letters, searches started, tab switches, and emoji, GIFs or stickers picked. Counts only, no content.")
 			}
 
 			Section {
@@ -566,7 +649,7 @@ struct DiagnosticsView: View {
 			} header: {
 				Text("Typing research")
 			} footer: {
-				Text("Off by default. Records typed text, key timing, touches, Glide paths, suggestions and correction actions in general text fields. Ordinary text can still contain personal information. Beta builds upload the recordings, encrypted, when the app is opened (Typing Research); up to 200 MB and 30 days wait on the device. An export adds one more copy. Delete removes what is on the device. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
+				Text("On by default in beta builds. Records typed text, key timing, touches, Glide paths, suggestions and correction actions in general text fields. Ordinary text can still contain personal information. Beta builds upload the recordings automatically, encrypted, when the app opens or closes and every few hours in the background; up to 200 MB and 30 days wait on the device. An export adds one more copy. Delete removes what is on the device. Automatic corrections are unverified observations, not training labels. Share only when you intend to disclose the text.")
 			}
 
 			Section("Input integrity") {
@@ -653,7 +736,7 @@ struct DiagnosticsView: View {
 	}
 	private func panelHeaderArmDescription() -> String {
 		let style = KBExperiments.panelHeader
-		return style.displayName + (KBExperiments.panelHeaderOverride == nil ? " (assigned)" : " (pinned)")
+		return style.displayName + (KBExperiments.panelHeaderOverride == nil ? " (default)" : " (pinned)")
 	}
 
 	private func panelEventSummary(for style: PanelHeaderStyle) -> String {
@@ -759,119 +842,6 @@ struct SettingRow: View {
 				Circle().fill(trailingGradient).frame(width: 18, height: 18)
 			}
 		}
-	}
-}
-
-private struct FirstRunView: View {
-	@Environment(\.colorScheme) private var scheme
-	let onContinue: () -> Void
-
-	var body: some View {
-		GeometryReader { geometry in
-			ScrollView {
-				VStack(spacing: 0) {
-					Spacer(minLength: 46)
-					appMark
-						.padding(.bottom, 22)
-					Text("Meet Glyph")
-						.font(.system(size: 34, weight: .bold))
-					Text("Better corrections, glide typing, and\nthemes - in every app you type in.")
-						.font(.system(size: 17))
-						.foregroundStyle(.secondary)
-						.multilineTextAlignment(.center)
-						.lineSpacing(4)
-						.padding(.top, 16)
-						.padding(.bottom, 34)
-
-					VStack(spacing: 0) {
-						Button(action: openSettings) {
-							step(number: 1, text: "Open Settings and go to Keyboards")
-						}
-						.buttonStyle(.plain)
-						Divider().padding(.leading, 64)
-						step(number: 2, text: "Turn on Glyph", emphasized: "Glyph")
-						Divider().padding(.leading, 64)
-						step(number: 3, text: "In any app, hold the globe and pick Glyph")
-						Divider().padding(.leading, 64)
-						step(number: 4, text: "Optional: allow Full Access for haptics",
-							isOptional: true)
-					}
-					.background(Color(uiColor: .secondarySystemGroupedBackground),
-						in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-					.padding(.horizontal, 24)
-
-					Button(action: onContinue) {
-						Text("I've turned on Glyph")
-							.font(.headline)
-							.frame(maxWidth: .infinity, minHeight: 50)
-					}
-					.buttonStyle(.borderedProminent)
-					.padding(.horizontal, 24)
-					.padding(.top, 24)
-					.accessibilityIdentifier("onboarding.continue")
-
-					Spacer(minLength: 48)
-					Label("Your typing stays on your iPhone unless you join Typing Research.", systemImage: "shield")
-						.font(.footnote)
-						.foregroundStyle(.tertiary)
-						.padding(.bottom, 18)
-				}
-				.frame(maxWidth: .infinity, minHeight: geometry.size.height)
-			}
-		}
-		.background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
-		.toolbar(.hidden, for: .navigationBar)
-		.accessibilityIdentifier("onboarding.firstRun")
-	}
-
-	private var appMark: some View {
-		ZStack {
-			LinearGradient(colors: [Color(uiColor: .systemBlue),
-				Color(red: 0.35, green: 0.34, blue: 0.92)],
-				startPoint: .topLeading, endPoint: .bottomTrailing)
-			RoundedRectangle(cornerRadius: 8, style: .continuous)
-				.fill(Color(uiColor: .systemBackground).opacity(scheme == .dark ? 0.92 : 0.88))
-				.frame(width: 48, height: 48)
-			Text("G")
-				.font(.system(size: 24, weight: .bold, design: .rounded))
-				.foregroundStyle(Color(red: 0.14, green: 0.22, blue: 0.42))
-		}
-		.frame(width: 96, height: 96)
-		.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-		.shadow(color: Color(uiColor: .systemBlue).opacity(0.18), radius: 18, y: 9)
-		.accessibilityHidden(true)
-	}
-
-	private func step(number: Int, text: String, emphasized: String? = nil,
-		isOptional: Bool = false) -> some View {
-		HStack(spacing: 14) {
-			Text("\(number)")
-				.font(.system(size: 15, weight: .bold))
-				.foregroundStyle(isOptional ? Color.secondary : Color.white)
-				.frame(width: 30, height: 30)
-				.background(isOptional ? Color(uiColor: .systemFill)
-					: Color(uiColor: .systemBlue), in: Circle())
-			if let emphasized, let range = text.range(of: emphasized) {
-				(Text(text[..<range.lowerBound])
-					+ Text(text[range]).bold()
-					+ Text(text[range.upperBound...]))
-					.foregroundStyle(isOptional ? .secondary : .primary)
-					.frame(maxWidth: .infinity, alignment: .leading)
-			} else {
-				Text(text)
-					.foregroundStyle(isOptional ? .secondary : .primary)
-					.frame(maxWidth: .infinity, alignment: .leading)
-			}
-		}
-		.font(.system(size: 16))
-		.padding(.horizontal, 16)
-		.padding(.vertical, 14)
-		.contentShape(Rectangle())
-	}
-
-	private func openSettings() {
-		guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-		UIApplication.shared.open(url)
 	}
 }
 

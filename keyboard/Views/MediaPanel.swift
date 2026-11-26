@@ -275,6 +275,7 @@ final class MediaPanelView: UIView, UICollectionViewDataSource, UICollectionView
 		collection = UICollectionView(frame: .zero,
 			collectionViewLayout: Self.layout(for: kind))
 		collection.backgroundColor = .clear
+		collection.accessibilityIdentifier = "media.grid"
 		collection.dataSource = self
 		collection.delegate = self
 		collection.showsVerticalScrollIndicator = false

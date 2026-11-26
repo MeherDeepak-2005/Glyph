@@ -4,10 +4,8 @@ import SwiftUI
 struct ResearchView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var recording = KBTypingRecorder.enabled
-    @State private var showConsent = false
     @State private var stored = KBTypingRecorder.stored()
     @State private var lastUpload = ResearchUploader.lastUpload
-    @State private var uploading = false
     @State private var status = ""
     @State private var export: URL?
     @State private var confirmDelete = false
@@ -19,8 +17,9 @@ struct ResearchView: View {
                 Toggle("Take part in typing research", isOn: Binding(
                     get: { recording },
                     set: { wanted in
-                        if wanted { showConsent = true } else { setRecording(false) }
+                        setRecording(wanted)
                     }))
+                NavigationLink("What is recorded") { ResearchDetailsView() }
                 if recording && !KBSettings.lastFullAccess {
                     Label("Glyph needs Full Access to record. Turn it on in Settings › General › Keyboard › Keyboards › Glyph, then type something with Glyph.",
                           systemImage: "exclamationmark.triangle.fill")
@@ -28,23 +27,18 @@ struct ResearchView: View {
                         .foregroundStyle(.orange)
                 }
             } footer: {
-                Text("Off unless you turn it on. While it is on, Glyph records what you type in ordinary text fields — the words, where and when your finger touched, your swipe paths, and what you did with suggestions and corrections — and sends it, encrypted, to the Glyph developer to improve typing and Glide. Passwords, email, phone, number, address and code fields are never recorded.")
+                Text("On for beta testers. Glyph records what you type in ordinary text fields — the words, where and when your finger touched, your swipe paths, and what you did with suggestions and corrections — and uploads it automatically, encrypted, to the Glyph developer to improve typing and Glide. Passwords, email, phone, number, address and code fields are never recorded. Turn this off at any time to stop.")
             }
 
             if recording || stored.bytes > 0 {
-                Section("Your recordings") {
+                Section {
                     LabeledContent("On this iPhone", value: storedText)
                     LabeledContent("Last upload", value: lastUpload.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "Not yet")
-                    Button {
-                        Task { await upload() }
-                    } label: {
-                        HStack {
-                            Text("Upload now")
-                            if uploading { Spacer(); ProgressView() }
-                        }
-                    }
-                    .disabled(uploading)
                     if !status.isEmpty { Text(status).font(.footnote).foregroundStyle(.secondary) }
+                } header: {
+                    Text("Your recordings")
+                } footer: {
+                    Text("Recordings upload automatically when you open or leave Glyph, and every few hours in the background.")
                 }
 
                 Section {
@@ -91,12 +85,6 @@ struct ResearchView: View {
         }
         .navigationTitle("Typing Research")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showConsent) {
-            ResearchConsentView { accepted in
-                showConsent = false
-                if accepted { setRecording(true) }
-            }
-        }
         .confirmationDialog("Delete the recordings on this iPhone?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Stop and Delete", role: .destructive) {
                 let deleted = KBTypingRecorder.clear()
@@ -132,50 +120,32 @@ struct ResearchView: View {
         stored = KBTypingRecorder.stored()
         lastUpload = ResearchUploader.lastUpload
     }
-
-    private func upload() async {
-        uploading = true
-        status = ""
-        let report = await Task.detached(priority: .utility) { await ResearchUploader.uploadPending() }.value
-        uploading = false
-        status = report.failure ?? (report.uploaded > 0 ? "Uploaded." : "Nothing to upload.")
-        refresh()
-    }
 }
 
-private struct ResearchConsentView: View {
-    let done: (Bool) -> Void
-
+private struct ResearchDetailsView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                Section("What Glyph records while this is on") {
-                    Label("The words you type in ordinary text fields, such as messages and notes", systemImage: "text.cursor")
-                    Label("Where and when your finger touched the keys, and your swipe paths", systemImage: "hand.point.up.left")
-                    Label("Suggestions shown, corrections made, and what you undid or picked", systemImage: "arrow.uturn.backward")
-                    Label("Your iPhone model, iOS version and keyboard layout", systemImage: "iphone")
-                }
-                Section("What it never records") {
-                    Label("Passwords and anything typed in password fields", systemImage: "lock")
-                    Label("Email, phone, number, address, name and one-time-code fields", systemImage: "nosign")
-                    Label("Anything you type with another keyboard", systemImage: "keyboard")
-                }
-                Section("Where it goes") {
-                    Text("Recordings are encrypted on your iPhone and uploaded to the Glyph developer when you open this app. Only the developer can read them. They are used to improve Glyph's typing and Glide, and are not sold or used for advertising.")
-                    Text("Ordinary messages can contain personal things. Turn research off before typing anything you would not want read.")
-                }
-                Section("Stopping") {
-                    Text("Turn the switch off at any time. \"Stop and delete\" also removes what has not been uploaded. Ask the developer to delete what was uploaded.")
-                }
+        List {
+            Section("What Glyph records while this is on") {
+                Label("The words you type in ordinary text fields, such as messages and notes", systemImage: "text.cursor")
+                Label("Where and when your finger touched the keys, and your swipe paths", systemImage: "hand.point.up.left")
+                Label("Suggestions shown, corrections made, and what you undid or picked", systemImage: "arrow.uturn.backward")
+                Label("Your iPhone model, iOS version and keyboard layout", systemImage: "iphone")
             }
-            .navigationTitle("Typing Research")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Not Now") { done(false) } }
-                ToolbarItem(placement: .confirmationAction) { Button("Turn On") { done(true) }.fontWeight(.semibold) }
+            Section("What it never records") {
+                Label("Passwords and anything typed in password fields", systemImage: "lock")
+                Label("Email, phone, number, address, name and one-time-code fields", systemImage: "nosign")
+                Label("Anything you type with another keyboard", systemImage: "keyboard")
+            }
+            Section("Where it goes") {
+                Text("Recordings are encrypted on your iPhone and uploaded automatically to the Glyph developer when you open or leave this app, and every few hours in the background. Only the developer can read them. They are used to improve Glyph's typing and Glide, and are not sold or used for advertising.")
+                Text("Ordinary messages can contain personal things. Turn research off before typing anything you would not want read.")
+            }
+            Section("Stopping") {
+                Text("Turn the switch off at any time. \"Stop and delete\" also removes what has not been uploaded. Ask the developer to delete what was uploaded.")
             }
         }
-        .interactiveDismissDisabled()
+        .navigationTitle("What is recorded")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 #endif

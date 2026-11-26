@@ -114,18 +114,17 @@ struct KeyboardTests {
 	@MainActor @Test func suggestionPassThroughBoundaryDoesNotMoveKeyGeometry() throws {
 		for width: CGFloat in [320, 390, 440] {
 			let bar = SuggestionBar(theme: .system(dark: true))
-			bar.frame = CGRect(x: 0, y: 0, width: width, height: 32)
+			let height = KeyboardView.stripHeight
+			let band = SuggestionBar.bottomPassThroughHeight
+			bar.frame = CGRect(x: 0, y: 0, width: width, height: height)
 			bar.setSuggestions(["one", "two", "three"], highlightPrimary: true)
 			bar.layoutIfNeeded()
-			#expect(bar.point(inside: CGPoint(x: width / 2, y: 27.9), with: nil))
-			#expect(!bar.point(inside: CGPoint(x: width / 2, y: 28), with: nil))
+			#expect(bar.point(inside: CGPoint(x: width / 2, y: height - band - 0.1), with: nil))
+			#expect(!bar.point(inside: CGPoint(x: width / 2, y: height - band), with: nil))
 			let primary = try #require(suggestionButton("suggestion.primary", in: bar))
-			#expect(primary.frame.minY == -3)
-			#expect(primary.frame.height == 32)
-			let highlight = try #require(bar.subviews.first {
-				!($0 is UIButton) && $0.layer.borderWidth > 0
-			})
-			#expect(highlight.frame.minY == 1)
+			#expect(primary.frame.minY == 0)
+			#expect(primary.frame.height == height)
+			#expect(primary.accessibilityTraits.contains(.selected))
 		}
 	}
 
@@ -844,10 +843,7 @@ struct KeyboardTests {
 				#expect(tabs.map { $0.title(for: .normal) } == ["Emoji", "GIFs", "Stickers"])
 			}
 		}
-		#expect(KBExperiments.arm(forDraw: 0) == .stacked)
-		#expect(KBExperiments.arm(forDraw: 0.49) == .stacked)
-		#expect(KBExperiments.arm(forDraw: 0.5) == .unified)
-		#expect(KBExperiments.arm(forDraw: 0.99) == .unified)
+		#expect(KBExperiments.defaultPanelHeader == .unified)
 		#expect(KBExperiments.panelHeader == .unified)
 	}
 
@@ -989,8 +985,15 @@ struct KeyboardTests {
 		#expect(thads.correction == "that's",
 			"thads: correction=\(thads.correction ?? "nil") sugg=\(thads.suggestions)")
 		#expect(thads.suggestions.first == thads.correction)
+		let hiStart = await decode(engine, word: "hi", context: [])
+		#expect(hiStart.correction == nil,
+			"hi at the start of a message must stay hi: correction=\(hiStart.correction ?? "nil")")
+		#expect(hiStart.suggestions.first == "hi")
+		let itsStart = await decode(engine, word: "its", context: [])
+		#expect(itsStart.correction == "it's",
+			"its at the start should still get its apostrophe: correction=\(itsStart.correction ?? "nil")")
 		let idStart = await decode(engine, word: "id", context: [])
-		#expect(idStart.correction == "i",
+		#expect(idStart.correction == "i'd",
 			"id at start: correction=\(idStart.correction ?? "nil")")
 		let idNoun = await decode(engine, word: "id", context: ["send", "your"])
 		#expect(idNoun.correction != "is",
@@ -1019,7 +1022,8 @@ struct KeyboardTests {
 
 		let url = try #require(EmojiAtlas.generateIfNeeded(store: store, scale: 2, in: directory))
 		let bytes = try #require((try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize)
-		#expect(bytes > 0 && bytes % (72 * 72 * 4) == 0)
+		let tile = Int((EmojiAtlas.pointSize * 2).rounded())
+		#expect(bytes > 0 && bytes % (tile * tile * 4) == 0)
 		#expect(EmojiAtlas.generateIfNeeded(store: store, scale: 2, in: directory) == url)
 
 		let atlas = try #require(EmojiAtlas.load(store: store, scale: 2, in: directory))

@@ -84,11 +84,9 @@
         [{"key": "4", "width": "flex"}, {"key": "5", "width": "flex"}, {"key": "6", "width": "flex"}],
         [{"key": "7", "width": "flex"}, {"key": "8", "width": "flex"}, {"key": "9", "width": "flex"}],
         [
-          {"control": "page", "target": "letters", "label": "ABC"},
-          {"control": "padAuxiliary"},
+          {"control": "padAuxiliary", "width": "flex"},
           {"key": "0", "width": "flex"},
-          {"control": "delete"},
-          {"control": "return"}
+          {"control": "delete", "width": "flex"}
         ]
       ]
     }

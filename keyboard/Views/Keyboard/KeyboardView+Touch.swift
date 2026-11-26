@@ -28,6 +28,7 @@ final class KeyBalloonView: UIView {
 extension KeyboardView {
 
 	private static let balloonPoolLimit = 3
+	static let minimumHeadHeight: CGFloat = 40
 
 	private func showPopup(for key: KeyButton, at point: CGPoint, touch: UITouch) {
 		guard let popupView = makeKeyPopup(for: key, at: point) else { return }
@@ -47,8 +48,10 @@ extension KeyboardView {
 		let preferredHeadHeight = max(keyFrame.height * 1.3, 54)
 		let headX = min(max(keyFrame.midX - headWidth / 2, edge),
 			max(edge, bounds.width - edge - headWidth))
-		let headTop = max(edge, keyFrame.minY + 2 - preferredHeadHeight)
-		let headBottom = min(headTop + preferredHeadHeight, keyFrame.maxY)
+		let roomAbove = keyFrame.minY + 2 - edge
+		let headHeight = roomAbove >= Self.minimumHeadHeight ? min(preferredHeadHeight, roomAbove) : preferredHeadHeight
+		let headTop = max(edge, keyFrame.minY + 2 - headHeight)
+		let headBottom = min(headTop + headHeight, keyFrame.maxY)
 		let popupFrame = CGRect(x: min(headX, keyFrame.minX), y: headTop,
 			width: max(headX + headWidth, keyFrame.maxX) - min(headX, keyFrame.minX),
 			height: keyFrame.maxY - headTop)

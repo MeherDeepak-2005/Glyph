@@ -131,6 +131,7 @@ extension KeyboardViewController {
 			}
 			recordCommitMetrics(s, autocorrected: false)
 			lastCorrection = Correction(original: partial, corrected: s, trailing: " ", fromAutocorrect: false, recordedWordSessionID: wordSessionID)
+			trackRecordedWord(s, trailing: " ", kind: "pick")
 			advanceWordSession()
 		case .predict:
 			insertIntoHost(s + " ")
@@ -138,6 +139,7 @@ extension KeyboardViewController {
 			learnCommittedWord(s)
 			if !isSecureField { KBStats.noteCommitted(glided: false) }
 			recordCommitMetrics(s, autocorrected: false)
+			trackRecordedWord(s, trailing: " ", kind: "pick")
 			advanceWordSession()
 			lastCorrection = nil
 		case .revert(let original):

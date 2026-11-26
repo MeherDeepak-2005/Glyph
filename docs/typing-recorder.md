@@ -2,12 +2,16 @@
 
 Opt-in research log written by `keyboard/Shared/KBTypingRecorder.swift`: by the keyboard
 extension (`demo_keyboard/Controller/KeyboardViewController+Recording.swift`) and, for practice
-prompts, by the app (`keyboard/App/PracticeView.swift`). Off until the tester turns it on in the
-app: Privacy › Typing Research. Secure, email, phone, URL, number, one-time-code and username
-fields are never recorded (`permitsTypingData`).
+prompts, by the app (`keyboard/App/PracticeView.swift`). Beta builds (`RESEARCH_BETA`) turn it on
+when the app launches (`KBTypingRecorder.enableByDefaultUnlessOptedOut`); beta testers are told
+outside the app. The tester can turn it off or stop and delete in Privacy › Typing Research, which
+records an opt-out the next launch respects. Secure, email, phone, URL, number, one-time-code and
+username fields are never recorded (`permitsTypingData`).
 
-One JSON event per line. Beta builds (`RESEARCH_BETA`) upload the files, encrypted, from the app
-(`keyboard/App/ResearchUploader.swift`); the extension never transmits. Getting the data back and
+One JSON event per line. Beta builds (`RESEARCH_BETA`) upload the files automatically, encrypted,
+from the app (`keyboard/App/ResearchUploader.swift`): when it becomes active or goes to the
+background, and from a background refresh requested every 3 hours. There is no manual upload
+button. The extension never transmits. Getting the data back and
 building tables from it: [tools/research/README.md](../tools/research/README.md).
 
 ## Files
@@ -47,7 +51,7 @@ protection, so nothing is written while the phone is locked.
 | `suggestions` | the strip was shown | `text` typed word, `replacement` autocorrect candidate, `candidates`, `candidateEvidence` (channel cost, LM score, margin to the typed word), `confidence` |
 | `autocorrection` | the engine replaced a word | `text` typed, `replacement` committed, `confidence` (score margin over the typed word), `candidateEvidence` |
 | `commit` | a word was finalized | `text` committed, `typed` literal, `keystrokes` [{key, dx, dy, intervalMs}], `durationMs` first letter → commit, `backspaces`, `evidence` |
-| `correction-accepted` | the user carried on after an autocorrection (once per correction) | `text` typed, `replacement` correction, `relatedWord`, `sinceMs` |
+| `correction-accepted` | the user carried on after an autocorrection, by typing a letter, punctuation, a pick, a glide or a paste (once per correction) | `text` typed, `replacement` correction, `relatedWord`, `sinceMs` |
 | `undo` | a correction, pick or glided word was undone | `text` what was removed, `replacement` what came back, `relatedWord`, `sinceMs`; `evidence`: `explicit-autocorrect-undo` (Backspace), `strip-autocorrect-undo` (undo chip), `explicit-retraction` (a glided or picked word deleted whole) |
 | `manual-replacement` | the user erased a word and typed a different one | `text` erased, `replacement` typed; `evidence`: `manual-autocorrect-undo` (retyped what an autocorrection had replaced), `manual-fix-of-correction`, `inferred-word-swap`; `relatedWord` for the first two |
 | `suggestion-pick`, `prediction-pick` | the user chose a strip entry | `text` replaced, `replacement` chosen |
@@ -56,6 +60,8 @@ protection, so nothing is written while the phone is locked.
 | `glide-selection` | the user swapped a glided word for a strip alternative | `text` committed, `replacement` chosen, `relatedWord`, `sinceMs` |
 | `glide-continued` | the user entered more text containing a word character after the glide | `relatedWord`, `sinceMs` from lift |
 | `glide-backspaced` | ordinary backspace reached a character of the original glided word | `relatedWord`, `sinceMs` from lift |
+| `word-continued` | the user entered more text containing a word character after a tapped word | `relatedWord`, `sinceMs` from the commit; `evidence`: `typed` (committed as typed), `autocorrection`, `pick` (strip suggestion or prediction) |
+| `word-backspaced` | ordinary backspace reached a character of that word (the user rejected it) | same fields as `word-continued` |
 | `prompt-shown`, `prompt-done` | practice (app) | `prompt`: `id`, `target`, `mode` (`glide`, `tap`, `sentences`), `result` (what was in the field); `evidence` `matched`, `skipped` or `left` |
 | `session-end` | field closed | — |
 
@@ -87,11 +93,16 @@ Commits are observations, not labels: an autocorrection (`automatic-unverified`)
   document changes end tracking. The export preserves both follow-up signals and their timing.
 - **Word corrections**: `undo` and `manual-replacement` with a `relatedWord` (the correction was
   wrong and the restored word is the label), `correction-accepted` (weak: it stood), picks.
+- **Tapped words**: `word-backspaced` (the word was rejected; the next committed word in the same
+  field is the likely replacement) and `word-continued` (weak evidence the word was right). They use
+  the same tracking as Glide: the last four words entered (glided, typed, autocorrected or picked),
+  while their text stays within 96 characters before the cursor.
 - **Per-key error model**: `key-fix` pairs; `touch-down` positions against the `layout`
   rectangles for words that were never edited afterwards.
 - **Typing speed**: `intervalMs` on keys (gaps over 5 s are pauses), `durationMs` per word.
 
-`tools/research/build_datasets.py` does these joins.
+`tools/research/build_datasets.py` does these joins: `words.tsv` (one row per tapped word with its
+strip candidates, `outcome` and `replaced_by`), `autocorrect.tsv` and `glides.jsonl` (with `replaced_by`).
 
 The aggregate counterparts on the Keyboard health screen (no text) are `keyTaps`, `keyErasures`,
 `keyConfusions`, `backspaceTaps` and `interKeyIntervalBins` in `KBDiagnostics.Snapshot`; beta

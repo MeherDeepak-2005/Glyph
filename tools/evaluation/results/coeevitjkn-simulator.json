@@ -1,201 +1,745 @@
 {
+  "decoder" : "nss (keyboard\/nss-english.nsslm over keyboard\/langdata.bin)",
   "environment" : "iOS simulator; no touch offsets; model load excluded; first decode includes queued engine initialization",
   "intended" : "correction",
-  "neural_status" : "not_run_missing_trained_model_and_matching_tokenizer",
   "rows" : [
     {
       "candidates" : [
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -21.06737753982334,
-          "score" : -21.06737753982334,
+          "language_log_probability" : -19.607876582565794,
+          "score" : -19.607876582565794,
           "source" : "typed",
           "spatial_cost" : 0,
           "word" : "coeevitjkn"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -12.652438582445861,
-          "score" : -39.535856112865282,
-          "source" : "broadRecovery",
+          "language_log_probability" : -14.376896858215332,
+          "score" : -37.756896858215335,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8450000000000006,
+          "word" : "come within"
+        },
+        {
+          "language_log_probability" : -10.283605098724365,
+          "score" : -39.163605098724361,
+          "source" : "splitCorrection",
+          "spatial_cost" : 7.2199999999999989,
+          "word" : "come in"
+        },
+        {
+          "language_log_probability" : -16.296297550201416,
+          "score" : -39.176297550201419,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.7200000000000006,
+          "word" : "come with know"
+        },
+        {
+          "language_log_probability" : -18.76343846321106,
+          "score" : -39.243438463211056,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it know"
+        },
+        {
+          "language_log_probability" : -11.806770324707031,
+          "score" : -39.786770324707028,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.9949999999999992,
+          "word" : "come into"
+        },
+        {
+          "language_log_probability" : -14.480036497116089,
+          "score" : -39.860036497116084,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come think"
+        },
+        {
+          "language_log_probability" : -23.829355478286743,
+          "score" : -39.909355478286741,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.0199999999999996,
+          "word" : "coe it know"
+        },
+        {
+          "language_log_probability" : -15.610797029021159,
+          "score" : -40.010797029021155,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 6.0999999999999996,
+          "word" : "coveting"
+        },
+        {
+          "language_log_probability" : -11.42956041374285,
+          "score" : -40.229560413742846,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.1999999999999993,
+          "word" : "covering"
+        },
+        {
+          "language_log_probability" : -25.535348176956177,
+          "score" : -40.415348176956179,
+          "source" : "splitCorrection",
+          "spatial_cost" : 3.7200000000000002,
+          "word" : "cooee it know"
+        },
+        {
+          "language_log_probability" : -11.015820806347982,
+          "score" : -40.515820806347982,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collection"
+        },
+        {
+          "language_log_probability" : -19.545953512191772,
+          "score" : -40.525953512191769,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.2449999999999992,
+          "word" : "coe think"
+        },
+        {
+          "language_log_probability" : -13.746411455086427,
+          "score" : -40.846411455086425,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.7750000000000004,
           "word" : "correction"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -14.240832316266749,
-          "score" : -40.544353545790081,
-          "source" : "broadRecovery",
+          "language_log_probability" : -11.349579259610113,
+          "score" : -40.84957925961011,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "convection"
+        },
+        {
+          "language_log_probability" : -16.037898540496826,
+          "score" : -40.917898540496822,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.2199999999999989,
+          "word" : "come in know"
+        },
+        {
+          "language_log_probability" : -22.368908166885376,
+          "score" : -40.948908166885374,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it know"
+        },
+        {
+          "language_log_probability" : -14.471272607485833,
+          "score" : -40.97127260748583,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.625,
           "word" : "coercion"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -19.681083178703453,
-          "score" : -46.628424275289547,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.75,
-          "word" : "coediting"
+          "language_log_probability" : -22.919436693191528,
+          "score" : -40.999436693191527,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.5199999999999996,
+          "word" : "core it know"
+        },
+        {
+          "language_log_probability" : -21.251946210861206,
+          "score" : -41.031946210861207,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.9450000000000003,
+          "word" : "cooee think"
+        },
+        {
+          "language_log_probability" : -18.221285343170166,
+          "score" : -41.101285343170169,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.7200000000000006,
+          "word" : "come with knew"
+        },
+        {
+          "language_log_probability" : -15.732683897018433,
+          "score" : -41.112683897018428,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come things"
+        },
+        {
+          "language_log_probability" : -20.68842625617981,
+          "score" : -41.168426256179806,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it knew"
+        },
+        {
+          "language_log_probability" : -22.215348958969116,
+          "score" : -41.19534895896912,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.7450000000000001,
+          "word" : "coe within"
         }
       ],
       "context" : [
 
       ],
-      "correct_commits" : 31,
-      "correction" : "correction",
-      "correction_candidate_rank" : 2,
-      "first_decode_ms" : 7803.8093332434073,
-      "mode" : "ngram",
+      "correct_commits" : 0,
+      "correction" : null,
+      "correction_candidate_rank" : 14,
+      "first_decode_ms" : 1885.4763333511073,
+      "mode" : "nss",
       "replays" : 31,
       "suggestions" : [
-        "correction",
-        "coercion",
-        "coediting"
+        "coeevitjkn",
+        "come within",
+        "come in"
       ],
-      "warm_p50_ms" : 132.60612508747727,
-      "warm_p95_ms" : 739.3780832644552,
-      "warm_p99_ms" : 993.60108328983188
+      "warm_p50_ms" : 0.54424998234026134,
+      "warm_p95_ms" : 12.352874997304752,
+      "warm_p99_ms" : 622.61187500553206
     },
     {
       "candidates" : [
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -22.344011054950506,
-          "score" : -22.344011054950506,
+          "language_log_probability" : -19.485394989859195,
+          "score" : -19.485394989859195,
           "source" : "typed",
           "spatial_cost" : 0,
           "word" : "coeevitjkn"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -13.929072097573027,
-          "score" : -40.812489627992449,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.7750000000000004,
-          "word" : "correction"
+          "language_log_probability" : -6.9532623291015625,
+          "score" : -36.453262329101562,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collection"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -15.517465831393913,
-          "score" : -41.820987060917247,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.625,
-          "word" : "coercion"
+          "language_log_probability" : -17.876017570495605,
+          "score" : -36.956017570495604,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.7699999999999996,
+          "word" : "code itunes"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -20.957716693830616,
-          "score" : -47.905057790416713,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.75,
-          "word" : "coediting"
+          "language_log_probability" : -15.555037498474121,
+          "score" : -37.035037498474118,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code within"
+        },
+        {
+          "language_log_probability" : -18.478265762329102,
+          "score" : -37.0582657623291,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it know"
+        },
+        {
+          "language_log_probability" : -10.658489227294922,
+          "score" : -37.638489227294919,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code in"
+        },
+        {
+          "language_log_probability" : -6.2634706497192383,
+          "score" : -38.063470649719235,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.9499999999999993,
+          "word" : "competition"
+        },
+        {
+          "language_log_probability" : -20.081909656524658,
+          "score" : -38.161909656524656,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.5199999999999996,
+          "word" : "core it know"
+        },
+        {
+          "language_log_probability" : -9.3401813507080078,
+          "score" : -38.340181350708008,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.25,
+          "word" : "conservation"
+        },
+        {
+          "language_log_probability" : -14.958673477172852,
+          "score" : -38.438673477172848,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code thinks"
+        },
+        {
+          "language_log_probability" : -15.798507690429688,
+          "score" : -38.778507690429684,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.7449999999999992,
+          "word" : "core think"
+        },
+        {
+          "language_log_probability" : -15.366884231567383,
+          "score" : -38.84688423156738,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code things"
+        },
+        {
+          "language_log_probability" : -13.070873737335205,
+          "score" : -38.950873737335201,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.4699999999999989,
+          "word" : "code is think"
+        },
+        {
+          "language_log_probability" : -20.403253555297852,
+          "score" : -38.98325355529785,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knew"
+        },
+        {
+          "language_log_probability" : -18.161926746368408,
+          "score" : -39.141926746368405,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.2449999999999992,
+          "word" : "code with know"
+        },
+        {
+          "language_log_probability" : -15.696768760681152,
+          "score" : -39.176768760681149,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code think"
+        },
+        {
+          "language_log_probability" : -9.7049369812011719,
+          "score" : -39.204936981201172,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connection"
+        },
+        {
+          "language_log_probability" : -20.666591167449951,
+          "score" : -39.246591167449949,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knows"
+        },
+        {
+          "language_log_probability" : -15.767279624938965,
+          "score" : -39.247279624938962,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code thing"
+        },
+        {
+          "language_log_probability" : -17.662864685058594,
+          "score" : -39.342864685058593,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.4199999999999999,
+          "word" : "code timing"
+        },
+        {
+          "language_log_probability" : -18.885563373565674,
+          "score" : -39.365563373565671,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it know"
+        },
+        {
+          "language_log_probability" : -12.408936023712158,
+          "score" : -39.388936023712155,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code includes"
+        },
+        {
+          "language_log_probability" : -13.309694766998291,
+          "score" : -39.389694766998289,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.5199999999999996,
+          "word" : "code into"
+        },
+        {
+          "language_log_probability" : -16.412782669067383,
+          "score" : -39.39278266906738,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.7449999999999992,
+          "word" : "code in know"
         }
       ],
       "context" : [
         "auto"
       ],
-      "correct_commits" : 31,
-      "correction" : "correction",
-      "correction_candidate_rank" : 2,
-      "first_decode_ms" : 690.82900008652359,
-      "mode" : "ngram",
+      "correct_commits" : 0,
+      "correction" : null,
+      "correction_candidate_rank" : null,
+      "first_decode_ms" : 117.51358333276585,
+      "mode" : "nss",
       "replays" : 31,
       "suggestions" : [
-        "correction",
-        "coercion",
-        "coediting"
+        "coeevitjkn",
+        "collection",
+        "code itunes"
       ],
-      "warm_p50_ms" : 109.34770829044282,
-      "warm_p95_ms" : 139.18745832052082,
-      "warm_p99_ms" : 147.86749996710569
+      "warm_p50_ms" : 0.2684166538529098,
+      "warm_p95_ms" : 1.6947916592471302,
+      "warm_p99_ms" : 1.865583355538547
     },
     {
       "candidates" : [
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -22.558097746509748,
-          "score" : -22.558097746509748,
+          "language_log_probability" : -20.514050757299991,
+          "score" : -20.514050757299991,
           "source" : "typed",
           "spatial_cost" : 0,
           "word" : "coeevitjkn"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -14.143158789132269,
-          "score" : -41.026576319551687,
-          "source" : "broadRecovery",
+          "language_log_probability" : -19.160770893096924,
+          "score" : -37.740770893096922,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it know"
+        },
+        {
+          "language_log_probability" : -14.877368927001953,
+          "score" : -38.35736892700195,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code think"
+        },
+        {
+          "language_log_probability" : -11.379899024963379,
+          "score" : -38.47989902496338,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.7750000000000004,
           "word" : "correction"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -15.731552522953155,
-          "score" : -42.035073752476485,
-          "source" : "broadRecovery",
+          "language_log_probability" : -11.620148658752441,
+          "score" : -38.720148658752443,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 6.7750000000000004,
+          "word" : "corrections"
+        },
+        {
+          "language_log_probability" : -9.3332490921020508,
+          "score" : -38.833249092102051,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collections"
+        },
+        {
+          "language_log_probability" : -12.396209716796875,
+          "score" : -38.896209716796875,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.625,
           "word" : "coercion"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -21.171803385389858,
-          "score" : -48.119144481975951,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.75,
-          "word" : "coediting"
+          "language_log_probability" : -9.5111122131347656,
+          "score" : -39.011112213134766,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connections"
+        },
+        {
+          "language_log_probability" : -17.546764373779297,
+          "score" : -39.026764373779294,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code within"
+        },
+        {
+          "language_log_probability" : -16.130016326904297,
+          "score" : -39.610016326904294,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code things"
+        },
+        {
+          "language_log_probability" : -10.13675594329834,
+          "score" : -39.63675594329834,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collection"
+        },
+        {
+          "language_log_probability" : -21.085758686065674,
+          "score" : -39.665758686065672,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knew"
+        },
+        {
+          "language_log_probability" : -16.328654766082764,
+          "score" : -39.808654766082761,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code thing"
+        },
+        {
+          "language_log_probability" : -17.331055164337158,
+          "score" : -39.811055164337155,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.6199999999999992,
+          "word" : "cover it know"
+        },
+        {
+          "language_log_probability" : -12.883450031280518,
+          "score" : -39.863450031280514,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code in"
+        },
+        {
+          "language_log_probability" : -21.349096298217773,
+          "score" : -39.929096298217772,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knows"
+        },
+        {
+          "language_log_probability" : -19.577019214630127,
+          "score" : -40.057019214630124,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it know"
+        },
+        {
+          "language_log_probability" : -21.511608600616455,
+          "score" : -40.091608600616453,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it known"
+        },
+        {
+          "language_log_probability" : -18.619863271713257,
+          "score" : -40.099863271713254,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code i think"
+        },
+        {
+          "language_log_probability" : -23.206496715545654,
+          "score" : -40.286496715545653,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.2699999999999996,
+          "word" : "code it jonas"
+        },
+        {
+          "language_log_probability" : -21.293657302856445,
+          "score" : -40.373657302856444,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.7699999999999996,
+          "word" : "code itunes"
+        },
+        {
+          "language_log_probability" : -13.406477451324463,
+          "score" : -40.38647745132446,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code it"
+        },
+        {
+          "language_log_probability" : -10.903730392456055,
+          "score" : -40.403730392456055,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connection"
+        },
+        {
+          "language_log_probability" : -13.047653198242188,
+          "score" : -40.427653198242183,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.8449999999999989,
+          "word" : "cover think"
         }
       ],
       "context" : [
         "possibly",
         "receive"
       ],
-      "correct_commits" : 31,
-      "correction" : "correction",
-      "correction_candidate_rank" : 2,
-      "first_decode_ms" : 577.42270827293396,
-      "mode" : "ngram",
+      "correct_commits" : 0,
+      "correction" : null,
+      "correction_candidate_rank" : 4,
+      "first_decode_ms" : 101.59091668901965,
+      "mode" : "nss",
       "replays" : 31,
       "suggestions" : [
-        "correction",
-        "coercion",
-        "coediting"
+        "coeevitjkn",
+        "code it know",
+        "code think"
       ],
-      "warm_p50_ms" : 90.117583284154534,
-      "warm_p95_ms" : 119.7376666823402,
-      "warm_p99_ms" : 133.91687499824911
+      "warm_p50_ms" : 0.24900000425986946,
+      "warm_p95_ms" : 1.6742499719839543,
+      "warm_p99_ms" : 1.7186249897349626
     },
     {
       "candidates" : [
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -24.983050029022397,
-          "score" : -24.983050029022397,
+          "language_log_probability" : -20.626381909262271,
+          "score" : -20.626381909262271,
           "source" : "typed",
           "spatial_cost" : 0,
           "word" : "coeevitjkn"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -16.568111071644918,
-          "score" : -43.451528602064336,
-          "source" : "broadRecovery",
+          "language_log_probability" : -19.01643705368042,
+          "score" : -39.496437053680417,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it know"
+        },
+        {
+          "language_log_probability" : -14.733035087585449,
+          "score" : -40.113035087585445,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come think"
+        },
+        {
+          "language_log_probability" : -22.194938182830811,
+          "score" : -40.774938182830809,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it know"
+        },
+        {
+          "language_log_probability" : -17.402430534362793,
+          "score" : -40.782430534362796,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8450000000000006,
+          "word" : "come within"
+        },
+        {
+          "language_log_probability" : -22.739570140838623,
+          "score" : -40.819570140838621,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.5199999999999996,
+          "word" : "core it know"
+        },
+        {
+          "language_log_probability" : -11.823868751525879,
+          "score" : -40.823868751525879,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.25,
+          "word" : "conservation"
+        },
+        {
+          "language_log_probability" : -16.676961421966553,
+          "score" : -41.076961421966551,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 6.0999999999999996,
+          "word" : "coveting"
+        },
+        {
+          "language_log_probability" : -25.092467308044434,
+          "score" : -41.172467308044432,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.0199999999999996,
+          "word" : "coe it know"
+        },
+        {
+          "language_log_probability" : -14.188776016235352,
+          "score" : -41.288776016235353,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.7750000000000004,
           "word" : "correction"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -18.156504805465804,
-          "score" : -44.460026034989134,
-          "source" : "broadRecovery",
+          "language_log_probability" : -15.985682487487793,
+          "score" : -41.365682487487788,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come things"
+        },
+        {
+          "language_log_probability" : -17.91153621673584,
+          "score" : -41.391536216735837,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code think"
+        },
+        {
+          "language_log_probability" : -20.94142484664917,
+          "score" : -41.421424846649167,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it knew"
+        },
+        {
+          "language_log_probability" : -18.456168174743652,
+          "score" : -41.436168174743649,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.7449999999999992,
+          "word" : "core think"
+        },
+        {
+          "language_log_probability" : -15.036782264709473,
+          "score" : -41.536782264709473,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.625,
           "word" : "coercion"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -23.596755667902507,
-          "score" : -50.5440967644886,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.75,
-          "word" : "coediting"
+          "language_log_probability" : -16.18432092666626,
+          "score" : -41.564320926666255,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come thing"
+        },
+        {
+          "language_log_probability" : -12.795253753662109,
+          "score" : -41.595253753662107,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.1999999999999993,
+          "word" : "covering"
+        },
+        {
+          "language_log_probability" : -12.739116191864014,
+          "score" : -41.619116191864009,
+          "source" : "splitCorrection",
+          "spatial_cost" : 7.2199999999999989,
+          "word" : "come in"
+        },
+        {
+          "language_log_probability" : -12.165447235107422,
+          "score" : -41.665447235107422,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connection"
+        },
+        {
+          "language_log_probability" : -26.798460006713867,
+          "score" : -41.67846000671387,
+          "source" : "splitCorrection",
+          "spatial_cost" : 3.7200000000000002,
+          "word" : "cooee it know"
+        },
+        {
+          "language_log_probability" : -21.20476245880127,
+          "score" : -41.684762458801266,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it knows"
+        },
+        {
+          "language_log_probability" : -20.809065341949463,
+          "score" : -41.78906534194946,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.2449999999999992,
+          "word" : "coe think"
+        },
+        {
+          "language_log_probability" : -20.580931663513184,
+          "score" : -42.06093166351318,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code within"
+        },
+        {
+          "language_log_probability" : -12.595546722412109,
+          "score" : -42.095546722412109,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collection"
         }
       ],
       "context" : [
@@ -203,54 +747,190 @@
         "definitely",
         "decided"
       ],
-      "correct_commits" : 31,
-      "correction" : "correction",
-      "correction_candidate_rank" : 2,
-      "first_decode_ms" : 581.05479169171304,
-      "mode" : "ngram",
+      "correct_commits" : 0,
+      "correction" : null,
+      "correction_candidate_rank" : 10,
+      "first_decode_ms" : 101.54233334469609,
+      "mode" : "nss",
       "replays" : 31,
       "suggestions" : [
-        "correction",
-        "coercion",
-        "coediting"
+        "coeevitjkn",
+        "come it know",
+        "come think"
       ],
-      "warm_p50_ms" : 85.245416616089642,
-      "warm_p95_ms" : 115.59454165399075,
-      "warm_p99_ms" : 121.68812495656312
+      "warm_p50_ms" : 0.2451250038575381,
+      "warm_p95_ms" : 1.6840833122842014,
+      "warm_p99_ms" : 2.0784583175554872
     },
     {
       "candidates" : [
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -22.558097746509748,
-          "score" : -22.558097746509748,
+          "language_log_probability" : -20.606240784536929,
+          "score" : -20.606240784536929,
           "source" : "typed",
           "spatial_cost" : 0,
           "word" : "coeevitjkn"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -14.143158789132269,
-          "score" : -41.026576319551687,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.7750000000000004,
-          "word" : "correction"
+          "language_log_probability" : -19.437471866607666,
+          "score" : -38.017471866607664,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it know"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -15.731552522953155,
-          "score" : -42.035073752476485,
-          "source" : "broadRecovery",
+          "language_log_probability" : -11.398052215576172,
+          "score" : -38.498052215576173,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 6.7750000000000004,
+          "word" : "corrections"
+        },
+        {
+          "language_log_probability" : -15.154069900512695,
+          "score" : -38.634069900512692,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code think"
+        },
+        {
+          "language_log_probability" : -12.598955154418945,
+          "score" : -39.098955154418945,
+          "source" : "fuzzyLexicon",
           "spatial_cost" : 6.625,
           "word" : "coercion"
         },
         {
-          "neural_log_probability" : null,
-          "ngram_log_probability" : -21.171803385389858,
-          "score" : -48.119144481975951,
-          "source" : "broadRecovery",
-          "spatial_cost" : 6.75,
-          "word" : "coediting"
+          "language_log_probability" : -17.823465347290039,
+          "score" : -39.303465347290036,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code within"
+        },
+        {
+          "language_log_probability" : -12.265605926513672,
+          "score" : -39.365605926513673,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 6.7750000000000004,
+          "word" : "correction"
+        },
+        {
+          "language_log_probability" : -9.9764194488525391,
+          "score" : -39.476419448852539,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connections"
+        },
+        {
+          "language_log_probability" : -16.406717300415039,
+          "score" : -39.886717300415036,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code things"
+        },
+        {
+          "language_log_probability" : -19.422483921051025,
+          "score" : -39.902483921051022,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.1199999999999992,
+          "word" : "come it know"
+        },
+        {
+          "language_log_probability" : -21.362459659576416,
+          "score" : -39.942459659576414,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knew"
+        },
+        {
+          "language_log_probability" : -16.605355739593506,
+          "score" : -40.085355739593503,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.8699999999999992,
+          "word" : "code thing"
+        },
+        {
+          "language_log_probability" : -13.16015100479126,
+          "score" : -40.140151004791257,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code in"
+        },
+        {
+          "language_log_probability" : -21.625797271728516,
+          "score" : -40.205797271728514,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it knows"
+        },
+        {
+          "language_log_probability" : -17.804678916931152,
+          "score" : -40.284678916931149,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.6199999999999992,
+          "word" : "cover it know"
+        },
+        {
+          "language_log_probability" : -21.788309574127197,
+          "score" : -40.368309574127196,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.6449999999999996,
+          "word" : "code it known"
+        },
+        {
+          "language_log_probability" : -18.896564245223999,
+          "score" : -40.376564245223996,
+          "source" : "splitCorrection",
+          "spatial_cost" : 5.3699999999999992,
+          "word" : "code i think"
+        },
+        {
+          "language_log_probability" : -10.934146881103516,
+          "score" : -40.434146881103516,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "connection"
+        },
+        {
+          "language_log_probability" : -15.139081954956055,
+          "score" : -40.51908195495605,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.3449999999999989,
+          "word" : "come think"
+        },
+        {
+          "language_log_probability" : -23.483197689056396,
+          "score" : -40.563197689056395,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.2699999999999996,
+          "word" : "code it jonas"
+        },
+        {
+          "language_log_probability" : -21.570358276367188,
+          "score" : -40.650358276367186,
+          "source" : "splitCorrection",
+          "spatial_cost" : 4.7699999999999996,
+          "word" : "code itunes"
+        },
+        {
+          "language_log_probability" : -13.683178424835205,
+          "score" : -40.663178424835202,
+          "source" : "splitCorrection",
+          "spatial_cost" : 6.7449999999999992,
+          "word" : "code it"
+        },
+        {
+          "language_log_probability" : -11.198564529418945,
+          "score" : -40.698564529418945,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collections"
+        },
+        {
+          "language_log_probability" : -11.446052551269531,
+          "score" : -40.946052551269531,
+          "source" : "fuzzyLexicon",
+          "spatial_cost" : 7.375,
+          "word" : "collection"
         }
       ],
       "context" : [
@@ -258,20 +938,20 @@
         "definitely",
         "receive"
       ],
-      "correct_commits" : 31,
-      "correction" : "correction",
-      "correction_candidate_rank" : 2,
-      "first_decode_ms" : 433.00979165360332,
-      "mode" : "ngram",
+      "correct_commits" : 0,
+      "correction" : null,
+      "correction_candidate_rank" : 7,
+      "first_decode_ms" : 102.15541668003425,
+      "mode" : "nss",
       "replays" : 31,
       "suggestions" : [
-        "correction",
-        "coercion",
-        "coediting"
+        "coeevitjkn",
+        "code it know",
+        "corrections"
       ],
-      "warm_p50_ms" : 76.863249996677041,
-      "warm_p95_ms" : 94.934416702017188,
-      "warm_p99_ms" : 110.61566660646349
+      "warm_p50_ms" : 0.25845834170468152,
+      "warm_p95_ms" : 1.2439999845810235,
+      "warm_p99_ms" : 1.4130833151284605
     }
   ],
   "typed" : "coeevitjkn"

@@ -99,7 +99,8 @@ final class KeyboardView: UIView {
 	var lastGlidePreviewTime: TimeInterval = 0
 	let glidePreviewInterval: TimeInterval = 0.035
 	var glideThreshold: CGFloat { unitPitch * 0.85 }
-	private let stripHeight: CGFloat = 32
+	static let stripHeight: CGFloat = 48
+	private var stripHeight: CGFloat { Self.stripHeight }
 	var metrics: KeyboardLayoutMetrics {
 		let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width
 		let base = KeyboardLayoutMetrics.resolve(width: width,
@@ -207,12 +208,13 @@ final class KeyboardView: UIView {
 		NotificationCenter.default.removeObserver(self)
 	}
 
-	private(set) var showsSuggestions = true
+	private var suggestionsRequested = true
+	var showsSuggestions: Bool { suggestionsRequested && !inputKind.usesDedicatedNumberPad }
 
 	func setShowsSuggestions(_ on: Bool) {
-		guard on != showsSuggestions else { return }
-		showsSuggestions = on
-		suggestionBar.isHidden = !on
+		guard on != suggestionsRequested else { return }
+		suggestionsRequested = on
+		suggestionBar.isHidden = !showsSuggestions
 		setNeedsLayout()
 	}
 
@@ -222,7 +224,9 @@ final class KeyboardView: UIView {
 		inputKind = kind
 		page = kind == .numbersAndPunctuation || kind.usesDedicatedNumberPad ? .numbers : .letters
 		shift = kind == .standard ? shift : .off
+		suggestionBar.isHidden = !showsSuggestions
 		reload()
+		setNeedsLayout()
 		return true
 	}
 }

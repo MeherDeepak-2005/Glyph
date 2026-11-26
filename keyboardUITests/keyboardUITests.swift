@@ -25,11 +25,12 @@ final class keyboardUITests: XCTestCase {
 		app.launch()
 
 		let appearance = app.buttons["settings.appearance"]
-		XCTAssertTrue(appearance.waitForExistence(timeout: 5))
-		for _ in 0..<4 {
-			if appearance.isHittable { break }
+		XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5))
+		for _ in 0..<6 {
+			if appearance.exists && appearance.isHittable { break }
 			app.swipeUp()
 		}
+		XCTAssertTrue(appearance.waitForExistence(timeout: 2), "Appearance row missing")
 		appearance.tap()
 		XCTAssertTrue(app.navigationBars["Appearance"].waitForExistence(timeout: 2))
 		add(XCTAttachment(screenshot: app.screenshot()))
@@ -212,14 +213,19 @@ final class keyboardUITests: XCTestCase {
 			element.tap()
 		}
 		func scroll(_ times: Int) {
-			let grid = keyboard.collectionViews.firstMatch
+			let grid = keyboard.collectionViews["media.grid"]
 			guard grid.waitForExistence(timeout: 5) else { return }
 			for _ in 0..<times { grid.swipeLeft(); settle(1.5) }
 		}
 		for _ in 0..<3 {
 			type("hello there how are you "); settle(2)
 			tap(key("Emoji", in: host)); settle(2)
-			for index in 1...7 { tap(control("emoji.category.\(index)")); settle(0.6) }
+			XCTAssertTrue(control("emoji.category.0").waitForExistence(timeout: 5), "Emoji category tabs missing")
+			var index = 0
+			while control("emoji.category.\(index)").exists {
+				control("emoji.category.\(index)").tap(); settle(0.6)
+				index += 1
+			}
 			tap(control("GIFs")); settle(4)
 			scroll(4)
 			tap(control("Stickers")); settle(4)
@@ -285,11 +291,17 @@ final class keyboardUITests: XCTestCase {
 	}
 
 	@MainActor
-	private func activate(_ keyboard: ComparedKeyboard, in app: XCUIApplication) -> Bool {
-		app.buttons["Next keyboard"].firstMatch.press(forDuration: 1.2)
+	private func activate(_ keyboard: ComparedKeyboard, in app: XCUIApplication, attempts: Int = 1) -> Bool {
 		let row = XCUIElement.ElementType(rawValue: 75) ?? .any
 		let item = app.descendants(matching: row).matching(NSPredicate(format: "label BEGINSWITH %@", menuName(keyboard))).firstMatch
-		guard item.waitForExistence(timeout: 2) else { return false }
+		var found = false
+		for _ in 0..<max(1, attempts) {
+			app.buttons["Next keyboard"].firstMatch.press(forDuration: 1.2)
+			if item.waitForExistence(timeout: 4) { found = true; break }
+			app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.06)).tap()
+			RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+		}
+		guard found else { return false }
 		item.tap()
 		RunLoop.current.run(until: Date().addingTimeInterval(1.5))
 		let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
@@ -354,6 +366,7 @@ final class keyboardUITests: XCTestCase {
 		let contexts = cases.map(\.context)
 		host.launchEnvironment["KB_RUNTIME_CONTEXTS"] = String(decoding: try JSONEncoder().encode(contexts), as: UTF8.self)
 		host.launch()
+		defer { _ = activate(.glyph, in: host, attempts: 3) }
 		let field = host.textFields["runtime.text"]
 		XCTAssertTrue(field.waitForExistence(timeout: 5))
 		field.tap()
@@ -442,6 +455,8 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertTrue(clip.waitForExistence(timeout: 3), "Clipboard action missing from tools row")
 		XCTAssertTrue(clip.isHittable, "Clipboard icon is not hittable")
 		clip.tap()
+		let allowPaste = XCUIApplication(bundleIdentifier: "com.apple.springboard").buttons["Allow Paste"]
+		if allowPaste.waitForExistence(timeout: 3) { allowPaste.tap() }
 		XCTAssertTrue(host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 3),
 			"Keyboard disappeared after opening the clipboard panel")
 	}
@@ -527,6 +542,35 @@ final class keyboardUITests: XCTestCase {
     }
 
 	@MainActor
+	func testSendKeyWorksInAFieldThatEnablesReturnAutomatically() throws {
+		let host = XCUIApplication()
+		host.launchArguments = ["-keyboard-runtime-send"]
+		host.launch()
+		let field = host.textViews["runtime.text"]
+		XCTAssertTrue(field.waitForExistence(timeout: 5))
+		field.tap()
+		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 10) else {
+			throw XCTSkip("Glyph is not the active software keyboard")
+		}
+		let sent = host.staticTexts["runtime.sent"]
+		let send = host.descendants(matching: .any).matching(NSPredicate(format: "label ==[c] 'send'")).firstMatch
+		XCTAssertTrue(send.waitForExistence(timeout: 3), "Send key missing")
+		XCTAssertFalse(send.isEnabled, "Send should start disabled in an empty field that enables Return automatically")
+		for ch in "ok" { tapLetter(String(ch), in: host) }
+		let typed = waitForText(field, toDifferFrom: "")
+		RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+		XCTAssertTrue(send.isEnabled, "Send stayed disabled after typing [\(typed)]")
+		send.tap()
+		let deadline = Date().addingTimeInterval(3)
+		var delivered = false
+		while Date() < deadline, !delivered {
+			delivered = sent.label == "Sent 1" || ((field.value as? String) ?? "").contains("\n")
+			if !delivered { RunLoop.current.run(until: Date().addingTimeInterval(0.1)) }
+		}
+		XCTAssertTrue(delivered, "Send did not deliver Return; field=[\((field.value as? String) ?? "")]")
+	}
+
+	@MainActor
 	func testEmojiSelectionProbe() throws {
 		let host = launchRuntimeHost()
 		guard host.descendants(matching: .any)["glyph.keyboard"].waitForExistence(timeout: 4) else {
@@ -537,55 +581,50 @@ final class keyboardUITests: XCTestCase {
 		XCTAssertTrue(emojiKey.waitForExistence(timeout: 3), "Emoji key missing on letters page")
 		emojiKey.tap()
 
-		let grid = host.collectionViews.firstMatch
+		let grid = host.collectionViews["emoji.grid"]
 		XCTAssertTrue(grid.waitForExistence(timeout: 3), "Emoji grid did not appear")
-		var previous = (field.value as? String) ?? ""
+		var previous = fieldText(field)
+		var tapped = 0
 
-		func tapCellAndVerify(_ index: Int, label note: String) {
-			let cell = grid.cells.element(boundBy: index)
-			guard cell.exists, cell.isHittable else {
-				NSLog("EMOJI-PROBE %@ cell %d not hittable", note, index)
-				return
+		func settle() { RunLoop.current.run(until: Date().addingTimeInterval(1.2)) }
+		func tapVisibleCell(_ note: String, skip: Int = 0) {
+			settle()
+			guard let snapshot = try? grid.snapshot() else {
+				return XCTFail("\(note): could not read the emoji grid")
 			}
+			let bounds = snapshot.frame.insetBy(dx: -0.5, dy: -0.5)
+			let inside = snapshot.children.filter {
+				$0.elementType == .cell && !$0.frame.isEmpty && bounds.contains($0.frame) && !$0.label.isEmpty
+			}
+			guard inside.count > skip else {
+				return XCTFail("\(note): no fully visible emoji cell in \(snapshot.frame)")
+			}
+			let cell = inside[skip]
 			let expected = cell.label
-			cell.tap()
-			let text = (field.value as? String) ?? ""
-			let inserted = String(text.dropFirst(previous.count))
+			grid.coordinate(withNormalizedOffset: .zero)
+				.withOffset(CGVector(dx: cell.frame.midX - snapshot.frame.minX, dy: cell.frame.midY - snapshot.frame.minY)).tap()
+			let text = waitForText(field, toDifferFrom: previous)
+			let inserted = text.hasPrefix(previous) ? String(text.dropFirst(previous.count)) : text
 			previous = text
+			tapped += 1
 			NSLog("EMOJI-PROBE %@ tapped=%@ inserted=%@ %@", note, expected, inserted,
 				  inserted == expected ? "OK" : "MISMATCH")
 			XCTAssertEqual(inserted, expected, "\(note): tapped \(expected) got \(inserted)")
 		}
 
-		tapCellAndVerify(0, label: "first-cell")
-		tapCellAndVerify(5, label: "sixth-cell")
+		tapVisibleCell("first-cell")
+		tapVisibleCell("sixth-cell", skip: 5)
 
 		let tab = host.descendants(matching: .any)["emoji.category.4"]
 		if tab.waitForExistence(timeout: 2) {
 			tab.tap()
-			if let visible = grid.cells.allElementsBoundByIndex.first(where: { $0.isHittable }) {
-				let expected = visible.label
-				visible.tap()
-				let text = (field.value as? String) ?? ""
-				let inserted = String(text.dropFirst(previous.count))
-				previous = text
-				NSLog("EMOJI-PROBE after-tab-jump tapped=%@ inserted=%@ %@", expected, inserted,
-					  inserted == expected ? "OK" : "MISMATCH")
-				XCTAssertEqual(inserted, expected, "after-tab-jump: tapped \(expected) got \(inserted)")
-			}
+			tapVisibleCell("after-tab-jump")
 		}
 
 		grid.swipeLeft()
-		if let visible = grid.cells.allElementsBoundByIndex.first(where: { $0.isHittable }) {
-			let expected = visible.label
-			visible.tap()
-			let text = (field.value as? String) ?? ""
-			let inserted = String(text.dropFirst(previous.count))
-			previous = text
-			NSLog("EMOJI-PROBE after-scroll tapped=%@ inserted=%@ %@", expected, inserted,
-				  inserted == expected ? "OK" : "MISMATCH")
-			XCTAssertEqual(inserted, expected, "after-scroll: tapped \(expected) got \(inserted)")
-		}
+		RunLoop.current.run(until: Date().addingTimeInterval(3))
+		tapVisibleCell("after-scroll")
+		XCTAssertEqual(tapped, 4, "Not every emoji probe ran")
 	}
 
 	@MainActor
@@ -647,5 +686,63 @@ final class keyboardUITests: XCTestCase {
 		attachment.name = "typo-battery-results"
 		attachment.lifetime = .keepAlways
 		add(attachment)
+	}
+
+	@MainActor
+	func testNumberPadOpensInNumberFields() throws {
+		for mode in ["numberpad", "decimalpad"] {
+			let app = XCUIApplication()
+			app.launchArguments = ["-keyboard-runtime-host", "-keyboard-runtime-\(mode)"]
+			app.launch()
+			let field = app.textFields["runtime.text"]
+			XCTAssertTrue(field.waitForExistence(timeout: 5))
+			field.tap()
+			_ = activate(.glyph, in: app, attempts: 3)
+			RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+			let a = XCTAttachment(screenshot: XCUIScreen.main.screenshot()); a.name = "pad-\(mode)"; a.lifetime = .keepAlways; add(a)
+			XCTAssertTrue(app.descendants(matching: .any)["glyph.keyboard"].exists, "Glyph is not showing in the \(mode) field")
+			XCTAssertTrue(app.keys["0"].exists && app.keys["9"].exists, "No number pad in the \(mode) field")
+			XCTAssertFalse(app.keys["Q"].exists, "Letters showed in the \(mode) field")
+			XCTAssertFalse(app.descendants(matching: .any)["suggestion.primary"].isHittable, "Suggestions showed on the \(mode) pad")
+			app.keys["4"].tap(); app.keys["2"].tap()
+			XCTAssertEqual(fieldText(field), "42")
+			app.terminate()
+		}
+	}
+
+	@MainActor
+	func testSetupGuideWalkthrough() throws {
+		let app = XCUIApplication()
+		app.launchArguments = ["-ui-testing-used-keyboard"]
+		app.launch()
+		XCUIDevice.shared.orientation = .portrait
+		func shot(_ name: String, _ wait: Double = 1.6) {
+			RunLoop.current.run(until: Date().addingTimeInterval(wait))
+			let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
+		}
+		shot("0-home", 1.5)
+		let guide = app.descendants(matching: .any)["onboarding.firstRun"]
+		let attention = app.buttons["Turn it back on"]
+		if attention.exists {
+			for _ in 0..<3 where !guide.exists { attention.tap(); _ = guide.waitForExistence(timeout: 3) }
+			XCTAssertTrue(guide.exists, "The turned-off card did not open the guide")
+			shot("1-guide-from-attention", 2.4)
+			XCTAssertTrue(app.staticTexts["Turn on Glyph"].exists, "The guide did not open at Turn on Glyph")
+			app.buttons["setup.close"].tap()
+		}
+		let support = app.staticTexts["Setup & Support"]
+		for _ in 0..<4 { if support.exists && support.isHittable { break }; app.swipeUp() }
+		for _ in 0..<3 where !app.buttons["setup.guide"].exists { support.tap(); _ = app.buttons["setup.guide"].waitForExistence(timeout: 2) }
+		shot("2-checklist", 0.8)
+		XCTAssertTrue(app.staticTexts["Glyph turned on"].exists, "The setup checklist is missing")
+		app.buttons["setup.guide"].tap()
+		XCTAssertTrue(guide.waitForExistence(timeout: 3), "Setup & Support did not open the guide")
+		shot("3-first-open-step", 2.4)
+		let secondary = app.buttons["setup.secondary"]
+		var hops = 0
+		while secondary.exists && hops < 6 { secondary.tap(); hops += 1; shot("4-step-\(hops)", 1.4) }
+		XCTAssertTrue(app.buttons["onboarding.continue"].exists)
+		app.buttons["setup.close"].tap()
+		XCTAssertFalse(guide.waitForExistence(timeout: 1.5), "The guide did not close")
 	}
 }

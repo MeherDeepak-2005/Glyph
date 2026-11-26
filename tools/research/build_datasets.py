@@ -12,8 +12,15 @@ Writes into OUT_DIR:
   oov_words.tsv        the committed words the dictionary does not have, most frequent first
   bigrams.tsv          consecutive committed words within one text field
   speed.tsv            per install: words per minute, inter-key interval, glide share
-  autocorrect.tsv      every autocorrection with what the user did next (accepted, undone, fixed
-                       by hand), how long it stood, the decoder's margin and the typed keystrokes
+  autocorrect.tsv      every autocorrection with what the user did next (accepted, backspaced, undone,
+                       fixed by hand), how long it stood, the decoder's margin and the typed keystrokes
+  words.tsv            every tapped word (typed as is, autocorrected or picked from the strip) with the
+                       strip's candidates and what the user did next:
+                         undone      an undo or manual replacement restored another word
+                         backspaced  a later backspace reached the word (rejected)
+                         continued   the user typed on (weak evidence the word was right)
+                         unverified  nothing followed in the same field
+                       replaced_by is the next word committed after the backspace or undo
   key_fixes.tsv        a letter erased and retyped as another: typed, meant, the retyped tap's offset
   layouts.jsonl        keyboard geometry per (install, process, layout revision)
   glides.jsonl         every Glide gesture: path, layout reference, outcome, candidates, margin and
@@ -24,6 +31,7 @@ Writes into OUT_DIR:
                          backspaced  a later backspace reached the inserted word
                          continued   the user entered more text (weak evidence for the committed word)
                          unverified  nothing contradicted the committed word (an observation, not truth)
+                       and replaced_by, the next word committed after a backspace or retraction
 
 Commits are observations. Keep continuation separate from prompt and selection supervision.
 """
@@ -104,11 +112,22 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
     spans = prompts(events)
     related = defaultdict(list)
     by_word = defaultdict(list)
+    commits_in_field = defaultdict(list)
     for e in events:
         scope = (e["install"], e.get("process"))
         if e.get("relatedWord") is not None:
             related[scope + (e["relatedWord"],)].append(e)
         by_word[scope + (e.get("word"),)].append(e)
+        if e["kind"] == "commit" and e.get("text"):
+            commits_in_field[scope + (e.get("session"),)].append(e)
+
+    def replaced_by(rejection: dict | None, word: int | None) -> str | None:
+        """The first word committed in the same field after a rejection, other than the rejected word's own commit."""
+        if rejection is None:
+            return None
+        field = (rejection["install"], rejection.get("process"), rejection.get("session"))
+        return next((c["text"] for c in commits_in_field.get(field, ())
+                     if c.get("uptime", 0) > rejection.get("uptime", 0) and c.get("word") != word), None)
 
     count, installs, glided, tapped = Counter(), defaultdict(set), Counter(), Counter()
     bigrams, previous = Counter(), {}
@@ -156,10 +175,13 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
         outcome, since = "unknown", ""
         for later in related.get(key, ()):
             verdict = {"undo": "undone-strip" if later.get("evidence") == "strip-autocorrect-undo" else "undone-backspace",
-                       "correction-accepted": "accepted"}.get(later["kind"])
+                       "correction-accepted": "accepted", "word-continued": "accepted",
+                       "word-backspaced": "backspaced"}.get(later["kind"])
             if later["kind"] == "manual-replacement":
                 verdict = "undone-by-hand" if later.get("evidence") == "manual-autocorrect-undo" else "fixed-by-hand"
-            if verdict and (outcome in ("unknown", "accepted")):
+            if verdict == "accepted" and outcome == "backspaced":
+                continue
+            if verdict and (outcome in ("unknown", "accepted", "backspaced")):
                 outcome, since = verdict, later.get("sinceMs", "")
         commit = next((c for c in by_word.get(key, ()) if c["kind"] == "commit"), {})
         strokes = commit.get("keystrokes") or []
@@ -177,6 +199,40 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
     write_tsv(out / "key_fixes.tsv", ["install", "typed", "meant", "dx", "dy"],
               [(e["install"], e.get("text", ""), e.get("replacement", ""), e.get("dx", ""), e.get("dy", ""))
                for e in events if e["kind"] == "key-fix"])
+
+    word_outcomes = Counter()
+    word_rows = []
+    for e in events:
+        if e["kind"] != "commit" or not e.get("text") or e.get("evidence") == "glide-unverified":
+            continue
+        key = (e["install"], e.get("process"), e.get("word"))
+        own = by_word.get(key, ())
+        later = [l for l in related.get(key, ()) if l.get("uptime", 0) >= e.get("uptime", 0)]
+        picked = next((o for o in own if o["kind"] in ("suggestion-pick", "prediction-pick")), None)
+        entry = "pick" if picked else "autocorrection" if e.get("evidence") == "automatic-unverified" else "typed"
+        undone = next((l for l in later if l["kind"] in ("undo", "manual-replacement")), None)
+        backspaced = next((l for l in later if l["kind"] == "word-backspaced"), None)
+        continued = next((l for l in later if l["kind"] in ("word-continued", "correction-accepted")), None)
+        if undone:
+            outcome, decided = "undone", undone
+        elif backspaced:
+            outcome, decided = "backspaced", backspaced
+        elif continued:
+            outcome, decided = "continued", continued
+        else:
+            outcome, decided = "unverified", None
+        rejection = decided if outcome in ("undone", "backspaced") else None
+        replacement = (undone.get("replacement") or None) if undone else None
+        shown = [o for o in own if o["kind"] in ("suggestions", "autocorrection") and o.get("candidateEvidence")]
+        candidates = shown[-1]["candidateEvidence"] if shown else []
+        word_outcomes[outcome] += 1
+        word_rows.append((e["install"], e.get("time", ""), e["text"], e.get("typed", ""), entry, outcome,
+                          decided.get("sinceMs", "") if decided else "", replacement or replaced_by(rejection, e.get("word")) or "",
+                          e.get("backspaces", ""), e.get("durationMs", ""), int(prompt_for(spans, e) is not None),
+                          json.dumps([[c["word"], c.get("score"), c.get("spatialCost")] for c in candidates[:8]]),
+                          json.dumps(e.get("keystrokes") or [])))
+    write_tsv(out / "words.tsv", ["install", "time", "word", "typed", "entry", "outcome", "since_ms", "replaced_by",
+                                  "backspaces", "word_duration_ms", "in_practice", "candidates", "keystrokes"], word_rows)
 
     labels, glide_outcomes = Counter(), Counter()
     with (out / "layouts.jsonl").open("w", encoding="utf-8") as handle:
@@ -228,6 +284,8 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                 "continued": continued is not None, "backspaced": backspaced is not None,
                 "continued_after_ms": continued.get("sinceMs") if continued else None,
                 "backspaced_after_ms": backspaced.get("sinceMs") if backspaced else None,
+                "replaced_by": replaced_by(backspaced or next((l for l in later if l["kind"] == "undo"
+                    and l.get("evidence") == "explicit-retraction"), None), e.get("word")) if source in ("backspaced", "retracted") else None,
                 "prompt_target": prompt["target"] if prompt else None, "start_key": glide.get("startKey"),
                 "decode_source": glide.get("source"), "previews": glide.get("previews"), "margin": e.get("confidence"),
                 "duration_ms": e.get("durationMs"), "lift_to_insert_ms": glide.get("liftToInsertMs"),
@@ -238,7 +296,8 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                "events_by_kind": dict(sorted(Counter(e["kind"] for e in events).items())),
                "committed_words": sum(count.values()), "distinct_words": len(count),
                "out_of_dictionary_words": None if known is None else sum(1 for w in count if w not in known),
-               "autocorrections": dict(sorted(outcomes.items())), "glides": dict(sorted(glide_outcomes.items())),
+               "autocorrections": dict(sorted(outcomes.items())), "word_outcomes": dict(sorted(word_outcomes.items())),
+               "glides": dict(sorted(glide_outcomes.items())),
                "glide_labels": dict(sorted((k or "none", v) for k, v in labels.items())),
                "practice_prompts": sum(len(v) for v in spans.values()), "diagnostics_snapshots": len(diagnostics)}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")

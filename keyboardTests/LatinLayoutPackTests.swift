@@ -81,15 +81,25 @@ struct LatinLayoutPackTests {
 		])
 	}
 
-	@Test func numberPadsMatchTheField() {
+	@Test func numberPadsMatchTheField() throws {
 		let separator = Locale.current.decimalSeparator ?? "."
 		#expect(rows(keyboard(.decimalPad, page: .numbers)) == [
 			["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"],
-			["Letters", separator, "0", "Delete", "Return"],
+			[separator, "0", "Delete"],
 		])
 		let phone = keyboard(.phonePad, page: .numbers)
-		#expect(rows(phone).last == ["Letters", "+", "0", "Delete", "Return"])
-		#expect(rows(keyboard(.numberPad, page: .numbers)).last == ["Letters", "0", "Delete", "Return"])
+		#expect(rows(phone).last == ["+", "0", "Delete"])
+		let pad = keyboard(.numberPad, page: .numbers)
+		let last = try #require(pad.rows.last)
+		#expect(last.count == 3)
+		#expect(last[0].isHidden && !last[0].isAccessibilityElement)
+		#expect(rows(pad).last?.suffix(2) == ["0", "Delete"])
+		#expect(!pad.showsSuggestions)
+		for row in pad.rows {
+			let widths = Set(row.map { ($0.frame.width * 2).rounded() })
+			#expect(widths.count == 1)
+		}
+		#expect(abs(pad.rows[3][1].frame.midX - pad.rows[2][1].frame.midX) < 0.5)
 		#expect(phone.rows.flatMap { $0 }.allSatisfy { $0.alternatives.isEmpty })
 	}
 
