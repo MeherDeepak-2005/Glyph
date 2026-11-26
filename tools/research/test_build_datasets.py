@@ -108,11 +108,13 @@ class DatasetTests(unittest.TestCase):
         by_word = {g["committed"]: g for g in glides}
         self.assertEqual((by_word["hello"]["label"], by_word["hello"]["label_source"]), ("hello", "unverified"))
         self.assertEqual((by_word["tome"]["label"], by_word["tome"]["label_source"]), ("time", "selection"))
-        self.assertEqual((by_word["pit"]["label"], by_word["pit"]["label_source"]), (None, "retracted"))
+        # pit was undone, and the next word kept (the practice glide "lonely") is not a word its path could be.
+        self.assertEqual((by_word["pit"]["label"], by_word["pit"]["label_source"], by_word["pit"]["replaced_by"]),
+                         (None, "abandoned", "lonely"))
         self.assertEqual((by_word["lonely"]["label"], by_word["lonely"]["label_source"]), ("lowkey", "prompt"))
-        self.assertEqual(by_word[None]["label_source"], "rejected")
+        self.assertEqual(by_word[None]["label_source"], "abandoned")
         self.assertEqual(len(by_word["hello"]["path"]), 3)
-        self.assertEqual(self.summary["glide_labels"], {"prompt": 1, "rejected": 1, "retracted": 1, "selection": 1, "unverified": 1})
+        self.assertEqual(self.summary["glide_labels"], {"abandoned": 2, "prompt": 1, "selection": 1, "unverified": 1})
         self.assertEqual(len((self.out / "layouts.jsonl").read_text().splitlines()), 1)
 
     def test_glide_follow_up(self):
@@ -184,7 +186,87 @@ class DatasetTests(unittest.TestCase):
         (source / "events.jsonl").write_text("\n".join(json.dumps(e) for e in events))
         build_datasets.build(source, self.out, None)
         tome = json.loads((self.out / "glides.jsonl").read_text().splitlines()[0])
-        self.assertEqual((tome["label_source"], tome["replaced_by"]), ("backspaced", "time"))
+        self.assertEqual((tome["label"], tome["label_source"], tome["replaced_by"], tome["retries"]), ("time", "retry", "time", 0))
+
+    def build_from(self, name, events):
+        source = Path(self.temp.name) / name
+        source.mkdir()
+        (source / "events.jsonl").write_text("\n".join(json.dumps(e) for e in [event("header", 0.5, header={"install": "install-A"})] + events))
+        summary = build_datasets.build(source, self.out, None)
+        return summary, [json.loads(line) for line in (self.out / "glides.jsonl").read_text().splitlines()]
+
+    def test_retry_chain(self):
+        # glide tome, delete, glide tone, delete, type time: both glides were attempts at "time".
+        summary, (tome, tone) = self.build_from("chain", [
+            glide(2, 1, "tome"), event("commit", 2.01, word=1, text="tome", evidence="glide-unverified"),
+            event("glide-backspaced", 3, word=2, relatedWord=1, sinceMs=1000),
+            glide(4, 2, "tone"), event("commit", 4.01, word=2, text="tone", evidence="glide-unverified"),
+            event("undo", 5, word=3, relatedWord=2, text="tone", replacement="", evidence="explicit-retraction"),
+            event("commit", 7, word=3, text="time", typed="time", evidence="literal-unverified"),
+            event("word-continued", 8, word=4, relatedWord=3, sinceMs=1000, evidence="typed"),
+        ])
+        self.assertEqual((tome["label"], tome["label_source"], tome["retries"]), ("time", "retry", 1))
+        self.assertEqual((tone["label"], tone["label_source"], tone["retries"]), ("time", "retry", 0))
+        self.assertEqual(summary["glide_labels"], {"retry": 2})
+        # The typed fallback keeps its taps, labelled by its own outcome.
+        time = {row["word"]: row for row in self.table("words.tsv")}["time"]
+        self.assertEqual((time["outcome"], json.loads(time["keystrokes"])), ("continued", []))
+
+    def test_rejected_glide_and_change_of_mind(self):
+        keys = [{"label": c, "x": x, "y": y, "w": 30, "h": 40}
+                for c, x, y in (("t", 160, 10), ("i", 280, 10), ("m", 280, 110), ("e", 80, 10), ("s", 40, 60))]
+        geometry = {"width": 390, "height": 216, "xPitch": 39, "yPitch": 54, "keys": keys}
+        def path(start, end):
+            return {"path": [start + [0, 9], end + [300, 9]], "startKey": "t", "outcome": "rejected"}
+        summary, (nothing, other) = self.build_from("rejected", [
+            event("layout", 1, geometry=geometry),
+            # Nothing matched; the user typed "time": the path runs from t to e, so it could be "time".
+            event("glide", 2, word=1, glide=path([175, 30], [96, 32])),
+            event("commit", 4, word=1, text="time", typed="time", evidence="literal-unverified"),
+            # Nothing matched; then "sure": the path starts on t, not s, so the user changed their mind.
+            event("glide", 10, word=2, glide=path([175, 30], [96, 32])),
+            event("commit", 12, word=2, text="sure", typed="sure", evidence="literal-unverified"),
+        ])
+        self.assertEqual((nothing["label"], nothing["label_source"]), ("time", "retry"))
+        self.assertEqual((other["label"], other["label_source"], other["replaced_by"]), (None, "abandoned", "sure"))
+
+    def test_retry_window(self):
+        _, (tome,) = self.build_from("window", [
+            glide(2, 1, "tome"), event("commit", 2.01, word=1, text="tome", evidence="glide-unverified"),
+            event("glide-backspaced", 3, word=2, relatedWord=1, sinceMs=1000),
+            event("commit", 3 + build_datasets.RETRY_WINDOW_S + 5, word=2, text="time", typed="time", evidence="literal-unverified"),
+        ])
+        self.assertEqual((tome["label"], tome["label_source"], tome["replaced_by"]), (None, "backspaced", None))
+
+    def test_tap_chain(self):
+        # typed form, deleted, glided fork, deleted, typed from: form was replaced by "from", not "fork".
+        self.build_from("tap-chain", [
+            event("commit", 2, word=1, text="form", typed="form", evidence="literal-unverified"),
+            event("word-backspaced", 3, word=2, relatedWord=1, sinceMs=1000, evidence="typed"),
+            glide(4, 2, "fork"), event("commit", 4.01, word=2, text="fork", evidence="glide-unverified"),
+            event("glide-backspaced", 5, word=3, relatedWord=2, sinceMs=1000),
+            event("commit", 6, word=3, text="from", typed="from", evidence="literal-unverified"),
+        ])
+        self.assertEqual({row["word"]: row for row in self.table("words.tsv")}["form"]["replaced_by"], "from")
+
+    def test_practice_label_checks(self):
+        prompt = {"id": "s1", "target": "Come from here.", "mode": "sentences"}
+        summary, glides = self.build_from("checks", [
+            event("prompt-shown", 1, process="app", session=0, prompt=prompt),
+            event("commit", 2, word=1, text="come", typed="come", evidence="literal-unverified"),
+            event("word-continued", 2.5, word=2, relatedWord=1, sinceMs=500, evidence="typed"),
+            # A real-word Glide error the user did not notice: "form" stood and they carried on.
+            glide(3, 2, "form"), event("commit", 3.01, word=2, text="form", evidence="glide-unverified"),
+            event("glide-continued", 4, word=3, relatedWord=2, sinceMs=1000),
+            glide(5, 3, "here"), event("commit", 5.01, word=3, text="here", evidence="glide-unverified"),
+            event("prompt-done", 6, process="app", session=0, evidence="skipped", prompt={**prompt, "result": "come form here"}),
+        ])
+        checks = summary["practice_label_checks"]
+        self.assertEqual(checks["glide:continued"], {"n": 1, "agree": 0, "precision": 0.0})
+        self.assertEqual(checks["glide:unverified"], {"n": 1, "agree": 1, "precision": 1.0})
+        self.assertEqual(checks["tap:continued"], {"n": 1, "agree": 1, "precision": 1.0})
+        form = next(g for g in glides if g["committed"] == "form")
+        self.assertEqual((form["label_source"], form["practice_agrees"]), ("continued", False))
 
 if __name__ == "__main__":
     unittest.main()

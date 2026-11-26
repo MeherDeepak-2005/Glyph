@@ -85,9 +85,14 @@ Commits are observations, not labels: an autocorrection (`automatic-unverified`)
 
 - **Practice prompts**: everything between `prompt-shown` and `prompt-done` (same install, by
   `uptime`) was an attempt at `prompt.target`, including the attempts the decoder got wrong.
-- **Glide**: `glide-selection` (the chosen word is the label for that path), `undo` with
-  `explicit-retraction` or `glide-backspaced` (the user edited the original word; the intended word is unknown),
-  and `glide-continued` (weak evidence for the committed word that a later edit can override).
+- **Glide**: `glide-selection` (the chosen word is the label for that path); a rejected glide
+  (`undo` with `explicit-retraction`, `glide-backspaced`, or outcome `rejected`) is labelled with the
+  word the user finally kept in that field, following glide → delete → glide → … → kept chains
+  (`retry`), but only when the path could be that word (one of its candidates, or the path starts
+  and ends within a key pitch of its first and last letters); otherwise `abandoned` (a change of mind).
+  `glide-continued` is strong but not certain evidence for the committed word: unnoticed real-word
+  errors (`form` for `from`) stay in. Practice prompts measure how often each of these labels is
+  right (`practice_label_checks` in the export's `summary.json`).
   Follow-up tracking stays within the current document session and tracks up to four glides
   while their text remains within 96 characters before the cursor. Cursor moves and external
   document changes end tracking. The export preserves both follow-up signals and their timing.

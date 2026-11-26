@@ -27,11 +27,22 @@ Writes into OUT_DIR:
                        a label with its source:
                          prompt      practice target (ground truth, even when the decoder was wrong)
                          selection   the alternative the user picked on the strip
-                         retracted   the user explicitly undid the inserted word
-                         backspaced  a later backspace reached the inserted word
-                         continued   the user entered more text (weak evidence for the committed word)
+                         retry       the glide was rejected (backspaced, undone, or nothing matched) and the
+                                     label is the word the user finally kept in that field, following
+                                     glide-delete-glide-... chains (retries counts the rejected attempts
+                                     in between); only when the path could have been that word: it was a
+                                     candidate, or the path starts and ends near its first and last letters
+                         abandoned   rejected, then a word the path could not have been (a change of mind)
+                         retracted   the user explicitly undid the inserted word; nothing kept followed
+                         backspaced  a later backspace reached the inserted word; nothing kept followed
+                         continued   the user entered more text (strong but not certain: unnoticed
+                                     real-word errors stay in; see practice_label_checks)
                          unverified  nothing contradicted the committed word (an observation, not truth)
-                       and replaced_by, the next word committed after a backspace or retraction
+                       and replaced_by, the word finally kept after a rejection (also in words.tsv)
+
+summary.json practice_label_checks: inside practice prompts, how often each behavioural label (what the
+label would be without the prompt) matches the target: glide:continued, glide:retry, tap:continued,
+tap:replaced_by. That precision is how much to trust the same label outside practice.
 
 Commits are observations. Keep continuation separate from prompt and selection supervision.
 """
@@ -42,6 +53,11 @@ from pathlib import Path
 
 PAUSE_MS = 5_000
 PROMPT_SLACK_S = 0.25
+REJECTIONS = ("glide-backspaced", "word-backspaced", "undo")
+RETRY_WINDOW_S = 30.0   # longest gap from a rejection to the next attempt that still counts as a retry
+MAX_RETRIES = 4         # rejected attempts followed before giving up on the chain
+MAX_END_PITCH = 1.0     # how far (in key pitches) a path's ends may be from a retry word's first/last letter
+PUNCTUATION = ".,!?;:\"'()[]{}…“”‘’"
 
 def read(root: Path) -> tuple[list[dict], list[dict]]:
     """Events (deduplicated, each tagged with its install) and diagnostics lines."""
@@ -121,13 +137,92 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
         if e["kind"] == "commit" and e.get("text"):
             commits_in_field[scope + (e.get("session"),)].append(e)
 
-    def replaced_by(rejection: dict | None, word: int | None) -> str | None:
-        """The first word committed in the same field after a rejection, other than the rejected word's own commit."""
+    geometry = {}
+    for e in events:
+        if e["kind"] == "layout" and e.get("geometry"):
+            geometry[(e["install"], e.get("process"), e.get("layout"))] = e["geometry"]
+
+    def rejection_of(commit: dict) -> dict | None:
+        """The first follow-up that rejected this committed word (backspaced into, or a glided word undone whole)."""
+        return next((l for l in related.get((commit["install"], commit.get("process"), commit.get("word")), ())
+                     if l["kind"] in REJECTIONS and l.get("session") == commit.get("session")
+                     and l.get("uptime", 0) >= commit.get("uptime", 0)
+                     and (l["kind"] != "undo" or l.get("evidence") == "explicit-retraction")), None)
+
+    def resolve(rejection: dict | None, word: int | None) -> tuple[dict | None, int]:
+        """Follow retries from a rejection to the first word in the same field that was kept.
+
+        Returns that commit and how many further attempts were rejected on the way (glide, delete, glide,
+        delete, type: the typed word after 1 retry). Stops when the next word comes more than RETRY_WINDOW_S
+        after the previous rejection, or after MAX_RETRIES rejected attempts."""
         if rejection is None:
-            return None
+            return None, 0
         field = (rejection["install"], rejection.get("process"), rejection.get("session"))
-        return next((c["text"] for c in commits_in_field.get(field, ())
-                     if c.get("uptime", 0) > rejection.get("uptime", 0) and c.get("word") != word), None)
+        point, skip, retries = rejection, {word}, 0
+        while True:
+            after = point.get("uptime", 0)
+            nxt = next((c for c in commits_in_field.get(field, ())
+                        if c.get("uptime", 0) > after and (c.get("word") not in skip or c.get("word") is None)), None)
+            if nxt is None or nxt.get("uptime", 0) - after > RETRY_WINDOW_S:
+                return None, retries
+            again = rejection_of(nxt)
+            if again is None:
+                return nxt, retries
+            retries += 1
+            if retries > MAX_RETRIES:
+                return None, retries
+            skip.add(nxt.get("word"))
+            point = again
+
+    def replaced_by(rejection: dict | None, word: int | None) -> str | None:
+        """The word the user finally kept in the same field after a rejection (see resolve)."""
+        final, _ = resolve(rejection, word)
+        return final["text"] if final else None
+
+    def plausible(word: str, glide_event: dict) -> bool:
+        """Could this path have been an attempt at `word`? It was among the glide's candidates, or the path
+        starts and ends within MAX_END_PITCH key pitches of the word's first and last letters (start key only
+        when the layout was not recorded)."""
+        word = word.lower()
+        if word in {(c.get("word") or "").lower() for c in glide_event.get("candidateEvidence") or ()}:
+            return True
+        letters = [c for c in word if c.isalpha()]
+        path = (glide_event.get("glide") or {}).get("path") or []
+        if not letters or not path:
+            return False
+        layout = geometry.get((glide_event["install"], glide_event.get("process"), glide_event.get("layout")))
+        if not layout or not layout.get("xPitch") or not layout.get("yPitch"):
+            start = ((glide_event.get("glide") or {}).get("startKey") or "").lower()
+            return start == letters[0]
+        centres = {}
+        for key in layout.get("keys", ()):
+            label = (key.get("label") or "").lower()
+            if len(label) == 1 and label not in centres:
+                centres[label] = (key["x"] + key["w"] / 2, key["y"] + key["h"] / 2)
+
+        def near(point: list, letter: str) -> bool:
+            if letter not in centres:
+                return False
+            cx, cy = centres[letter]
+            return ((point[0] - cx) / layout["xPitch"]) ** 2 + ((point[1] - cy) / layout["yPitch"]) ** 2 <= MAX_END_PITCH ** 2
+        return near(path[0], letters[0]) and near(path[-1], letters[-1])
+
+    def truth(label: str | None, prompt: dict) -> bool | None:
+        """Does a label inferred from behaviour agree with the practice target? Sentence prompts: the label is
+        one of the sentence's words (an approximation: it does not check which word was meant)."""
+        if label is None:
+            return None
+        words = {w.strip(PUNCTUATION).lower() for w in prompt["target"].split()}
+        return label.lower() in words
+
+    checks = defaultdict(lambda: {"n": 0, "agree": 0})
+
+    def check(name: str, label: str | None, prompt: dict | None) -> bool | None:
+        agrees = truth(label, prompt) if prompt else None
+        if agrees is not None:
+            checks[name]["n"] += 1
+            checks[name]["agree"] += int(agrees)
+        return agrees
 
     count, installs, glided, tapped = Counter(), defaultdict(set), Counter(), Counter()
     bigrams, previous = Counter(), {}
@@ -226,9 +321,15 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
         shown = [o for o in own if o["kind"] in ("suggestions", "autocorrection") and o.get("candidateEvidence")]
         candidates = shown[-1]["candidateEvidence"] if shown else []
         word_outcomes[outcome] += 1
+        final = replacement or replaced_by(rejection, e.get("word"))
+        prompt = prompt_for(spans, e)
+        if outcome == "continued":
+            check("tap:continued", e["text"], prompt)
+        elif final:
+            check("tap:replaced_by", final, prompt)
         word_rows.append((e["install"], e.get("time", ""), e["text"], e.get("typed", ""), entry, outcome,
-                          decided.get("sinceMs", "") if decided else "", replacement or replaced_by(rejection, e.get("word")) or "",
-                          e.get("backspaces", ""), e.get("durationMs", ""), int(prompt_for(spans, e) is not None),
+                          decided.get("sinceMs", "") if decided else "", final or "",
+                          e.get("backspaces", ""), e.get("durationMs", ""), int(prompt is not None),
                           json.dumps([[c["word"], c.get("score"), c.get("spatialCost")] for c in candidates[:8]]),
                           json.dumps(e.get("keystrokes") or [])))
     write_tsv(out / "words.tsv", ["install", "time", "word", "typed", "entry", "outcome", "since_ms", "replaced_by",
@@ -260,23 +361,34 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
             retracted = any(l["kind"] == "undo" and l.get("evidence") == "explicit-retraction" for l in later)
             continued = next((l for l in later if l["kind"] == "glide-continued"), None)
             backspaced = next((l for l in later if l["kind"] == "glide-backspaced"), None)
-            label, source = None, None
-            if prompt and " " not in prompt["target"]:
-                label, source = prompt["target"].lower(), "prompt"
-            elif prompt and committed and committed in prompt["target"].lower().split():
-                label, source = committed, "prompt"
+            retraction = next((l for l in later if l["kind"] == "undo" and l.get("evidence") == "explicit-retraction"), None)
+            # What behaviour alone says, before any practice target is applied.
+            label, source, final, retries = None, None, None, None
+            if glide["outcome"] in ("committed", "rejected") and not picked and (retracted or backspaced or glide["outcome"] == "rejected"):
+                # Rejected one way or another: the label is the word the user finally kept (glide, delete,
+                # glide again, ..., kept), if this path could have been an attempt at it.
+                kept, retries = resolve(backspaced or retraction if glide["outcome"] == "committed" else e,
+                                        e.get("word") if glide["outcome"] == "committed" else None)
+                final = kept["text"].lower() if kept else None
+                if final and plausible(final, e):
+                    label, source = final, "retry"
+                elif final:
+                    source = "abandoned"
+                else:
+                    source = "rejected" if glide["outcome"] == "rejected" else "retracted" if retracted else "backspaced"
             elif glide["outcome"] != "committed":
                 source = glide["outcome"]
             elif picked:
                 label, source = (picked.get("replacement") or "").lower(), "selection"
-            elif retracted:
-                source = "retracted"
-            elif backspaced:
-                source = "backspaced"
             elif continued:
                 label, source = committed, "continued"
             else:
                 label, source = committed, "unverified"
+            agrees = check(f"glide:{source}", label, prompt) if source in ("continued", "retry", "selection", "unverified") else None
+            if prompt and " " not in prompt["target"]:
+                label, source = prompt["target"].lower(), "prompt"
+            elif prompt and committed and committed in prompt["target"].lower().split():
+                label, source = committed, "prompt"
             labels[source] += 1
             handle.write(json.dumps({
                 "install": e["install"], "process": e.get("process"), "layout": e.get("layout"), "time": e.get("time"),
@@ -284,8 +396,7 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                 "continued": continued is not None, "backspaced": backspaced is not None,
                 "continued_after_ms": continued.get("sinceMs") if continued else None,
                 "backspaced_after_ms": backspaced.get("sinceMs") if backspaced else None,
-                "replaced_by": replaced_by(backspaced or next((l for l in later if l["kind"] == "undo"
-                    and l.get("evidence") == "explicit-retraction"), None), e.get("word")) if source in ("backspaced", "retracted") else None,
+                "replaced_by": final, "retries": retries, "practice_agrees": agrees,
                 "prompt_target": prompt["target"] if prompt else None, "start_key": glide.get("startKey"),
                 "decode_source": glide.get("source"), "previews": glide.get("previews"), "margin": e.get("confidence"),
                 "duration_ms": e.get("durationMs"), "lift_to_insert_ms": glide.get("liftToInsertMs"),
@@ -299,7 +410,9 @@ def build(root: Path, out: Path, ledger: Path | None) -> dict:
                "autocorrections": dict(sorted(outcomes.items())), "word_outcomes": dict(sorted(word_outcomes.items())),
                "glides": dict(sorted(glide_outcomes.items())),
                "glide_labels": dict(sorted((k or "none", v) for k, v in labels.items())),
-               "practice_prompts": sum(len(v) for v in spans.values()), "diagnostics_snapshots": len(diagnostics)}
+               "practice_prompts": sum(len(v) for v in spans.values()), "diagnostics_snapshots": len(diagnostics),
+               "practice_label_checks": {name: {**c, "precision": round(c["agree"] / c["n"], 3)}
+                                         for name, c in sorted(checks.items())}}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
 
