@@ -2,7 +2,8 @@ import UIKit
 
 extension KeyboardViewController {
 
-    func handleHostCallback() {
+    @discardableResult
+    func handleHostCallback() -> Bool {
         let firstConnection = hostConnectionDidBecomeAvailable()
         let traitsChanged = updateInputTraits()
         let changed = reconcileHostDocument()
@@ -10,6 +11,7 @@ extension KeyboardViewController {
         if firstConnection || traitsChanged { scheduleSuggestions() }
         updateActionKey()
         updateAutoShift()
+        return changed
     }
 
     private static let documentIdentifierSelector = NSSelectorFromString("documentIdentifier")
@@ -90,6 +92,7 @@ extension KeyboardViewController {
             }
         }
         documentReconciler.endKeyboardEdit(finalState)
+        if documentReconciler.editDepth == 0 { lastKeyboardEditEndedAt = ProcessInfo.processInfo.systemUptime }
         if unexpectedInsertion || (finalState?.isEmpty == true && lastCorrection != nil) {
             KBDiagnostics.noteIntegrityEvent("host-edit-diverged")
             resetDocumentPresentation()

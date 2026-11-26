@@ -31,6 +31,11 @@ extension KeyboardView {
 		KBDiagnostics.noteSurface("emoji")
 		if opening { KBDiagnostics.notePanelEvent(.open) }
 	}
+	func returnFromEmoji() {
+		guard page == .emoji, !isEmojiSearching else { return }
+		hideEmoji()
+	}
+
 	private func hideEmoji() {
 		emojiView?.removeFromSuperview()
 		emojiView = nil

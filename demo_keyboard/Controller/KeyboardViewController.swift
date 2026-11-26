@@ -34,6 +34,7 @@ final class KeyboardViewController: UIInputViewController {
     var recoveryMonitor: HostDocumentRecoveryMonitor?
     var presentationDocument: HostDocumentSnapshot?
     var expectedLetterInsertion: String?
+    var lastKeyboardEditEndedAt: TimeInterval = 0
 
 	enum SuggestionPresentation {
 		case ranked(words: [String], prefix: String?, highlightPrimary: Bool)
@@ -486,6 +487,11 @@ final class KeyboardViewController: UIInputViewController {
 
     override func selectionDidChange(_ textInput: UITextInput?) {
         super.selectionDidChange(textInput)
-        handleHostCallback()
+        let ownEditSettling = documentReconciler.editDepth > 0
+            || ProcessInfo.processInfo.systemUptime - lastKeyboardEditEndedAt < 0.4
+        let documentMoved = handleHostCallback()
+        if keyboard?.page == .emoji, documentMoved || !ownEditSettling {
+            keyboard?.returnFromEmoji()
+        }
     }
 }
