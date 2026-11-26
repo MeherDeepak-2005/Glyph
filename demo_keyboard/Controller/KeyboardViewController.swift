@@ -457,6 +457,7 @@ final class KeyboardViewController: UIInputViewController {
 		liveMemoryTimer = nil
 		KBDiagnostics.noteLiveFootprint()
 		#endif
+		recordTyping("session-end")
 		hostConnectionReady = false
         recoveryMonitor?.stop()
         recoveryMonitor = nil

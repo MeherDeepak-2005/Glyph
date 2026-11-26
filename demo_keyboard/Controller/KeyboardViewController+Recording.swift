@@ -15,7 +15,7 @@ extension KeyboardViewController {
     }
 
     var permitsTypingData: Bool {
-        guard !isSecureField else { return false }
+        guard hostConnectionReady, !isSecureField else { return false }
         guard textDocumentProxy.textContentType == nil else { return false }
         switch textDocumentProxy.keyboardType ?? .default {
         case .default, .asciiCapable, .twitter: return true
